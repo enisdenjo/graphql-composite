@@ -1,0 +1,317 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`should plan schema 1`] = `
+{
+  "types": {
+    "Manufacturer": {
+      "fields": [
+        {
+          "name": "id",
+          "sources": [
+            [
+              {
+                "name": "id",
+                "subgraph": "manufacturers",
+              },
+              null,
+            ],
+            [
+              {
+                "name": "id",
+                "subgraph": "products",
+              },
+              null,
+            ],
+          ],
+        },
+        {
+          "name": "name",
+          "sources": [
+            [
+              {
+                "name": "name",
+                "subgraph": "manufacturers",
+              },
+              null,
+            ],
+          ],
+        },
+        {
+          "name": "products",
+          "sources": [
+            [
+              {
+                "name": "products",
+                "subgraph": "products",
+              },
+              null,
+            ],
+          ],
+        },
+      ],
+      "sources": [
+        [
+          {
+            "name": "Manufacturer",
+            "subgraph": "manufacturers",
+          },
+          {
+            "kind": "FETCH",
+            "operation": "query ManufacturerById($Manufacturer_id: ID!) { manufacturer(id: $Manufacturer_id) }",
+            "variables": [
+              {
+                "name": "Manufacturer_id",
+                "select": "id",
+              },
+              {
+                "name": "Manufacturer_id",
+                "select": "id",
+              },
+            ],
+          },
+        ],
+        [
+          {
+            "name": "Manufacturer",
+            "subgraph": "products",
+          },
+          {
+            "kind": "FETCH",
+            "operation": "query ManufacturerById($Manufacturer_id: ID!) { _manufacturer(id: $Manufacturer_id) }",
+            "variables": [
+              {
+                "name": "Manufacturer_id",
+                "select": "id",
+              },
+              {
+                "name": "Manufacturer_id",
+                "select": "id",
+              },
+            ],
+          },
+        ],
+      ],
+    },
+    "Product": {
+      "fields": [
+        {
+          "name": "manufacturer",
+          "sources": [
+            [
+              {
+                "name": "manufacturer",
+                "subgraph": "products",
+              },
+              null,
+            ],
+          ],
+        },
+        {
+          "name": "name",
+          "sources": [
+            [
+              {
+                "name": "name",
+                "subgraph": "products",
+              },
+              null,
+            ],
+          ],
+        },
+        {
+          "name": "price",
+          "sources": [
+            [
+              {
+                "name": "price",
+                "subgraph": "products",
+              },
+              null,
+            ],
+          ],
+        },
+        {
+          "name": "upc",
+          "sources": [
+            [
+              {
+                "name": "upc",
+                "subgraph": "products",
+              },
+              null,
+            ],
+            [
+              {
+                "name": "upc",
+                "subgraph": "storefronts",
+              },
+              null,
+            ],
+          ],
+        },
+      ],
+      "sources": [
+        [
+          {
+            "name": "Product",
+            "subgraph": "products",
+          },
+          {
+            "kind": "FETCH",
+            "operation": "query ProductByUpc($Product_upc: ID!) { product(upc: $Product_upc) }",
+            "variables": [
+              {
+                "name": "Product_upc",
+                "select": "upc",
+              },
+            ],
+          },
+        ],
+        [
+          {
+            "name": "Product",
+            "subgraph": "storefronts",
+          },
+          {
+            "kind": "FETCH",
+            "operation": "TODO",
+            "variables": [
+              {
+                "name": "Product_upc",
+                "select": "upc",
+              },
+            ],
+          },
+        ],
+      ],
+    },
+    "Query": {
+      "fields": [
+        {
+          "name": "manufacturer",
+          "sources": [
+            [
+              {
+                "name": "manufacturer",
+                "subgraph": "manufacturers",
+              },
+              {
+                "kind": "FETCH",
+                "operation": "query manufacturer($id: ID!) { manufacturer(id: $id) }",
+                "variables": [],
+              },
+            ],
+          ],
+        },
+        {
+          "name": "product",
+          "sources": [
+            [
+              {
+                "name": "product",
+                "subgraph": "products",
+              },
+              {
+                "kind": "FETCH",
+                "operation": "query product($upc: ID!) { product(upc: $upc) }",
+                "variables": [],
+              },
+            ],
+          ],
+        },
+        {
+          "name": "_manufacturer",
+          "sources": [
+            [
+              {
+                "name": "_manufacturer",
+                "subgraph": "products",
+              },
+              {
+                "kind": "FETCH",
+                "operation": "query _manufacturer($id: ID!) { _manufacturer(id: $id) }",
+                "variables": [],
+              },
+            ],
+          ],
+        },
+        {
+          "name": "storefront",
+          "sources": [
+            [
+              {
+                "name": "storefront",
+                "subgraph": "storefronts",
+              },
+              {
+                "kind": "FETCH",
+                "operation": "query storefront($id: ID!) { storefront(id: $id) }",
+                "variables": [],
+              },
+            ],
+          ],
+        },
+      ],
+      "sources": [],
+    },
+    "Storefront": {
+      "fields": [
+        {
+          "name": "id",
+          "sources": [
+            [
+              {
+                "name": "id",
+                "subgraph": "storefronts",
+              },
+              null,
+            ],
+          ],
+        },
+        {
+          "name": "name",
+          "sources": [
+            [
+              {
+                "name": "name",
+                "subgraph": "storefronts",
+              },
+              null,
+            ],
+          ],
+        },
+        {
+          "name": "products",
+          "sources": [
+            [
+              {
+                "name": "products",
+                "subgraph": "storefronts",
+              },
+              null,
+            ],
+          ],
+        },
+      ],
+      "sources": [
+        [
+          {
+            "name": "Storefront",
+            "subgraph": "storefronts",
+          },
+          {
+            "kind": "FETCH",
+            "operation": "query StorefrontById($Storefront_id: ID!) { storefront(id: $Storefront_id) }",
+            "variables": [
+              {
+                "name": "Storefront_id",
+                "select": "id",
+              },
+            ],
+          },
+        ],
+      ],
+    },
+  },
+}
+`;

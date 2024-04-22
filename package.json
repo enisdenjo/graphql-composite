@@ -1,14 +1,36 @@
 {
   "name": "graphql-composite",
   "version": "0.0.0",
-  "author": "Denis Badurina <badurinadenis@gmail.com>",
-  "license": "MIT",
+  "type": "module",
   "repository": {
     "type": "git",
     "url": "https://github.com/enisdenjo/graphql-composite.git"
   },
+  "author": "Denis Badurina <badurinadenis@gmail.com>",
+  "license": "MIT",
   "packageManager": "yarn@4.1.1",
   "engines": {
     "node": ">=21"
+  },
+  "scripts": {
+    "check:format": "prettier -c .",
+    "check:type": "tsc --noEmit",
+    "format": "yarn check:format -w",
+    "test": "vitest"
+  },
+  "peerDependencies": {
+    "graphql": "^16"
+  },
+  "devDependencies": {
+    "@ianvs/prettier-plugin-sort-imports": "^4.2.1",
+    "@tsconfig/node21": "^21.0.3",
+    "@tsconfig/strictest": "^2.0.5",
+    "@types/node": "^20.12.7",
+    "graphql": "^16.8.1",
+    "prettier": "^3.2.5",
+    "prettier-plugin-pkg": "^0.18.1",
+    "prettier-plugin-sh": "^0.14.0",
+    "typescript": "^5.4.5",
+    "vitest": "^1.5.0"
   }
 }

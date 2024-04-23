@@ -1,0 +1,126 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`should plan execution 1`] = `
+{
+  "operations": [
+    {
+      "fields": [
+        {
+          "fields": [
+            {
+              "isNonNull": true,
+              "kind": "scalar",
+              "name": "id",
+              "type": "ID",
+            },
+            {
+              "isNonNull": true,
+              "kind": "scalar",
+              "name": "name",
+              "type": "String",
+            },
+            {
+              "fields": [
+                {
+                  "isNonNull": true,
+                  "kind": "scalar",
+                  "name": "upc",
+                  "type": "ID",
+                },
+                {
+                  "isNonNull": true,
+                  "kind": "scalar",
+                  "name": "name",
+                  "type": "String",
+                },
+                {
+                  "fields": [
+                    {
+                      "fields": [
+                        {
+                          "isNonNull": true,
+                          "kind": "scalar",
+                          "name": "upc",
+                          "type": "ID",
+                        },
+                        {
+                          "isNonNull": true,
+                          "kind": "scalar",
+                          "name": "name",
+                          "type": "String",
+                        },
+                      ],
+                      "isList": true,
+                      "isListItemNonNull": false,
+                      "isNonNull": true,
+                      "kind": "composite",
+                      "name": "products",
+                      "type": "Product",
+                    },
+                    {
+                      "isNonNull": true,
+                      "kind": "scalar",
+                      "name": "name",
+                      "type": "String",
+                    },
+                  ],
+                  "isList": false,
+                  "isListItemNonNull": false,
+                  "isNonNull": false,
+                  "kind": "composite",
+                  "name": "manufacturer",
+                  "type": "Manufacturer",
+                },
+              ],
+              "isList": true,
+              "isListItemNonNull": false,
+              "isNonNull": true,
+              "kind": "composite",
+              "name": "products",
+              "type": "Product",
+            },
+          ],
+          "isList": false,
+          "isListItemNonNull": false,
+          "isNonNull": false,
+          "kind": "composite",
+          "name": "storefront",
+          "type": "Storefront",
+        },
+      ],
+      "name": null,
+      "type": "query",
+    },
+  ],
+  "paths": [
+    "storefront",
+    "storefront.id",
+    "storefront.name",
+    "storefront.products",
+    "storefront.products.upc",
+    "storefront.products.name",
+    "storefront.products.manufacturer",
+    "storefront.products.manufacturer.products",
+    "storefront.products.manufacturer.products.upc",
+    "storefront.products.manufacturer.products.name",
+    "storefront.products.manufacturer.name",
+  ],
+  "query": "{
+  storefront(id: "2") {
+    id
+    name
+    products {
+      upc
+      name
+      manufacturer {
+        products {
+          upc
+          name
+        }
+        name
+      }
+    }
+  }
+}",
+}
+`;

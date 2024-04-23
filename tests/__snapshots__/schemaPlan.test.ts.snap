@@ -2,315 +2,249 @@
 
 exports[`should plan schema 1`] = `
 {
-  "types": {
+  "compositeTypes": {
     "Manufacturer": {
-      "fields": [
-        {
+      "fields": {
+        "id": {
           "name": "id",
-          "sources": [
-            [
-              {
-                "name": "id",
-                "subgraph": "manufacturers",
-              },
-              null,
-            ],
-            [
-              {
-                "name": "id",
-                "subgraph": "products",
-              },
-              null,
-            ],
-          ],
+          "sources": {
+            "manufacturers": {
+              "id": "manufacturers",
+              "name": "id",
+            },
+            "products": {
+              "id": "products",
+              "name": "id",
+            },
+          },
         },
-        {
+        "name": {
           "name": "name",
-          "sources": [
-            [
-              {
-                "name": "name",
-                "subgraph": "manufacturers",
-              },
-              null,
-            ],
-          ],
+          "sources": {
+            "manufacturers": {
+              "id": "manufacturers",
+              "name": "name",
+            },
+          },
         },
-        {
+        "products": {
           "name": "products",
-          "sources": [
-            [
-              {
-                "name": "products",
-                "subgraph": "products",
-              },
-              null,
-            ],
-          ],
+          "sources": {
+            "products": {
+              "id": "products",
+              "name": "products",
+            },
+          },
         },
-      ],
-      "sources": [
-        [
-          {
-            "name": "Manufacturer",
-            "subgraph": "manufacturers",
+      },
+      "name": "Manufacturer",
+      "resolvers": {
+        "manufacturers": {
+          "id": "manufacturers",
+          "kind": "fetch",
+          "name": "Manufacturer",
+          "operation": "query ManufacturerById($Manufacturer_id: ID!) { manufacturer(id: $Manufacturer_id) { ...export } }",
+          "url": "",
+          "variables": {
+            "Manufacturer_id": {
+              "name": "Manufacturer_id",
+              "select": "id",
+            },
           },
-          {
-            "kind": "FETCH",
-            "operation": "query ManufacturerById($Manufacturer_id: ID!) { manufacturer(id: $Manufacturer_id) { ...export } }",
-            "variables": [
-              {
-                "name": "Manufacturer_id",
-                "select": "id",
-              },
-              {
-                "name": "Manufacturer_id",
-                "select": "id",
-              },
-            ],
+        },
+        "products": {
+          "id": "products",
+          "kind": "fetch",
+          "name": "Manufacturer",
+          "operation": "query ManufacturerById($Manufacturer_id: ID!) { _manufacturer(id: $Manufacturer_id) { ...export } }",
+          "url": "",
+          "variables": {
+            "Manufacturer_id": {
+              "name": "Manufacturer_id",
+              "select": "id",
+            },
           },
-        ],
-        [
-          {
-            "name": "Manufacturer",
-            "subgraph": "products",
-          },
-          {
-            "kind": "FETCH",
-            "operation": "query ManufacturerById($Manufacturer_id: ID!) { _manufacturer(id: $Manufacturer_id) { ...export } }",
-            "variables": [
-              {
-                "name": "Manufacturer_id",
-                "select": "id",
-              },
-              {
-                "name": "Manufacturer_id",
-                "select": "id",
-              },
-            ],
-          },
-        ],
-      ],
+        },
+      },
     },
     "Product": {
-      "fields": [
-        {
+      "fields": {
+        "manufacturer": {
           "name": "manufacturer",
-          "sources": [
-            [
-              {
-                "name": "manufacturer",
-                "subgraph": "products",
-              },
-              null,
-            ],
-          ],
+          "sources": {
+            "products": {
+              "id": "products",
+              "name": "manufacturer",
+            },
+          },
         },
-        {
+        "name": {
           "name": "name",
-          "sources": [
-            [
-              {
-                "name": "name",
-                "subgraph": "products",
-              },
-              null,
-            ],
-          ],
+          "sources": {
+            "products": {
+              "id": "products",
+              "name": "name",
+            },
+          },
         },
-        {
+        "price": {
           "name": "price",
-          "sources": [
-            [
-              {
-                "name": "price",
-                "subgraph": "products",
-              },
-              null,
-            ],
-          ],
+          "sources": {
+            "products": {
+              "id": "products",
+              "name": "price",
+            },
+          },
         },
-        {
+        "upc": {
           "name": "upc",
-          "sources": [
-            [
-              {
-                "name": "upc",
-                "subgraph": "products",
-              },
-              null,
-            ],
-            [
-              {
-                "name": "upc",
-                "subgraph": "storefronts",
-              },
-              null,
-            ],
-          ],
-        },
-      ],
-      "sources": [
-        [
-          {
-            "name": "Product",
-            "subgraph": "products",
+          "sources": {
+            "products": {
+              "id": "products",
+              "name": "upc",
+            },
+            "storefronts": {
+              "id": "storefronts",
+              "name": "upc",
+            },
           },
-          {
-            "kind": "FETCH",
-            "operation": "query ProductByUpc($Product_upc: ID!) { product(upc: $Product_upc) { ...export } }",
-            "variables": [
-              {
-                "name": "Product_upc",
-                "select": "upc",
-              },
-            ],
+        },
+      },
+      "name": "Product",
+      "resolvers": {
+        "products": {
+          "id": "products",
+          "kind": "fetch",
+          "name": "Product",
+          "operation": "query ProductByUpc($Product_upc: ID!) { product(upc: $Product_upc) { ...export } }",
+          "url": "",
+          "variables": {
+            "Product_upc": {
+              "name": "Product_upc",
+              "select": "upc",
+            },
           },
-        ],
-        [
-          {
-            "name": "Product",
-            "subgraph": "storefronts",
+        },
+        "storefronts": {
+          "id": "storefronts",
+          "kind": "fetch",
+          "name": "Product",
+          "operation": "TODO",
+          "url": "",
+          "variables": {
+            "Product_upc": {
+              "name": "Product_upc",
+              "select": "upc",
+            },
           },
-          {
-            "kind": "FETCH",
-            "operation": "TODO",
-            "variables": [
-              {
-                "name": "Product_upc",
-                "select": "upc",
-              },
-            ],
-          },
-        ],
-      ],
-    },
-    "Query": {
-      "fields": [
-        {
-          "name": "manufacturer",
-          "sources": [
-            [
-              {
-                "name": "manufacturer",
-                "subgraph": "manufacturers",
-              },
-              {
-                "kind": "FETCH",
-                "operation": "query manufacturer($id: ID!) { manufacturer(id: $id) { ...export } }",
-                "variables": [],
-              },
-            ],
-          ],
         },
-        {
-          "name": "product",
-          "sources": [
-            [
-              {
-                "name": "product",
-                "subgraph": "products",
-              },
-              {
-                "kind": "FETCH",
-                "operation": "query product($upc: ID!) { product(upc: $upc) }",
-                "variables": [],
-              },
-            ],
-          ],
-        },
-        {
-          "name": "_manufacturer",
-          "sources": [
-            [
-              {
-                "name": "_manufacturer",
-                "subgraph": "products",
-              },
-              {
-                "kind": "FETCH",
-                "operation": "query _manufacturer($id: ID!) { _manufacturer(id: $id) { ...export } }",
-                "variables": [],
-              },
-            ],
-          ],
-        },
-        {
-          "name": "storefront",
-          "sources": [
-            [
-              {
-                "name": "storefront",
-                "subgraph": "storefronts",
-              },
-              {
-                "kind": "FETCH",
-                "operation": "query storefront($id: ID!) { storefront(id: $id) { ...export } }",
-                "variables": [],
-              },
-            ],
-          ],
-        },
-      ],
-      "sources": [],
+      },
     },
     "Storefront": {
-      "fields": [
-        {
+      "fields": {
+        "id": {
           "name": "id",
-          "sources": [
-            [
-              {
-                "name": "id",
-                "subgraph": "storefronts",
-              },
-              null,
-            ],
-          ],
+          "sources": {
+            "storefronts": {
+              "id": "storefronts",
+              "name": "id",
+            },
+          },
         },
-        {
+        "name": {
           "name": "name",
-          "sources": [
-            [
-              {
-                "name": "name",
-                "subgraph": "storefronts",
-              },
-              null,
-            ],
-          ],
+          "sources": {
+            "storefronts": {
+              "id": "storefronts",
+              "name": "name",
+            },
+          },
         },
-        {
+        "products": {
           "name": "products",
-          "sources": [
-            [
-              {
-                "name": "products",
-                "subgraph": "storefronts",
-              },
-              null,
-            ],
-          ],
+          "sources": {
+            "storefronts": {
+              "id": "storefronts",
+              "name": "products",
+            },
+          },
         },
-      ],
-      "sources": [
-        [
-          {
-            "name": "Storefront",
-            "subgraph": "storefronts",
+      },
+      "name": "Storefront",
+      "resolvers": {
+        "storefronts": {
+          "id": "storefronts",
+          "kind": "fetch",
+          "name": "Storefront",
+          "operation": "query StorefrontById($Storefront_id: ID!) { storefront(id: $Storefront_id) { ...export } }",
+          "url": "",
+          "variables": {
+            "Storefront_id": {
+              "name": "Storefront_id",
+              "select": "id",
+            },
           },
-          {
-            "kind": "FETCH",
-            "operation": "query StorefrontById($Storefront_id: ID!) { storefront(id: $Storefront_id) { ...export } }",
-            "variables": [
-              {
-                "name": "Storefront_id",
-                "select": "id",
-              },
-            ],
+        },
+      },
+    },
+  },
+  "operations": {
+    "query": {
+      "fields": {
+        "_manufacturer": {
+          "name": "_manufacturer",
+          "resolvers": {
+            "products": {
+              "id": "products",
+              "kind": "fetch",
+              "name": "_manufacturer",
+              "operation": "query _manufacturer($id: ID!) { _manufacturer(id: $id) { ...export } }",
+              "url": "",
+              "variables": {},
+            },
           },
-        ],
-      ],
+        },
+        "manufacturer": {
+          "name": "manufacturer",
+          "resolvers": {
+            "manufacturers": {
+              "id": "manufacturers",
+              "kind": "fetch",
+              "name": "manufacturer",
+              "operation": "query manufacturer($id: ID!) { manufacturer(id: $id) { ...export } }",
+              "url": "",
+              "variables": {},
+            },
+          },
+        },
+        "product": {
+          "name": "product",
+          "resolvers": {
+            "products": {
+              "id": "products",
+              "kind": "fetch",
+              "name": "product",
+              "operation": "query product($upc: ID!) { product(upc: $upc) }",
+              "url": "",
+              "variables": {},
+            },
+          },
+        },
+        "storefront": {
+          "name": "storefront",
+          "resolvers": {
+            "storefronts": {
+              "id": "storefronts",
+              "kind": "fetch",
+              "name": "storefront",
+              "operation": "query storefront($id: ID!) { storefront(id: $id) { ...export } }",
+              "url": "",
+              "variables": {},
+            },
+          },
+        },
+      },
+      "name": "query",
     },
   },
 }

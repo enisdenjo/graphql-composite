@@ -20,8 +20,6 @@ type Manufacturer
     kind: "FETCH"
   )
   @variable(subgraph: "manufacturers", name: "Manufacturer_id", select: "id")
-  @variable(subgraph: "products", name: "Manufacturer_id", select: "id")
-  @variable(subgraph: "manufacturers", name: "Manufacturer_id", select: "id")
   @variable(subgraph: "products", name: "Manufacturer_id", select: "id") {
   id: ID!
     @source(subgraph: "manufacturers", name: "id", type: "ID!")

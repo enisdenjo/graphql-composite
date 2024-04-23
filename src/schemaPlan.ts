@@ -4,33 +4,68 @@ import {
   GraphQLObjectType,
   GraphQLSchema,
   Kind,
+  OperationTypeNode,
 } from 'graphql';
 
 export interface SchemaPlan {
-  types: Record<string, SchemaPlanType>;
+  operations: Record<
+    string /* OperationDefinitionNode.name */,
+    SchemaPlanOperation
+  >;
+  compositeTypes: Record<
+    string /* SchemaPlanCompositeType.name */,
+    SchemaPlanCompositeType
+  >;
 }
 
-export interface SchemaPlanType {
-  sources: [SchemaPlanSource, SchemaPlanResolver][];
-  fields: SchemaPlanField[];
+export interface SchemaPlanOperation {
+  name: OperationTypeNode;
+  fields: Record<
+    string /* SchemaPlanOperationField.name */,
+    SchemaPlanOperationField
+  >;
 }
 
-export interface SchemaPlanField {
-  sources: [SchemaPlanSource, SchemaPlanResolver | null][];
+export interface SchemaPlanOperationField {
   name: string;
+  resolvers: Record<
+    string /* SchemaPlanSource.id */,
+    SchemaPlanSource & SchemaPlanResolver // TODO: operation field must always have a resolver?
+  >;
+}
+
+export interface SchemaPlanCompositeType {
+  name: string;
+  resolvers: Record<
+    string /* SchemaPlanSource.id */,
+    SchemaPlanSource & SchemaPlanResolver // TODO: type can only have one resolver?
+  >;
+  fields: Record<
+    string /* SchemaPlanCompositeTypeField.name */,
+    SchemaPlanCompositeTypeField
+  >;
+}
+
+export interface SchemaPlanCompositeTypeField {
+  name: string;
+  sources: Record<string /* SchemaPlanSource.id */, SchemaPlanSource>; // TODO: type field can never have a resolver?
 }
 
 export interface SchemaPlanSource {
-  /** Unique subgraph name. */
-  subgraph: string;
+  /** Unique ID of the source. Usually the subgraph name. */
+  id: string;
   /** Name of the type or field in the source subgraph. */
   name: string;
 }
 
-export interface SchemaPlanResolver {
+export type SchemaPlanResolver = SchemaPlanFetchResolver; // TODO: other kinds
+
+export interface SchemaPlanFetchResolver {
+  kind: 'fetch';
   operation: string;
-  kind: 'FETCH';
-  variables: Variable[];
+  variables: Record<string /* Variable.name */, Variable>;
+  /** Location of the source to be used by the resolver. */
+  url: string;
 }
 
 interface Variable {
@@ -40,7 +75,7 @@ interface Variable {
 }
 
 export function planSchema(schema: GraphQLSchema): SchemaPlan {
-  const plan: SchemaPlan = { types: {} };
+  const plan: SchemaPlan = { operations: {}, compositeTypes: {} };
 
   const types = schema.getTypeMap();
 
@@ -54,35 +89,65 @@ export function planSchema(schema: GraphQLSchema): SchemaPlan {
       continue;
     }
 
-    const planType: SchemaPlanType = {
-      sources: [],
-      fields: [],
-    };
+    if (
+      type.name === 'Query' ||
+      type.name === 'Mutation' ||
+      type.name === 'Subscription'
+    ) {
+      // operations
+      const name = type.name.toLowerCase() as OperationTypeNode;
+      const operation: SchemaPlanOperation = {
+        name: name,
+        fields: {},
+      };
+      for (const [name, field] of Object.entries(type.getFields())) {
+        const fieldPlan: SchemaPlanOperationField = {
+          name,
+          resolvers: {},
+        };
+        for (const source of getSourcesFromDirectives(type, field)) {
+          const resolver = getResolverForSourceFromDirectives(
+            type,
+            field,
+            source,
+          );
+          if (!resolver) {
+            throw new Error(
+              `Operation field "${field.name}" must have a resolver`,
+            );
+          }
+          fieldPlan.resolvers[source.id] = {
+            ...source,
+            ...resolver,
+          };
+        }
+        operation.fields[fieldPlan.name] = fieldPlan;
+      }
+      plan.operations[name] = operation;
+      continue;
+    }
 
+    // compositeTypes
+    const compositeTypePlan: SchemaPlanCompositeType = {
+      name: type.name,
+      fields: {},
+      resolvers: {},
+    };
     for (const source of getSourcesFromDirectives(type, null)) {
       const resolver = getResolverForSourceFromDirectives(type, null, source);
-      planType.sources.push([source, resolver]);
+      compositeTypePlan.resolvers[source.id] = { ...source, ...resolver };
     }
-
     for (const [name, field] of Object.entries(type.getFields())) {
-      const planField: SchemaPlanField = {
-        sources: [],
+      const fieldPlan: SchemaPlanCompositeTypeField = {
         name,
+        sources: {},
       };
-
       for (const source of getSourcesFromDirectives(type, field)) {
-        const resolver = getResolverForSourceFromDirectives(
-          type,
-          field,
-          source,
-        );
-        planField.sources.push([source, resolver]);
+        fieldPlan.sources[source.id] = source;
       }
-
-      planType.fields.push(planField);
+      compositeTypePlan.fields[fieldPlan.name] = fieldPlan;
     }
-
-    plan.types[type.name] = planType;
+    plan.compositeTypes[type.name] = compositeTypePlan;
   }
 
   return plan;
@@ -103,12 +168,7 @@ function getSourcesFromDirectives(
   ) || []) {
     // TODO: make sure source doesnt already exist
     sources.push({
-      subgraph: mustGetStringArgumentValue(
-        type,
-        field,
-        sourceDirective,
-        'subgraph',
-      ),
+      id: mustGetStringArgumentValue(type, field, sourceDirective, 'subgraph'),
       name: mustGetStringArgumentValue(type, field, sourceDirective, 'name'),
     });
   }
@@ -139,8 +199,7 @@ function getResolverForSourceFromDirectives(
   const resolverDirs = directives.filter(
     (d) =>
       d.name.value === 'resolver' &&
-      mustGetStringArgumentValue(type, field, d, 'subgraph') ===
-        source.subgraph,
+      mustGetStringArgumentValue(type, field, d, 'subgraph') === source.id,
   );
   const resolverDir = resolverDirs[0];
   if (!resolverDir) {
@@ -149,30 +208,36 @@ function getResolverForSourceFromDirectives(
       return null;
     }
     throw new Error(
-      `source "${source.subgraph}" on type "${type.name}" has no resolver directive`,
+      `source "${source.id}" on type "${type.name}" has no resolver directive`,
     );
   }
   if (resolverDirs.length > 1) {
     throw new Error(
-      `source "${source.subgraph}" on type "${type.name}" has multiple resolver directives`,
+      `source "${source.id}" on type "${type.name}" has multiple resolver directives`,
     );
   }
 
-  const variables: Variable[] = [];
+  const variables: Record<string, Variable> = {};
   for (const variableDir of directives.filter(
     (d) =>
       d.name.value === 'variable' &&
-      mustGetStringArgumentValue(type, field, d, 'subgraph') ===
-        source.subgraph,
+      mustGetStringArgumentValue(type, field, d, 'subgraph') === source.id,
   )) {
-    variables.push({
+    const variable: Variable = {
       name: mustGetStringArgumentValue(type, field, variableDir, 'name'),
       select: mustGetStringArgumentValue(type, field, variableDir, 'select'),
-    });
+    };
+    if (variables[variable.name]) {
+      throw new Error(
+        `Variable "${variable.name}" on type "${type.name}" already defined`,
+      );
+    }
+    variables[variable.name] = variable;
   }
 
   return {
-    kind: 'FETCH', // TODO: other kinds
+    url: '', // TODO: source url
+    kind: 'fetch',
     operation: mustGetStringArgumentValue(
       type,
       field,

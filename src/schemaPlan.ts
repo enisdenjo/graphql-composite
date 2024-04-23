@@ -48,7 +48,10 @@ export interface SchemaPlanCompositeType {
 
 export interface SchemaPlanCompositeTypeField {
   name: string;
-  sources: Record<string /* SchemaPlanSource.id */, SchemaPlanSource>; // TODO: type field can never have a resolver?
+  sources: Record<
+    string /* SchemaPlanSource.id */,
+    (SchemaPlanSource & SchemaPlanResolver) | SchemaPlanSource // a type field may not have a resolver, assuming it's in available in the type
+  >;
 }
 
 export interface SchemaPlanSource {
@@ -143,7 +146,12 @@ export function planSchema(schema: GraphQLSchema): SchemaPlan {
         sources: {},
       };
       for (const source of getSourcesFromDirectives(type, field)) {
-        fieldPlan.sources[source.id] = source;
+        const resolver = getResolverForSourceFromDirectives(
+          type,
+          field,
+          source,
+        );
+        fieldPlan.sources[source.id] = { ...source, ...resolver };
       }
       compositeTypePlan.fields[fieldPlan.name] = fieldPlan;
     }

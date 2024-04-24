@@ -17,6 +17,7 @@ import {
 import {
   planSchema,
   SchemaPlan,
+  SchemaPlanFetchResolver,
   SchemaPlanResolver,
   SchemaPlanSource,
 } from './schemaPlan.js';
@@ -59,9 +60,10 @@ export interface GatherPlanResolver
   extends SchemaPlanSource,
     SchemaPlanResolver {
   /**
-   * Parent resolver's `export`s that are needed as variables to perform this resolution.
+   * Parent resolver's {@link GatherPlanResolver.exports} that are needed as variables to
+   * perform this resolution.
    *
-   * Is actually a map of parent resolver's `export`ed paths to the
+   * Is actually a map of parent resolver's exported paths to the
    * {@link SchemaPlanResolver.variables} names.
    *
    * *Parent resolver is the one that {@link GatherPlanResolver.includes} this one.
@@ -85,7 +87,7 @@ export interface GatherContext {
    * They're to be used by the operation resolver query.
    */
   variables: Record<string, unknown>;
-  /** Fetch getter by `SchemaPlanSource.id` used for `SchemaPlanFetchResolver`. */
+  /** Fetch getter by {@link SchemaPlanSource.id} used for {@link SchemaPlanFetchResolver}. */
   getFetch: (sourceId: string) => typeof fetch;
 }
 

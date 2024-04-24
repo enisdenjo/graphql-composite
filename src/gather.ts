@@ -123,6 +123,8 @@ async function gatherResolve(
   const { getFetch } = ctx;
 
   const variables: Record<string, unknown> = parentData ? {} : ctx.variables;
+
+  // TODO: fail if resolver needs imports but there's no parent data (maybe also fail for other way around?)
   for (const [exportPath, variableName] of Object.entries(resolver.imports)) {
     const path = exportPath.split('.');
 

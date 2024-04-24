@@ -1,5 +1,6 @@
 import {
   ConstDirectiveNode,
+  getNamedType,
   GraphQLField,
   GraphQLObjectType,
   GraphQLSchema,
@@ -65,6 +66,11 @@ export type SchemaPlanResolver = SchemaPlanFetchResolver; // TODO: other kinds
 
 export interface SchemaPlanFetchResolver {
   kind: 'fetch';
+  /**
+   * The type this resolver resolves.
+   * Is actually the type of the `export` fragment.
+   */
+  type: string;
   operation: string;
   variables: Record<
     string /* SchemaPlanResolverVariable.name */,
@@ -246,8 +252,13 @@ function getResolverForSourceFromDirectives(
     variables[variable.name] = variable;
   }
 
+  // when resolving a field, then its type is the one being resolved by the resolver
+  // otherwise its the type (the resolver is directly on a type in that case)
+  const resolvingType = getNamedType(field ? field.type : type);
+
   return {
     url: 'http://localhost/graphql', // TODO: actual source url
+    type: resolvingType.name,
     kind: 'fetch',
     operation: mustGetStringArgumentValue(
       type,

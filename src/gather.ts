@@ -326,7 +326,7 @@ function insertResolversForGatherPlanCompositeField(
       parentResolver.includes.push(resolver);
     }
 
-    const resolvingParentType = resolver.name === parent.type;
+    const resolvingParentType = resolver.type === parent.type;
 
     const path = `${pathPrefix}${
       resolvingParentType

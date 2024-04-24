@@ -66,12 +66,15 @@ export type SchemaPlanResolver = SchemaPlanFetchResolver; // TODO: other kinds
 export interface SchemaPlanFetchResolver {
   kind: 'fetch';
   operation: string;
-  variables: Record<string /* Variable.name */, Variable>;
+  variables: Record<
+    string /* SchemaPlanResolverVariable.name */,
+    SchemaPlanResolverVariable
+  >;
   /** Location of the source to be used by the resolver. */
   url: string;
 }
 
-interface Variable {
+interface SchemaPlanResolverVariable {
   name: string;
   /** Which field in the type to use as this variable. */
   select: string;
@@ -225,13 +228,13 @@ function getResolverForSourceFromDirectives(
     );
   }
 
-  const variables: Record<string, Variable> = {};
+  const variables: Record<string, SchemaPlanResolverVariable> = {};
   for (const variableDir of directives.filter(
     (d) =>
       d.name.value === 'variable' &&
       mustGetStringArgumentValue(type, field, d, 'subgraph') === source.id,
   )) {
-    const variable: Variable = {
+    const variable: SchemaPlanResolverVariable = {
       name: mustGetStringArgumentValue(type, field, variableDir, 'name'),
       select: mustGetStringArgumentValue(type, field, variableDir, 'select'),
     };

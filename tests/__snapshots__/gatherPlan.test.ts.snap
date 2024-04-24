@@ -135,10 +135,7 @@ exports[`should plan gather and resolvers 2`] = `
       "products.upc",
     ],
     "id": "storefronts",
-    "kind": "fetch",
-    "name": "storefront",
-    "operation": "query storefront($id: ID!) { storefront(id: $id) { ...export } }",
-    "resolvers": [
+    "includes": [
       {
         "export": [
           "name",
@@ -146,21 +143,19 @@ exports[`should plan gather and resolvers 2`] = `
           "manufacturer.products",
           "manufacturer.products.upc",
           "manufacturer.products.name",
+          "manufacturer.id",
         ],
         "id": "products",
-        "kind": "fetch",
-        "name": "Product",
-        "operation": "query ProductByUpc($Product_upc: ID!) { product(upc: $Product_upc) { ...export } }",
-        "resolvers": [
+        "includes": [
           {
             "export": [
               "name",
             ],
             "id": "manufacturers",
+            "includes": [],
             "kind": "fetch",
             "name": "Manufacturer",
             "operation": "query ManufacturerById($Manufacturer_id: ID!) { manufacturer(id: $Manufacturer_id) { ...export } }",
-            "resolvers": [],
             "url": "",
             "variables": {
               "Manufacturer_id": {
@@ -170,6 +165,9 @@ exports[`should plan gather and resolvers 2`] = `
             },
           },
         ],
+        "kind": "fetch",
+        "name": "Product",
+        "operation": "query ProductByUpc($Product_upc: ID!) { product(upc: $Product_upc) { ...export } }",
         "url": "",
         "variables": {
           "Product_upc": {
@@ -179,6 +177,9 @@ exports[`should plan gather and resolvers 2`] = `
         },
       },
     ],
+    "kind": "fetch",
+    "name": "storefront",
+    "operation": "query storefront($id: ID!) { storefront(id: $id) { ...export } }",
     "url": "",
     "variables": {},
   },

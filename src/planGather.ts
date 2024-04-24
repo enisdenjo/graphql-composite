@@ -63,7 +63,7 @@ export interface GatherPlanResolver
    * Other resolvers that depend on fields from this resolver.
    * These are often resolvers of fields that don't exist in the resolver.
    */
-  resolvers: GatherPlanResolver[];
+  includes: GatherPlanResolver[];
 }
 
 export function planGather(
@@ -228,7 +228,7 @@ export function planGatherResolvers(
         resolver = {
           ...resolverPlan,
           export: [],
-          resolvers: [],
+          includes: [],
         };
         resolvers.push(resolver);
       }
@@ -272,7 +272,7 @@ function insertResolversForGatherPlanCompositeField(
 
     let resolver = fieldPlan.sources[parentResolver.id]
       ? parentResolver
-      : parentResolver.resolvers.find((r) => fieldPlan.sources[r.id]);
+      : parentResolver.includes.find((r) => fieldPlan.sources[r.id]);
     if (!resolver) {
       // this field cannot be resolved from the parent's source
       // add an dependant resolver to the parent for the field(s)
@@ -292,9 +292,27 @@ function insertResolversForGatherPlanCompositeField(
           `Schema plan composite type "${typePlan.name}" doesn't have a resolver for any of the "${fieldPlan.name}" field sources`,
         );
       }
+      if (!Object.keys(resolverPlan.variables).length) {
+        // TODO: composite type resolver must always have variables, right?
+        throw new Error(
+          `Schema plan composite type "${typePlan.name}" field "${fieldPlan.name}" resolver doesn't require variables`,
+        );
+      }
 
-      resolver = { ...resolverPlan, export: [], resolvers: [] };
-      parentResolver.resolvers.push(resolver);
+      for (const { select } of Object.values(resolverPlan.variables)) {
+        // make sure parent resolver - the one that {@link GatherPlanResolver.includes} this
+        // one - exports fields that are needed as variables to perform the resolution
+        const path = `${pathPrefix}${parent.name}.${select}`;
+        const need = parentResolver.export.find((e) => e === path);
+        if (!need) {
+          // TODO: disallow pushing same path multiple times
+          // TODO: what happens if the parent source cannot resolve this field?
+          parentResolver.export.push(path);
+        }
+      }
+
+      resolver = { ...resolverPlan, export: [], includes: [] };
+      parentResolver.includes.push(resolver);
     }
 
     const resolvingParentType = resolver.name === parent.type;

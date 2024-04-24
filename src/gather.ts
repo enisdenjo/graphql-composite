@@ -57,6 +57,15 @@ export interface GatherPlanResolver
   extends SchemaPlanSource,
     SchemaPlanResolver {
   /**
+   * Parent resolver's `export`s that are needed as variables to perform this resolution.
+   *
+   * Is actually a map of parent resolver's `export`ed paths to the
+   * {@link SchemaPlanResolver.variables} names.
+   *
+   * *Parent resolver is the one that {@link GatherPlanResolver.includes} this one.
+   */
+  import: Record<string, string>;
+  /**
    * Dot notation flat list of field paths to add to the `export`
    * fragment on the query. They're also the exported fields of this resolver.
    */
@@ -238,6 +247,7 @@ function planGatherResolversForOperation(
         }
         resolver = {
           ...resolverPlan,
+          import: {},
           export: [],
           includes: [],
         };
@@ -318,7 +328,8 @@ function insertResolversForGatherPlanCompositeField(
         );
       }
 
-      for (const { select } of Object.values(resolverPlan.variables)) {
+      const needs: GatherPlanResolver['import'] = {};
+      for (const { name, select } of Object.values(resolverPlan.variables)) {
         // make sure parent resolver - the one that {@link GatherPlanResolver.includes} this
         // one - exports fields that are needed as variables to perform the resolution
         const path = `${pathPrefix}${parent.name}.${select}`;
@@ -328,9 +339,10 @@ function insertResolversForGatherPlanCompositeField(
           // TODO: what happens if the parent source cannot resolve this field?
           parentResolver.export.push(path);
         }
+        needs[path] = name;
       }
 
-      resolver = { ...resolverPlan, export: [], includes: [] };
+      resolver = { ...resolverPlan, import: needs, export: [], includes: [] };
       parentResolver.includes.push(resolver);
     }
 

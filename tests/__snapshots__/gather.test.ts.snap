@@ -97,6 +97,7 @@ exports[`should plan gather 1`] = `
             "products.upc",
           ],
           "id": "storefronts",
+          "import": {},
           "includes": [
             {
               "export": [
@@ -106,12 +107,18 @@ exports[`should plan gather 1`] = `
                 "manufacturer.id",
               ],
               "id": "products",
+              "import": {
+                "products.upc": "Product_upc",
+              },
               "includes": [
                 {
                   "export": [
                     "name",
                   ],
                   "id": "manufacturers",
+                  "import": {
+                    "manufacturer.id": "Manufacturer_id",
+                  },
                   "includes": [],
                   "kind": "fetch",
                   "name": "Manufacturer",

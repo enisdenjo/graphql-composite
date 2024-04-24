@@ -1,5 +1,6 @@
 import {
   DocumentNode,
+  ExecutionResult,
   GraphQLCompositeType,
   GraphQLEnumType,
   GraphQLScalarType,
@@ -19,6 +20,7 @@ import {
   SchemaPlanResolver,
   SchemaPlanSource,
 } from './schemaPlan.js';
+import { expandPathsToQuery, isRecord } from './utils.js';
 
 export interface GatherPlan {
   query: string;
@@ -75,6 +77,131 @@ export interface GatherPlanResolver
    * These are often resolvers of fields that don't exist in the resolver.
    */
   includes: GatherPlanResolver[];
+}
+
+export interface GatherContext {
+  /** Fetch getter by `SchemaPlanSource.id` used for `SchemaPlanFetchResolver`. */
+  getFetch: (sourceId: string) => typeof fetch;
+}
+
+export async function gather(
+  ctx: GatherContext,
+  plan: GatherPlan,
+): Promise<GatherPlanResolverResult[]> {
+  // TODO: batch resolvers going to the same source
+  return await Promise.all(
+    plan.operations.flatMap((o) =>
+      o.resolvers.map((r) =>
+        gatherResolve(
+          ctx,
+          r,
+          // TODO: pass in user provided variables
+          {},
+        ),
+      ),
+    ),
+  );
+}
+
+export interface GatherPlanResolverResult {
+  data: unknown;
+  includes: GatherPlanResolverResult[];
+}
+
+async function gatherResolve(
+  ctx: GatherContext,
+  resolver: GatherPlanResolver,
+  parentData: GatherPlanResolverResult['data'],
+): Promise<GatherPlanResolverResult> {
+  const { getFetch } = ctx;
+
+  const variables: Record<string, unknown> = {};
+  for (const [exportPath, variableName] of Object.entries(resolver.imports)) {
+    const path = exportPath.split('.');
+
+    let val = parentData;
+    for (const part of path) {
+      if (isRecord(val)) {
+        val = val[part];
+      } else if (Array.isArray(val)) {
+        // TODO: actually use array to expand gatherers
+        val = val[0][part];
+      } else {
+        // TODO: it's ok to have no variable if the parent didnt provide it? throw if the variable is required but null
+        val = null;
+        break;
+      }
+    }
+
+    variables[variableName] = val;
+  }
+
+  const res = await getFetch(resolver.id)(resolver.url, {
+    method: 'POST',
+    headers: {
+      'content-type': 'application/json',
+      accept: 'application/graphql-response+json, application/json',
+    },
+    body: JSON.stringify({
+      query: buildResolverQuery(resolver),
+      // TODO: actual operation name
+      operationName: null,
+      variables:
+        resolver.id === 'storefronts'
+          ? {
+              // TODO: use user provided variables
+              id: '',
+            }
+          : variables,
+    }),
+  });
+  if (!res.ok) {
+    const err = new Error(
+      `${res.status} ${res.statusText}\n${await res.text()}`,
+    );
+    err.name = 'ResponseError';
+    throw err;
+  }
+
+  const result: ExecutionResult = await res.json();
+  if (result.errors?.length) {
+    const err = new Error(
+      `GraphQL execution result contains errors\n${JSON.stringify(result.errors)}`,
+    );
+    err.name = 'GraphQLExecutionResultErrors';
+    throw err;
+  }
+  if (!result.data) {
+    const err = new Error(
+      'GraphQL execution result has no errors but does not contain data',
+    );
+    err.name = 'GraphQLExecutionNoData';
+    throw err;
+  }
+
+  // TODO: the data should be the contents of the `export` fragment
+  //       we currently assume it's the first field, but it may not be
+  const data = result.data[Object.keys(result.data)[0]!];
+
+  return {
+    data,
+    // TODO: batch resolvers going to the same source
+    includes: await Promise.all(
+      resolver.includes.map((r) => gatherResolve(ctx, r, data)),
+    ),
+  };
+}
+
+// TODO: test
+function buildResolverQuery(resolver: GatherPlanResolver) {
+  let query = resolver.operation;
+  query += ` fragment export on ${resolver.type} { `;
+  for (const exp of resolver.exports) {
+    const paths = exp.split('.');
+    query += expandPathsToQuery(paths);
+  }
+  query += ' }';
+  return query;
 }
 
 export function planGather(

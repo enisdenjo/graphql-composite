@@ -1,5 +1,55 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
+exports[`should gather 1`] = `
+[
+  {
+    "data": {
+      "id": "cyberport",
+      "name": "CyberPort",
+      "products": [
+        {
+          "upc": "laptop",
+        },
+        {
+          "upc": "computer",
+        },
+        {
+          "upc": "headset",
+        },
+      ],
+    },
+    "includes": [
+      {
+        "data": {
+          "manufacturer": {
+            "id": "manufacturer-of-laptop",
+            "products": [
+              {
+                "name": "TODO: name of product laptop",
+                "upc": "laptop",
+              },
+              {
+                "name": "TODO: name of product otherthing",
+                "upc": "otherthing",
+              },
+            ],
+          },
+          "name": "TODO: name of product laptop",
+        },
+        "includes": [
+          {
+            "data": {
+              "name": "TODO: name of manufacturer manufacturer-of-laptop",
+            },
+            "includes": [],
+          },
+        ],
+      },
+    ],
+  },
+]
+`;
+
 exports[`should plan gather 1`] = `
 {
   "operations": [

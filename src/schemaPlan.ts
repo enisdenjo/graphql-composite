@@ -9,50 +9,45 @@ import {
 } from 'graphql';
 
 export interface SchemaPlan {
-  operations: Record<
-    string /* OperationDefinitionNode.name */,
-    SchemaPlanOperation
-  >;
-  compositeTypes: Record<
-    string /* SchemaPlanCompositeType.name */,
-    SchemaPlanCompositeType
-  >;
+  operations: {
+    [name: string /* graphql.OperationDefinitionNode */]: SchemaPlanOperation;
+  };
+  compositeTypes: {
+    [name in SchemaPlanCompositeType['name']]: SchemaPlanCompositeType;
+  };
 }
 
 export interface SchemaPlanOperation {
   name: OperationTypeNode;
-  fields: Record<
-    string /* SchemaPlanOperationField.name */,
-    SchemaPlanOperationField
-  >;
+  fields: {
+    [name in SchemaPlanOperationField['name']]: SchemaPlanOperationField;
+  };
 }
 
 export interface SchemaPlanOperationField {
   name: string;
-  resolvers: Record<
-    string /* SchemaPlanSource.id */,
-    SchemaPlanSource & SchemaPlanResolver // TODO: operation field must always have a resolver?
-  >;
+  resolvers: {
+    [id in SchemaPlanSource['id']]: SchemaPlanSource & SchemaPlanResolver; // TODO: operation field must always have a resolver?
+  };
 }
 
 export interface SchemaPlanCompositeType {
   name: string;
-  resolvers: Record<
-    string /* SchemaPlanSource.id */,
-    SchemaPlanSource & SchemaPlanResolver // TODO: type can only have one resolver?
-  >;
-  fields: Record<
-    string /* SchemaPlanCompositeTypeField.name */,
-    SchemaPlanCompositeTypeField
-  >;
+  resolvers: {
+    [id in SchemaPlanSource['id']]: SchemaPlanSource & SchemaPlanResolver; // TODO: type can only have one resolver at source?
+  };
+  fields: {
+    [name in SchemaPlanCompositeTypeField['name']]: SchemaPlanCompositeTypeField;
+  };
 }
 
 export interface SchemaPlanCompositeTypeField {
   name: string;
-  sources: Record<
-    string /* SchemaPlanSource.id */,
-    (SchemaPlanSource & SchemaPlanResolver) | SchemaPlanSource // a type field may not have a resolver, assuming it's in available in the type
-  >;
+  sources: {
+    [id in SchemaPlanSource['id']]:
+      | (SchemaPlanSource & SchemaPlanResolver)
+      | SchemaPlanSource; // a type field may not have a resolver, assuming it's in available in the type
+  };
 }
 
 export interface SchemaPlanSource {
@@ -88,15 +83,14 @@ export interface SchemaPlanFetchResolver {
    *
    */
   operation: string;
-  variables: Record<
-    string /* SchemaPlanResolverVariable.name */,
-    SchemaPlanResolverVariable
-  >;
+  variables: {
+    [name in SchemaPlanResolverVariable['name']]: SchemaPlanResolverVariable;
+  };
   /** Location of the source to be used by the resolver. */
   url: string;
 }
 
-interface SchemaPlanResolverVariable {
+export interface SchemaPlanResolverVariable {
   name: string;
   /** Which field in the type to use as this variable. */
   select: string;

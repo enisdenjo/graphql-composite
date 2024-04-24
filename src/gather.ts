@@ -19,6 +19,7 @@ import {
   SchemaPlan,
   SchemaPlanFetchResolver,
   SchemaPlanResolver,
+  SchemaPlanResolverVariable,
   SchemaPlanSource,
 } from './schemaPlan.js';
 import { expandPathsToQuery, isRecord } from './utils.js';
@@ -68,7 +69,9 @@ export interface GatherPlanResolver
    *
    * *Parent resolver is the one that {@link GatherPlanResolver.includes} this one.
    */
-  imports: Record<string, string>;
+  imports: {
+    [exportPath in GatherPlanResolver['exports'][number]]: SchemaPlanResolverVariable['name'];
+  };
   /**
    * Dot notation flat list of field paths to add to the `export`
    * fragment on the query. They're also the exported fields of this resolver.

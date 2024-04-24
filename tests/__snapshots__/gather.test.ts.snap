@@ -91,32 +91,32 @@ exports[`should plan gather 1`] = `
       "name": null,
       "resolvers": [
         {
-          "export": [
+          "exports": [
             "id",
             "name",
             "products.upc",
           ],
           "id": "storefronts",
-          "import": {},
+          "imports": {},
           "includes": [
             {
-              "export": [
+              "exports": [
                 "name",
                 "manufacturer.products.upc",
                 "manufacturer.products.name",
                 "manufacturer.id",
               ],
               "id": "products",
-              "import": {
+              "imports": {
                 "products.upc": "Product_upc",
               },
               "includes": [
                 {
-                  "export": [
+                  "exports": [
                     "name",
                   ],
                   "id": "manufacturers",
-                  "import": {
+                  "imports": {
                     "manufacturer.id": "Manufacturer_id",
                   },
                   "includes": [],

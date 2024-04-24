@@ -64,12 +64,12 @@ export interface GatherPlanResolver
    *
    * *Parent resolver is the one that {@link GatherPlanResolver.includes} this one.
    */
-  import: Record<string, string>;
+  imports: Record<string, string>;
   /**
    * Dot notation flat list of field paths to add to the `export`
    * fragment on the query. They're also the exported fields of this resolver.
    */
-  export: string[];
+  exports: string[];
   /**
    * Other resolvers that depend on fields from this resolver.
    * These are often resolvers of fields that don't exist in the resolver.
@@ -247,8 +247,8 @@ function planGatherResolversForOperation(
         }
         resolver = {
           ...resolverPlan,
-          import: {},
-          export: [],
+          imports: {},
+          exports: [],
           includes: [],
         };
         resolvers.push(resolver);
@@ -261,7 +261,7 @@ function planGatherResolversForOperation(
         //   2. operation `{ products { manifacturer { name } } }` should have the following exports:
         //      ['products.manifacturer.name'] and not ['products', 'products.manifacturer', 'products.manifacturer.name']
       } else {
-        resolver.export.push(field.name);
+        resolver.exports.push(field.name);
       }
 
       if (field.kind === 'composite') {
@@ -328,21 +328,21 @@ function insertResolversForGatherPlanCompositeField(
         );
       }
 
-      const needs: GatherPlanResolver['import'] = {};
+      const needs: GatherPlanResolver['imports'] = {};
       for (const { name, select } of Object.values(resolverPlan.variables)) {
         // make sure parent resolver - the one that {@link GatherPlanResolver.includes} this
         // one - exports fields that are needed as variables to perform the resolution
         const path = `${pathPrefix}${parent.name}.${select}`;
-        const need = parentResolver.export.find((e) => e === path);
+        const need = parentResolver.exports.find((e) => e === path);
         if (!need) {
           // TODO: disallow pushing same path multiple times
           // TODO: what happens if the parent source cannot resolve this field?
-          parentResolver.export.push(path);
+          parentResolver.exports.push(path);
         }
         needs[path] = name;
       }
 
-      resolver = { ...resolverPlan, import: needs, export: [], includes: [] };
+      resolver = { ...resolverPlan, imports: needs, exports: [], includes: [] };
       parentResolver.includes.push(resolver);
     }
 
@@ -363,7 +363,7 @@ function insertResolversForGatherPlanCompositeField(
       //   2. operation `{ products { manifacturer { name } } }` should have the following exports:
       //      ['products.manifacturer.name'] and not ['products', 'products.manifacturer', 'products.manifacturer.name']
     } else {
-      resolver.export.push(path);
+      resolver.exports.push(path);
     }
 
     if (field.kind === 'composite') {

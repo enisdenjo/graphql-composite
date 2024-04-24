@@ -247,7 +247,7 @@ function getResolverForSourceFromDirectives(
   }
 
   return {
-    url: '', // TODO: source url
+    url: 'http://localhost/graphql', // TODO: actual source url
     kind: 'fetch',
     operation: mustGetStringArgumentValue(
       type,

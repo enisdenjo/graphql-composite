@@ -44,7 +44,7 @@ exports[`should plan schema 1`] = `
           "kind": "fetch",
           "name": "Manufacturer",
           "operation": "query ManufacturerById($Manufacturer_id: ID!) { manufacturer(id: $Manufacturer_id) { ...export } }",
-          "url": "",
+          "url": "http://localhost/graphql",
           "variables": {
             "Manufacturer_id": {
               "name": "Manufacturer_id",
@@ -57,7 +57,7 @@ exports[`should plan schema 1`] = `
           "kind": "fetch",
           "name": "Manufacturer",
           "operation": "query ManufacturerById($Manufacturer_id: ID!) { _manufacturer(id: $Manufacturer_id) { ...export } }",
-          "url": "",
+          "url": "http://localhost/graphql",
           "variables": {
             "Manufacturer_id": {
               "name": "Manufacturer_id",
@@ -117,7 +117,7 @@ exports[`should plan schema 1`] = `
           "kind": "fetch",
           "name": "Product",
           "operation": "query ProductByUpc($Product_upc: ID!) { product(upc: $Product_upc) { ...export } }",
-          "url": "",
+          "url": "http://localhost/graphql",
           "variables": {
             "Product_upc": {
               "name": "Product_upc",
@@ -130,7 +130,7 @@ exports[`should plan schema 1`] = `
           "kind": "fetch",
           "name": "Product",
           "operation": "TODO",
-          "url": "",
+          "url": "http://localhost/graphql",
           "variables": {
             "Product_upc": {
               "name": "Product_upc",
@@ -177,7 +177,7 @@ exports[`should plan schema 1`] = `
           "kind": "fetch",
           "name": "Storefront",
           "operation": "query StorefrontById($Storefront_id: ID!) { storefront(id: $Storefront_id) { ...export } }",
-          "url": "",
+          "url": "http://localhost/graphql",
           "variables": {
             "Storefront_id": {
               "name": "Storefront_id",
@@ -199,7 +199,7 @@ exports[`should plan schema 1`] = `
               "kind": "fetch",
               "name": "_manufacturer",
               "operation": "query _manufacturer($id: ID!) { _manufacturer(id: $id) { ...export } }",
-              "url": "",
+              "url": "http://localhost/graphql",
               "variables": {},
             },
           },
@@ -212,7 +212,7 @@ exports[`should plan schema 1`] = `
               "kind": "fetch",
               "name": "manufacturer",
               "operation": "query manufacturer($id: ID!) { manufacturer(id: $id) { ...export } }",
-              "url": "",
+              "url": "http://localhost/graphql",
               "variables": {},
             },
           },
@@ -225,7 +225,7 @@ exports[`should plan schema 1`] = `
               "kind": "fetch",
               "name": "product",
               "operation": "query product($upc: ID!) { product(upc: $upc) }",
-              "url": "",
+              "url": "http://localhost/graphql",
               "variables": {},
             },
           },
@@ -238,7 +238,7 @@ exports[`should plan schema 1`] = `
               "kind": "fetch",
               "name": "storefront",
               "operation": "query storefront($id: ID!) { storefront(id: $id) { ...export } }",
-              "url": "",
+              "url": "http://localhost/graphql",
               "variables": {},
             },
           },

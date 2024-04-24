@@ -119,7 +119,7 @@ exports[`should plan gather 1`] = `
                   "kind": "fetch",
                   "name": "Manufacturer",
                   "operation": "query ManufacturerById($Manufacturer_id: ID!) { manufacturer(id: $Manufacturer_id) { ...export } }",
-                  "url": "",
+                  "url": "http://localhost/graphql",
                   "variables": {
                     "Manufacturer_id": {
                       "name": "Manufacturer_id",
@@ -131,7 +131,7 @@ exports[`should plan gather 1`] = `
               "kind": "fetch",
               "name": "Product",
               "operation": "query ProductByUpc($Product_upc: ID!) { product(upc: $Product_upc) { ...export } }",
-              "url": "",
+              "url": "http://localhost/graphql",
               "variables": {
                 "Product_upc": {
                   "name": "Product_upc",
@@ -143,7 +143,7 @@ exports[`should plan gather 1`] = `
           "kind": "fetch",
           "name": "storefront",
           "operation": "query storefront($id: ID!) { storefront(id: $id) { ...export } }",
-          "url": "",
+          "url": "http://localhost/graphql",
           "variables": {},
         },
       ],

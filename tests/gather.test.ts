@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { buildSchema, parse } from 'graphql';
 import { expect, it } from 'vitest';
-import { planGather } from '../src/planGather.js';
+import { planGather } from '../src/gather.js';
 
 const schema = buildSchema(
   fs.readFileSync(

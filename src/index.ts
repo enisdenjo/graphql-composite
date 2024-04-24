@@ -1,2 +1,2 @@
 export * from './schemaPlan.js';
-export * from './planGather.js';
+export * from './gather.js';

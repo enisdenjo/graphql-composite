@@ -2,8 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { buildSchema, parse } from 'graphql';
 import { expect, it } from 'vitest';
-import { planGather, planGatherResolvers } from '../src/planGather.js';
-import { planSchema } from '../src/schemaPlan.js';
+import { planGather } from '../src/planGather.js';
 
 const schema = buildSchema(
   fs.readFileSync(
@@ -33,8 +32,6 @@ const document = parse(/* GraphQL */ `
   }
 `);
 
-it('should plan gather and resolvers', async () => {
-  const plan = planGather(schema, document);
-  expect(plan).toMatchSnapshot();
-  expect(planGatherResolvers(planSchema(schema), plan)).toMatchSnapshot();
+it('should plan gather', () => {
+  expect(planGather(schema, document)).toMatchSnapshot();
 });

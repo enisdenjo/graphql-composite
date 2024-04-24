@@ -14,6 +14,7 @@ import {
   visitWithTypeInfo,
 } from 'graphql';
 import {
+  planSchema,
   SchemaPlan,
   SchemaPlanResolver,
   SchemaPlanSource,
@@ -30,6 +31,7 @@ export interface GatherPlanOperation {
   name: string | null;
   type: OperationTypeNode;
   fields: GatherPlanField[];
+  resolvers: GatherPlanResolver[];
 }
 
 type GatherPlanField = GatherPlanCompositeField | GatherPlanScalarField;
@@ -55,8 +57,8 @@ export interface GatherPlanResolver
   extends SchemaPlanSource,
     SchemaPlanResolver {
   /**
-   * Fields to add to the `export` fragment on the query.
-   * They're also the exported fields of this fetch.
+   * Dot notation flat list of field paths to add to the `export`
+   * fragment on the query. They're also the exported fields of this resolver.
    */
   export: string[];
   /**
@@ -70,40 +72,28 @@ export function planGather(
   schema: GraphQLSchema,
   doc: DocumentNode,
 ): GatherPlan {
+  const schemaPlan = planSchema(schema);
   const gatherPlan: GatherPlan = {
     query: print(doc),
     paths: [],
     operations: [],
   };
 
-  function addFieldAtDepth(depth: number, field: GatherPlanField) {
-    let curr: { fields: GatherPlanField[] } =
-      gatherPlan.operations[gatherPlan.operations.length - 1]!;
-    for (let i = 0; i < depth; i++) {
-      // increase depth by going into the last field of the current field
-      const field = curr.fields[curr.fields.length - 1]!;
-      if (field.kind !== 'composite') {
-        throw new Error(
-          `Cannot add a field at depth ${depth} because it's composite`,
-        );
-      }
-      curr = field;
-    }
-    curr.fields.push(field);
-  }
-
   const entries: string[] = [];
   let depth = 0;
   const typeInfo = new TypeInfo(schema);
+  let currOperation: GatherPlanOperation;
   visit(
     doc,
     visitWithTypeInfo(typeInfo, {
       OperationDefinition(node) {
-        gatherPlan.operations.push({
+        currOperation = {
           name: node.name?.value || null,
           type: node.operation,
           fields: [],
-        });
+          resolvers: [],
+        };
+        gatherPlan.operations.push(currOperation);
       },
       // TODO: does not properly enter fragments
       Field: {
@@ -131,7 +121,7 @@ export function planGather(
             | GraphQLEnumType;
 
           if (isCompositeType(type)) {
-            addFieldAtDepth(depth, {
+            insertFieldToOperationAtDepth(currOperation, depth, {
               kind: 'composite',
               name: node.name.value,
               type: type.name,
@@ -141,7 +131,7 @@ export function planGather(
               fields: [],
             });
           } else {
-            addFieldAtDepth(depth, {
+            insertFieldToOperationAtDepth(currOperation, depth, {
               kind: 'scalar',
               name: node.name.value,
               type: type.name,
@@ -161,28 +151,49 @@ export function planGather(
     }),
   );
 
+  for (const operation of gatherPlan.operations) {
+    operation.resolvers = planGatherResolversForOperation(
+      schemaPlan,
+      operation,
+    );
+  }
+
   return gatherPlan;
 }
 
-export function planGatherResolvers(
-  schemaPlan: SchemaPlan,
-  gatherPlan: GatherPlan,
-): GatherPlanResolver[] {
-  // TODO: handle multiple operations
-  const query = gatherPlan.operations[0];
-  if (!query) {
-    throw new Error('Gather plan does not have a query operation');
+function insertFieldToOperationAtDepth(
+  operation: GatherPlanOperation,
+  depth: number,
+  field: GatherPlanField,
+) {
+  let curr: { fields: GatherPlanField[] } = operation;
+  for (let i = 0; i < depth; i++) {
+    // increase depth by going into the last field of the current field
+    const field = curr.fields[curr.fields.length - 1]!;
+    if (field.kind !== 'composite') {
+      throw new Error(
+        `Cannot add a field at depth ${depth} because it's composite`,
+      );
+    }
+    curr = field;
   }
+  curr.fields.push(field);
+}
 
-  // TODO: handle other, non-Query, operations
-  const operationPlan = schemaPlan.operations[query.type];
+function planGatherResolversForOperation(
+  schemaPlan: SchemaPlan,
+  operation: GatherPlanOperation,
+): GatherPlanResolver[] {
+  const operationPlan = schemaPlan.operations[operation.type];
   if (!operationPlan) {
-    throw new Error('Schema plan does not have the "Query" operation');
+    throw new Error(
+      `Schema plan does not have the "${operation.type}" operation`,
+    );
   }
 
   const resolvers: GatherPlanResolver[] = [];
 
-  for (const operationField of query.fields) {
+  for (const operationField of operation.fields) {
     if (operationField.kind === 'scalar') {
       throw 'TODO';
     }

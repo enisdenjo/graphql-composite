@@ -1,6 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`should plan gather and resolvers 1`] = `
+exports[`should plan gather 1`] = `
 {
   "operations": [
     {
@@ -89,6 +89,64 @@ exports[`should plan gather and resolvers 1`] = `
         },
       ],
       "name": null,
+      "resolvers": [
+        {
+          "export": [
+            "id",
+            "name",
+            "products",
+            "products.upc",
+          ],
+          "id": "storefronts",
+          "includes": [
+            {
+              "export": [
+                "name",
+                "manufacturer",
+                "manufacturer.products",
+                "manufacturer.products.upc",
+                "manufacturer.products.name",
+                "manufacturer.id",
+              ],
+              "id": "products",
+              "includes": [
+                {
+                  "export": [
+                    "name",
+                  ],
+                  "id": "manufacturers",
+                  "includes": [],
+                  "kind": "fetch",
+                  "name": "Manufacturer",
+                  "operation": "query ManufacturerById($Manufacturer_id: ID!) { manufacturer(id: $Manufacturer_id) { ...export } }",
+                  "url": "",
+                  "variables": {
+                    "Manufacturer_id": {
+                      "name": "Manufacturer_id",
+                      "select": "id",
+                    },
+                  },
+                },
+              ],
+              "kind": "fetch",
+              "name": "Product",
+              "operation": "query ProductByUpc($Product_upc: ID!) { product(upc: $Product_upc) { ...export } }",
+              "url": "",
+              "variables": {
+                "Product_upc": {
+                  "name": "Product_upc",
+                  "select": "upc",
+                },
+              },
+            },
+          ],
+          "kind": "fetch",
+          "name": "storefront",
+          "operation": "query storefront($id: ID!) { storefront(id: $id) { ...export } }",
+          "url": "",
+          "variables": {},
+        },
+      ],
       "type": "query",
     },
   ],
@@ -123,65 +181,4 @@ exports[`should plan gather and resolvers 1`] = `
   }
 }",
 }
-`;
-
-exports[`should plan gather and resolvers 2`] = `
-[
-  {
-    "export": [
-      "id",
-      "name",
-      "products",
-      "products.upc",
-    ],
-    "id": "storefronts",
-    "includes": [
-      {
-        "export": [
-          "name",
-          "manufacturer",
-          "manufacturer.products",
-          "manufacturer.products.upc",
-          "manufacturer.products.name",
-          "manufacturer.id",
-        ],
-        "id": "products",
-        "includes": [
-          {
-            "export": [
-              "name",
-            ],
-            "id": "manufacturers",
-            "includes": [],
-            "kind": "fetch",
-            "name": "Manufacturer",
-            "operation": "query ManufacturerById($Manufacturer_id: ID!) { manufacturer(id: $Manufacturer_id) { ...export } }",
-            "url": "",
-            "variables": {
-              "Manufacturer_id": {
-                "name": "Manufacturer_id",
-                "select": "id",
-              },
-            },
-          },
-        ],
-        "kind": "fetch",
-        "name": "Product",
-        "operation": "query ProductByUpc($Product_upc: ID!) { product(upc: $Product_upc) { ...export } }",
-        "url": "",
-        "variables": {
-          "Product_upc": {
-            "name": "Product_upc",
-            "select": "upc",
-          },
-        },
-      },
-    ],
-    "kind": "fetch",
-    "name": "storefront",
-    "operation": "query storefront($id: ID!) { storefront(id: $id) { ...export } }",
-    "url": "",
-    "variables": {},
-  },
-]
 `;

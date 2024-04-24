@@ -3,6 +3,7 @@ import {
   ExecutionResult,
   GraphQLCompositeType,
   GraphQLEnumType,
+  GraphQLError,
   GraphQLScalarType,
   GraphQLSchema,
   isCompositeType,
@@ -14,6 +15,9 @@ import {
   visit,
   visitWithTypeInfo,
 } from 'graphql';
+import { jsonToGraphQLQuery } from 'json-to-graphql-query';
+import getAtPath from 'lodash.get';
+import setAtPath from 'lodash.set';
 import {
   planSchema,
   SchemaPlan,
@@ -22,7 +26,6 @@ import {
   SchemaPlanResolverVariable,
   SchemaPlanSource,
 } from './schemaPlan.js';
-import { expandPathsToQuery, isRecord } from './utils.js';
 
 export interface GatherPlan {
   query: string;
@@ -80,8 +83,10 @@ export interface GatherPlanResolver
   /**
    * Other resolvers that depend on fields from this resolver.
    * These are often resolvers of fields that don't exist in the resolver.
+   *
+   * A map of field paths to the necessary resolver.
    */
-  includes: GatherPlanResolver[];
+  includes: Record<string, GatherPlanResolver>;
 }
 
 export interface GatherContext {
@@ -97,53 +102,49 @@ export interface GatherContext {
 export async function gather(
   ctx: GatherContext,
   plan: GatherPlan,
-): Promise<GatherPlanResolverResult[]> {
+): Promise<ExecutionResult> {
+  const result: ExecutionResult = {};
   // TODO: batch resolvers going to the same source
-  return await Promise.all(
+  await Promise.all(
     plan.operations.flatMap((o) =>
-      o.resolvers.map((r) => gatherResolve(ctx, r, null)),
+      o.resolvers.map((r) =>
+        gatherResolve(
+          ctx,
+          r,
+          {
+            // TODO: actual variables
+            id: '',
+          },
+          [r.name],
+          result,
+        ),
+      ),
     ),
   );
+  return result;
 }
 
 export interface GatherPlanResolverResult {
-  data: unknown;
+  data?: unknown;
+  errors?: ReadonlyArray<GraphQLError>;
   includes: GatherPlanResolverResult[];
 }
 
 async function gatherResolve(
   ctx: GatherContext,
   resolver: GatherPlanResolver,
+  variables: Record<string, unknown> | null,
   /**
-   * No parent data only for operation resolver.
-   * When `null`, the resolver query will use the {@link GatherContext.variables}.
+   * The path in the {@link resultRef} this gather is resolving.
    */
-  parentData: GatherPlanResolverResult['data'] | null,
+  path: (string | number)[],
+  /**
+   * Mutated argument that references the final result,
+   * ready to be passed back to the user.
+   */
+  resultRef: ExecutionResult,
 ): Promise<GatherPlanResolverResult> {
   const { getFetch } = ctx;
-
-  const variables: Record<string, unknown> = parentData ? {} : ctx.variables;
-
-  // TODO: fail if resolver needs imports but there's no parent data (maybe also fail for other way around?)
-  for (const [exportPath, variableName] of Object.entries(resolver.imports)) {
-    const path = exportPath.split('.');
-
-    let val = parentData;
-    for (const part of path) {
-      if (isRecord(val)) {
-        val = val[part];
-      } else if (Array.isArray(val)) {
-        // TODO: actually use array to expand gatherers
-        val = val[0][part];
-      } else {
-        // TODO: it's ok to have no variable if the parent didnt provide it? throw if the variable is required but null
-        val = null;
-        break;
-      }
-    }
-
-    variables[variableName] = val;
-  }
 
   const res = await getFetch(resolver.id)(resolver.url, {
     method: 'POST',
@@ -155,7 +156,15 @@ async function gatherResolve(
       query: buildResolverQuery(resolver),
       // TODO: actual operation name
       operationName: null,
-      variables,
+      variables:
+        variables ||
+        (() => {
+          const variables: Record<string, unknown> = {};
+          for (const { name, select } of Object.values(resolver.variables)) {
+            variables[name] = getAtPath(resultRef.data, [...path, select]);
+          }
+          return variables;
+        })(),
     }),
   });
   if (!res.ok) {
@@ -168,11 +177,12 @@ async function gatherResolve(
 
   const result: ExecutionResult = await res.json();
   if (result.errors?.length) {
-    const err = new Error(
-      `GraphQL execution result contains errors\n${JSON.stringify(result.errors)}`,
-    );
-    err.name = 'GraphQLExecutionResultErrors';
-    throw err;
+    // stop immediately on errors, no need to traverse futher
+    resultRef.errors = result.errors;
+    return {
+      ...result,
+      includes: [],
+    };
   }
   if (!result.data) {
     const err = new Error(
@@ -182,27 +192,80 @@ async function gatherResolve(
     throw err;
   }
 
-  // TODO: the data should be the contents of the `export` fragment
-  //       we currently assume it's the first field, but it may not be
-  const data = result.data[Object.keys(result.data)[0]!];
+  if (!resultRef.data) {
+    resultRef.data = {};
+  }
+
+  for (const exportPath of resolver.exports.map((e) => e.split('.'))) {
+    const lastKey = exportPath[exportPath.length - 1];
+    const valBeforeLast =
+      exportPath.length > 1
+        ? getAtPath(
+            result.data[
+              // TODO: we only assume the root field is where the export fragment is, but isnt always true
+              Object.keys(result.data)[0]!
+            ],
+            exportPath.slice(0, exportPath.length - 1),
+          )
+        : null;
+
+    if (Array.isArray(valBeforeLast)) {
+      // set key in each item of the array
+      for (let i = 0; i < valBeforeLast.length; i++) {
+        setAtPath(
+          resultRef.data,
+          [
+            ...path,
+            ...exportPath.slice(0, exportPath.length - 1)!,
+            i,
+            lastKey!,
+          ],
+          getAtPath(valBeforeLast[i], [lastKey!]),
+        );
+      }
+    } else {
+      setAtPath(
+        resultRef.data,
+        [...path, ...exportPath],
+        getAtPath(
+          result.data[
+            // TODO: we only assume the root field is where the export fragment is, but isnt always true
+            Object.keys(result.data)[0]!
+          ],
+          exportPath,
+        ),
+      );
+    }
+  }
 
   return {
-    data,
+    ...result,
     // TODO: batch resolvers going to the same source
     includes: await Promise.all(
-      resolver.includes.map((r) => gatherResolve(ctx, r, data)),
+      Object.entries(resolver.includes).flatMap(([field, resolver]) => {
+        const val = getAtPath(result.data, [...path, field]);
+        if (Array.isArray(val)) {
+          // if the include points to an array, we need to gather resolve each item
+          return val.map((_, i) =>
+            gatherResolve(ctx, resolver, null, [...path, field, i], resultRef),
+          );
+        }
+        return gatherResolve(ctx, resolver, null, [...path, field], resultRef);
+      }),
     ),
   };
 }
 
-// TODO: test
-function buildResolverQuery(resolver: GatherPlanResolver) {
+export function buildResolverQuery(
+  resolver: Pick<GatherPlanResolver, 'operation' | 'type' | 'exports'>,
+) {
   let query = resolver.operation;
   query += ` fragment export on ${resolver.type} { `;
-  for (const exp of resolver.exports) {
-    const paths = exp.split('.');
-    query += expandPathsToQuery(paths);
+  const obj = {};
+  for (const path of resolver.exports) {
+    setAtPath(obj, path, true);
   }
+  query += jsonToGraphQLQuery(obj);
   query += ' }';
   return query;
 }
@@ -334,7 +397,7 @@ function planGatherResolversForOperation(
 
   for (const operationField of operation.fields) {
     if (operationField.kind === 'scalar') {
-      throw 'TODO';
+      throw new Error('TODO');
     }
 
     const operationFieldPlan = operationPlan.fields[operationField.name];
@@ -379,7 +442,7 @@ function planGatherResolversForOperation(
           ...resolverPlan,
           imports: {},
           exports: [],
-          includes: [],
+          includes: {},
         };
         resolvers.push(resolver);
       }
@@ -431,7 +494,9 @@ function insertResolversForGatherPlanCompositeField(
 
     let resolver = fieldPlan.sources[parentResolver.id]
       ? parentResolver
-      : parentResolver.includes.find((r) => fieldPlan.sources[r.id]);
+      : Object.values(parentResolver.includes).find(
+          (r) => fieldPlan.sources[r.id],
+        );
     if (!resolver) {
       // this field cannot be resolved from the parent's source
       // add an dependant resolver to the parent for the field(s)
@@ -472,8 +537,9 @@ function insertResolversForGatherPlanCompositeField(
         needs[path] = name;
       }
 
-      resolver = { ...resolverPlan, imports: needs, exports: [], includes: [] };
-      parentResolver.includes.push(resolver);
+      resolver = { ...resolverPlan, imports: needs, exports: [], includes: {} };
+
+      parentResolver.includes[`${pathPrefix}${parent.name}`] = resolver;
     }
 
     const resolvingParentType = resolver.type === parent.type;

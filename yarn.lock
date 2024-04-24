@@ -784,6 +784,31 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/lodash.get@npm:^4":
+  version: 4.4.9
+  resolution: "@types/lodash.get@npm:4.4.9"
+  dependencies:
+    "@types/lodash": "npm:*"
+  checksum: 10c0/934ae4f02831afdb9216cb5fcb702f8f4e0b45e13f2d10ed9c7ce7e891800e5dea726b513c98b8370d6292d42ad7745c622ae75733676746b711bea95b6259d5
+  languageName: node
+  linkType: hard
+
+"@types/lodash.set@npm:^4":
+  version: 4.3.9
+  resolution: "@types/lodash.set@npm:4.3.9"
+  dependencies:
+    "@types/lodash": "npm:*"
+  checksum: 10c0/d7f3c3da593582e48b351fec2361b1aa551e6a7e6a387bdcc3a0c9a00eb2d8336f1dd911f619685d6c5875a404f97dc4fa0b1b5a7a25bc9145eaca1940071627
+  languageName: node
+  linkType: hard
+
+"@types/lodash@npm:*":
+  version: 4.17.0
+  resolution: "@types/lodash@npm:4.17.0"
+  checksum: 10c0/4c5b41c9a6c41e2c05d08499e96f7940bcf194dcfa84356235b630da920c2a5e05f193618cea76006719bec61c76617dff02defa9d29934f9f6a76a49291bd8f
+  languageName: node
+  linkType: hard
+
 "@types/node@npm:^20.12.7":
   version: 20.12.7
   resolution: "@types/node@npm:20.12.7"
@@ -1503,9 +1528,14 @@ __metadata:
     "@ianvs/prettier-plugin-sort-imports": "npm:^4.2.1"
     "@tsconfig/node21": "npm:^21.0.3"
     "@tsconfig/strictest": "npm:^2.0.5"
+    "@types/lodash.get": "npm:^4"
+    "@types/lodash.set": "npm:^4"
     "@types/node": "npm:^20.12.7"
     graphql: "npm:^16.8.1"
     graphql-yoga: "npm:^5.3.0"
+    json-to-graphql-query: "npm:^2.2.5"
+    lodash.get: "npm:^4.4.2"
+    lodash.set: "npm:^4.3.2"
     prettier: "npm:^3.2.5"
     prettier-plugin-pkg: "npm:^0.18.1"
     prettier-plugin-sh: "npm:^0.14.0"
@@ -1696,6 +1726,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"json-to-graphql-query@npm:^2.2.5":
+  version: 2.2.5
+  resolution: "json-to-graphql-query@npm:2.2.5"
+  checksum: 10c0/c75d6989ea7d6dda37e086ce062820efdac036c45b064c6cc073a95207acb27db15f84accabf860c30894380174f9faf9cf91088b0dcdcd35cd539d25837962d
+  languageName: node
+  linkType: hard
+
 "json5@npm:^2.2.3":
   version: 2.2.3
   resolution: "json5@npm:2.2.3"
@@ -1712,6 +1749,20 @@ __metadata:
     mlly: "npm:^1.4.2"
     pkg-types: "npm:^1.0.3"
   checksum: 10c0/f61cbd00d7689f275558b1a45c7ff2a3ddf8472654123ed880215677b9adfa729f1081e50c27ffb415cdb9fa706fb755fec5e23cdd965be375c8059e87ff1cc9
+  languageName: node
+  linkType: hard
+
+"lodash.get@npm:^4.4.2":
+  version: 4.4.2
+  resolution: "lodash.get@npm:4.4.2"
+  checksum: 10c0/48f40d471a1654397ed41685495acb31498d5ed696185ac8973daef424a749ca0c7871bf7b665d5c14f5cc479394479e0307e781f61d5573831769593411be6e
+  languageName: node
+  linkType: hard
+
+"lodash.set@npm:^4.3.2":
+  version: 4.3.2
+  resolution: "lodash.set@npm:4.3.2"
+  checksum: 10c0/c641d31905e51df43170dce8a1d11a1cff11356e2e2e75fe2615995408e9687d58c3e1d64c3c284c2df2bc519f79a98af737d2944d382ff82ffd244ff6075c29
   languageName: node
   linkType: hard
 

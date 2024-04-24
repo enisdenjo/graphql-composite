@@ -3,7 +3,7 @@ import path from 'path';
 import { buildSchema, parse } from 'graphql';
 import { createSchema, createYoga, YogaServerInstance } from 'graphql-yoga';
 import { expect, it } from 'vitest';
-import { gather, planGather } from '../src/gather.js';
+import { buildResolverQuery, gather, planGather } from '../src/gather.js';
 
 const schema = buildSchema(
   fs.readFileSync(
@@ -153,10 +153,48 @@ it('should gather', async () => {
           if (!yoga) {
             throw new Error(`Unsupported source "${sourceId}"`);
           }
-          return yoga.fetch as any; // TODO: yoga's fetch type doesnt fit the native fetch types
+          return (url, init) => {
+            expect(init?.body).toMatchSnapshot(sourceId);
+            return yoga.fetch(
+              // @ts-expect-error TODO: yoga's fetch url type doesnt fit the native fetch url type
+              url,
+              init,
+            ) as any; // TODO: not even the return type of yoga's fetch matches native fetch
+          };
         },
       },
       planGather(schema, document),
     ),
   ).resolves.toMatchSnapshot();
+});
+
+it.each([
+  {
+    id: 'storefronts',
+    type: 'Storefront',
+    operation:
+      'query storefront($id: ID!) { storefront(id: $id) { ...export } }',
+    exports: ['id', 'name', 'products.upc'],
+  },
+  {
+    id: 'products',
+    type: 'Product',
+    operation:
+      'query ProductByUpc($Product_upc: ID!) { product(upc: $Product_upc) { ...export } }',
+    exports: [
+      'name',
+      'manufacturer.products.upc',
+      'manufacturer.products.name',
+      'manufacturer.id',
+    ],
+  },
+  {
+    id: 'manufacturers',
+    type: 'Manufacturer',
+    operation:
+      'query ManufacturerById($Manufacturer_id: ID!) { manufacturer(id: $Manufacturer_id) { ...export } }',
+    exports: ['name'],
+  },
+])('should build proper query for $id resolver', (resolver) => {
+  expect(buildResolverQuery(resolver)).toMatchSnapshot();
 });

@@ -80,6 +80,11 @@ export interface GatherPlanResolver
 }
 
 export interface GatherContext {
+  /**
+   * User provided variables.
+   * They're to be used by the operation resolver query.
+   */
+  variables: Record<string, unknown>;
   /** Fetch getter by `SchemaPlanSource.id` used for `SchemaPlanFetchResolver`. */
   getFetch: (sourceId: string) => typeof fetch;
 }
@@ -91,14 +96,7 @@ export async function gather(
   // TODO: batch resolvers going to the same source
   return await Promise.all(
     plan.operations.flatMap((o) =>
-      o.resolvers.map((r) =>
-        gatherResolve(
-          ctx,
-          r,
-          // TODO: pass in user provided variables
-          {},
-        ),
-      ),
+      o.resolvers.map((r) => gatherResolve(ctx, r, null)),
     ),
   );
 }
@@ -111,11 +109,15 @@ export interface GatherPlanResolverResult {
 async function gatherResolve(
   ctx: GatherContext,
   resolver: GatherPlanResolver,
-  parentData: GatherPlanResolverResult['data'],
+  /**
+   * No parent data only for operation resolver.
+   * When `null`, the resolver query will use the {@link GatherContext.variables}.
+   */
+  parentData: GatherPlanResolverResult['data'] | null,
 ): Promise<GatherPlanResolverResult> {
   const { getFetch } = ctx;
 
-  const variables: Record<string, unknown> = {};
+  const variables: Record<string, unknown> = parentData ? {} : ctx.variables;
   for (const [exportPath, variableName] of Object.entries(resolver.imports)) {
     const path = exportPath.split('.');
 
@@ -146,13 +148,7 @@ async function gatherResolve(
       query: buildResolverQuery(resolver),
       // TODO: actual operation name
       operationName: null,
-      variables:
-        resolver.id === 'storefronts'
-          ? {
-              // TODO: use user provided variables
-              id: '',
-            }
-          : variables,
+      variables,
     }),
   });
   if (!res.ok) {

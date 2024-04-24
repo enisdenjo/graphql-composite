@@ -147,6 +147,7 @@ it('should gather', async () => {
   await expect(
     gather(
       {
+        variables: { id: '' }, // TODO: support inline variables too
         getFetch(sourceId) {
           const yoga = sources[sourceId];
           if (!yoga) {

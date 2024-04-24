@@ -244,7 +244,15 @@ function planGatherResolversForOperation(
         resolvers.push(resolver);
       }
 
-      resolver.export.push(field.name);
+      if (field.kind === 'composite') {
+        // dont include the root of the composite type as an export path
+        //   1. operation `{ products { name } }` should have the following exports:
+        //      ['products.name'] and not ['products', 'products.name']
+        //   2. operation `{ products { manifacturer { name } } }` should have the following exports:
+        //      ['products.manifacturer.name'] and not ['products', 'products.manifacturer', 'products.manifacturer.name']
+      } else {
+        resolver.export.push(field.name);
+      }
 
       if (field.kind === 'composite') {
         insertResolversForGatherPlanCompositeField(
@@ -335,7 +343,16 @@ function insertResolversForGatherPlanCompositeField(
           // the parent; meaning, this field is a nested field of the parent
           `${parent.name}.`
     }${field.name}`;
-    resolver.export.push(path);
+
+    if (field.kind === 'composite') {
+      // dont include the root of the composite type as an export path
+      //   1. operation `{ products { name } }` should have the following exports:
+      //      ['products.name'] and not ['products', 'products.name']
+      //   2. operation `{ products { manifacturer { name } } }` should have the following exports:
+      //      ['products.manifacturer.name'] and not ['products', 'products.manifacturer', 'products.manifacturer.name']
+    } else {
+      resolver.export.push(path);
+    }
 
     if (field.kind === 'composite') {
       insertResolversForGatherPlanCompositeField(

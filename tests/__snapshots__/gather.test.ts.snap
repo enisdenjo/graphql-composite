@@ -94,7 +94,6 @@ exports[`should plan gather 1`] = `
           "export": [
             "id",
             "name",
-            "products",
             "products.upc",
           ],
           "id": "storefronts",
@@ -102,8 +101,6 @@ exports[`should plan gather 1`] = `
             {
               "export": [
                 "name",
-                "manufacturer",
-                "manufacturer.products",
                 "manufacturer.products.upc",
                 "manufacturer.products.name",
                 "manufacturer.id",

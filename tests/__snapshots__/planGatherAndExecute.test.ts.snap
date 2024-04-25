@@ -9,7 +9,6 @@ exports[`fixture 'store' > query 'NotBasic' > should execute 1`] = `
       "products": [
         {
           "manufacturer": {
-            "id": "manufacturer-of-laptop",
             "name": "TODO: name of manufacturer manufacturer-of-laptop",
             "products": [
               {
@@ -27,7 +26,6 @@ exports[`fixture 'store' > query 'NotBasic' > should execute 1`] = `
         },
         {
           "manufacturer": {
-            "id": "manufacturer-of-computer",
             "name": "TODO: name of manufacturer manufacturer-of-computer",
             "products": [
               {
@@ -45,7 +43,6 @@ exports[`fixture 'store' > query 'NotBasic' > should execute 1`] = `
         },
         {
           "manufacturer": {
-            "id": "manufacturer-of-headset",
             "name": "TODO: name of manufacturer manufacturer-of-headset",
             "products": [
               {
@@ -83,11 +80,6 @@ exports[`fixture 'store' > query 'NotBasic' > should execute 1`] = `
           ],
         },
       },
-      "exports": [
-        "id",
-        "name",
-        "products.upc",
-      ],
       "includes": [
         {
           "data": {
@@ -108,12 +100,6 @@ exports[`fixture 'store' > query 'NotBasic' > should execute 1`] = `
               "name": "TODO: name of product laptop",
             },
           },
-          "exports": [
-            "name",
-            "manufacturer.products.upc",
-            "manufacturer.products.name",
-            "manufacturer.id",
-          ],
           "includes": [
             {
               "data": {
@@ -121,15 +107,16 @@ exports[`fixture 'store' > query 'NotBasic' > should execute 1`] = `
                   "name": "TODO: name of manufacturer manufacturer-of-laptop",
                 },
               },
-              "exports": [
-                "name",
-              ],
               "includes": [],
               "path": [
                 "storefront",
                 "products",
                 0,
                 "manufacturer",
+              ],
+              "private": [],
+              "public": [
+                "name",
               ],
               "query": "query ManufacturerById($Manufacturer_id: ID!) { manufacturer(id: $Manufacturer_id) { ...export } } fragment export on Manufacturer { name }",
               "variables": {
@@ -141,6 +128,14 @@ exports[`fixture 'store' > query 'NotBasic' > should execute 1`] = `
             "storefront",
             "products",
             0,
+          ],
+          "private": [
+            "manufacturer.id",
+          ],
+          "public": [
+            "name",
+            "manufacturer.products.upc",
+            "manufacturer.products.name",
           ],
           "query": "query ProductByUpc($Product_upc: ID!) { product(upc: $Product_upc) { ...export } } fragment export on Product { name manufacturer { products { upc name } id } }",
           "variables": {
@@ -166,12 +161,6 @@ exports[`fixture 'store' > query 'NotBasic' > should execute 1`] = `
               "name": "TODO: name of product computer",
             },
           },
-          "exports": [
-            "name",
-            "manufacturer.products.upc",
-            "manufacturer.products.name",
-            "manufacturer.id",
-          ],
           "includes": [
             {
               "data": {
@@ -179,15 +168,16 @@ exports[`fixture 'store' > query 'NotBasic' > should execute 1`] = `
                   "name": "TODO: name of manufacturer manufacturer-of-computer",
                 },
               },
-              "exports": [
-                "name",
-              ],
               "includes": [],
               "path": [
                 "storefront",
                 "products",
                 1,
                 "manufacturer",
+              ],
+              "private": [],
+              "public": [
+                "name",
               ],
               "query": "query ManufacturerById($Manufacturer_id: ID!) { manufacturer(id: $Manufacturer_id) { ...export } } fragment export on Manufacturer { name }",
               "variables": {
@@ -199,6 +189,14 @@ exports[`fixture 'store' > query 'NotBasic' > should execute 1`] = `
             "storefront",
             "products",
             1,
+          ],
+          "private": [
+            "manufacturer.id",
+          ],
+          "public": [
+            "name",
+            "manufacturer.products.upc",
+            "manufacturer.products.name",
           ],
           "query": "query ProductByUpc($Product_upc: ID!) { product(upc: $Product_upc) { ...export } } fragment export on Product { name manufacturer { products { upc name } id } }",
           "variables": {
@@ -224,12 +222,6 @@ exports[`fixture 'store' > query 'NotBasic' > should execute 1`] = `
               "name": "TODO: name of product headset",
             },
           },
-          "exports": [
-            "name",
-            "manufacturer.products.upc",
-            "manufacturer.products.name",
-            "manufacturer.id",
-          ],
           "includes": [
             {
               "data": {
@@ -237,15 +229,16 @@ exports[`fixture 'store' > query 'NotBasic' > should execute 1`] = `
                   "name": "TODO: name of manufacturer manufacturer-of-headset",
                 },
               },
-              "exports": [
-                "name",
-              ],
               "includes": [],
               "path": [
                 "storefront",
                 "products",
                 2,
                 "manufacturer",
+              ],
+              "private": [],
+              "public": [
+                "name",
               ],
               "query": "query ManufacturerById($Manufacturer_id: ID!) { manufacturer(id: $Manufacturer_id) { ...export } } fragment export on Manufacturer { name }",
               "variables": {
@@ -258,6 +251,14 @@ exports[`fixture 'store' > query 'NotBasic' > should execute 1`] = `
             "products",
             2,
           ],
+          "private": [
+            "manufacturer.id",
+          ],
+          "public": [
+            "name",
+            "manufacturer.products.upc",
+            "manufacturer.products.name",
+          ],
           "query": "query ProductByUpc($Product_upc: ID!) { product(upc: $Product_upc) { ...export } } fragment export on Product { name manufacturer { products { upc name } id } }",
           "variables": {
             "Product_upc": "headset",
@@ -266,6 +267,12 @@ exports[`fixture 'store' > query 'NotBasic' > should execute 1`] = `
       ],
       "path": [
         "storefront",
+      ],
+      "private": [],
+      "public": [
+        "id",
+        "name",
+        "products.upc",
       ],
       "query": "query storefront($id: ID!) { storefront(id: $id) { ...export } } fragment export on Storefront { id name products { upc } }",
       "variables": {
@@ -367,27 +374,17 @@ exports[`fixture 'store' > query 'NotBasic' > should plan gather 1`] = `
       "name": "NotBasic",
       "resolvers": [
         {
-          "exports": [
-            "id",
-            "name",
-            "products.upc",
-          ],
           "includes": {
             "products": {
-              "exports": [
-                "name",
-                "manufacturer.products.upc",
-                "manufacturer.products.name",
-                "manufacturer.id",
-              ],
               "includes": {
                 "manufacturer": {
-                  "exports": [
-                    "name",
-                  ],
                   "includes": {},
                   "kind": "fetch",
                   "operation": "query ManufacturerById($Manufacturer_id: ID!) { manufacturer(id: $Manufacturer_id) { ...export } }",
+                  "private": [],
+                  "public": [
+                    "name",
+                  ],
                   "source": "manufacturers",
                   "type": "Manufacturer",
                   "typeOrField": "Manufacturer",
@@ -402,6 +399,14 @@ exports[`fixture 'store' > query 'NotBasic' > should plan gather 1`] = `
               },
               "kind": "fetch",
               "operation": "query ProductByUpc($Product_upc: ID!) { product(upc: $Product_upc) { ...export } }",
+              "private": [
+                "manufacturer.id",
+              ],
+              "public": [
+                "name",
+                "manufacturer.products.upc",
+                "manufacturer.products.name",
+              ],
               "source": "products",
               "type": "Product",
               "typeOrField": "Product",
@@ -416,6 +421,12 @@ exports[`fixture 'store' > query 'NotBasic' > should plan gather 1`] = `
           },
           "kind": "fetch",
           "operation": "query storefront($id: ID!) { storefront(id: $id) { ...export } }",
+          "private": [],
+          "public": [
+            "id",
+            "name",
+            "products.upc",
+          ],
           "source": "storefronts",
           "type": "Storefront",
           "typeOrField": "storefront",
@@ -718,7 +729,7 @@ exports[`fixture 'store' > should plan schema 1`] = `
 }
 `;
 
-exports[`should build proper query for 'manufacturers' resolver 1`] = `"query ManufacturerById($Manufacturer_id: ID!) { manufacturer(id: $Manufacturer_id) { ...export } } fragment export on Manufacturer { name }"`;
+exports[`should build proper query for 'manufacturers' resolver 1`] = `"query ManufacturerById($Manufacturer_id: ID!) { manufacturer(id: $Manufacturer_id) { ...export } } fragment export on Manufacturer { name id }"`;
 
 exports[`should build proper query for 'products' resolver 1`] = `"query ProductByUpc($Product_upc: ID!) { product(upc: $Product_upc) { ...export } } fragment export on Product { name manufacturer { products { upc name } id } }"`;
 

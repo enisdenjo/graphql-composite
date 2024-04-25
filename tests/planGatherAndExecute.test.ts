@@ -48,26 +48,29 @@ it.each([
     type: 'Storefront',
     operation:
       'query storefront($id: ID!) { storefront(id: $id) { ...export } }',
-    exports: ['id', 'name', 'products.upc'],
+    public: ['id', 'name', 'products.upc'],
+    private: [],
   },
   {
     id: 'products',
     type: 'Product',
     operation:
       'query ProductByUpc($Product_upc: ID!) { product(upc: $Product_upc) { ...export } }',
-    exports: [
+    public: [
       'name',
       'manufacturer.products.upc',
       'manufacturer.products.name',
       'manufacturer.id',
     ],
+    private: [],
   },
   {
     id: 'manufacturers',
     type: 'Manufacturer',
     operation:
       'query ManufacturerById($Manufacturer_id: ID!) { manufacturer(id: $Manufacturer_id) { ...export } }',
-    exports: ['name'],
+    public: ['name'],
+    private: ['id'],
   },
 ])('should build proper query for $id resolver', (resolver) => {
   expect(buildResolverQuery(resolver)).toMatchSnapshot();

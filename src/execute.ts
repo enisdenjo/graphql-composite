@@ -19,7 +19,7 @@ export async function execute(
   const explain = await Promise.all(
     plan.operations.flatMap((o) =>
       o.resolvers.map((r) =>
-        executeResolver(ctx, r, variables, [r.typeOrField], result),
+        executeResolver(ctx, r, variables, [r.typeOrField], result, null),
       ),
     ),
   );
@@ -32,7 +32,8 @@ export interface ExecutionExplain {
   variables: Record<string, unknown>;
   data?: unknown;
   errors?: ReadonlyArray<GraphQLError>;
-  exports: GatherPlanResolver['exports'];
+  private: GatherPlanResolver['private'];
+  public: GatherPlanResolver['public'];
   includes: ExecutionExplain[];
 }
 
@@ -50,6 +51,10 @@ async function executeResolver(
    * ready to be passed back to the user.
    */
   resultRef: ExecutionResult,
+  /**
+   * Data of the `export` fragment in the parent resolver.
+   */
+  parentExportData: Record<string, unknown> | null,
 ): Promise<ExecutionExplain> {
   const { getFetch } = ctx;
 
@@ -59,7 +64,7 @@ async function executeResolver(
     Object.values(resolver.variables).reduce(
       (agg, { name, select }) => ({
         ...agg,
-        [name]: getAtPath(resultRef.data, [...path, select]),
+        [name]: getAtPath(parentExportData, select),
       }),
       {},
     );
@@ -86,15 +91,15 @@ async function executeResolver(
 
   const result: ExecutionResult = await res.json();
   if (result.errors?.length) {
-    // TODO: should throw instead?
-    // stop immediately on errors, no need to traverse futher
+    // stop immediately on errors, no need to traverse further
     resultRef.errors = result.errors;
     return {
       path,
       query,
       variables,
       ...result,
-      exports: [], // TODO: nothing's exported because of the fail, should we popoulate regardless?
+      private: [],
+      public: [],
       includes: [],
     };
   }
@@ -109,17 +114,18 @@ async function executeResolver(
   if (!resultRef.data) {
     resultRef.data = {};
   }
-  for (const exportPath of resolver.exports.map((e) => e.split('.'))) {
+
+  const exportData =
+    result.data[
+      // TODO: we only assume the root field is where the export fragment is, but isnt always true
+      Object.keys(result.data)[0]!
+    ];
+
+  for (const exportPath of resolver.public.map((e) => e.split('.'))) {
     const lastKey = exportPath[exportPath.length - 1];
     const valBeforeLast =
       exportPath.length > 1
-        ? getAtPath(
-            result.data[
-              // TODO: we only assume the root field is where the export fragment is, but isnt always true
-              Object.keys(result.data)[0]!
-            ],
-            exportPath.slice(0, exportPath.length - 1),
-          )
+        ? getAtPath(exportData, exportPath.slice(0, exportPath.length - 1))
         : null;
 
     if (Array.isArray(valBeforeLast)) {
@@ -140,13 +146,7 @@ async function executeResolver(
       setAtPath(
         resultRef.data,
         [...path, ...exportPath],
-        getAtPath(
-          result.data[
-            // TODO: we only assume the root field is where the export fragment is, but isnt always true
-            Object.keys(result.data)[0]!
-          ],
-          exportPath,
-        ),
+        getAtPath(exportData, exportPath),
       );
     }
   }
@@ -156,20 +156,22 @@ async function executeResolver(
     query,
     variables,
     ...result,
-    exports: resolver.exports,
+    private: resolver.private,
+    public: resolver.public,
     // TODO: batch resolvers going to the same source
     includes: await Promise.all(
       Object.entries(resolver.includes).flatMap(([field, resolver]) => {
-        const val = getAtPath(result.data, [...path, field]);
-        if (Array.isArray(val)) {
+        const fieldData = getAtPath(exportData, field);
+        if (Array.isArray(fieldData)) {
           // if the include points to an array, we need to gather resolve each item
-          return val.map((_, i) =>
+          return fieldData.map((fieldDataItem, i) =>
             executeResolver(
               ctx,
               resolver,
               null,
               [...path, field, i],
               resultRef,
+              fieldDataItem,
             ),
           );
         }
@@ -179,6 +181,7 @@ async function executeResolver(
           null,
           [...path, field],
           resultRef,
+          fieldData,
         );
       }),
     ),
@@ -186,12 +189,18 @@ async function executeResolver(
 }
 
 export function buildResolverQuery(
-  resolver: Pick<GatherPlanResolver, 'operation' | 'type' | 'exports'>,
+  resolver: Pick<
+    GatherPlanResolver,
+    'operation' | 'type' | 'public' | 'private'
+  >,
 ) {
   let query = resolver.operation;
   query += ` fragment export on ${resolver.type} { `;
   const obj = {};
-  for (const path of resolver.exports) {
+  for (const path of resolver.public) {
+    setAtPath(obj, path, true);
+  }
+  for (const path of resolver.private) {
     setAtPath(obj, path, true);
   }
   query += jsonToGraphQLQuery(obj);

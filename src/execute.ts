@@ -1,5 +1,4 @@
 import { ExecutionResult, GraphQLError } from 'graphql';
-import { jsonToGraphQLQuery } from 'json-to-graphql-query';
 import getAtPath from 'lodash.get';
 import setAtPath from 'lodash.set';
 import { GatherPlan, GatherPlanResolver } from './gather.js';
@@ -35,7 +34,7 @@ export async function execute(
 
 export interface ExecutionExplain {
   path: (string | number)[];
-  query: string;
+  operation: string;
   variables: Record<string, unknown>;
   data?: unknown;
   errors?: ReadonlyArray<GraphQLError>;
@@ -71,15 +70,17 @@ async function executeResolver(
 ): Promise<ExecutionExplain> {
   const { getFetch } = ctx;
 
-  const query = buildResolverQuery(resolver);
   const variables = !parentExportData
     ? // this is the operation (root) resolver because there's no parent data
       operationVariables
     : // this is a included resolver because the includer's providing data
       Object.values(resolver.variables).reduce(
-        (agg, { name, select }) => ({
+        (agg, variable) => ({
           ...agg,
-          [name]: getAtPath(parentExportData, select),
+          [variable.name]:
+            'select' in variable
+              ? getAtPath(parentExportData, variable.select)
+              : variable.constant,
         }),
         {},
       );
@@ -91,7 +92,7 @@ async function executeResolver(
       accept: 'application/graphql-response+json, application/json',
     },
     body: JSON.stringify({
-      query,
+      query: resolver.operation,
       variables,
     }),
   });
@@ -109,7 +110,7 @@ async function executeResolver(
     resultRef.errors = result.errors;
     return {
       path,
-      query,
+      operation: resolver.operation,
       variables,
       ...result,
       private: [],
@@ -167,7 +168,7 @@ async function executeResolver(
 
   return {
     path,
-    query,
+    operation: resolver.operation,
     variables,
     ...result,
     private: resolver.private,
@@ -200,24 +201,4 @@ async function executeResolver(
       }),
     ),
   };
-}
-
-export function buildResolverQuery(
-  resolver: Pick<
-    GatherPlanResolver,
-    'operation' | 'type' | 'public' | 'private'
-  >,
-) {
-  let query = resolver.operation;
-  query += ` fragment __export on ${resolver.type} { `;
-  const obj = {};
-  for (const path of resolver.public) {
-    setAtPath(obj, path, true);
-  }
-  for (const path of resolver.private) {
-    setAtPath(obj, path, true);
-  }
-  query += jsonToGraphQLQuery(obj);
-  query += ' }';
-  return query;
 }

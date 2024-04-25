@@ -7,6 +7,7 @@ import {
   Kind,
   OperationTypeNode,
 } from 'graphql';
+import { GatherPlanResolver } from './gather.js';
 
 export interface SchemaPlan {
   operations: {
@@ -73,11 +74,11 @@ export interface SchemaPlanFetchResolver {
    * a spread of the `__export` fragment which will have the fields populated
    * during the gather phase.
    *
-   * A well-formatted operation like this:
+   * A well-formatted operation like this in the {@link SchemaPlanFetchResolver}:
    * ```graphql
    * query ProductByUPC($upc: ID!) { product(upc: $upc) { ...__export } }
    * ```
-   * will be populated by the necessary fields during gather like this:
+   * will be populated by the necessary fields during gather at the {@link GatherPlanResolver} like this:
    * ```graphql
    * query ProductByUPC($upc: ID!) { product(upc: $upc) { ...__export } }
    * fragment __export on Product { upc name manufacturer { id } }
@@ -92,11 +93,22 @@ export interface SchemaPlanFetchResolver {
   url: string;
 }
 
-export interface SchemaPlanResolverVariable {
+export type SchemaPlanResolverVariable =
+  | SchemaPlanResolverSelectVariable
+  | SchemaPlanResolverConstantVariable;
+
+export interface SchemaPlanResolverSelectVariable {
   /** Name of the variable to use in the related operation. */
   name: string;
   /** Which field in the type to use (select) as this variable. */
   select: string;
+}
+
+export interface SchemaPlanResolverConstantVariable {
+  /** Name of the variable to use in the related operation. */
+  name: string;
+  /** The hard-coded (constant) value to use as this variable. */
+  constant: unknown;
 }
 
 export function planSchema(schema: GraphQLSchema): SchemaPlan {

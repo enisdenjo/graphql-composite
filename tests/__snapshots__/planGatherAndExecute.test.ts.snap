@@ -108,6 +108,7 @@ exports[`fixture 'store' > query 'NotBasic' > should execute 1`] = `
                 },
               },
               "includes": [],
+              "operation": "query ManufacturerById($Manufacturer_id: ID!) { manufacturer(id: $Manufacturer_id) { ...__export } } fragment __export on Manufacturer { name }",
               "path": [
                 "storefront",
                 "products",
@@ -118,12 +119,12 @@ exports[`fixture 'store' > query 'NotBasic' > should execute 1`] = `
               "public": [
                 "name",
               ],
-              "query": "query ManufacturerById($Manufacturer_id: ID!) { manufacturer(id: $Manufacturer_id) { ...__export } } fragment __export on Manufacturer { name }",
               "variables": {
                 "Manufacturer_id": "manufacturer-of-laptop",
               },
             },
           ],
+          "operation": "query ProductByUpc($Product_upc: ID!) { product(upc: $Product_upc) { ...__export } } fragment __export on Product { name manufacturer { products { upc name } id } }",
           "path": [
             "storefront",
             "products",
@@ -137,7 +138,6 @@ exports[`fixture 'store' > query 'NotBasic' > should execute 1`] = `
             "manufacturer.products.upc",
             "manufacturer.products.name",
           ],
-          "query": "query ProductByUpc($Product_upc: ID!) { product(upc: $Product_upc) { ...__export } } fragment __export on Product { name manufacturer { products { upc name } id } }",
           "variables": {
             "Product_upc": "laptop",
           },
@@ -169,6 +169,7 @@ exports[`fixture 'store' > query 'NotBasic' > should execute 1`] = `
                 },
               },
               "includes": [],
+              "operation": "query ManufacturerById($Manufacturer_id: ID!) { manufacturer(id: $Manufacturer_id) { ...__export } } fragment __export on Manufacturer { name }",
               "path": [
                 "storefront",
                 "products",
@@ -179,12 +180,12 @@ exports[`fixture 'store' > query 'NotBasic' > should execute 1`] = `
               "public": [
                 "name",
               ],
-              "query": "query ManufacturerById($Manufacturer_id: ID!) { manufacturer(id: $Manufacturer_id) { ...__export } } fragment __export on Manufacturer { name }",
               "variables": {
                 "Manufacturer_id": "manufacturer-of-computer",
               },
             },
           ],
+          "operation": "query ProductByUpc($Product_upc: ID!) { product(upc: $Product_upc) { ...__export } } fragment __export on Product { name manufacturer { products { upc name } id } }",
           "path": [
             "storefront",
             "products",
@@ -198,7 +199,6 @@ exports[`fixture 'store' > query 'NotBasic' > should execute 1`] = `
             "manufacturer.products.upc",
             "manufacturer.products.name",
           ],
-          "query": "query ProductByUpc($Product_upc: ID!) { product(upc: $Product_upc) { ...__export } } fragment __export on Product { name manufacturer { products { upc name } id } }",
           "variables": {
             "Product_upc": "computer",
           },
@@ -230,6 +230,7 @@ exports[`fixture 'store' > query 'NotBasic' > should execute 1`] = `
                 },
               },
               "includes": [],
+              "operation": "query ManufacturerById($Manufacturer_id: ID!) { manufacturer(id: $Manufacturer_id) { ...__export } } fragment __export on Manufacturer { name }",
               "path": [
                 "storefront",
                 "products",
@@ -240,12 +241,12 @@ exports[`fixture 'store' > query 'NotBasic' > should execute 1`] = `
               "public": [
                 "name",
               ],
-              "query": "query ManufacturerById($Manufacturer_id: ID!) { manufacturer(id: $Manufacturer_id) { ...__export } } fragment __export on Manufacturer { name }",
               "variables": {
                 "Manufacturer_id": "manufacturer-of-headset",
               },
             },
           ],
+          "operation": "query ProductByUpc($Product_upc: ID!) { product(upc: $Product_upc) { ...__export } } fragment __export on Product { name manufacturer { products { upc name } id } }",
           "path": [
             "storefront",
             "products",
@@ -259,12 +260,12 @@ exports[`fixture 'store' > query 'NotBasic' > should execute 1`] = `
             "manufacturer.products.upc",
             "manufacturer.products.name",
           ],
-          "query": "query ProductByUpc($Product_upc: ID!) { product(upc: $Product_upc) { ...__export } } fragment __export on Product { name manufacturer { products { upc name } id } }",
           "variables": {
             "Product_upc": "headset",
           },
         },
       ],
+      "operation": "query storefront($id: ID!) { storefront(id: $id) { ...__export } } fragment __export on Storefront { id name products { upc } }",
       "path": [
         "storefront",
       ],
@@ -274,7 +275,6 @@ exports[`fixture 'store' > query 'NotBasic' > should execute 1`] = `
         "name",
         "products.upc",
       ],
-      "query": "query storefront($id: ID!) { storefront(id: $id) { ...__export } } fragment __export on Storefront { id name products { upc } }",
       "variables": {
         "id": "2",
       },
@@ -380,7 +380,7 @@ exports[`fixture 'store' > query 'NotBasic' > should plan gather 1`] = `
                 "manufacturer": {
                   "includes": {},
                   "kind": "fetch",
-                  "operation": "query ManufacturerById($Manufacturer_id: ID!) { manufacturer(id: $Manufacturer_id) { ...__export } }",
+                  "operation": "query ManufacturerById($Manufacturer_id: ID!) { manufacturer(id: $Manufacturer_id) { ...__export } } fragment __export on Manufacturer { name }",
                   "private": [],
                   "public": [
                     "name",
@@ -398,7 +398,7 @@ exports[`fixture 'store' > query 'NotBasic' > should plan gather 1`] = `
                 },
               },
               "kind": "fetch",
-              "operation": "query ProductByUpc($Product_upc: ID!) { product(upc: $Product_upc) { ...__export } }",
+              "operation": "query ProductByUpc($Product_upc: ID!) { product(upc: $Product_upc) { ...__export } } fragment __export on Product { name manufacturer { products { upc name } id } }",
               "private": [
                 "manufacturer.id",
               ],
@@ -420,7 +420,7 @@ exports[`fixture 'store' > query 'NotBasic' > should plan gather 1`] = `
             },
           },
           "kind": "fetch",
-          "operation": "query storefront($id: ID!) { storefront(id: $id) { ...__export } }",
+          "operation": "query storefront($id: ID!) { storefront(id: $id) { ...__export } } fragment __export on Storefront { id name products { upc } }",
           "private": [],
           "public": [
             "id",
@@ -729,8 +729,8 @@ exports[`fixture 'store' > should plan schema 1`] = `
 }
 `;
 
-exports[`should build proper query for 'manufacturers' resolver 1`] = `"query ManufacturerById($Manufacturer_id: ID!) { manufacturer(id: $Manufacturer_id) { ...__export } } fragment __export on Manufacturer { name id }"`;
+exports[`should build proper query for 'ManufacturerById' resolver 1`] = `"query ManufacturerById($Manufacturer_id: ID!) { manufacturer(id: $Manufacturer_id) { ...__export } } fragment __export on Manufacturer { id name }"`;
 
-exports[`should build proper query for 'products' resolver 1`] = `"query ProductByUpc($Product_upc: ID!) { product(upc: $Product_upc) { ...__export } } fragment __export on Product { name manufacturer { products { upc name } id } }"`;
+exports[`should build proper query for 'ProductByUpc' resolver 1`] = `"query ProductByUpc($Product_upc: ID!) { product(upc: $Product_upc) { ...__export } } fragment __export on Product { name manufacturer { products { upc name } id } }"`;
 
-exports[`should build proper query for 'storefronts' resolver 1`] = `"query storefront($id: ID!) { storefront(id: $id) { ...__export } } fragment __export on Storefront { id name products { upc } }"`;
+exports[`should build proper query for 'storefront' resolver 1`] = `"query storefront($id: ID!) { storefront(id: $id) { ...__export } } fragment __export on Storefront { id name products { upc } }"`;

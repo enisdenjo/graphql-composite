@@ -1,7 +1,7 @@
 import { buildSchema } from 'graphql';
 import { describe, expect, it } from 'vitest';
-import { buildResolverQuery, execute } from '../src/execute.js';
-import { planGather } from '../src/gather.js';
+import { execute } from '../src/execute.js';
+import { buildResolverOperation, planGather } from '../src/gather.js';
 import { planSchema } from '../src/schemaPlan.js';
 import { getFixtures } from './utils.js';
 
@@ -44,34 +44,34 @@ describe.each(await getFixtures())(
 
 it.each([
   {
-    id: 'storefronts',
-    type: 'Storefront',
+    name: 'storefront',
     operation:
       'query storefront($id: ID!) { storefront(id: $id) { ...__export } }',
-    public: ['id', 'name', 'products.upc'],
-    private: [],
+    type: 'Storefront',
+    fields: ['id', 'name', 'products.upc'],
   },
   {
-    id: 'products',
-    type: 'Product',
+    name: 'ProductByUpc',
     operation:
       'query ProductByUpc($Product_upc: ID!) { product(upc: $Product_upc) { ...__export } }',
-    public: [
+    type: 'Product',
+    fields: [
       'name',
       'manufacturer.products.upc',
       'manufacturer.products.name',
       'manufacturer.id',
     ],
-    private: [],
   },
   {
-    id: 'manufacturers',
-    type: 'Manufacturer',
+    name: 'ManufacturerById',
     operation:
       'query ManufacturerById($Manufacturer_id: ID!) { manufacturer(id: $Manufacturer_id) { ...__export } }',
-    public: ['name'],
-    private: ['id'],
+    type: 'Manufacturer',
+    fields: ['id', 'name'],
   },
-])('should build proper query for $id resolver', (resolver) => {
-  expect(buildResolverQuery(resolver)).toMatchSnapshot();
-});
+])(
+  'should build proper query for $name resolver',
+  ({ operation, type, fields }) => {
+    expect(buildResolverOperation(operation, type, fields)).toMatchSnapshot();
+  },
+);

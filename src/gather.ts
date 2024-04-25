@@ -13,6 +13,8 @@ import {
   visit,
   visitWithTypeInfo,
 } from 'graphql';
+import { jsonToGraphQLQuery } from 'json-to-graphql-query';
+import setAtPath from 'lodash.set';
 import {
   planSchema,
   SchemaPlan,
@@ -276,6 +278,11 @@ function planGatherResolversForOperation(
     }
   }
 
+  // we build resolvers operations only after gather
+  // this way we ensure that all fields are available
+  // in both the private and public lists
+  buildAndInsertOperationsInResolvers(resolvers);
+
   return resolvers;
 }
 
@@ -331,7 +338,10 @@ function insertResolversForGatherPlanCompositeField(
         );
       }
 
-      for (const { select } of Object.values(resolverPlan.variables)) {
+      for (const variable of Object.values(resolverPlan.variables)) {
+        if (!('select' in variable)) {
+          continue;
+        }
         // make sure parent resolver exports fields that are needed
         // as variables to perform the resolution
         //
@@ -339,7 +349,7 @@ function insertResolversForGatherPlanCompositeField(
         // to parents export for resolution during execution
         //
         // *parent resolver is the one that {@link GatherPlanResolver.includes} this resolver
-        const path = `${pathPrefix}${parent.name}.${select}`;
+        const path = `${pathPrefix}${parent.name}.${variable.select}`;
         const parentExport = parentResolver.public.find((e) => e === path);
         if (!parentExport) {
           // TODO: disallow pushing same path multiple times
@@ -388,4 +398,32 @@ function insertResolversForGatherPlanCompositeField(
       );
     }
   }
+}
+
+export function buildAndInsertOperationsInResolvers(
+  resolvers: GatherPlanResolver[],
+) {
+  for (const resolver of resolvers) {
+    resolver.operation = buildResolverOperation(
+      resolver.operation,
+      resolver.type,
+      [...resolver.public, ...resolver.private],
+    );
+    buildAndInsertOperationsInResolvers(Object.values(resolver.includes));
+  }
+}
+
+export function buildResolverOperation(
+  operation: string,
+  type: string,
+  fields: string[],
+): string {
+  operation += ` fragment __export on ${type} { `;
+  const obj = {};
+  for (const path of fields) {
+    setAtPath(obj, path, true);
+  }
+  operation += jsonToGraphQLQuery(obj);
+  operation += ' }';
+  return operation;
 }

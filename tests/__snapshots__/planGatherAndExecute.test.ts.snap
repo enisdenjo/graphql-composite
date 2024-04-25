@@ -1,0 +1,516 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`fixture 'store' > query 'NotBasic' > should execute 1`] = `
+{
+  "data": {
+    "storefront": {
+      "id": "cyberport",
+      "name": "CyberPort",
+      "products": [
+        {
+          "manufacturer": {
+            "id": "manufacturer-of-laptop",
+            "name": "TODO: name of manufacturer manufacturer-of-laptop",
+            "products": [
+              {
+                "name": "TODO: name of product laptop",
+                "upc": "laptop",
+              },
+              {
+                "name": "TODO: name of product otherthing",
+                "upc": "otherthing",
+              },
+            ],
+          },
+          "name": "TODO: name of product laptop",
+          "upc": "laptop",
+        },
+        {
+          "manufacturer": {
+            "id": "manufacturer-of-computer",
+            "name": "TODO: name of manufacturer manufacturer-of-computer",
+            "products": [
+              {
+                "name": "TODO: name of product computer",
+                "upc": "computer",
+              },
+              {
+                "name": "TODO: name of product otherthing",
+                "upc": "otherthing",
+              },
+            ],
+          },
+          "name": "TODO: name of product computer",
+          "upc": "computer",
+        },
+        {
+          "manufacturer": {
+            "id": "manufacturer-of-headset",
+            "name": "TODO: name of manufacturer manufacturer-of-headset",
+            "products": [
+              {
+                "name": "TODO: name of product headset",
+                "upc": "headset",
+              },
+              {
+                "name": "TODO: name of product otherthing",
+                "upc": "otherthing",
+              },
+            ],
+          },
+          "name": "TODO: name of product headset",
+          "upc": "headset",
+        },
+      ],
+    },
+  },
+}
+`;
+
+exports[`fixture 'store' > query 'NotBasic' > should plan gather 1`] = `
+{
+  "operations": [
+    {
+      "fields": [
+        {
+          "fields": [
+            {
+              "isNonNull": true,
+              "kind": "scalar",
+              "name": "id",
+              "type": "ID",
+            },
+            {
+              "isNonNull": true,
+              "kind": "scalar",
+              "name": "name",
+              "type": "String",
+            },
+            {
+              "fields": [
+                {
+                  "isNonNull": true,
+                  "kind": "scalar",
+                  "name": "upc",
+                  "type": "ID",
+                },
+                {
+                  "isNonNull": true,
+                  "kind": "scalar",
+                  "name": "name",
+                  "type": "String",
+                },
+                {
+                  "fields": [
+                    {
+                      "fields": [
+                        {
+                          "isNonNull": true,
+                          "kind": "scalar",
+                          "name": "upc",
+                          "type": "ID",
+                        },
+                        {
+                          "isNonNull": true,
+                          "kind": "scalar",
+                          "name": "name",
+                          "type": "String",
+                        },
+                      ],
+                      "isList": true,
+                      "isListItemNonNull": false,
+                      "isNonNull": true,
+                      "kind": "composite",
+                      "name": "products",
+                      "type": "Product",
+                    },
+                    {
+                      "isNonNull": true,
+                      "kind": "scalar",
+                      "name": "name",
+                      "type": "String",
+                    },
+                  ],
+                  "isList": false,
+                  "isListItemNonNull": false,
+                  "isNonNull": false,
+                  "kind": "composite",
+                  "name": "manufacturer",
+                  "type": "Manufacturer",
+                },
+              ],
+              "isList": true,
+              "isListItemNonNull": false,
+              "isNonNull": true,
+              "kind": "composite",
+              "name": "products",
+              "type": "Product",
+            },
+          ],
+          "isList": false,
+          "isListItemNonNull": false,
+          "isNonNull": false,
+          "kind": "composite",
+          "name": "storefront",
+          "type": "Storefront",
+        },
+      ],
+      "name": "NotBasic",
+      "resolvers": [
+        {
+          "exports": [
+            "id",
+            "name",
+            "products.upc",
+          ],
+          "includes": {
+            "products": {
+              "exports": [
+                "name",
+                "manufacturer.products.upc",
+                "manufacturer.products.name",
+                "manufacturer.id",
+              ],
+              "includes": {
+                "manufacturer": {
+                  "exports": [
+                    "name",
+                  ],
+                  "includes": {},
+                  "kind": "fetch",
+                  "operation": "query ManufacturerById($Manufacturer_id: ID!) { manufacturer(id: $Manufacturer_id) { ...export } }",
+                  "source": "manufacturers",
+                  "type": "Manufacturer",
+                  "typeOrField": "Manufacturer",
+                  "url": "http://localhost/graphql",
+                  "variables": {
+                    "Manufacturer_id": {
+                      "name": "Manufacturer_id",
+                      "select": "id",
+                    },
+                  },
+                },
+              },
+              "kind": "fetch",
+              "operation": "query ProductByUpc($Product_upc: ID!) { product(upc: $Product_upc) { ...export } }",
+              "source": "products",
+              "type": "Product",
+              "typeOrField": "Product",
+              "url": "http://localhost/graphql",
+              "variables": {
+                "Product_upc": {
+                  "name": "Product_upc",
+                  "select": "upc",
+                },
+              },
+            },
+          },
+          "kind": "fetch",
+          "operation": "query storefront($id: ID!) { storefront(id: $id) { ...export } }",
+          "source": "storefronts",
+          "type": "Storefront",
+          "typeOrField": "storefront",
+          "url": "http://localhost/graphql",
+          "variables": {},
+        },
+      ],
+      "type": "query",
+    },
+  ],
+  "paths": [
+    "storefront",
+    "storefront.id",
+    "storefront.name",
+    "storefront.products",
+    "storefront.products.upc",
+    "storefront.products.name",
+    "storefront.products.manufacturer",
+    "storefront.products.manufacturer.products",
+    "storefront.products.manufacturer.products.upc",
+    "storefront.products.manufacturer.products.name",
+    "storefront.products.manufacturer.name",
+  ],
+  "query": "query NotBasic {
+  storefront(id: "2") {
+    id
+    name
+    products {
+      upc
+      name
+      manufacturer {
+        products {
+          upc
+          name
+        }
+        name
+      }
+    }
+  }
+}",
+}
+`;
+
+exports[`fixture 'store' > should plan schema 1`] = `
+{
+  "compositeTypes": {
+    "Manufacturer": {
+      "fields": {
+        "id": {
+          "name": "id",
+          "sources": {
+            "manufacturers": {
+              "source": "manufacturers",
+              "typeOrField": "id",
+            },
+            "products": {
+              "source": "products",
+              "typeOrField": "id",
+            },
+          },
+        },
+        "name": {
+          "name": "name",
+          "sources": {
+            "manufacturers": {
+              "source": "manufacturers",
+              "typeOrField": "name",
+            },
+          },
+        },
+        "products": {
+          "name": "products",
+          "sources": {
+            "products": {
+              "source": "products",
+              "typeOrField": "products",
+            },
+          },
+        },
+      },
+      "name": "Manufacturer",
+      "resolvers": {
+        "manufacturers": {
+          "kind": "fetch",
+          "operation": "query ManufacturerById($Manufacturer_id: ID!) { manufacturer(id: $Manufacturer_id) { ...export } }",
+          "source": "manufacturers",
+          "type": "Manufacturer",
+          "typeOrField": "Manufacturer",
+          "url": "http://localhost/graphql",
+          "variables": {
+            "Manufacturer_id": {
+              "name": "Manufacturer_id",
+              "select": "id",
+            },
+          },
+        },
+        "products": {
+          "kind": "fetch",
+          "operation": "query ManufacturerById($Manufacturer_id: ID!) { _manufacturer(id: $Manufacturer_id) { ...export } }",
+          "source": "products",
+          "type": "Manufacturer",
+          "typeOrField": "Manufacturer",
+          "url": "http://localhost/graphql",
+          "variables": {
+            "Manufacturer_id": {
+              "name": "Manufacturer_id",
+              "select": "id",
+            },
+          },
+        },
+      },
+    },
+    "Product": {
+      "fields": {
+        "manufacturer": {
+          "name": "manufacturer",
+          "sources": {
+            "products": {
+              "source": "products",
+              "typeOrField": "manufacturer",
+            },
+          },
+        },
+        "name": {
+          "name": "name",
+          "sources": {
+            "products": {
+              "source": "products",
+              "typeOrField": "name",
+            },
+          },
+        },
+        "price": {
+          "name": "price",
+          "sources": {
+            "products": {
+              "source": "products",
+              "typeOrField": "price",
+            },
+          },
+        },
+        "upc": {
+          "name": "upc",
+          "sources": {
+            "products": {
+              "source": "products",
+              "typeOrField": "upc",
+            },
+            "storefronts": {
+              "source": "storefronts",
+              "typeOrField": "upc",
+            },
+          },
+        },
+      },
+      "name": "Product",
+      "resolvers": {
+        "products": {
+          "kind": "fetch",
+          "operation": "query ProductByUpc($Product_upc: ID!) { product(upc: $Product_upc) { ...export } }",
+          "source": "products",
+          "type": "Product",
+          "typeOrField": "Product",
+          "url": "http://localhost/graphql",
+          "variables": {
+            "Product_upc": {
+              "name": "Product_upc",
+              "select": "upc",
+            },
+          },
+        },
+        "storefronts": {
+          "kind": "fetch",
+          "operation": "TODO",
+          "source": "storefronts",
+          "type": "Product",
+          "typeOrField": "Product",
+          "url": "http://localhost/graphql",
+          "variables": {
+            "Product_upc": {
+              "name": "Product_upc",
+              "select": "upc",
+            },
+          },
+        },
+      },
+    },
+    "Storefront": {
+      "fields": {
+        "id": {
+          "name": "id",
+          "sources": {
+            "storefronts": {
+              "source": "storefronts",
+              "typeOrField": "id",
+            },
+          },
+        },
+        "name": {
+          "name": "name",
+          "sources": {
+            "storefronts": {
+              "source": "storefronts",
+              "typeOrField": "name",
+            },
+          },
+        },
+        "products": {
+          "name": "products",
+          "sources": {
+            "storefronts": {
+              "source": "storefronts",
+              "typeOrField": "products",
+            },
+          },
+        },
+      },
+      "name": "Storefront",
+      "resolvers": {
+        "storefronts": {
+          "kind": "fetch",
+          "operation": "query StorefrontById($Storefront_id: ID!) { storefront(id: $Storefront_id) { ...export } }",
+          "source": "storefronts",
+          "type": "Storefront",
+          "typeOrField": "Storefront",
+          "url": "http://localhost/graphql",
+          "variables": {
+            "Storefront_id": {
+              "name": "Storefront_id",
+              "select": "id",
+            },
+          },
+        },
+      },
+    },
+  },
+  "operations": {
+    "query": {
+      "fields": {
+        "_manufacturer": {
+          "name": "_manufacturer",
+          "resolvers": {
+            "products": {
+              "kind": "fetch",
+              "operation": "query _manufacturer($id: ID!) { _manufacturer(id: $id) { ...export } }",
+              "source": "products",
+              "type": "Manufacturer",
+              "typeOrField": "_manufacturer",
+              "url": "http://localhost/graphql",
+              "variables": {},
+            },
+          },
+        },
+        "manufacturer": {
+          "name": "manufacturer",
+          "resolvers": {
+            "manufacturers": {
+              "kind": "fetch",
+              "operation": "query manufacturer($id: ID!) { manufacturer(id: $id) { ...export } }",
+              "source": "manufacturers",
+              "type": "Manufacturer",
+              "typeOrField": "manufacturer",
+              "url": "http://localhost/graphql",
+              "variables": {},
+            },
+          },
+        },
+        "product": {
+          "name": "product",
+          "resolvers": {
+            "products": {
+              "kind": "fetch",
+              "operation": "query product($upc: ID!) { product(upc: $upc) }",
+              "source": "products",
+              "type": "Product",
+              "typeOrField": "product",
+              "url": "http://localhost/graphql",
+              "variables": {},
+            },
+          },
+        },
+        "storefront": {
+          "name": "storefront",
+          "resolvers": {
+            "storefronts": {
+              "kind": "fetch",
+              "operation": "query storefront($id: ID!) { storefront(id: $id) { ...export } }",
+              "source": "storefronts",
+              "type": "Storefront",
+              "typeOrField": "storefront",
+              "url": "http://localhost/graphql",
+              "variables": {},
+            },
+          },
+        },
+      },
+      "name": "query",
+    },
+  },
+}
+`;
+
+exports[`should build proper query for 'manufacturers' resolver 1`] = `"query ManufacturerById($Manufacturer_id: ID!) { manufacturer(id: $Manufacturer_id) { ...export } } fragment export on Manufacturer { name }"`;
+
+exports[`should build proper query for 'products' resolver 1`] = `"query ProductByUpc($Product_upc: ID!) { product(upc: $Product_upc) { ...export } } fragment export on Product { name manufacturer { products { upc name } id } }"`;
+
+exports[`should build proper query for 'storefronts' resolver 1`] = `"query storefront($id: ID!) { storefront(id: $id) { ...export } } fragment export on Storefront { id name products { upc } }"`;

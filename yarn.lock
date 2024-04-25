@@ -448,7 +448,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphql-tools/schema@npm:^10.0.0":
+"@graphql-tools/schema@npm:^10.0.0, @graphql-tools/schema@npm:^10.0.3":
   version: 10.0.3
   resolution: "@graphql-tools/schema@npm:10.0.3"
   dependencies:
@@ -1525,6 +1525,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "graphql-composite@workspace:."
   dependencies:
+    "@graphql-tools/schema": "npm:^10.0.3"
     "@ianvs/prettier-plugin-sort-imports": "npm:^4.2.1"
     "@tsconfig/node21": "npm:^21.0.3"
     "@tsconfig/strictest": "npm:^2.0.5"

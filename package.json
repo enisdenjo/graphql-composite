@@ -22,6 +22,7 @@
     "graphql": "^16"
   },
   "devDependencies": {
+    "@graphql-tools/schema": "^10.0.3",
     "@ianvs/prettier-plugin-sort-imports": "^4.2.1",
     "@tsconfig/node21": "^21.0.3",
     "@tsconfig/strictest": "^2.0.5",

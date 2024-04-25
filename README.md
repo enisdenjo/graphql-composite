@@ -5,7 +5,7 @@
 
 Spec agnostic GraphQL composite schema planner, executor and explainer.
 
-## Get Started
+## Get started
 
 ```sh
 yarn

@@ -13,7 +13,7 @@ export async function execute(
   ctx: ExecutionContext,
   plan: GatherPlan,
   variables: Record<string, unknown>,
-): Promise<ExecutionResult & { explain: ResolverExplain[] }> {
+): Promise<ExecutionResult & { explain: ExecutionExplain[] }> {
   const result: ExecutionResult = {};
   // TODO: batch resolvers going to the same source
   const explain = await Promise.all(
@@ -26,14 +26,14 @@ export async function execute(
   return { ...result, explain };
 }
 
-export interface ResolverExplain {
+export interface ExecutionExplain {
   path: (string | number)[];
   query: string;
   variables: Record<string, unknown>;
   data?: unknown;
   errors?: ReadonlyArray<GraphQLError>;
   exports: GatherPlanResolver['exports'];
-  includes: ResolverExplain[];
+  includes: ExecutionExplain[];
 }
 
 async function executeResolver(
@@ -50,7 +50,7 @@ async function executeResolver(
    * ready to be passed back to the user.
    */
   resultRef: ExecutionResult,
-): Promise<ResolverExplain> {
+): Promise<ExecutionExplain> {
   const { getFetch } = ctx;
 
   const query = buildResolverQuery(resolver);

@@ -65,22 +65,22 @@ export interface SchemaPlanFetchResolver {
   kind: 'fetch';
   /**
    * The type this resolver resolves.
-   * Is actually the type of the `export` fragment.
+   * Is actually the type of the `__export` fragment.
    */
   type: string;
   /**
    * Operation to execute on the source. The operation **must** include
-   * a spread of the `export` fragment which will have the fields populated
+   * a spread of the `__export` fragment which will have the fields populated
    * during the gather phase.
    *
    * A well-formatted operation like this:
    * ```graphql
-   * query ProductByUPC($upc: ID!) { product(upc: $upc) { ...export } }
+   * query ProductByUPC($upc: ID!) { product(upc: $upc) { ...__export } }
    * ```
    * will be populated by the necessary fields during gather like this:
    * ```graphql
-   * query ProductByUPC($upc: ID!) { product(upc: $upc) { ...export } }
-   * fragment export on Product { upc name manufacturer { id } }
+   * query ProductByUPC($upc: ID!) { product(upc: $upc) { ...__export } }
+   * fragment __export on Product { upc name manufacturer { id } }
    * ```
    *
    */

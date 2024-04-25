@@ -47,7 +47,7 @@ it.each([
     id: 'storefronts',
     type: 'Storefront',
     operation:
-      'query storefront($id: ID!) { storefront(id: $id) { ...export } }',
+      'query storefront($id: ID!) { storefront(id: $id) { ...__export } }',
     public: ['id', 'name', 'products.upc'],
     private: [],
   },
@@ -55,7 +55,7 @@ it.each([
     id: 'products',
     type: 'Product',
     operation:
-      'query ProductByUpc($Product_upc: ID!) { product(upc: $Product_upc) { ...export } }',
+      'query ProductByUpc($Product_upc: ID!) { product(upc: $Product_upc) { ...__export } }',
     public: [
       'name',
       'manufacturer.products.upc',
@@ -68,7 +68,7 @@ it.each([
     id: 'manufacturers',
     type: 'Manufacturer',
     operation:
-      'query ManufacturerById($Manufacturer_id: ID!) { manufacturer(id: $Manufacturer_id) { ...export } }',
+      'query ManufacturerById($Manufacturer_id: ID!) { manufacturer(id: $Manufacturer_id) { ...__export } }',
     public: ['name'],
     private: ['id'],
   },

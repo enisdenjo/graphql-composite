@@ -57,7 +57,7 @@ export interface GatherPlanResolver
   extends SchemaPlanSource,
     SchemaPlanResolver {
   /**
-   * Dot notation flat list of field paths to add to the `export`
+   * Dot notation flat list of field paths to add to the `__export`
    * fragment on the query that are NOT available in the final result,
    * but only to the included resolvers.
    *
@@ -65,7 +65,7 @@ export interface GatherPlanResolver
    */
   private: string[];
   /**
-   * Dot notation flat list of field paths to add to the `export`
+   * Dot notation flat list of field paths to add to the `__export`
    * fragment on the query that are also available in the final result.
    */
   public: string[];

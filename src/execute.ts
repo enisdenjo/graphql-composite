@@ -56,7 +56,7 @@ async function executeResolver(
    */
   resolver: GatherPlanResolver,
   /**
-   * Data of the `export` fragment in the parent resolver.
+   * Data of the `__export` fragment in the parent resolver.
    */
   parentExportData: Record<string, unknown> | null,
   /**
@@ -209,7 +209,7 @@ export function buildResolverQuery(
   >,
 ) {
   let query = resolver.operation;
-  query += ` fragment export on ${resolver.type} { `;
+  query += ` fragment __export on ${resolver.type} { `;
   const obj = {};
   for (const path of resolver.public) {
     setAtPath(obj, path, true);

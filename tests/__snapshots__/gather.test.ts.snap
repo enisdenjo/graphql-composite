@@ -96,8 +96,6 @@ exports[`should plan gather 1`] = `
             "name",
             "products.upc",
           ],
-          "id": "storefronts",
-          "imports": {},
           "includes": {
             "products": {
               "exports": [
@@ -106,24 +104,17 @@ exports[`should plan gather 1`] = `
                 "manufacturer.products.name",
                 "manufacturer.id",
               ],
-              "id": "products",
-              "imports": {
-                "products.upc": "Product_upc",
-              },
               "includes": {
                 "manufacturer": {
                   "exports": [
                     "name",
                   ],
-                  "id": "manufacturers",
-                  "imports": {
-                    "manufacturer.id": "Manufacturer_id",
-                  },
                   "includes": {},
                   "kind": "fetch",
-                  "name": "Manufacturer",
                   "operation": "query ManufacturerById($Manufacturer_id: ID!) { manufacturer(id: $Manufacturer_id) { ...export } }",
+                  "source": "manufacturers",
                   "type": "Manufacturer",
+                  "typeOrField": "Manufacturer",
                   "url": "http://localhost/graphql",
                   "variables": {
                     "Manufacturer_id": {
@@ -134,9 +125,10 @@ exports[`should plan gather 1`] = `
                 },
               },
               "kind": "fetch",
-              "name": "Product",
               "operation": "query ProductByUpc($Product_upc: ID!) { product(upc: $Product_upc) { ...export } }",
+              "source": "products",
               "type": "Product",
+              "typeOrField": "Product",
               "url": "http://localhost/graphql",
               "variables": {
                 "Product_upc": {
@@ -147,9 +139,10 @@ exports[`should plan gather 1`] = `
             },
           },
           "kind": "fetch",
-          "name": "storefront",
           "operation": "query storefront($id: ID!) { storefront(id: $id) { ...export } }",
+          "source": "storefronts",
           "type": "Storefront",
+          "typeOrField": "storefront",
           "url": "http://localhost/graphql",
           "variables": {},
         },

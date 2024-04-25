@@ -19,7 +19,7 @@ export async function execute(
   await Promise.all(
     plan.operations.flatMap((o) =>
       o.resolvers.map((r) =>
-        executeResolver(ctx, r, variables, [r.name], result),
+        executeResolver(ctx, r, variables, [r.typeOrField], result),
       ),
     ),
   );
@@ -48,7 +48,7 @@ async function executeResolver(
 ): Promise<ResolverExplain> {
   const { getFetch } = ctx;
 
-  const res = await getFetch(resolver.id)(resolver.url, {
+  const res = await getFetch(resolver.source)(resolver.url, {
     method: 'POST',
     headers: {
       'content-type': 'application/json',
@@ -79,6 +79,7 @@ async function executeResolver(
 
   const result: ExecutionResult = await res.json();
   if (result.errors?.length) {
+    // TODO: should throw instead?
     // stop immediately on errors, no need to traverse futher
     resultRef.errors = result.errors;
     return {
@@ -97,7 +98,6 @@ async function executeResolver(
   if (!resultRef.data) {
     resultRef.data = {};
   }
-
   for (const exportPath of resolver.exports.map((e) => e.split('.'))) {
     const lastKey = exportPath[exportPath.length - 1];
     const valBeforeLast =

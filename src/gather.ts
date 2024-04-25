@@ -17,7 +17,6 @@ import {
   planSchema,
   SchemaPlan,
   SchemaPlanResolver,
-  SchemaPlanResolverVariable,
   SchemaPlanSource,
 } from './schemaPlan.js';
 
@@ -57,18 +56,6 @@ export interface GatherPlanScalarField {
 export interface GatherPlanResolver
   extends SchemaPlanSource,
     SchemaPlanResolver {
-  /**
-   * Parent resolver's {@link GatherPlanResolver.exports} that are needed as variables to
-   * perform this resolution.
-   *
-   * Is actually a map of parent resolver's exported paths to the
-   * {@link SchemaPlanResolver.variables} names.
-   *
-   * *Parent resolver is the one that {@link GatherPlanResolver.includes} this one.
-   */
-  imports: {
-    [exportPath in GatherPlanResolver['exports'][number]]: SchemaPlanResolverVariable['name'];
-  };
   /**
    * Dot notation flat list of field paths to add to the `export`
    * fragment on the query. They're also the exported fields of this resolver.
@@ -240,10 +227,10 @@ function planGatherResolversForOperation(
         );
       }
 
-      let resolver = resolvers.find((r) => fieldPlan.sources[r.id]);
+      let resolver = resolvers.find((r) => fieldPlan.sources[r.source]);
       if (!resolver) {
         const resolverPlan = Object.values(operationFieldPlan.resolvers).find(
-          (r) => fieldPlan.sources[r.id],
+          (r) => fieldPlan.sources[r.source],
         );
         if (!resolverPlan) {
           // TODO: less confusing error
@@ -253,7 +240,6 @@ function planGatherResolversForOperation(
         }
         resolver = {
           ...resolverPlan,
-          imports: {},
           exports: [],
           includes: {},
         };
@@ -305,10 +291,10 @@ function insertResolversForGatherPlanCompositeField(
       );
     }
 
-    let resolver = fieldPlan.sources[parentResolver.id]
+    let resolver = fieldPlan.sources[parentResolver.source]
       ? parentResolver
       : Object.values(parentResolver.includes).find(
-          (r) => fieldPlan.sources[r.id],
+          (r) => fieldPlan.sources[r.source],
         );
     if (!resolver) {
       // this field cannot be resolved from the parent's source
@@ -322,7 +308,7 @@ function insertResolversForGatherPlanCompositeField(
       }
 
       const resolverPlan = Object.values(typePlan.resolvers).find(
-        (r) => fieldPlan.sources[r.id],
+        (r) => fieldPlan.sources[r.source],
       );
       if (!resolverPlan) {
         throw new Error(
@@ -336,21 +322,24 @@ function insertResolversForGatherPlanCompositeField(
         );
       }
 
-      const needs: GatherPlanResolver['imports'] = {};
-      for (const { name, select } of Object.values(resolverPlan.variables)) {
-        // make sure parent resolver - the one that {@link GatherPlanResolver.includes} this
-        // one - exports fields that are needed as variables to perform the resolution
+      for (const { select } of Object.values(resolverPlan.variables)) {
+        // make sure parent resolver exports fields that are needed
+        // as variables to perform the resolution
+        //
+        // if the parent doesnt export the necessary variable, add it
+        // to parents export for resolution during execution
+        //
+        // *parent resolver is the one that {@link GatherPlanResolver.includes} this resolver
         const path = `${pathPrefix}${parent.name}.${select}`;
-        const need = parentResolver.exports.find((e) => e === path);
-        if (!need) {
+        const parentExport = parentResolver.exports.find((e) => e === path);
+        if (!parentExport) {
           // TODO: disallow pushing same path multiple times
           // TODO: what happens if the parent source cannot resolve this field?
           parentResolver.exports.push(path);
         }
-        needs[path] = name;
       }
 
-      resolver = { ...resolverPlan, imports: needs, exports: [], includes: {} };
+      resolver = { ...resolverPlan, exports: [], includes: {} };
 
       parentResolver.includes[`${pathPrefix}${parent.name}`] = resolver;
     }

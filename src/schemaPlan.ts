@@ -27,14 +27,14 @@ export interface SchemaPlanOperation {
 export interface SchemaPlanOperationField {
   name: string;
   resolvers: {
-    [id in SchemaPlanSource['id']]: SchemaPlanSource & SchemaPlanResolver; // TODO: operation field must always have a resolver?
+    [id in SchemaPlanSource['source']]: SchemaPlanSource & SchemaPlanResolver; // TODO: operation field must always have a resolver?
   };
 }
 
 export interface SchemaPlanCompositeType {
   name: string;
   resolvers: {
-    [id in SchemaPlanSource['id']]: SchemaPlanSource & SchemaPlanResolver; // TODO: type can only have one resolver at source?
+    [id in SchemaPlanSource['source']]: SchemaPlanSource & SchemaPlanResolver; // TODO: type can only have one resolver at source?
   };
   fields: {
     [name in SchemaPlanCompositeTypeField['name']]: SchemaPlanCompositeTypeField;
@@ -44,17 +44,17 @@ export interface SchemaPlanCompositeType {
 export interface SchemaPlanCompositeTypeField {
   name: string;
   sources: {
-    [id in SchemaPlanSource['id']]:
+    [id in SchemaPlanSource['source']]:
       | (SchemaPlanSource & SchemaPlanResolver)
       | SchemaPlanSource; // a type field may not have a resolver, assuming it's in available in the type
   };
 }
 
 export interface SchemaPlanSource {
-  /** Unique ID of the source. Usually the subgraph name. */
-  id: string;
+  /** Unique identifier of the source. Usually the subgraph name. */
+  source: string;
   /** Name of the type or field in the source subgraph. */
-  name: string;
+  typeOrField: string;
 }
 
 export type SchemaPlanResolver = SchemaPlanFetchResolver; // TODO: other kinds
@@ -91,8 +91,9 @@ export interface SchemaPlanFetchResolver {
 }
 
 export interface SchemaPlanResolverVariable {
+  /** Name of the variable to use in the related operation. */
   name: string;
-  /** Which field in the type to use as this variable. */
+  /** Which field in the type to use (select) as this variable. */
   select: string;
 }
 
@@ -138,7 +139,7 @@ export function planSchema(schema: GraphQLSchema): SchemaPlan {
               `Operation field "${field.name}" must have a resolver`,
             );
           }
-          fieldPlan.resolvers[source.id] = {
+          fieldPlan.resolvers[source.source] = {
             ...source,
             ...resolver,
           };
@@ -157,7 +158,7 @@ export function planSchema(schema: GraphQLSchema): SchemaPlan {
     };
     for (const source of getSourcesFromDirectives(type, null)) {
       const resolver = getResolverForSourceFromDirectives(type, null, source);
-      compositeTypePlan.resolvers[source.id] = { ...source, ...resolver };
+      compositeTypePlan.resolvers[source.source] = { ...source, ...resolver };
     }
     for (const [name, field] of Object.entries(type.getFields())) {
       const fieldPlan: SchemaPlanCompositeTypeField = {
@@ -170,7 +171,7 @@ export function planSchema(schema: GraphQLSchema): SchemaPlan {
           field,
           source,
         );
-        fieldPlan.sources[source.id] = { ...source, ...resolver };
+        fieldPlan.sources[source.source] = { ...source, ...resolver };
       }
       compositeTypePlan.fields[fieldPlan.name] = fieldPlan;
     }
@@ -195,8 +196,18 @@ function getSourcesFromDirectives(
   ) || []) {
     // TODO: make sure source doesnt already exist
     sources.push({
-      id: mustGetStringArgumentValue(type, field, sourceDirective, 'subgraph'),
-      name: mustGetStringArgumentValue(type, field, sourceDirective, 'name'),
+      source: mustGetStringArgumentValue(
+        type,
+        field,
+        sourceDirective,
+        'subgraph',
+      ),
+      typeOrField: mustGetStringArgumentValue(
+        type,
+        field,
+        sourceDirective,
+        'name',
+      ),
     });
   }
   return sources;
@@ -226,7 +237,7 @@ function getResolverForSourceFromDirectives(
   const resolverDirs = directives.filter(
     (d) =>
       d.name.value === 'resolver' &&
-      mustGetStringArgumentValue(type, field, d, 'subgraph') === source.id,
+      mustGetStringArgumentValue(type, field, d, 'subgraph') === source.source,
   );
   const resolverDir = resolverDirs[0];
   if (!resolverDir) {
@@ -235,12 +246,12 @@ function getResolverForSourceFromDirectives(
       return null;
     }
     throw new Error(
-      `source "${source.id}" on type "${type.name}" has no resolver directive`,
+      `source "${source.source}" on type "${type.name}" has no resolver directive`,
     );
   }
   if (resolverDirs.length > 1) {
     throw new Error(
-      `source "${source.id}" on type "${type.name}" has multiple resolver directives`,
+      `source "${source.source}" on type "${type.name}" has multiple resolver directives`,
     );
   }
 
@@ -248,7 +259,7 @@ function getResolverForSourceFromDirectives(
   for (const variableDir of directives.filter(
     (d) =>
       d.name.value === 'variable' &&
-      mustGetStringArgumentValue(type, field, d, 'subgraph') === source.id,
+      mustGetStringArgumentValue(type, field, d, 'subgraph') === source.source,
   )) {
     const variable: SchemaPlanResolverVariable = {
       name: mustGetStringArgumentValue(type, field, variableDir, 'name'),

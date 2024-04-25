@@ -18,4 +18,4 @@ yarn
 1. Execute a query using the [GatherPlan](/src/gather.ts#GatherPlan)
    - Execution will create a ready-to-use GraphQL response and an [ExecutionExplain](/src/execute.ts#ExecutionExplain) explaining the steps
 
-\*[SchemaPlan](/src/schemaPlan.ts#SchemaPlan), [GatherPlan](/src/gather.ts#GatherPlan) as well as [ExecutionExplain](/src/execute.ts#ExecutionExplain) are serialisable to JSON.
+\*_[SchemaPlan](/src/schemaPlan.ts#SchemaPlan), [GatherPlan](/src/gather.ts#GatherPlan) as well as [ExecutionExplain](/src/execute.ts#ExecutionExplain) are serialisable to JSON._

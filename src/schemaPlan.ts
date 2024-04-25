@@ -27,14 +27,16 @@ export interface SchemaPlanOperation {
 export interface SchemaPlanOperationField {
   name: string;
   resolvers: {
-    [id in SchemaPlanSource['source']]: SchemaPlanSource & SchemaPlanResolver; // TODO: operation field must always have a resolver?
+    [source in SchemaPlanSource['source']]: SchemaPlanSource &
+      SchemaPlanResolver; // TODO: operation field must always have a resolver?
   };
 }
 
 export interface SchemaPlanCompositeType {
   name: string;
   resolvers: {
-    [id in SchemaPlanSource['source']]: SchemaPlanSource & SchemaPlanResolver; // TODO: type can only have one resolver at source?
+    [source in SchemaPlanSource['source']]: SchemaPlanSource &
+      SchemaPlanResolver; // TODO: type can only have one resolver at source?
   };
   fields: {
     [name in SchemaPlanCompositeTypeField['name']]: SchemaPlanCompositeTypeField;
@@ -44,7 +46,7 @@ export interface SchemaPlanCompositeType {
 export interface SchemaPlanCompositeTypeField {
   name: string;
   sources: {
-    [id in SchemaPlanSource['source']]:
+    [source in SchemaPlanSource['source']]:
       | (SchemaPlanSource & SchemaPlanResolver)
       | SchemaPlanSource; // a type field may not have a resolver, assuming it's in available in the type
   };

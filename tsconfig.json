@@ -1,7 +1,7 @@
 {
   "extends": [
-    "@tsconfig/node21/tsconfig.json",
-    "@tsconfig/strictest/tsconfig.json"
+    "@tsconfig/strictest/tsconfig.json",
+    "@tsconfig/node21/tsconfig.json"
   ],
   "include": ["src", "tests"]
 }

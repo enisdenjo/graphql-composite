@@ -174,7 +174,7 @@ function insertFieldToOperationAtDepth(
     const field = curr.fields[curr.fields.length - 1]!;
     if (field.kind !== 'composite') {
       throw new Error(
-        `Cannot add a field at depth ${depth} because it's composite`,
+        `Cannot add a field at depth ${depth} because it's not composite`,
       );
     }
     curr = field;

@@ -7,7 +7,7 @@ Spec agnostic GraphQL composite schema planner, executor and explainer.
 
 ## Get started
 
-See [plan, gather and execute tests](/tests/planGatherAndExecute.test.ts) and the accompanying [fixtures](/tests/fixtures).
+See [plan, gather and execute tests](/tests/planGatherAndExecute.test.ts), and the accompanying [fixtures](/tests/fixtures).
 
 ## How does it work?
 

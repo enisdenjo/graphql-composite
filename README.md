@@ -5,6 +5,16 @@
 
 Spec agnostic GraphQL composite schema planner, executor and explainer.
 
+## Features
+
+- Zero-dependency
+  - _Not at the moment because I am lazy - [see deps](/package.json)) - they'll be dropped in future iterations_
+- Spec agnostic
+  - Even specless since you can design your own [SchemaPlan](/src/schemaPlan.ts#SchemaPlan)
+- Runs in any environment
+- Stable plans and explanations
+- Everything's JSON serialisable, all steps until execution can be cached
+
 ## Get started
 
 See [plan, gather and execute tests](/tests/planGatherAndExecute.test.ts), and the accompanying [fixtures](/tests/fixtures).

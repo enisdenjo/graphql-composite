@@ -13,29 +13,34 @@ export async function execute(
   ctx: ExecutionContext,
   plan: GatherPlan,
   variables: Record<string, unknown>,
-): Promise<ExecutionResult> {
+): Promise<ExecutionResult & { explain: ResolverExplain[] }> {
   const result: ExecutionResult = {};
   // TODO: batch resolvers going to the same source
-  await Promise.all(
+  const explain = await Promise.all(
     plan.operations.flatMap((o) =>
       o.resolvers.map((r) =>
         executeResolver(ctx, r, variables, [r.typeOrField], result),
       ),
     ),
   );
-  return result;
+  return { ...result, explain };
 }
 
 export interface ResolverExplain {
+  path: (string | number)[];
+  query: string;
+  variables: Record<string, unknown>;
   data?: unknown;
   errors?: ReadonlyArray<GraphQLError>;
+  exports: GatherPlanResolver['exports'];
   includes: ResolverExplain[];
 }
 
 async function executeResolver(
   ctx: ExecutionContext,
   resolver: GatherPlanResolver,
-  variables: Record<string, unknown> | null,
+  /** The variables for the operation. Those that the user provides. */
+  operationVariables: Record<string, unknown> | null,
   /**
    * The path in the {@link resultRef} this gather is resolving.
    */
@@ -48,6 +53,16 @@ async function executeResolver(
 ): Promise<ResolverExplain> {
   const { getFetch } = ctx;
 
+  const query = buildResolverQuery(resolver);
+  const variables =
+    operationVariables ||
+    Object.values(resolver.variables).reduce(
+      (agg, { name, select }) => ({
+        ...agg,
+        [name]: getAtPath(resultRef.data, [...path, select]),
+      }),
+      {},
+    );
   const res = await getFetch(resolver.source)(resolver.url, {
     method: 'POST',
     headers: {
@@ -55,18 +70,10 @@ async function executeResolver(
       accept: 'application/graphql-response+json, application/json',
     },
     body: JSON.stringify({
-      query: buildResolverQuery(resolver),
+      query,
       // TODO: actual operation name
       operationName: null,
-      variables:
-        variables ||
-        Object.values(resolver.variables).reduce(
-          (agg, { name, select }) => ({
-            ...agg,
-            [name]: getAtPath(resultRef.data, [...path, select]),
-          }),
-          {},
-        ),
+      variables,
     }),
   });
   if (!res.ok) {
@@ -83,7 +90,11 @@ async function executeResolver(
     // stop immediately on errors, no need to traverse futher
     resultRef.errors = result.errors;
     return {
+      path,
+      query,
+      variables,
       ...result,
+      exports: [], // TODO: nothing's exported because of the fail, should we popoulate regardless?
       includes: [],
     };
   }
@@ -141,7 +152,11 @@ async function executeResolver(
   }
 
   return {
+    path,
+    query,
+    variables,
     ...result,
+    exports: resolver.exports,
     // TODO: batch resolvers going to the same source
     includes: await Promise.all(
       Object.entries(resolver.includes).flatMap(([field, resolver]) => {

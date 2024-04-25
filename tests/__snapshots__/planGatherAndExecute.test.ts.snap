@@ -64,6 +64,215 @@ exports[`fixture 'store' > query 'NotBasic' > should execute 1`] = `
       ],
     },
   },
+  "explain": [
+    {
+      "data": {
+        "storefront": {
+          "id": "cyberport",
+          "name": "CyberPort",
+          "products": [
+            {
+              "upc": "laptop",
+            },
+            {
+              "upc": "computer",
+            },
+            {
+              "upc": "headset",
+            },
+          ],
+        },
+      },
+      "exports": [
+        "id",
+        "name",
+        "products.upc",
+      ],
+      "includes": [
+        {
+          "data": {
+            "product": {
+              "manufacturer": {
+                "id": "manufacturer-of-laptop",
+                "products": [
+                  {
+                    "name": "TODO: name of product laptop",
+                    "upc": "laptop",
+                  },
+                  {
+                    "name": "TODO: name of product otherthing",
+                    "upc": "otherthing",
+                  },
+                ],
+              },
+              "name": "TODO: name of product laptop",
+            },
+          },
+          "exports": [
+            "name",
+            "manufacturer.products.upc",
+            "manufacturer.products.name",
+            "manufacturer.id",
+          ],
+          "includes": [
+            {
+              "data": {
+                "manufacturer": {
+                  "name": "TODO: name of manufacturer manufacturer-of-laptop",
+                },
+              },
+              "exports": [
+                "name",
+              ],
+              "includes": [],
+              "path": [
+                "storefront",
+                "products",
+                0,
+                "manufacturer",
+              ],
+              "query": "query ManufacturerById($Manufacturer_id: ID!) { manufacturer(id: $Manufacturer_id) { ...export } } fragment export on Manufacturer { name }",
+              "variables": {
+                "Manufacturer_id": "manufacturer-of-laptop",
+              },
+            },
+          ],
+          "path": [
+            "storefront",
+            "products",
+            0,
+          ],
+          "query": "query ProductByUpc($Product_upc: ID!) { product(upc: $Product_upc) { ...export } } fragment export on Product { name manufacturer { products { upc name } id } }",
+          "variables": {
+            "Product_upc": "laptop",
+          },
+        },
+        {
+          "data": {
+            "product": {
+              "manufacturer": {
+                "id": "manufacturer-of-computer",
+                "products": [
+                  {
+                    "name": "TODO: name of product computer",
+                    "upc": "computer",
+                  },
+                  {
+                    "name": "TODO: name of product otherthing",
+                    "upc": "otherthing",
+                  },
+                ],
+              },
+              "name": "TODO: name of product computer",
+            },
+          },
+          "exports": [
+            "name",
+            "manufacturer.products.upc",
+            "manufacturer.products.name",
+            "manufacturer.id",
+          ],
+          "includes": [
+            {
+              "data": {
+                "manufacturer": {
+                  "name": "TODO: name of manufacturer manufacturer-of-computer",
+                },
+              },
+              "exports": [
+                "name",
+              ],
+              "includes": [],
+              "path": [
+                "storefront",
+                "products",
+                1,
+                "manufacturer",
+              ],
+              "query": "query ManufacturerById($Manufacturer_id: ID!) { manufacturer(id: $Manufacturer_id) { ...export } } fragment export on Manufacturer { name }",
+              "variables": {
+                "Manufacturer_id": "manufacturer-of-computer",
+              },
+            },
+          ],
+          "path": [
+            "storefront",
+            "products",
+            1,
+          ],
+          "query": "query ProductByUpc($Product_upc: ID!) { product(upc: $Product_upc) { ...export } } fragment export on Product { name manufacturer { products { upc name } id } }",
+          "variables": {
+            "Product_upc": "computer",
+          },
+        },
+        {
+          "data": {
+            "product": {
+              "manufacturer": {
+                "id": "manufacturer-of-headset",
+                "products": [
+                  {
+                    "name": "TODO: name of product headset",
+                    "upc": "headset",
+                  },
+                  {
+                    "name": "TODO: name of product otherthing",
+                    "upc": "otherthing",
+                  },
+                ],
+              },
+              "name": "TODO: name of product headset",
+            },
+          },
+          "exports": [
+            "name",
+            "manufacturer.products.upc",
+            "manufacturer.products.name",
+            "manufacturer.id",
+          ],
+          "includes": [
+            {
+              "data": {
+                "manufacturer": {
+                  "name": "TODO: name of manufacturer manufacturer-of-headset",
+                },
+              },
+              "exports": [
+                "name",
+              ],
+              "includes": [],
+              "path": [
+                "storefront",
+                "products",
+                2,
+                "manufacturer",
+              ],
+              "query": "query ManufacturerById($Manufacturer_id: ID!) { manufacturer(id: $Manufacturer_id) { ...export } } fragment export on Manufacturer { name }",
+              "variables": {
+                "Manufacturer_id": "manufacturer-of-headset",
+              },
+            },
+          ],
+          "path": [
+            "storefront",
+            "products",
+            2,
+          ],
+          "query": "query ProductByUpc($Product_upc: ID!) { product(upc: $Product_upc) { ...export } } fragment export on Product { name manufacturer { products { upc name } id } }",
+          "variables": {
+            "Product_upc": "headset",
+          },
+        },
+      ],
+      "path": [
+        "storefront",
+      ],
+      "query": "query storefront($id: ID!) { storefront(id: $id) { ...export } } fragment export on Storefront { id name products { upc } }",
+      "variables": {
+        "id": "2",
+      },
+    },
+  ],
 }
 `;
 

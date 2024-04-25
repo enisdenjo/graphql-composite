@@ -12,18 +12,25 @@ export interface ExecutionContext {
 export async function execute(
   ctx: ExecutionContext,
   plan: GatherPlan,
-  variables: Record<string, unknown>,
+  operationVariables: Record<string, unknown>,
 ): Promise<ExecutionResult & { explain: ExecutionExplain[] }> {
-  const result: ExecutionResult = {};
+  const resultRef: ExecutionResult = {};
   // TODO: batch resolvers going to the same source
   const explain = await Promise.all(
     plan.operations.flatMap((o) =>
       o.resolvers.map((r) =>
-        executeResolver(ctx, r, variables, [r.typeOrField], result, null),
+        executeResolver(
+          ctx,
+          operationVariables,
+          r,
+          null,
+          [r.typeOrField],
+          resultRef,
+        ),
       ),
     ),
   );
-  return { ...result, explain };
+  return { ...resultRef, explain };
 }
 
 export interface ExecutionExplain {
@@ -39,35 +46,44 @@ export interface ExecutionExplain {
 
 async function executeResolver(
   ctx: ExecutionContext,
+  /**
+   * The variables for the execution. Those that the user provides.
+   * These should be used only on the operation (root) resolver.
+   */
+  operationVariables: Record<string, unknown>,
+  /**
+   * Resolver to execute.
+   */
   resolver: GatherPlanResolver,
-  /** The variables for the operation. Those that the user provides. */
-  operationVariables: Record<string, unknown> | null,
+  /**
+   * Data of the `export` fragment in the parent resolver.
+   */
+  parentExportData: Record<string, unknown> | null,
   /**
    * The path in the {@link resultRef} this gather is resolving.
    */
   path: (string | number)[],
   /**
-   * Mutated argument that references the final result,
-   * ready to be passed back to the user.
+   * Reference whose object gets mutated to form the final
+   * result (the one that the caller gets).
    */
   resultRef: ExecutionResult,
-  /**
-   * Data of the `export` fragment in the parent resolver.
-   */
-  parentExportData: Record<string, unknown> | null,
 ): Promise<ExecutionExplain> {
   const { getFetch } = ctx;
 
   const query = buildResolverQuery(resolver);
-  const variables =
-    operationVariables ||
-    Object.values(resolver.variables).reduce(
-      (agg, { name, select }) => ({
-        ...agg,
-        [name]: getAtPath(parentExportData, select),
-      }),
-      {},
-    );
+  const variables = !parentExportData
+    ? // this is the operation (root) resolver because there's no parent data
+      operationVariables
+    : // this is a included resolver because the includer's providing data
+      Object.values(resolver.variables).reduce(
+        (agg, { name, select }) => ({
+          ...agg,
+          [name]: getAtPath(parentExportData, select),
+        }),
+        {},
+      );
+
   const res = await getFetch(resolver.source)(resolver.url, {
     method: 'POST',
     headers: {
@@ -76,8 +92,6 @@ async function executeResolver(
     },
     body: JSON.stringify({
       query,
-      // TODO: actual operation name
-      operationName: null,
       variables,
     }),
   });
@@ -167,21 +181,21 @@ async function executeResolver(
           return fieldData.map((fieldDataItem, i) =>
             executeResolver(
               ctx,
+              operationVariables,
               resolver,
-              null,
+              fieldDataItem,
               [...path, field, i],
               resultRef,
-              fieldDataItem,
             ),
           );
         }
         return executeResolver(
           ctx,
+          operationVariables,
           resolver,
-          null,
+          fieldData,
           [...path, field],
           resultRef,
-          fieldData,
         );
       }),
     ),

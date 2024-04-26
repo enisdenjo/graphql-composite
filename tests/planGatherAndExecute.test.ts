@@ -69,7 +69,7 @@ it.each([
     fields: ['id', 'name'],
   },
 ])(
-  'should build proper query for $name resolver',
+  'should build proper operation and find __export path for $name resolver',
   ({ operation, type, fields }) => {
     expect(buildResolverOperation(operation, type, fields)).toMatchSnapshot();
   },

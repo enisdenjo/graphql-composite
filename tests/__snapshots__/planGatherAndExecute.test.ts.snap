@@ -830,7 +830,7 @@ exports[`fixture 'store' > should plan schema 1`] = `
 }
 `;
 
-exports[`should build proper query for 'ManufacturerById' resolver 1`] = `
+exports[`should build proper operation and find __export path for 'ManufacturerById' resolver 1`] = `
 {
   "operation": "query ManufacturerById($Manufacturer_id: ID!) {
   manufacturer(id: $Manufacturer_id) {
@@ -848,7 +848,7 @@ fragment __export on Manufacturer {
 }
 `;
 
-exports[`should build proper query for 'ProductByUpc' resolver 1`] = `
+exports[`should build proper operation and find __export path for 'ProductByUpc' resolver 1`] = `
 {
   "operation": "query ProductByUpc($Product_upc: ID!) {
   product(upc: $Product_upc) {
@@ -872,7 +872,7 @@ fragment __export on Product {
 }
 `;
 
-exports[`should build proper query for 'storefront' resolver 1`] = `
+exports[`should build proper operation and find __export path for 'storefront' resolver 1`] = `
 {
   "operation": "query storefront($id: ID!) {
   storefront(id: $id) {

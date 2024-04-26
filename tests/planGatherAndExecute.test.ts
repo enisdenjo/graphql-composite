@@ -68,6 +68,13 @@ it.each([
     type: 'Manufacturer',
     fields: ['id', 'name'],
   },
+  {
+    name: 'ManufacturerNested',
+    operation:
+      'query ManufacturerNested { manufacturer { nested { deep { ...__export } } } }',
+    type: 'Manufacturer',
+    fields: ['id', 'name', 'products.manufacturer.location', 'products.name'],
+  },
 ])(
   'should build proper operation and find __export path for $name resolver',
   ({ operation, type, fields }) => {

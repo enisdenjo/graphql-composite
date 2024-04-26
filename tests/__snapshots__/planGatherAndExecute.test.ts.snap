@@ -848,6 +848,36 @@ fragment __export on Manufacturer {
 }
 `;
 
+exports[`should build proper operation and find __export path for 'ManufacturerNested' resolver 1`] = `
+{
+  "operation": "query ManufacturerNested {
+  manufacturer {
+    nested {
+      deep {
+        ...__export
+      }
+    }
+  }
+}
+
+fragment __export on Manufacturer {
+  id
+  name
+  products {
+    manufacturer {
+      location
+    }
+    name
+  }
+}",
+  "pathToExportData": [
+    "manufacturer",
+    "nested",
+    "deep",
+  ],
+}
+`;
+
 exports[`should build proper operation and find __export path for 'ProductByUpc' resolver 1`] = `
 {
   "operation": "query ProductByUpc($Product_upc: ID!) {

@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { execute } from '../src/execute.js';
 import { buildResolverOperation, planGather } from '../src/gather.js';
 import { planSchema } from '../src/schemaPlan.js';
+import { TransportHTTP } from '../src/transport.js';
 import { getFixtures } from './utils.js';
 
 describe.each(await getFixtures())(
@@ -24,15 +25,13 @@ describe.each(await getFixtures())(
       it('should execute', async () => {
         await expect(
           execute(
-            {
-              getFetch(sourceId) {
-                const source = sources[sourceId];
-                if (!source) {
-                  throw new Error(`Source "${sourceId}" not found`);
-                }
-                return source.fetch;
-              },
-            },
+            Object.entries(sources).reduce(
+              (agg, [name, source]) => ({
+                ...agg,
+                [name]: new TransportHTTP(source.fetch),
+              }),
+              {},
+            ),
             planGather(schema, document),
             variables,
           ),

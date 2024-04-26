@@ -2,14 +2,15 @@ import { ExecutionResult, GraphQLError } from 'graphql';
 import getAtPath from 'lodash.get';
 import setAtPath from 'lodash.set';
 import { GatherPlan, GatherPlanResolver } from './gather.js';
+import { SchemaPlanSource } from './schemaPlan.js';
+import { Transport } from './transport.js';
 
-export interface ExecutionContext {
-  /** Fetch getter by {@link SchemaPlanSource.id} used for {@link SchemaPlanFetchResolver}. */
-  getFetch: (sourceId: string) => typeof fetch;
-}
+export type SourceTransports = {
+  [source in SchemaPlanSource['source']]: Transport;
+};
 
 export async function execute(
-  ctx: ExecutionContext,
+  transports: SourceTransports,
   plan: GatherPlan,
   operationVariables: Record<string, unknown>,
 ): Promise<ExecutionResult & { explain: ExecutionExplain[] }> {
@@ -19,7 +20,7 @@ export async function execute(
     plan.operations.flatMap((o) =>
       o.resolvers.map((r) =>
         executeResolver(
-          ctx,
+          transports,
           operationVariables,
           r,
           null,
@@ -44,7 +45,7 @@ export interface ExecutionExplain {
 }
 
 async function executeResolver(
-  ctx: ExecutionContext,
+  transports: SourceTransports,
   /**
    * The variables for the execution. Those that the user provides.
    * These should be used only on the operation (root) resolver.
@@ -68,7 +69,10 @@ async function executeResolver(
    */
   resultRef: ExecutionResult,
 ): Promise<ExecutionExplain> {
-  const { getFetch } = ctx;
+  const transport = transports[resolver.source];
+  if (!transport) {
+    throw new Error(`Transport for source "${resolver.source}" not found`);
+  }
 
   const variables = !parentExportData
     ? // this is the operation (root) resolver because there's no parent data
@@ -85,28 +89,12 @@ async function executeResolver(
         {},
       );
 
-  const res = await getFetch(resolver.source)(resolver.url, {
-    method: 'POST',
-    headers: {
-      'content-type': 'application/json',
-      accept: 'application/graphql-response+json, application/json',
-    },
-    body: JSON.stringify({
-      query: resolver.operation,
-      variables,
-    }),
+  const result = await transport.get({
+    query: resolver.operation,
+    variables,
   });
-  if (!res.ok) {
-    const err = new Error(
-      `${res.status} ${res.statusText}\n${await res.text()}`,
-    );
-    err.name = 'ResponseError';
-    throw err;
-  }
-
-  const result: ExecutionResult = await res.json();
   if (result.errors?.length) {
-    // stop immediately on errors, no need to traverse further
+    // stop immediately on errors, we cant traverse further
     resultRef.errors = result.errors;
     return {
       path,
@@ -177,7 +165,7 @@ async function executeResolver(
           // if the include points to an array, we need to gather resolve each item
           return fieldData.map((fieldDataItem, i) =>
             executeResolver(
-              ctx,
+              transports,
               operationVariables,
               resolver,
               fieldDataItem,
@@ -187,7 +175,7 @@ async function executeResolver(
           );
         }
         return executeResolver(
-          ctx,
+          transports,
           operationVariables,
           resolver,
           fieldData,

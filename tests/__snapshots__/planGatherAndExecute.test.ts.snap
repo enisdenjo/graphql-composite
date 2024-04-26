@@ -460,7 +460,6 @@ exports[`fixture 'store' > query 'NotBasic' > should plan gather 1`] = `
               "includes": {
                 "manufacturer": {
                   "includes": {},
-                  "kind": "fetch",
                   "operation": "query ManufacturerById($Manufacturer_id: ID!) {
   manufacturer(id: $Manufacturer_id) {
     ...__export
@@ -480,7 +479,6 @@ fragment __export on Manufacturer {
                   "source": "manufacturers",
                   "type": "Manufacturer",
                   "typeOrField": "Manufacturer",
-                  "url": "http://localhost/graphql",
                   "variables": {
                     "Manufacturer_id": {
                       "name": "Manufacturer_id",
@@ -489,7 +487,6 @@ fragment __export on Manufacturer {
                   },
                 },
               },
-              "kind": "fetch",
               "operation": "query ProductByUpc($Product_upc: ID!) {
   product(upc: $Product_upc) {
     ...__export
@@ -520,7 +517,6 @@ fragment __export on Product {
               "source": "products",
               "type": "Product",
               "typeOrField": "Product",
-              "url": "http://localhost/graphql",
               "variables": {
                 "Product_upc": {
                   "name": "Product_upc",
@@ -529,7 +525,6 @@ fragment __export on Product {
               },
             },
           },
-          "kind": "fetch",
           "operation": "query storefront($id: ID!) {
   storefront(id: $id) {
     ...__export
@@ -555,7 +550,6 @@ fragment __export on Storefront {
           "source": "storefronts",
           "type": "Storefront",
           "typeOrField": "storefront",
-          "url": "http://localhost/graphql",
           "variables": {},
         },
       ],
@@ -635,12 +629,10 @@ exports[`fixture 'store' > should plan schema 1`] = `
       "name": "Manufacturer",
       "resolvers": {
         "manufacturers": {
-          "kind": "fetch",
           "operation": "query ManufacturerById($Manufacturer_id: ID!) { manufacturer(id: $Manufacturer_id) { ...__export } }",
           "source": "manufacturers",
           "type": "Manufacturer",
           "typeOrField": "Manufacturer",
-          "url": "http://localhost/graphql",
           "variables": {
             "Manufacturer_id": {
               "name": "Manufacturer_id",
@@ -649,12 +641,10 @@ exports[`fixture 'store' > should plan schema 1`] = `
           },
         },
         "products": {
-          "kind": "fetch",
           "operation": "query ManufacturerById($Manufacturer_id: ID!) { _manufacturer(id: $Manufacturer_id) { ...__export } }",
           "source": "products",
           "type": "Manufacturer",
           "typeOrField": "Manufacturer",
-          "url": "http://localhost/graphql",
           "variables": {
             "Manufacturer_id": {
               "name": "Manufacturer_id",
@@ -710,12 +700,10 @@ exports[`fixture 'store' > should plan schema 1`] = `
       "name": "Product",
       "resolvers": {
         "products": {
-          "kind": "fetch",
           "operation": "query ProductByUpc($Product_upc: ID!) { product(upc: $Product_upc) { ...__export } }",
           "source": "products",
           "type": "Product",
           "typeOrField": "Product",
-          "url": "http://localhost/graphql",
           "variables": {
             "Product_upc": {
               "name": "Product_upc",
@@ -724,12 +712,10 @@ exports[`fixture 'store' > should plan schema 1`] = `
           },
         },
         "storefronts": {
-          "kind": "fetch",
           "operation": "TODO",
           "source": "storefronts",
           "type": "Product",
           "typeOrField": "Product",
-          "url": "http://localhost/graphql",
           "variables": {
             "Product_upc": {
               "name": "Product_upc",
@@ -772,12 +758,10 @@ exports[`fixture 'store' > should plan schema 1`] = `
       "name": "Storefront",
       "resolvers": {
         "storefronts": {
-          "kind": "fetch",
           "operation": "query StorefrontById($Storefront_id: ID!) { storefront(id: $Storefront_id) { ...__export } }",
           "source": "storefronts",
           "type": "Storefront",
           "typeOrField": "Storefront",
-          "url": "http://localhost/graphql",
           "variables": {
             "Storefront_id": {
               "name": "Storefront_id",
@@ -795,12 +779,10 @@ exports[`fixture 'store' > should plan schema 1`] = `
           "name": "_manufacturer",
           "resolvers": {
             "products": {
-              "kind": "fetch",
               "operation": "query _manufacturer($id: ID!) { _manufacturer(id: $id) { ...__export } }",
               "source": "products",
               "type": "Manufacturer",
               "typeOrField": "_manufacturer",
-              "url": "http://localhost/graphql",
               "variables": {},
             },
           },
@@ -809,12 +791,10 @@ exports[`fixture 'store' > should plan schema 1`] = `
           "name": "manufacturer",
           "resolvers": {
             "manufacturers": {
-              "kind": "fetch",
               "operation": "query manufacturer($id: ID!) { manufacturer(id: $id) { ...__export } }",
               "source": "manufacturers",
               "type": "Manufacturer",
               "typeOrField": "manufacturer",
-              "url": "http://localhost/graphql",
               "variables": {},
             },
           },
@@ -823,12 +803,10 @@ exports[`fixture 'store' > should plan schema 1`] = `
           "name": "product",
           "resolvers": {
             "products": {
-              "kind": "fetch",
               "operation": "query product($upc: ID!) { product(upc: $upc) { ...__export } }",
               "source": "products",
               "type": "Product",
               "typeOrField": "product",
-              "url": "http://localhost/graphql",
               "variables": {},
             },
           },
@@ -837,12 +815,10 @@ exports[`fixture 'store' > should plan schema 1`] = `
           "name": "storefront",
           "resolvers": {
             "storefronts": {
-              "kind": "fetch",
               "operation": "query storefront($id: ID!) { storefront(id: $id) { ...__export } }",
               "source": "storefronts",
               "type": "Storefront",
               "typeOrField": "storefront",
-              "url": "http://localhost/graphql",
               "variables": {},
             },
           },

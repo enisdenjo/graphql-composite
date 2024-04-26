@@ -60,10 +60,7 @@ export interface SchemaPlanSource {
   typeOrField: string;
 }
 
-export type SchemaPlanResolver = SchemaPlanFetchResolver; // TODO: other kinds
-
-export interface SchemaPlanFetchResolver {
-  kind: 'fetch';
+export interface SchemaPlanResolver {
   /**
    * The type this resolver resolves.
    * Is actually the type of the `__export` fragment.
@@ -89,8 +86,6 @@ export interface SchemaPlanFetchResolver {
   variables: {
     [name in SchemaPlanResolverVariable['name']]: SchemaPlanResolverVariable;
   };
-  /** Location of the source to be used by the resolver. */
-  url: string;
 }
 
 export type SchemaPlanResolverVariable =
@@ -292,9 +287,7 @@ function getResolverForSourceFromDirectives(
   const resolvingType = getNamedType(field ? field.type : type);
 
   return {
-    url: 'http://localhost/graphql', // TODO: actual source url
     type: resolvingType.name,
-    kind: 'fetch',
     operation: mustGetStringArgumentValue(
       type,
       field,

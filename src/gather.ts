@@ -460,7 +460,7 @@ export function buildResolverOperation(
             value: type,
           },
         },
-        selectionSet: createSelectionSetsForFields(fields),
+        selectionSet: createSelectionSetForFields(fields),
       } satisfies FragmentDefinitionNode,
     ],
   };
@@ -493,7 +493,7 @@ function findExportDataPath(node: ASTNode, path: string[]): string[] | null {
   return null;
 }
 
-function createSelectionSetsForFields(fields: string[]): SelectionSetNode {
+function createSelectionSetForFields(fields: string[]): SelectionSetNode {
   const sel: SelectionSetNode = {
     kind: Kind.SELECTION_SET,
     selections: [],

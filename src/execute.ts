@@ -130,11 +130,7 @@ async function executeResolver(
     resultRef.data = {};
   }
 
-  const exportData =
-    result.data[
-      // TODO: we only assume the root field is where the export fragment is, but isnt always true
-      Object.keys(result.data)[0]!
-    ];
+  const exportData = getAtPath(result.data, resolver.pathToExportData);
 
   for (const exportPath of resolver.public.map((e) => e.split('.'))) {
     const lastKey = exportPath[exportPath.length - 1];

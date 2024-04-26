@@ -1534,7 +1534,6 @@ __metadata:
     "@types/node": "npm:^20.12.7"
     graphql: "npm:^16.8.1"
     graphql-yoga: "npm:^5.3.0"
-    json-to-graphql-query: "npm:^2.2.5"
     lodash.get: "npm:^4.4.2"
     lodash.set: "npm:^4.3.2"
     prettier: "npm:^3.2.5"
@@ -1724,13 +1723,6 @@ __metadata:
   bin:
     jsesc: bin/jsesc
   checksum: 10c0/dbf59312e0ebf2b4405ef413ec2b25abb5f8f4d9bc5fb8d9f90381622ebca5f2af6a6aa9a8578f65903f9e33990a6dc798edd0ce5586894bf0e9e31803a1de88
-  languageName: node
-  linkType: hard
-
-"json-to-graphql-query@npm:^2.2.5":
-  version: 2.2.5
-  resolution: "json-to-graphql-query@npm:2.2.5"
-  checksum: 10c0/c75d6989ea7d6dda37e086ce062820efdac036c45b064c6cc073a95207acb27db15f84accabf860c30894380174f9faf9cf91088b0dcdcd35cd539d25837962d
   languageName: node
   linkType: hard
 

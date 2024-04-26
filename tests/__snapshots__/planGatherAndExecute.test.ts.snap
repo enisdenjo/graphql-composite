@@ -108,7 +108,15 @@ exports[`fixture 'store' > query 'NotBasic' > should execute 1`] = `
                 },
               },
               "includes": [],
-              "operation": "query ManufacturerById($Manufacturer_id: ID!) { manufacturer(id: $Manufacturer_id) { ...__export } } fragment __export on Manufacturer { name }",
+              "operation": "query ManufacturerById($Manufacturer_id: ID!) {
+  manufacturer(id: $Manufacturer_id) {
+    ...__export
+  }
+}
+
+fragment __export on Manufacturer {
+  name
+}",
               "path": [
                 "storefront",
                 "products",
@@ -124,7 +132,22 @@ exports[`fixture 'store' > query 'NotBasic' > should execute 1`] = `
               },
             },
           ],
-          "operation": "query ProductByUpc($Product_upc: ID!) { product(upc: $Product_upc) { ...__export } } fragment __export on Product { name manufacturer { products { upc name } id } }",
+          "operation": "query ProductByUpc($Product_upc: ID!) {
+  product(upc: $Product_upc) {
+    ...__export
+  }
+}
+
+fragment __export on Product {
+  name
+  manufacturer {
+    products {
+      upc
+      name
+    }
+    id
+  }
+}",
           "path": [
             "storefront",
             "products",
@@ -169,7 +192,15 @@ exports[`fixture 'store' > query 'NotBasic' > should execute 1`] = `
                 },
               },
               "includes": [],
-              "operation": "query ManufacturerById($Manufacturer_id: ID!) { manufacturer(id: $Manufacturer_id) { ...__export } } fragment __export on Manufacturer { name }",
+              "operation": "query ManufacturerById($Manufacturer_id: ID!) {
+  manufacturer(id: $Manufacturer_id) {
+    ...__export
+  }
+}
+
+fragment __export on Manufacturer {
+  name
+}",
               "path": [
                 "storefront",
                 "products",
@@ -185,7 +216,22 @@ exports[`fixture 'store' > query 'NotBasic' > should execute 1`] = `
               },
             },
           ],
-          "operation": "query ProductByUpc($Product_upc: ID!) { product(upc: $Product_upc) { ...__export } } fragment __export on Product { name manufacturer { products { upc name } id } }",
+          "operation": "query ProductByUpc($Product_upc: ID!) {
+  product(upc: $Product_upc) {
+    ...__export
+  }
+}
+
+fragment __export on Product {
+  name
+  manufacturer {
+    products {
+      upc
+      name
+    }
+    id
+  }
+}",
           "path": [
             "storefront",
             "products",
@@ -230,7 +276,15 @@ exports[`fixture 'store' > query 'NotBasic' > should execute 1`] = `
                 },
               },
               "includes": [],
-              "operation": "query ManufacturerById($Manufacturer_id: ID!) { manufacturer(id: $Manufacturer_id) { ...__export } } fragment __export on Manufacturer { name }",
+              "operation": "query ManufacturerById($Manufacturer_id: ID!) {
+  manufacturer(id: $Manufacturer_id) {
+    ...__export
+  }
+}
+
+fragment __export on Manufacturer {
+  name
+}",
               "path": [
                 "storefront",
                 "products",
@@ -246,7 +300,22 @@ exports[`fixture 'store' > query 'NotBasic' > should execute 1`] = `
               },
             },
           ],
-          "operation": "query ProductByUpc($Product_upc: ID!) { product(upc: $Product_upc) { ...__export } } fragment __export on Product { name manufacturer { products { upc name } id } }",
+          "operation": "query ProductByUpc($Product_upc: ID!) {
+  product(upc: $Product_upc) {
+    ...__export
+  }
+}
+
+fragment __export on Product {
+  name
+  manufacturer {
+    products {
+      upc
+      name
+    }
+    id
+  }
+}",
           "path": [
             "storefront",
             "products",
@@ -265,7 +334,19 @@ exports[`fixture 'store' > query 'NotBasic' > should execute 1`] = `
           },
         },
       ],
-      "operation": "query storefront($id: ID!) { storefront(id: $id) { ...__export } } fragment __export on Storefront { id name products { upc } }",
+      "operation": "query storefront($id: ID!) {
+  storefront(id: $id) {
+    ...__export
+  }
+}
+
+fragment __export on Storefront {
+  id
+  name
+  products {
+    upc
+  }
+}",
       "path": [
         "storefront",
       ],
@@ -380,7 +461,18 @@ exports[`fixture 'store' > query 'NotBasic' > should plan gather 1`] = `
                 "manufacturer": {
                   "includes": {},
                   "kind": "fetch",
-                  "operation": "query ManufacturerById($Manufacturer_id: ID!) { manufacturer(id: $Manufacturer_id) { ...__export } } fragment __export on Manufacturer { name }",
+                  "operation": "query ManufacturerById($Manufacturer_id: ID!) {
+  manufacturer(id: $Manufacturer_id) {
+    ...__export
+  }
+}
+
+fragment __export on Manufacturer {
+  name
+}",
+                  "pathToExportData": [
+                    "manufacturer",
+                  ],
                   "private": [],
                   "public": [
                     "name",
@@ -398,7 +490,25 @@ exports[`fixture 'store' > query 'NotBasic' > should plan gather 1`] = `
                 },
               },
               "kind": "fetch",
-              "operation": "query ProductByUpc($Product_upc: ID!) { product(upc: $Product_upc) { ...__export } } fragment __export on Product { name manufacturer { products { upc name } id } }",
+              "operation": "query ProductByUpc($Product_upc: ID!) {
+  product(upc: $Product_upc) {
+    ...__export
+  }
+}
+
+fragment __export on Product {
+  name
+  manufacturer {
+    products {
+      upc
+      name
+    }
+    id
+  }
+}",
+              "pathToExportData": [
+                "product",
+              ],
               "private": [
                 "manufacturer.id",
               ],
@@ -420,7 +530,22 @@ exports[`fixture 'store' > query 'NotBasic' > should plan gather 1`] = `
             },
           },
           "kind": "fetch",
-          "operation": "query storefront($id: ID!) { storefront(id: $id) { ...__export } } fragment __export on Storefront { id name products { upc } }",
+          "operation": "query storefront($id: ID!) {
+  storefront(id: $id) {
+    ...__export
+  }
+}
+
+fragment __export on Storefront {
+  id
+  name
+  products {
+    upc
+  }
+}",
+          "pathToExportData": [
+            "storefront",
+          ],
           "private": [],
           "public": [
             "id",
@@ -729,8 +854,65 @@ exports[`fixture 'store' > should plan schema 1`] = `
 }
 `;
 
-exports[`should build proper query for 'ManufacturerById' resolver 1`] = `"query ManufacturerById($Manufacturer_id: ID!) { manufacturer(id: $Manufacturer_id) { ...__export } } fragment __export on Manufacturer { id name }"`;
+exports[`should build proper query for 'ManufacturerById' resolver 1`] = `
+{
+  "operation": "query ManufacturerById($Manufacturer_id: ID!) {
+  manufacturer(id: $Manufacturer_id) {
+    ...__export
+  }
+}
 
-exports[`should build proper query for 'ProductByUpc' resolver 1`] = `"query ProductByUpc($Product_upc: ID!) { product(upc: $Product_upc) { ...__export } } fragment __export on Product { name manufacturer { products { upc name } id } }"`;
+fragment __export on Manufacturer {
+  id
+  name
+}",
+  "pathToExportData": [
+    "manufacturer",
+  ],
+}
+`;
 
-exports[`should build proper query for 'storefront' resolver 1`] = `"query storefront($id: ID!) { storefront(id: $id) { ...__export } } fragment __export on Storefront { id name products { upc } }"`;
+exports[`should build proper query for 'ProductByUpc' resolver 1`] = `
+{
+  "operation": "query ProductByUpc($Product_upc: ID!) {
+  product(upc: $Product_upc) {
+    ...__export
+  }
+}
+
+fragment __export on Product {
+  name
+  manufacturer {
+    products {
+      upc
+      name
+    }
+    id
+  }
+}",
+  "pathToExportData": [
+    "product",
+  ],
+}
+`;
+
+exports[`should build proper query for 'storefront' resolver 1`] = `
+{
+  "operation": "query storefront($id: ID!) {
+  storefront(id: $id) {
+    ...__export
+  }
+}
+
+fragment __export on Storefront {
+  id
+  name
+  products {
+    upc
+  }
+}",
+  "pathToExportData": [
+    "storefront",
+  ],
+}
+`;

@@ -1,5 +1,8 @@
 import {
+  ASTNode,
   DocumentNode,
+  FieldNode,
+  FragmentDefinitionNode,
   GraphQLCompositeType,
   GraphQLEnumType,
   GraphQLScalarType,
@@ -7,14 +10,15 @@ import {
   isCompositeType,
   isListType,
   isNonNullType,
+  Kind,
   OperationTypeNode,
+  parse,
   print,
+  SelectionSetNode,
   TypeInfo,
   visit,
   visitWithTypeInfo,
 } from 'graphql';
-import { jsonToGraphQLQuery } from 'json-to-graphql-query';
-import setAtPath from 'lodash.set';
 import {
   planSchema,
   SchemaPlan,
@@ -58,6 +62,8 @@ export interface GatherPlanScalarField {
 export interface GatherPlanResolver
   extends SchemaPlanSource,
     SchemaPlanResolver {
+  /** The path to the `__export` fragment in the execution result. */
+  pathToExportData: string[];
   /**
    * Dot notation flat list of field paths to add to the `__export`
    * fragment on the query that are NOT available in the final result,
@@ -250,6 +256,7 @@ function planGatherResolversForOperation(
         }
         resolver = {
           ...resolverPlan,
+          pathToExportData: [],
           private: [],
           public: [],
           includes: {},
@@ -361,7 +368,13 @@ function insertResolversForGatherPlanCompositeField(
         }
       }
 
-      resolver = { ...resolverPlan, private: [], public: [], includes: {} };
+      resolver = {
+        ...resolverPlan,
+        pathToExportData: [],
+        private: [],
+        public: [],
+        includes: {},
+      };
 
       parentResolver.includes[`${pathPrefix}${parent.name}`] = resolver;
     }
@@ -404,11 +417,13 @@ export function buildAndInsertOperationsInResolvers(
   resolvers: GatherPlanResolver[],
 ) {
   for (const resolver of resolvers) {
-    resolver.operation = buildResolverOperation(
+    const { operation, pathToExportData } = buildResolverOperation(
       resolver.operation,
       resolver.type,
       [...resolver.public, ...resolver.private],
     );
+    resolver.operation = operation;
+    resolver.pathToExportData = pathToExportData;
     buildAndInsertOperationsInResolvers(Object.values(resolver.includes));
   }
 }
@@ -417,13 +432,91 @@ export function buildResolverOperation(
   operation: string,
   type: string,
   fields: string[],
-): string {
-  operation += ` fragment __export on ${type} { `;
-  const obj = {};
-  for (const path of fields) {
-    setAtPath(obj, path, true);
+): { operation: string; pathToExportData: string[] } {
+  const doc = parse(operation);
+  const def = doc.definitions.find((d) => d.kind === Kind.OPERATION_DEFINITION);
+  if (!def) {
+    throw new Error(`No operation definition found in\n${operation}`);
   }
-  operation += jsonToGraphQLQuery(obj);
-  operation += ' }';
-  return operation;
+  const pathToExportData = findExportDataPath(def, []);
+  if (!pathToExportData) {
+    throw new Error(`Path to the __export fragment not found in\n${operation}`);
+  }
+
+  const docWithFragment: DocumentNode = {
+    ...doc,
+    definitions: [
+      ...doc.definitions,
+      {
+        kind: Kind.FRAGMENT_DEFINITION,
+        name: {
+          kind: Kind.NAME,
+          value: '__export',
+        },
+        typeCondition: {
+          kind: Kind.NAMED_TYPE,
+          name: {
+            kind: Kind.NAME,
+            value: type,
+          },
+        },
+        selectionSet: insertSelectionSetsForFields(fields),
+      } satisfies FragmentDefinitionNode,
+    ],
+  };
+
+  return {
+    operation: print(docWithFragment), // pretty print operation
+    pathToExportData,
+  };
+}
+
+function findExportDataPath(node: ASTNode, path: string[]): string[] | null {
+  if ('selectionSet' in node && node.selectionSet) {
+    for (const child of node.selectionSet.selections) {
+      if (
+        child.kind === Kind.FRAGMENT_SPREAD &&
+        child.name.value === '__export'
+      ) {
+        return path;
+      }
+
+      const foundPath = findExportDataPath(
+        child,
+        child.kind === Kind.FIELD ? [...path, child.name.value] : path,
+      );
+      if (foundPath) {
+        return foundPath;
+      }
+    }
+  }
+  return null;
+}
+
+function insertSelectionSetsForFields(fields: string[]): SelectionSetNode {
+  const sel: SelectionSetNode = {
+    kind: Kind.SELECTION_SET,
+    selections: [],
+  };
+  for (const paths of fields.map((f) => f.split('.'))) {
+    let target: SelectionSetNode = sel;
+    for (const field of paths) {
+      let loc = (target.selections as FieldNode[]).find(
+        (s) => s.name.value === field,
+      );
+      if (!loc) {
+        loc = {
+          kind: Kind.FIELD,
+          name: { kind: Kind.NAME, value: field! },
+          selectionSet: {
+            kind: Kind.SELECTION_SET,
+            selections: [],
+          },
+        };
+        target.selections = [...target.selections, loc];
+      }
+      target = loc.selectionSet!;
+    }
+  }
+  return sel;
 }

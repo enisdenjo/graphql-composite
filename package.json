@@ -22,7 +22,6 @@
     "graphql": "^16"
   },
   "dependencies": {
-    "json-to-graphql-query": "^2.2.5",
     "lodash.get": "^4.4.2",
     "lodash.set": "^4.3.2"
   },

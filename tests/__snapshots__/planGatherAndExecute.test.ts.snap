@@ -607,6 +607,609 @@ fragment __export on Storefront {
 }
 `;
 
+exports[`fixture 'store' > query 'NotBasicWithOperationVariables' > should execute 1`] = `
+{
+  "data": {
+    "storefront": {
+      "id": "cyberport",
+      "name": "CyberPort",
+      "products": [
+        {
+          "manufacturer": {
+            "name": "TODO: name of manufacturer manufacturer-of-laptop",
+            "products": [
+              {
+                "name": "TODO: name of product laptop",
+                "upc": "laptop",
+              },
+              {
+                "name": "TODO: name of product otherthing",
+                "upc": "otherthing",
+              },
+            ],
+          },
+          "name": "TODO: name of product laptop",
+          "upc": "laptop",
+        },
+        {
+          "manufacturer": {
+            "name": "TODO: name of manufacturer manufacturer-of-computer",
+            "products": [
+              {
+                "name": "TODO: name of product computer",
+                "upc": "computer",
+              },
+              {
+                "name": "TODO: name of product otherthing",
+                "upc": "otherthing",
+              },
+            ],
+          },
+          "name": "TODO: name of product computer",
+          "upc": "computer",
+        },
+        {
+          "manufacturer": {
+            "name": "TODO: name of manufacturer manufacturer-of-headset",
+            "products": [
+              {
+                "name": "TODO: name of product headset",
+                "upc": "headset",
+              },
+              {
+                "name": "TODO: name of product otherthing",
+                "upc": "otherthing",
+              },
+            ],
+          },
+          "name": "TODO: name of product headset",
+          "upc": "headset",
+        },
+      ],
+    },
+  },
+  "explain": [
+    {
+      "data": {
+        "storefront": {
+          "id": "cyberport",
+          "name": "CyberPort",
+          "products": [
+            {
+              "upc": "laptop",
+            },
+            {
+              "upc": "computer",
+            },
+            {
+              "upc": "headset",
+            },
+          ],
+        },
+      },
+      "includes": [
+        {
+          "data": {
+            "product": {
+              "manufacturer": {
+                "id": "manufacturer-of-laptop",
+                "products": [
+                  {
+                    "name": "TODO: name of product laptop",
+                    "upc": "laptop",
+                  },
+                  {
+                    "name": "TODO: name of product otherthing",
+                    "upc": "otherthing",
+                  },
+                ],
+              },
+              "name": "TODO: name of product laptop",
+            },
+          },
+          "includes": [
+            {
+              "data": {
+                "manufacturer": {
+                  "name": "TODO: name of manufacturer manufacturer-of-laptop",
+                },
+              },
+              "includes": [],
+              "operation": "query ManufacturerById($Manufacturer_id: ID!) {
+  manufacturer(id: $Manufacturer_id) {
+    ...__export
+  }
+}
+
+fragment __export on Manufacturer {
+  name
+}",
+              "path": [
+                "storefront",
+                "products",
+                0,
+                "manufacturer",
+              ],
+              "private": [],
+              "public": [
+                "name",
+              ],
+              "variables": {
+                "Manufacturer_id": "manufacturer-of-laptop",
+              },
+            },
+          ],
+          "operation": "query ProductByUpc($Product_upc: ID!) {
+  product(upc: $Product_upc) {
+    ...__export
+  }
+}
+
+fragment __export on Product {
+  name
+  manufacturer {
+    products {
+      upc
+      name
+    }
+    id
+  }
+}",
+          "path": [
+            "storefront",
+            "products",
+            0,
+          ],
+          "private": [
+            "manufacturer.id",
+          ],
+          "public": [
+            "name",
+            "manufacturer.products.upc",
+            "manufacturer.products.name",
+          ],
+          "variables": {
+            "Product_upc": "laptop",
+          },
+        },
+        {
+          "data": {
+            "product": {
+              "manufacturer": {
+                "id": "manufacturer-of-computer",
+                "products": [
+                  {
+                    "name": "TODO: name of product computer",
+                    "upc": "computer",
+                  },
+                  {
+                    "name": "TODO: name of product otherthing",
+                    "upc": "otherthing",
+                  },
+                ],
+              },
+              "name": "TODO: name of product computer",
+            },
+          },
+          "includes": [
+            {
+              "data": {
+                "manufacturer": {
+                  "name": "TODO: name of manufacturer manufacturer-of-computer",
+                },
+              },
+              "includes": [],
+              "operation": "query ManufacturerById($Manufacturer_id: ID!) {
+  manufacturer(id: $Manufacturer_id) {
+    ...__export
+  }
+}
+
+fragment __export on Manufacturer {
+  name
+}",
+              "path": [
+                "storefront",
+                "products",
+                1,
+                "manufacturer",
+              ],
+              "private": [],
+              "public": [
+                "name",
+              ],
+              "variables": {
+                "Manufacturer_id": "manufacturer-of-computer",
+              },
+            },
+          ],
+          "operation": "query ProductByUpc($Product_upc: ID!) {
+  product(upc: $Product_upc) {
+    ...__export
+  }
+}
+
+fragment __export on Product {
+  name
+  manufacturer {
+    products {
+      upc
+      name
+    }
+    id
+  }
+}",
+          "path": [
+            "storefront",
+            "products",
+            1,
+          ],
+          "private": [
+            "manufacturer.id",
+          ],
+          "public": [
+            "name",
+            "manufacturer.products.upc",
+            "manufacturer.products.name",
+          ],
+          "variables": {
+            "Product_upc": "computer",
+          },
+        },
+        {
+          "data": {
+            "product": {
+              "manufacturer": {
+                "id": "manufacturer-of-headset",
+                "products": [
+                  {
+                    "name": "TODO: name of product headset",
+                    "upc": "headset",
+                  },
+                  {
+                    "name": "TODO: name of product otherthing",
+                    "upc": "otherthing",
+                  },
+                ],
+              },
+              "name": "TODO: name of product headset",
+            },
+          },
+          "includes": [
+            {
+              "data": {
+                "manufacturer": {
+                  "name": "TODO: name of manufacturer manufacturer-of-headset",
+                },
+              },
+              "includes": [],
+              "operation": "query ManufacturerById($Manufacturer_id: ID!) {
+  manufacturer(id: $Manufacturer_id) {
+    ...__export
+  }
+}
+
+fragment __export on Manufacturer {
+  name
+}",
+              "path": [
+                "storefront",
+                "products",
+                2,
+                "manufacturer",
+              ],
+              "private": [],
+              "public": [
+                "name",
+              ],
+              "variables": {
+                "Manufacturer_id": "manufacturer-of-headset",
+              },
+            },
+          ],
+          "operation": "query ProductByUpc($Product_upc: ID!) {
+  product(upc: $Product_upc) {
+    ...__export
+  }
+}
+
+fragment __export on Product {
+  name
+  manufacturer {
+    products {
+      upc
+      name
+    }
+    id
+  }
+}",
+          "path": [
+            "storefront",
+            "products",
+            2,
+          ],
+          "private": [
+            "manufacturer.id",
+          ],
+          "public": [
+            "name",
+            "manufacturer.products.upc",
+            "manufacturer.products.name",
+          ],
+          "variables": {
+            "Product_upc": "headset",
+          },
+        },
+      ],
+      "operation": "query storefront($id: ID!) {
+  storefront(id: $id) {
+    ...__export
+  }
+}
+
+fragment __export on Storefront {
+  id
+  name
+  products {
+    upc
+  }
+}",
+      "path": [
+        "storefront",
+      ],
+      "private": [],
+      "public": [
+        "id",
+        "name",
+        "products.upc",
+      ],
+      "variables": {
+        "id": "2",
+      },
+    },
+  ],
+}
+`;
+
+exports[`fixture 'store' > query 'NotBasicWithOperationVariables' > should plan gather 1`] = `
+{
+  "operations": [
+    {
+      "fields": [
+        {
+          "fields": [
+            {
+              "inlineVariables": {},
+              "isNonNull": true,
+              "kind": "scalar",
+              "name": "id",
+              "type": "ID",
+            },
+            {
+              "inlineVariables": {},
+              "isNonNull": true,
+              "kind": "scalar",
+              "name": "name",
+              "type": "String",
+            },
+            {
+              "fields": [
+                {
+                  "inlineVariables": {},
+                  "isNonNull": true,
+                  "kind": "scalar",
+                  "name": "upc",
+                  "type": "ID",
+                },
+                {
+                  "inlineVariables": {},
+                  "isNonNull": true,
+                  "kind": "scalar",
+                  "name": "name",
+                  "type": "String",
+                },
+                {
+                  "fields": [
+                    {
+                      "fields": [
+                        {
+                          "inlineVariables": {},
+                          "isNonNull": true,
+                          "kind": "scalar",
+                          "name": "upc",
+                          "type": "ID",
+                        },
+                        {
+                          "inlineVariables": {},
+                          "isNonNull": true,
+                          "kind": "scalar",
+                          "name": "name",
+                          "type": "String",
+                        },
+                      ],
+                      "inlineVariables": {},
+                      "isList": true,
+                      "isListItemNonNull": false,
+                      "isNonNull": true,
+                      "kind": "composite",
+                      "name": "products",
+                      "type": "Product",
+                    },
+                    {
+                      "inlineVariables": {},
+                      "isNonNull": true,
+                      "kind": "scalar",
+                      "name": "name",
+                      "type": "String",
+                    },
+                  ],
+                  "inlineVariables": {},
+                  "isList": false,
+                  "isListItemNonNull": false,
+                  "isNonNull": false,
+                  "kind": "composite",
+                  "name": "manufacturer",
+                  "type": "Manufacturer",
+                },
+              ],
+              "inlineVariables": {},
+              "isList": true,
+              "isListItemNonNull": false,
+              "isNonNull": true,
+              "kind": "composite",
+              "name": "products",
+              "type": "Product",
+            },
+          ],
+          "inlineVariables": {},
+          "isList": false,
+          "isListItemNonNull": false,
+          "isNonNull": false,
+          "kind": "composite",
+          "name": "storefront",
+          "type": "Storefront",
+        },
+      ],
+      "name": "NotBasicWithOperationVariables",
+      "resolvers": [
+        {
+          "includes": {
+            "products": {
+              "includes": {
+                "manufacturer": {
+                  "includes": {},
+                  "inlineVariables": {},
+                  "operation": "query ManufacturerById($Manufacturer_id: ID!) {
+  manufacturer(id: $Manufacturer_id) {
+    ...__export
+  }
+}
+
+fragment __export on Manufacturer {
+  name
+}",
+                  "pathToExportData": [
+                    "manufacturer",
+                  ],
+                  "private": [],
+                  "public": [
+                    "name",
+                  ],
+                  "source": "manufacturers",
+                  "type": "Manufacturer",
+                  "typeOrField": "Manufacturer",
+                  "variables": {
+                    "Manufacturer_id": {
+                      "name": "Manufacturer_id",
+                      "select": "id",
+                    },
+                  },
+                },
+              },
+              "inlineVariables": {},
+              "operation": "query ProductByUpc($Product_upc: ID!) {
+  product(upc: $Product_upc) {
+    ...__export
+  }
+}
+
+fragment __export on Product {
+  name
+  manufacturer {
+    products {
+      upc
+      name
+    }
+    id
+  }
+}",
+              "pathToExportData": [
+                "product",
+              ],
+              "private": [
+                "manufacturer.id",
+              ],
+              "public": [
+                "name",
+                "manufacturer.products.upc",
+                "manufacturer.products.name",
+              ],
+              "source": "products",
+              "type": "Product",
+              "typeOrField": "Product",
+              "variables": {
+                "Product_upc": {
+                  "name": "Product_upc",
+                  "select": "upc",
+                },
+              },
+            },
+          },
+          "inlineVariables": {},
+          "operation": "query storefront($id: ID!) {
+  storefront(id: $id) {
+    ...__export
+  }
+}
+
+fragment __export on Storefront {
+  id
+  name
+  products {
+    upc
+  }
+}",
+          "pathToExportData": [
+            "storefront",
+          ],
+          "private": [],
+          "public": [
+            "id",
+            "name",
+            "products.upc",
+          ],
+          "source": "storefronts",
+          "type": "Storefront",
+          "typeOrField": "storefront",
+          "variables": {},
+        },
+      ],
+      "type": "query",
+    },
+  ],
+  "paths": [
+    "storefront",
+    "storefront.id",
+    "storefront.name",
+    "storefront.products",
+    "storefront.products.upc",
+    "storefront.products.name",
+    "storefront.products.manufacturer",
+    "storefront.products.manufacturer.products",
+    "storefront.products.manufacturer.products.upc",
+    "storefront.products.manufacturer.products.name",
+    "storefront.products.manufacturer.name",
+  ],
+  "query": "query NotBasicWithOperationVariables($id: ID!) {
+  storefront(id: $id) {
+    id
+    name
+    products {
+      upc
+      name
+      manufacturer {
+        products {
+          upc
+          name
+        }
+        name
+      }
+    }
+  }
+}",
+}
+`;
+
 exports[`fixture 'store' > should plan schema 1`] = `
 {
   "compositeTypes": {

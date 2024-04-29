@@ -25,4 +25,29 @@ export const queries: FixtureQueries = [
     `),
     variables: {},
   },
+  {
+    name: 'NotBasicWithOperationVariables',
+    document: parse(/* GraphQL */ `
+      query NotBasicWithOperationVariables($id: ID!) {
+        storefront(id: $id) {
+          id
+          name
+          products {
+            upc
+            name
+            manufacturer {
+              products {
+                upc
+                name
+              }
+              name
+            }
+          }
+        }
+      }
+    `),
+    variables: {
+      id: '2',
+    },
+  },
 ];

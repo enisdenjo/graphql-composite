@@ -3,7 +3,6 @@ import {
   DocumentNode,
   FieldNode,
   FragmentDefinitionNode,
-  getArgumentValues,
   GraphQLCompositeType,
   GraphQLEnumType,
   GraphQLScalarType,
@@ -17,6 +16,7 @@ import {
   print,
   SelectionSetNode,
   TypeInfo,
+  valueFromAST,
   visit,
   visitWithTypeInfo,
 } from 'graphql';
@@ -123,6 +123,11 @@ export function planGather(
       // TODO: does not properly enter fragments
       Field: {
         enter(node) {
+          const fieldDef = typeInfo.getFieldDef();
+          if (!fieldDef) {
+            throw new Error(`No field definition found for ${node.name.value}`);
+          }
+
           const parentType = typeInfo.getParentType();
           if (!parentType) {
             throw new Error(`No parent type found for node ${node.name.value}`);
@@ -145,10 +150,20 @@ export function planGather(
             | GraphQLCompositeType
             | GraphQLEnumType;
 
-          const inlineVariables = getArgumentValues(
-            typeInfo.getFieldDef()!,
-            node,
-          );
+          const inlineVariables: Record<string, unknown> = {};
+          for (const arg of node.arguments || []) {
+            if (arg.value.kind === Kind.VARIABLE) {
+              // skip over fields needing operation variables
+              continue;
+            }
+            const argDef = fieldDef.args.find(
+              (a) => a.name === arg.name.value,
+            )!; // TODO: check instead of assert
+            inlineVariables[arg.name.value] = valueFromAST(
+              arg.value,
+              argDef.type,
+            );
+          }
 
           if (isCompositeType(type)) {
             insertFieldToOperationAtDepth(currOperation, depth, {

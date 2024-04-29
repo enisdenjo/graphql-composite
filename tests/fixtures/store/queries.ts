@@ -3,6 +3,24 @@ import { FixtureQueries } from '../../utils.js';
 
 export const queries: FixtureQueries = [
   {
+    name: 'ScalarOperationField',
+    document: parse(/* GraphQL */ `
+      query ScalarOperationField {
+        manufacturerName(id: "samsung")
+      }
+    `),
+    variables: {},
+  },
+  {
+    name: 'ScalarOperationFieldNested',
+    document: parse(/* GraphQL */ `
+      query ScalarOperationFieldNested {
+        productName(upc: "ipad")
+      }
+    `),
+    variables: {},
+  },
+  {
     name: 'NotBasicWithInlineVariables',
     document: parse(/* GraphQL */ `
       query NotBasicWithInlineVariables {

@@ -41,12 +41,24 @@ type Query {
       name: "manufacturer"
       type: "Manufacturer"
     )
+  manufacturerName(id: ID!): String
+    @resolver(
+      subgraph: "manufacturers"
+      operation: "query manufacturerName($id: ID!) { manufacturerName(id: $id) }"
+    )
+    @source(subgraph: "manufacturers", name: "manufacturerName", type: "String")
   product(upc: ID!): Product
     @resolver(
       subgraph: "products"
       operation: "query product($upc: ID!) { product(upc: $upc) { ...__export } }"
     )
     @source(subgraph: "products", name: "product", type: "Product")
+  productName(upc: ID!): String
+    @resolver(
+      subgraph: "products"
+      operation: "query productName($upc: ID!) { product(upc: $upc) { name } }"
+    )
+    @source(subgraph: "products", name: "productName", type: "Product")
   _manufacturer(id: ID!): Manufacturer
     @resolver(
       subgraph: "products"

@@ -33,16 +33,15 @@ export async function execute(
   return { ...resultRef, explain };
 }
 
-export interface ExecutionExplain {
+export type ExecutionExplain = Omit<GatherPlanResolver, 'includes'> & {
   path: (string | number)[];
   operation: string;
   variables: Record<string, unknown>;
   data?: unknown;
   errors?: ReadonlyArray<GraphQLError>;
-  private: GatherPlanResolver['private'];
-  public: GatherPlanResolver['public'];
-  includes: ExecutionExplain[];
-}
+  /** Resolved includes, if any. */
+  includes?: ExecutionExplain[];
+};
 
 async function executeResolver(
   transports: SourceTransports,
@@ -100,15 +99,20 @@ async function executeResolver(
   if (result.errors?.length) {
     // stop immediately on errors, we cant traverse further
     resultRef.errors = result.errors;
-    return {
-      path,
-      operation: resolver.operation,
-      variables,
-      ...result,
-      private: [],
-      public: [],
-      includes: [],
-    };
+    return resolver.kind === 'scalar'
+      ? {
+          ...resolver,
+          ...result,
+          path,
+          variables,
+        }
+      : {
+          ...resolver,
+          ...result,
+          path,
+          variables,
+          includes: [],
+        };
   }
   if (!result.data) {
     const err = new Error(
@@ -124,69 +128,81 @@ async function executeResolver(
 
   const exportData = getAtPath(result.data, resolver.pathToExportData);
 
-  for (const exportPath of resolver.public.map((e) => e.split('.'))) {
-    const lastKey = exportPath[exportPath.length - 1];
-    const valBeforeLast =
-      exportPath.length > 1
-        ? getAtPath(exportData, exportPath.slice(0, exportPath.length - 1))
-        : null;
+  if (resolver.kind === 'scalar') {
+    // is a scalar field, export itself at the path in the result
+    setAtPath(resultRef.data, path, exportData);
+  } else {
+    // otherwise, set at each field in the path of the composite field
+    for (const exportPath of resolver.public.map((e) => e.split('.'))) {
+      const lastKey = exportPath[exportPath.length - 1];
+      const valBeforeLast =
+        exportPath.length > 1
+          ? getAtPath(exportData, exportPath.slice(0, exportPath.length - 1))
+          : null;
 
-    if (Array.isArray(valBeforeLast)) {
-      // set key in each item of the array
-      for (let i = 0; i < valBeforeLast.length; i++) {
+      if (Array.isArray(valBeforeLast)) {
+        // set key in each item of the array
+        for (let i = 0; i < valBeforeLast.length; i++) {
+          setAtPath(
+            resultRef.data,
+            [
+              ...path,
+              ...exportPath.slice(0, exportPath.length - 1)!,
+              i,
+              lastKey!,
+            ],
+            getAtPath(valBeforeLast[i], [lastKey!]),
+          );
+        }
+      } else {
         setAtPath(
           resultRef.data,
-          [
-            ...path,
-            ...exportPath.slice(0, exportPath.length - 1)!,
-            i,
-            lastKey!,
-          ],
-          getAtPath(valBeforeLast[i], [lastKey!]),
+          [...path, ...exportPath],
+          getAtPath(exportData, exportPath),
         );
       }
-    } else {
-      setAtPath(
-        resultRef.data,
-        [...path, ...exportPath],
-        getAtPath(exportData, exportPath),
-      );
     }
   }
 
-  return {
-    path,
-    operation: resolver.operation,
-    variables,
-    ...result,
-    private: resolver.private,
-    public: resolver.public,
-    // TODO: batch resolvers going to the same source
-    includes: await Promise.all(
-      Object.entries(resolver.includes).flatMap(([field, resolver]) => {
-        const fieldData = getAtPath(exportData, field);
-        if (Array.isArray(fieldData)) {
-          // if the include points to an array, we need to gather resolve each item
-          return fieldData.map((fieldDataItem, i) =>
-            executeResolver(
+  return resolver.kind === 'scalar'
+    ? {
+        ...resolver,
+        ...result,
+        path,
+        variables,
+        // scalar fields cannot have includes
+      }
+    : {
+        ...resolver,
+        ...result,
+        path,
+        variables,
+        // TODO: batch resolvers going to the same source
+        includes: await Promise.all(
+          Object.entries(resolver.includes).flatMap(([field, resolver]) => {
+            const fieldData = getAtPath(exportData, field);
+            if (Array.isArray(fieldData)) {
+              // if the include points to an array, we need to gather resolve each item
+              return fieldData.map((fieldDataItem, i) =>
+                executeResolver(
+                  transports,
+                  operationVariables,
+                  resolver,
+                  fieldDataItem,
+                  [...path, field, i],
+                  resultRef,
+                ),
+              );
+            }
+            return executeResolver(
               transports,
               operationVariables,
               resolver,
-              fieldDataItem,
-              [...path, field, i],
+              fieldData,
+              [...path, field],
               resultRef,
-            ),
-          );
-        }
-        return executeResolver(
-          transports,
-          operationVariables,
-          resolver,
-          fieldData,
-          [...path, field],
-          resultRef,
-        );
-      }),
-    ),
-  };
+            );
+          }),
+        ),
+      };
 }

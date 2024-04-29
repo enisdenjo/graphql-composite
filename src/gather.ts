@@ -23,7 +23,8 @@ import {
 import {
   planSchema,
   SchemaPlan,
-  SchemaPlanResolver,
+  SchemaPlanCompositeResolver,
+  SchemaPlanScalarResolver,
   SchemaPlanSource,
 } from './schemaPlan.js';
 
@@ -64,9 +65,13 @@ export interface GatherPlanScalarField {
   isNonNull: boolean; // TODO: how to use? validating gather results?
 }
 
-export interface GatherPlanResolver
+export type GatherPlanResolver =
+  | GatherPlanCompositeResolver
+  | GatherPlanScalarResolver;
+
+export interface GatherPlanCompositeResolver
   extends SchemaPlanSource,
-    SchemaPlanResolver {
+    SchemaPlanCompositeResolver {
   /** The inline variables of the field this resolver resolves. */
   inlineVariables: Record<string, unknown>;
   /** The path to the `__export` fragment in the execution result. */
@@ -89,8 +94,21 @@ export interface GatherPlanResolver
    * These are often resolvers of fields that don't exist in the resolver.
    *
    * A map of field paths to the necessary resolver.
+   *
+   * Only composite resolvers can include composite resolvers.
    */
-  includes: Record<string, GatherPlanResolver>;
+  includes: Record<string, GatherPlanCompositeResolver>;
+}
+
+export interface GatherPlanScalarResolver
+  extends SchemaPlanSource,
+    SchemaPlanScalarResolver {
+  /** The inline variables of the field this resolver resolves. */
+  inlineVariables: Record<string, unknown>;
+  /**
+   * The path to the scalar in the execution result.
+   */
+  pathToExportData: string[];
 }
 
 export function planGather(
@@ -241,10 +259,6 @@ function planGatherResolversForOperation(
   const resolvers: GatherPlanResolver[] = [];
 
   for (const operationField of operation.fields) {
-    if (operationField.kind === 'scalar') {
-      throw new Error('TODO');
-    }
-
     const operationFieldPlan = operationPlan.fields[operationField.name];
     if (!operationFieldPlan) {
       throw new Error(
@@ -257,29 +271,39 @@ function planGatherResolversForOperation(
       );
     }
 
-    const typePlan = schemaPlan.compositeTypes[operationField.type];
-    if (!typePlan) {
-      throw new Error(
-        `Schema plan doesn't have the "${operationField.type}" composite type`,
-      );
+    // TODO: choose the right resolver when multiple
+    const operationFieldResolver = Object.values(
+      operationFieldPlan.resolvers,
+    )[0]!;
+
+    const resolver =
+      operationFieldResolver.kind === 'scalar'
+        ? ({
+            ...operationFieldResolver,
+            inlineVariables: operationField.inlineVariables,
+            pathToExportData: [],
+          } satisfies GatherPlanScalarResolver)
+        : ({
+            ...operationFieldResolver,
+            inlineVariables: operationField.inlineVariables,
+            pathToExportData: [],
+            private: [],
+            public: [],
+            includes: {},
+          } satisfies GatherPlanCompositeResolver);
+
+    if (operationField.kind !== resolver.kind) {
+      throw new Error('Operation field kind and the resolver kind must match');
     }
 
-    const resolver: GatherPlanResolver = {
-      // TODO: choose the right resolver when multiple
-      ...Object.values(operationFieldPlan.resolvers)[0]!,
-      inlineVariables: operationField.inlineVariables,
-      pathToExportData: [],
-      private: [],
-      public: [],
-      includes: {},
-    };
-
-    insertResolversForGatherPlanCompositeField(
-      schemaPlan,
-      operationField,
-      resolver,
-      '',
-    );
+    if (operationField.kind === 'composite' && resolver.kind === 'composite') {
+      insertResolversForGatherPlanCompositeField(
+        schemaPlan,
+        operationField,
+        resolver,
+        '',
+      );
+    }
 
     resolvers.push(resolver);
   }
@@ -295,7 +319,7 @@ function planGatherResolversForOperation(
 function insertResolversForGatherPlanCompositeField(
   schemaPlan: SchemaPlan,
   parent: GatherPlanCompositeField,
-  parentResolver: GatherPlanResolver,
+  parentResolver: GatherPlanCompositeResolver,
   pathPrefix: string,
 ) {
   for (const field of parent.fields) {
@@ -354,7 +378,7 @@ function insertResolversForGatherPlanCompositeField(
         // if the parent doesnt export the necessary variable, add it
         // to parents export for resolution during execution
         //
-        // *parent resolver is the one that {@link GatherPlanResolver.includes} this resolver
+        // *parent resolver is the one that {@link GatherPlanCompositeResolver.includes} this resolver
         const path = `${pathPrefix}${parent.name}.${variable.select}`;
         const parentExport = parentResolver.public.find((e) => e === path);
         if (!parentExport) {
@@ -420,11 +444,15 @@ export function buildAndInsertOperationsInResolvers(
     const { operation, pathToExportData } = buildResolverOperation(
       resolver.operation,
       resolver.type,
-      [...resolver.public, ...resolver.private],
+      resolver.kind === 'scalar'
+        ? []
+        : [...resolver.public, ...resolver.private],
     );
     resolver.operation = operation;
     resolver.pathToExportData = pathToExportData;
-    buildAndInsertOperationsInResolvers(Object.values(resolver.includes));
+    if (resolver.kind === 'composite') {
+      buildAndInsertOperationsInResolvers(Object.values(resolver.includes));
+    }
   }
 }
 
@@ -438,6 +466,19 @@ export function buildResolverOperation(
   if (!def) {
     throw new Error(`No operation definition found in\n${operation}`);
   }
+
+  if (!fields.length) {
+    // no fields to select means we're resolving a scalar is the deepest field is what we need
+    const pathToExportData = findDeepestFieldPath(def, []);
+    if (!pathToExportData.length) {
+      throw new Error(`Path to the deepest field not found in\n${operation}`);
+    }
+    return {
+      operation: print(doc), // pretty print operation
+      pathToExportData,
+    };
+  }
+
   const pathToExportData = findExportDataPath(def, []);
   if (!pathToExportData) {
     throw new Error(`Path to the __export fragment not found in\n${operation}`);
@@ -491,6 +532,18 @@ function findExportDataPath(node: ASTNode, path: string[]): string[] | null {
     }
   }
   return null;
+}
+
+function findDeepestFieldPath(node: ASTNode, path: string[]): string[] {
+  if ('selectionSet' in node && node.selectionSet) {
+    for (const child of node.selectionSet.selections) {
+      return findDeepestFieldPath(
+        child,
+        child.kind === Kind.FIELD ? [...path, child.name.value] : path,
+      );
+    }
+  }
+  return path;
 }
 
 function createSelectionSetForFields(fields: string[]): SelectionSetNode {

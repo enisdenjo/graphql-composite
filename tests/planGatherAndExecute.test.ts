@@ -75,8 +75,14 @@ it.each([
     type: 'Manufacturer',
     fields: ['id', 'name', 'products.manufacturer.location', 'products.name'],
   },
+  {
+    name: 'FindDeepestPath',
+    operation: 'query FindDeepestPath { manufacturer { nested { deep } } }',
+    type: 'String',
+    fields: [],
+  },
 ])(
-  'should build proper operation and find __export path for $name resolver',
+  'should build proper operation and find export path for $name resolver',
   ({ operation, type, fields }) => {
     expect(buildResolverOperation(operation, type, fields)).toMatchSnapshot();
   },

@@ -154,6 +154,7 @@ export const sources: FixtureSources = {
     typeDefs: /* GraphQL */ `
       type Query {
         manufacturer(id: ID!): Manufacturer
+        manufacturerName(id: ID!): String
       }
       type Manufacturer {
         id: ID!
@@ -164,6 +165,9 @@ export const sources: FixtureSources = {
       Query: {
         manufacturer: (_parent, args: { id: string }) =>
           manufacturers.find((manufacturer) => manufacturer.id === args.id),
+        manufacturerName: (_parent, args: { id: string }) =>
+          manufacturers.find((manufacturer) => manufacturer.id === args.id)
+            ?.name,
       },
     },
   }),

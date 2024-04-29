@@ -4,6 +4,7 @@ import {
   GraphQLField,
   GraphQLObjectType,
   GraphQLSchema,
+  isScalarType,
   Kind,
   OperationTypeNode,
 } from 'graphql';
@@ -37,7 +38,7 @@ export interface SchemaPlanCompositeType {
   name: string;
   resolvers: {
     [source in SchemaPlanSource['source']]: SchemaPlanSource &
-      SchemaPlanResolver; // TODO: type can only have one resolver at source?
+      SchemaPlanCompositeResolver; // TODO: type can only have one resolver at source?
   };
   fields: {
     [name in SchemaPlanCompositeTypeField['name']]: SchemaPlanCompositeTypeField;
@@ -60,7 +61,12 @@ export interface SchemaPlanSource {
   typeOrField: string;
 }
 
-export interface SchemaPlanResolver {
+export type SchemaPlanResolver =
+  | SchemaPlanCompositeResolver
+  | SchemaPlanScalarResolver;
+
+export interface SchemaPlanCompositeResolver {
+  kind: 'composite';
   /**
    * The type this resolver resolves.
    * Is actually the type of the `__export` fragment.
@@ -79,6 +85,26 @@ export interface SchemaPlanResolver {
    * ```graphql
    * query ProductByUPC($upc: ID!) { product(upc: $upc) { ...__export } }
    * fragment __export on Product { upc name manufacturer { id } }
+   * ```
+   *
+   */
+  operation: string;
+  variables: {
+    [name in SchemaPlanResolverVariable['name']]: SchemaPlanResolverVariable;
+  };
+}
+
+export interface SchemaPlanScalarResolver {
+  kind: 'scalar';
+  /** The type of the scalar this resolver resolves. */
+  type: string;
+  /**
+   * Operation to execute on the source. The operation's deepest
+   * field is where the scalar is located.
+   *
+   * A well-formatted operation looks like this:
+   * ```graphql
+   * query ProductNameUPC($upc: ID!) { product(upc: $upc) { name } }
    * ```
    *
    */
@@ -167,6 +193,11 @@ export function planSchema(schema: GraphQLSchema): SchemaPlan {
     };
     for (const source of getSourcesFromDirectives(type, null)) {
       const resolver = getResolverForSourceFromDirectives(type, null, source);
+      if (resolver.kind === 'scalar') {
+        throw new Error(
+          `Composite type plan for "${type.name}" cannot have a scalar resolver`,
+        );
+      }
       compositeTypePlan.resolvers[source.source] = { ...source, ...resolver };
     }
     for (const [name, field] of Object.entries(type.getFields())) {
@@ -287,6 +318,7 @@ function getResolverForSourceFromDirectives(
   const resolvingType = getNamedType(field ? field.type : type);
 
   return {
+    kind: isScalarType(resolvingType) ? 'scalar' : 'composite',
     type: resolvingType.name,
     operation: mustGetStringArgumentValue(
       type,

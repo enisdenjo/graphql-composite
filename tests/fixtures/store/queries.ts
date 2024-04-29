@@ -6,7 +6,7 @@ export const queries: FixtureQueries = [
     name: 'NotBasicWithInlineVariables',
     document: parse(/* GraphQL */ `
       query NotBasicWithInlineVariables {
-        storefront(id: "2") {
+        storefront(id: "samsung-store") {
           id
           name
           products {
@@ -47,7 +47,7 @@ export const queries: FixtureQueries = [
       }
     `),
     variables: {
-      id: '2',
+      id: 'apple-store',
     },
   },
 ];

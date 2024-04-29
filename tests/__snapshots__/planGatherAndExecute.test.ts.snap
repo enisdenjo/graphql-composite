@@ -4,59 +4,71 @@ exports[`fixture 'store' > query 'NotBasicWithInlineVariables' > should execute 
 {
   "data": {
     "storefront": {
-      "id": "cyberport",
-      "name": "CyberPort",
+      "id": "samsung-store",
+      "name": "Samsung",
       "products": [
         {
           "manufacturer": {
-            "name": "TODO: name of manufacturer manufacturer-of-laptop",
+            "name": "Samsung",
             "products": [
               {
-                "name": "TODO: name of product laptop",
-                "upc": "laptop",
+                "name": "Samsung TV",
+                "upc": "tv",
               },
               {
-                "name": "TODO: name of product otherthing",
-                "upc": "otherthing",
+                "name": "Samsung Fold",
+                "upc": "fold",
+              },
+              {
+                "name": "Samsung Galaxy",
+                "upc": "galaxy",
               },
             ],
           },
-          "name": "TODO: name of product laptop",
-          "upc": "laptop",
+          "name": "Samsung TV",
+          "upc": "tv",
         },
         {
           "manufacturer": {
-            "name": "TODO: name of manufacturer manufacturer-of-computer",
+            "name": "Samsung",
             "products": [
               {
-                "name": "TODO: name of product computer",
-                "upc": "computer",
+                "name": "Samsung TV",
+                "upc": "tv",
               },
               {
-                "name": "TODO: name of product otherthing",
-                "upc": "otherthing",
+                "name": "Samsung Fold",
+                "upc": "fold",
+              },
+              {
+                "name": "Samsung Galaxy",
+                "upc": "galaxy",
               },
             ],
           },
-          "name": "TODO: name of product computer",
-          "upc": "computer",
+          "name": "Samsung Fold",
+          "upc": "fold",
         },
         {
           "manufacturer": {
-            "name": "TODO: name of manufacturer manufacturer-of-headset",
+            "name": "Samsung",
             "products": [
               {
-                "name": "TODO: name of product headset",
-                "upc": "headset",
+                "name": "Samsung TV",
+                "upc": "tv",
               },
               {
-                "name": "TODO: name of product otherthing",
-                "upc": "otherthing",
+                "name": "Samsung Fold",
+                "upc": "fold",
+              },
+              {
+                "name": "Samsung Galaxy",
+                "upc": "galaxy",
               },
             ],
           },
-          "name": "TODO: name of product headset",
-          "upc": "headset",
+          "name": "Samsung Galaxy",
+          "upc": "galaxy",
         },
       ],
     },
@@ -65,17 +77,17 @@ exports[`fixture 'store' > query 'NotBasicWithInlineVariables' > should execute 
     {
       "data": {
         "storefront": {
-          "id": "cyberport",
-          "name": "CyberPort",
+          "id": "samsung-store",
+          "name": "Samsung",
           "products": [
             {
-              "upc": "laptop",
+              "upc": "tv",
             },
             {
-              "upc": "computer",
+              "upc": "fold",
             },
             {
-              "upc": "headset",
+              "upc": "galaxy",
             },
           ],
         },
@@ -85,26 +97,30 @@ exports[`fixture 'store' > query 'NotBasicWithInlineVariables' > should execute 
           "data": {
             "product": {
               "manufacturer": {
-                "id": "manufacturer-of-laptop",
+                "id": "samsung",
                 "products": [
                   {
-                    "name": "TODO: name of product laptop",
-                    "upc": "laptop",
+                    "name": "Samsung TV",
+                    "upc": "tv",
                   },
                   {
-                    "name": "TODO: name of product otherthing",
-                    "upc": "otherthing",
+                    "name": "Samsung Fold",
+                    "upc": "fold",
+                  },
+                  {
+                    "name": "Samsung Galaxy",
+                    "upc": "galaxy",
                   },
                 ],
               },
-              "name": "TODO: name of product laptop",
+              "name": "Samsung TV",
             },
           },
           "includes": [
             {
               "data": {
                 "manufacturer": {
-                  "name": "TODO: name of manufacturer manufacturer-of-laptop",
+                  "name": "Samsung",
                 },
               },
               "includes": [],
@@ -128,7 +144,7 @@ fragment __export on Manufacturer {
                 "name",
               ],
               "variables": {
-                "Manufacturer_id": "manufacturer-of-laptop",
+                "Manufacturer_id": "samsung",
               },
             },
           ],
@@ -162,33 +178,37 @@ fragment __export on Product {
             "manufacturer.products.name",
           ],
           "variables": {
-            "Product_upc": "laptop",
+            "Product_upc": "tv",
           },
         },
         {
           "data": {
             "product": {
               "manufacturer": {
-                "id": "manufacturer-of-computer",
+                "id": "samsung",
                 "products": [
                   {
-                    "name": "TODO: name of product computer",
-                    "upc": "computer",
+                    "name": "Samsung TV",
+                    "upc": "tv",
                   },
                   {
-                    "name": "TODO: name of product otherthing",
-                    "upc": "otherthing",
+                    "name": "Samsung Fold",
+                    "upc": "fold",
+                  },
+                  {
+                    "name": "Samsung Galaxy",
+                    "upc": "galaxy",
                   },
                 ],
               },
-              "name": "TODO: name of product computer",
+              "name": "Samsung Fold",
             },
           },
           "includes": [
             {
               "data": {
                 "manufacturer": {
-                  "name": "TODO: name of manufacturer manufacturer-of-computer",
+                  "name": "Samsung",
                 },
               },
               "includes": [],
@@ -212,7 +232,7 @@ fragment __export on Manufacturer {
                 "name",
               ],
               "variables": {
-                "Manufacturer_id": "manufacturer-of-computer",
+                "Manufacturer_id": "samsung",
               },
             },
           ],
@@ -246,33 +266,37 @@ fragment __export on Product {
             "manufacturer.products.name",
           ],
           "variables": {
-            "Product_upc": "computer",
+            "Product_upc": "fold",
           },
         },
         {
           "data": {
             "product": {
               "manufacturer": {
-                "id": "manufacturer-of-headset",
+                "id": "samsung",
                 "products": [
                   {
-                    "name": "TODO: name of product headset",
-                    "upc": "headset",
+                    "name": "Samsung TV",
+                    "upc": "tv",
                   },
                   {
-                    "name": "TODO: name of product otherthing",
-                    "upc": "otherthing",
+                    "name": "Samsung Fold",
+                    "upc": "fold",
+                  },
+                  {
+                    "name": "Samsung Galaxy",
+                    "upc": "galaxy",
                   },
                 ],
               },
-              "name": "TODO: name of product headset",
+              "name": "Samsung Galaxy",
             },
           },
           "includes": [
             {
               "data": {
                 "manufacturer": {
-                  "name": "TODO: name of manufacturer manufacturer-of-headset",
+                  "name": "Samsung",
                 },
               },
               "includes": [],
@@ -296,7 +320,7 @@ fragment __export on Manufacturer {
                 "name",
               ],
               "variables": {
-                "Manufacturer_id": "manufacturer-of-headset",
+                "Manufacturer_id": "samsung",
               },
             },
           ],
@@ -330,7 +354,7 @@ fragment __export on Product {
             "manufacturer.products.name",
           ],
           "variables": {
-            "Product_upc": "headset",
+            "Product_upc": "galaxy",
           },
         },
       ],
@@ -357,7 +381,7 @@ fragment __export on Storefront {
         "products.upc",
       ],
       "variables": {
-        "id": "2",
+        "id": "samsung-store",
       },
     },
   ],
@@ -455,7 +479,7 @@ exports[`fixture 'store' > query 'NotBasicWithInlineVariables' > should plan gat
             },
           ],
           "inlineVariables": {
-            "id": "2",
+            "id": "samsung-store",
           },
           "isList": false,
           "isListItemNonNull": false,
@@ -541,7 +565,7 @@ fragment __export on Product {
             },
           },
           "inlineVariables": {
-            "id": "2",
+            "id": "samsung-store",
           },
           "operation": "query storefront($id: ID!) {
   storefront(id: $id) {
@@ -588,7 +612,7 @@ fragment __export on Storefront {
     "storefront.products.manufacturer.name",
   ],
   "query": "query NotBasicWithInlineVariables {
-  storefront(id: "2") {
+  storefront(id: "samsung-store") {
     id
     name
     products {
@@ -611,59 +635,42 @@ exports[`fixture 'store' > query 'NotBasicWithOperationVariables' > should execu
 {
   "data": {
     "storefront": {
-      "id": "cyberport",
-      "name": "CyberPort",
+      "id": "apple-store",
+      "name": "Apple Store",
       "products": [
         {
           "manufacturer": {
-            "name": "TODO: name of manufacturer manufacturer-of-laptop",
+            "name": "Apple",
             "products": [
               {
-                "name": "TODO: name of product laptop",
-                "upc": "laptop",
+                "name": "Apple iPhone",
+                "upc": "iphone",
               },
               {
-                "name": "TODO: name of product otherthing",
-                "upc": "otherthing",
+                "name": "iPad",
+                "upc": "ipad",
               },
             ],
           },
-          "name": "TODO: name of product laptop",
-          "upc": "laptop",
+          "name": "Apple iPhone",
+          "upc": "iphone",
         },
         {
           "manufacturer": {
-            "name": "TODO: name of manufacturer manufacturer-of-computer",
+            "name": "Apple",
             "products": [
               {
-                "name": "TODO: name of product computer",
-                "upc": "computer",
+                "name": "Apple iPhone",
+                "upc": "iphone",
               },
               {
-                "name": "TODO: name of product otherthing",
-                "upc": "otherthing",
+                "name": "iPad",
+                "upc": "ipad",
               },
             ],
           },
-          "name": "TODO: name of product computer",
-          "upc": "computer",
-        },
-        {
-          "manufacturer": {
-            "name": "TODO: name of manufacturer manufacturer-of-headset",
-            "products": [
-              {
-                "name": "TODO: name of product headset",
-                "upc": "headset",
-              },
-              {
-                "name": "TODO: name of product otherthing",
-                "upc": "otherthing",
-              },
-            ],
-          },
-          "name": "TODO: name of product headset",
-          "upc": "headset",
+          "name": "iPad",
+          "upc": "ipad",
         },
       ],
     },
@@ -672,17 +679,14 @@ exports[`fixture 'store' > query 'NotBasicWithOperationVariables' > should execu
     {
       "data": {
         "storefront": {
-          "id": "cyberport",
-          "name": "CyberPort",
+          "id": "apple-store",
+          "name": "Apple Store",
           "products": [
             {
-              "upc": "laptop",
+              "upc": "iphone",
             },
             {
-              "upc": "computer",
-            },
-            {
-              "upc": "headset",
+              "upc": "ipad",
             },
           ],
         },
@@ -692,26 +696,26 @@ exports[`fixture 'store' > query 'NotBasicWithOperationVariables' > should execu
           "data": {
             "product": {
               "manufacturer": {
-                "id": "manufacturer-of-laptop",
+                "id": "apple",
                 "products": [
                   {
-                    "name": "TODO: name of product laptop",
-                    "upc": "laptop",
+                    "name": "Apple iPhone",
+                    "upc": "iphone",
                   },
                   {
-                    "name": "TODO: name of product otherthing",
-                    "upc": "otherthing",
+                    "name": "iPad",
+                    "upc": "ipad",
                   },
                 ],
               },
-              "name": "TODO: name of product laptop",
+              "name": "Apple iPhone",
             },
           },
           "includes": [
             {
               "data": {
                 "manufacturer": {
-                  "name": "TODO: name of manufacturer manufacturer-of-laptop",
+                  "name": "Apple",
                 },
               },
               "includes": [],
@@ -735,7 +739,7 @@ fragment __export on Manufacturer {
                 "name",
               ],
               "variables": {
-                "Manufacturer_id": "manufacturer-of-laptop",
+                "Manufacturer_id": "apple",
               },
             },
           ],
@@ -769,33 +773,33 @@ fragment __export on Product {
             "manufacturer.products.name",
           ],
           "variables": {
-            "Product_upc": "laptop",
+            "Product_upc": "iphone",
           },
         },
         {
           "data": {
             "product": {
               "manufacturer": {
-                "id": "manufacturer-of-computer",
+                "id": "apple",
                 "products": [
                   {
-                    "name": "TODO: name of product computer",
-                    "upc": "computer",
+                    "name": "Apple iPhone",
+                    "upc": "iphone",
                   },
                   {
-                    "name": "TODO: name of product otherthing",
-                    "upc": "otherthing",
+                    "name": "iPad",
+                    "upc": "ipad",
                   },
                 ],
               },
-              "name": "TODO: name of product computer",
+              "name": "iPad",
             },
           },
           "includes": [
             {
               "data": {
                 "manufacturer": {
-                  "name": "TODO: name of manufacturer manufacturer-of-computer",
+                  "name": "Apple",
                 },
               },
               "includes": [],
@@ -819,7 +823,7 @@ fragment __export on Manufacturer {
                 "name",
               ],
               "variables": {
-                "Manufacturer_id": "manufacturer-of-computer",
+                "Manufacturer_id": "apple",
               },
             },
           ],
@@ -853,91 +857,7 @@ fragment __export on Product {
             "manufacturer.products.name",
           ],
           "variables": {
-            "Product_upc": "computer",
-          },
-        },
-        {
-          "data": {
-            "product": {
-              "manufacturer": {
-                "id": "manufacturer-of-headset",
-                "products": [
-                  {
-                    "name": "TODO: name of product headset",
-                    "upc": "headset",
-                  },
-                  {
-                    "name": "TODO: name of product otherthing",
-                    "upc": "otherthing",
-                  },
-                ],
-              },
-              "name": "TODO: name of product headset",
-            },
-          },
-          "includes": [
-            {
-              "data": {
-                "manufacturer": {
-                  "name": "TODO: name of manufacturer manufacturer-of-headset",
-                },
-              },
-              "includes": [],
-              "operation": "query ManufacturerById($Manufacturer_id: ID!) {
-  manufacturer(id: $Manufacturer_id) {
-    ...__export
-  }
-}
-
-fragment __export on Manufacturer {
-  name
-}",
-              "path": [
-                "storefront",
-                "products",
-                2,
-                "manufacturer",
-              ],
-              "private": [],
-              "public": [
-                "name",
-              ],
-              "variables": {
-                "Manufacturer_id": "manufacturer-of-headset",
-              },
-            },
-          ],
-          "operation": "query ProductByUpc($Product_upc: ID!) {
-  product(upc: $Product_upc) {
-    ...__export
-  }
-}
-
-fragment __export on Product {
-  name
-  manufacturer {
-    products {
-      upc
-      name
-    }
-    id
-  }
-}",
-          "path": [
-            "storefront",
-            "products",
-            2,
-          ],
-          "private": [
-            "manufacturer.id",
-          ],
-          "public": [
-            "name",
-            "manufacturer.products.upc",
-            "manufacturer.products.name",
-          ],
-          "variables": {
-            "Product_upc": "headset",
+            "Product_upc": "ipad",
           },
         },
       ],
@@ -964,7 +884,7 @@ fragment __export on Storefront {
         "products.upc",
       ],
       "variables": {
-        "id": "2",
+        "id": "apple-store",
       },
     },
   ],

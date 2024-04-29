@@ -34,7 +34,7 @@ export async function execute(
 }
 
 export type ExecutionExplain = Omit<GatherPlanResolver, 'includes'> & {
-  path: (string | number)[];
+  pathInResult: (string | number)[];
   operation: string;
   variables: Record<string, unknown>;
   data?: unknown;
@@ -61,7 +61,7 @@ async function executeResolver(
   /**
    * The path in the {@link resultRef} this gather is resolving.
    */
-  path: (string | number)[],
+  pathInResult: (string | number)[],
   /**
    * Reference whose object gets mutated to form the final
    * result (the one that the caller gets).
@@ -103,13 +103,13 @@ async function executeResolver(
       ? {
           ...resolver,
           ...result,
-          path,
+          pathInResult,
           variables,
         }
       : {
           ...resolver,
           ...result,
-          path,
+          pathInResult,
           variables,
           includes: [],
         };
@@ -130,7 +130,7 @@ async function executeResolver(
 
   if (resolver.kind === 'scalar') {
     // is a scalar field, export itself at the path in the result
-    setAtPath(resultRef.data, path, exportData);
+    setAtPath(resultRef.data, pathInResult, exportData);
   } else {
     // otherwise, set at each field in the path of the composite field
     for (const exportPath of resolver.public.map((e) => e.split('.'))) {
@@ -146,7 +146,7 @@ async function executeResolver(
           setAtPath(
             resultRef.data,
             [
-              ...path,
+              ...pathInResult,
               ...exportPath.slice(0, exportPath.length - 1)!,
               i,
               lastKey!,
@@ -157,7 +157,7 @@ async function executeResolver(
       } else {
         setAtPath(
           resultRef.data,
-          [...path, ...exportPath],
+          [...pathInResult, ...exportPath],
           getAtPath(exportData, exportPath),
         );
       }
@@ -168,14 +168,14 @@ async function executeResolver(
     ? {
         ...resolver,
         ...result,
-        path,
+        pathInResult: pathInResult,
         variables,
         // scalar fields cannot have includes
       }
     : {
         ...resolver,
         ...result,
-        path,
+        pathInResult: pathInResult,
         variables,
         // TODO: batch resolvers going to the same source
         includes: await Promise.all(
@@ -189,7 +189,7 @@ async function executeResolver(
                   operationVariables,
                   resolver,
                   fieldDataItem,
-                  [...path, field, i],
+                  [...pathInResult, field, i],
                   resultRef,
                 ),
               );
@@ -199,7 +199,7 @@ async function executeResolver(
               operationVariables,
               resolver,
               fieldData,
-              [...path, field],
+              [...pathInResult, field],
               resultRef,
             );
           }),

@@ -135,7 +135,7 @@ exports[`fixture 'store' > query 'NotBasicWithInlineVariables' > should execute 
 fragment __export on Manufacturer {
   name
 }",
-              "path": [
+              "pathInResult": [
                 "storefront",
                 "products",
                 0,
@@ -174,7 +174,7 @@ fragment __export on Product {
     id
   }
 }",
-          "path": [
+          "pathInResult": [
             "storefront",
             "products",
             0,
@@ -239,7 +239,7 @@ fragment __export on Product {
 fragment __export on Manufacturer {
   name
 }",
-              "path": [
+              "pathInResult": [
                 "storefront",
                 "products",
                 1,
@@ -278,7 +278,7 @@ fragment __export on Product {
     id
   }
 }",
-          "path": [
+          "pathInResult": [
             "storefront",
             "products",
             1,
@@ -343,7 +343,7 @@ fragment __export on Product {
 fragment __export on Manufacturer {
   name
 }",
-              "path": [
+              "pathInResult": [
                 "storefront",
                 "products",
                 2,
@@ -382,7 +382,7 @@ fragment __export on Product {
     id
   }
 }",
-          "path": [
+          "pathInResult": [
             "storefront",
             "products",
             2,
@@ -423,7 +423,7 @@ fragment __export on Storefront {
     upc
   }
 }",
-      "path": [
+      "pathInResult": [
         "storefront",
       ],
       "pathToExportData": [
@@ -791,7 +791,7 @@ exports[`fixture 'store' > query 'NotBasicWithOperationVariables' > should execu
 fragment __export on Manufacturer {
   name
 }",
-              "path": [
+              "pathInResult": [
                 "storefront",
                 "products",
                 0,
@@ -830,7 +830,7 @@ fragment __export on Product {
     id
   }
 }",
-          "path": [
+          "pathInResult": [
             "storefront",
             "products",
             0,
@@ -891,7 +891,7 @@ fragment __export on Product {
 fragment __export on Manufacturer {
   name
 }",
-              "path": [
+              "pathInResult": [
                 "storefront",
                 "products",
                 1,
@@ -930,7 +930,7 @@ fragment __export on Product {
     id
   }
 }",
-          "path": [
+          "pathInResult": [
             "storefront",
             "products",
             1,
@@ -969,7 +969,7 @@ fragment __export on Storefront {
     upc
   }
 }",
-      "path": [
+      "pathInResult": [
         "storefront",
       ],
       "pathToExportData": [
@@ -1251,7 +1251,7 @@ exports[`fixture 'store' > query 'ScalarOperationField' > should execute 1`] = `
       "operation": "query manufacturerName($id: ID!) {
   manufacturerName(id: $id)
 }",
-      "path": [
+      "pathInResult": [
         "manufacturerName",
       ],
       "pathToExportData": [
@@ -1335,7 +1335,7 @@ exports[`fixture 'store' > query 'ScalarOperationFieldNested' > should execute 1
     name
   }
 }",
-      "path": [
+      "pathInResult": [
         "productName",
       ],
       "pathToExportData": [

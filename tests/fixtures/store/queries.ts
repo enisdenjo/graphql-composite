@@ -3,9 +3,9 @@ import { FixtureQueries } from '../../utils.js';
 
 export const queries: FixtureQueries = [
   {
-    name: 'NotBasic',
+    name: 'NotBasicWithInlineVariables',
     document: parse(/* GraphQL */ `
-      query NotBasic {
+      query NotBasicWithInlineVariables {
         storefront(id: "2") {
           id
           name
@@ -23,6 +23,6 @@ export const queries: FixtureQueries = [
         }
       }
     `),
-    variables: { id: '2' }, // TODO: inline variables support
+    variables: {},
   },
 ];

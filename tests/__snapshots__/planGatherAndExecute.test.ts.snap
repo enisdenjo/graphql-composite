@@ -1,6 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`fixture 'store' > query 'NotBasic' > should execute 1`] = `
+exports[`fixture 'store' > query 'NotBasicWithInlineVariables' > should execute 1`] = `
 {
   "data": {
     "storefront": {
@@ -364,7 +364,7 @@ fragment __export on Storefront {
 }
 `;
 
-exports[`fixture 'store' > query 'NotBasic' > should plan gather 1`] = `
+exports[`fixture 'store' > query 'NotBasicWithInlineVariables' > should plan gather 1`] = `
 {
   "operations": [
     {
@@ -372,12 +372,14 @@ exports[`fixture 'store' > query 'NotBasic' > should plan gather 1`] = `
         {
           "fields": [
             {
+              "inlineVariables": {},
               "isNonNull": true,
               "kind": "scalar",
               "name": "id",
               "type": "ID",
             },
             {
+              "inlineVariables": {},
               "isNonNull": true,
               "kind": "scalar",
               "name": "name",
@@ -386,12 +388,14 @@ exports[`fixture 'store' > query 'NotBasic' > should plan gather 1`] = `
             {
               "fields": [
                 {
+                  "inlineVariables": {},
                   "isNonNull": true,
                   "kind": "scalar",
                   "name": "upc",
                   "type": "ID",
                 },
                 {
+                  "inlineVariables": {},
                   "isNonNull": true,
                   "kind": "scalar",
                   "name": "name",
@@ -402,18 +406,21 @@ exports[`fixture 'store' > query 'NotBasic' > should plan gather 1`] = `
                     {
                       "fields": [
                         {
+                          "inlineVariables": {},
                           "isNonNull": true,
                           "kind": "scalar",
                           "name": "upc",
                           "type": "ID",
                         },
                         {
+                          "inlineVariables": {},
                           "isNonNull": true,
                           "kind": "scalar",
                           "name": "name",
                           "type": "String",
                         },
                       ],
+                      "inlineVariables": {},
                       "isList": true,
                       "isListItemNonNull": false,
                       "isNonNull": true,
@@ -422,12 +429,14 @@ exports[`fixture 'store' > query 'NotBasic' > should plan gather 1`] = `
                       "type": "Product",
                     },
                     {
+                      "inlineVariables": {},
                       "isNonNull": true,
                       "kind": "scalar",
                       "name": "name",
                       "type": "String",
                     },
                   ],
+                  "inlineVariables": {},
                   "isList": false,
                   "isListItemNonNull": false,
                   "isNonNull": false,
@@ -436,6 +445,7 @@ exports[`fixture 'store' > query 'NotBasic' > should plan gather 1`] = `
                   "type": "Manufacturer",
                 },
               ],
+              "inlineVariables": {},
               "isList": true,
               "isListItemNonNull": false,
               "isNonNull": true,
@@ -444,6 +454,9 @@ exports[`fixture 'store' > query 'NotBasic' > should plan gather 1`] = `
               "type": "Product",
             },
           ],
+          "inlineVariables": {
+            "id": "2",
+          },
           "isList": false,
           "isListItemNonNull": false,
           "isNonNull": false,
@@ -452,7 +465,7 @@ exports[`fixture 'store' > query 'NotBasic' > should plan gather 1`] = `
           "type": "Storefront",
         },
       ],
-      "name": "NotBasic",
+      "name": "NotBasicWithInlineVariables",
       "resolvers": [
         {
           "includes": {
@@ -460,6 +473,7 @@ exports[`fixture 'store' > query 'NotBasic' > should plan gather 1`] = `
               "includes": {
                 "manufacturer": {
                   "includes": {},
+                  "inlineVariables": {},
                   "operation": "query ManufacturerById($Manufacturer_id: ID!) {
   manufacturer(id: $Manufacturer_id) {
     ...__export
@@ -487,6 +501,7 @@ fragment __export on Manufacturer {
                   },
                 },
               },
+              "inlineVariables": {},
               "operation": "query ProductByUpc($Product_upc: ID!) {
   product(upc: $Product_upc) {
     ...__export
@@ -524,6 +539,9 @@ fragment __export on Product {
                 },
               },
             },
+          },
+          "inlineVariables": {
+            "id": "2",
           },
           "operation": "query storefront($id: ID!) {
   storefront(id: $id) {
@@ -569,7 +587,7 @@ fragment __export on Storefront {
     "storefront.products.manufacturer.products.name",
     "storefront.products.manufacturer.name",
   ],
-  "query": "query NotBasic {
+  "query": "query NotBasicWithInlineVariables {
   storefront(id: "2") {
     id
     name

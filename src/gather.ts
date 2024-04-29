@@ -3,6 +3,7 @@ import {
   DocumentNode,
   FieldNode,
   FragmentDefinitionNode,
+  getArgumentValues,
   GraphQLCompositeType,
   GraphQLEnumType,
   GraphQLScalarType,
@@ -46,6 +47,8 @@ export interface GatherPlanCompositeField {
   kind: 'composite';
   name: string;
   type: string;
+  /** The inline variables of the field this resolver resolves. */
+  inlineVariables: Record<string, unknown>;
   isNonNull: boolean; // TODO: how to use? validating gather results?
   isList: boolean; // TODO: how to use? validating gather results?
   isListItemNonNull: boolean; // TODO: how to use? validating gather results?
@@ -56,12 +59,16 @@ export interface GatherPlanScalarField {
   kind: 'scalar';
   name: string;
   type: string;
+  /** The inline variables of the field this resolver resolves. */
+  inlineVariables: Record<string, unknown>;
   isNonNull: boolean; // TODO: how to use? validating gather results?
 }
 
 export interface GatherPlanResolver
   extends SchemaPlanSource,
     SchemaPlanResolver {
+  /** The inline variables of the field this resolver resolves. */
+  inlineVariables: Record<string, unknown>;
   /** The path to the `__export` fragment in the execution result. */
   pathToExportData: string[];
   /**
@@ -138,11 +145,17 @@ export function planGather(
             | GraphQLCompositeType
             | GraphQLEnumType;
 
+          const inlineVariables = getArgumentValues(
+            typeInfo.getFieldDef()!,
+            node,
+          );
+
           if (isCompositeType(type)) {
             insertFieldToOperationAtDepth(currOperation, depth, {
               kind: 'composite',
               name: node.name.value,
               type: type.name,
+              inlineVariables,
               isNonNull,
               isList,
               isListItemNonNull,
@@ -153,6 +166,7 @@ export function planGather(
               kind: 'scalar',
               name: node.name.value,
               type: type.name,
+              inlineVariables,
               isNonNull,
             });
           }
@@ -235,54 +249,24 @@ function planGatherResolversForOperation(
       );
     }
 
-    for (const field of operationField.fields) {
-      const fieldPlan = typePlan.fields[field.name];
-      if (!fieldPlan) {
-        throw new Error(
-          `Schema plan "${typePlan.name}" composite type doesn't have a "${field.name}" field`,
-        );
-      }
+    const resolver: GatherPlanResolver = {
+      // TODO: choose the right resolver when multiple
+      ...Object.values(operationFieldPlan.resolvers)[0]!,
+      inlineVariables: operationField.inlineVariables,
+      pathToExportData: [],
+      private: [],
+      public: [],
+      includes: {},
+    };
 
-      let resolver = resolvers.find((r) => fieldPlan.sources[r.source]);
-      if (!resolver) {
-        const resolverPlan = Object.values(operationFieldPlan.resolvers).find(
-          (r) => fieldPlan.sources[r.source],
-        );
-        if (!resolverPlan) {
-          // TODO: less confusing error
-          throw new Error(
-            `Schema operation plan "${operationPlan.name}" field "${operationField.name}" doesn't have resolvers for any of the composite type "${typePlan.name}" field's "${fieldPlan.name}" sources`,
-          );
-        }
-        resolver = {
-          ...resolverPlan,
-          pathToExportData: [],
-          private: [],
-          public: [],
-          includes: {},
-        };
-        resolvers.push(resolver);
-      }
+    insertResolversForGatherPlanCompositeField(
+      schemaPlan,
+      operationField,
+      resolver,
+      '',
+    );
 
-      if (field.kind === 'composite') {
-        // dont include the root of the composite type as an export path
-        //   1. operation `{ products { name } }` should have the following exports:
-        //      ['products.name'] and not ['products', 'products.name']
-        //   2. operation `{ products { manifacturer { name } } }` should have the following exports:
-        //      ['products.manifacturer.name'] and not ['products', 'products.manifacturer', 'products.manifacturer.name']
-      } else {
-        resolver.public.push(field.name);
-      }
-
-      if (field.kind === 'composite') {
-        insertResolversForGatherPlanCompositeField(
-          schemaPlan,
-          field,
-          resolver,
-          '',
-        );
-      }
-    }
+    resolvers.push(resolver);
   }
 
   // we build resolvers operations only after gather
@@ -370,6 +354,7 @@ function insertResolversForGatherPlanCompositeField(
 
       resolver = {
         ...resolverPlan,
+        inlineVariables: field.inlineVariables,
         pathToExportData: [],
         private: [],
         public: [],

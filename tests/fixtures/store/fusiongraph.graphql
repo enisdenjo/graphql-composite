@@ -59,12 +59,6 @@ type Query {
       operation: "query productName($upc: ID!) { product(upc: $upc) { name } }"
     )
     @source(subgraph: "products", name: "productName", type: "Product")
-  _manufacturer(id: ID!): Manufacturer
-    @resolver(
-      subgraph: "products"
-      operation: "query _manufacturer($id: ID!) { _manufacturer(id: $id) { ...__export } }"
-    )
-    @source(subgraph: "products", name: "_manufacturer", type: "Manufacturer")
   storefront(id: ID!): Storefront
     @resolver(
       subgraph: "storefronts"
@@ -86,7 +80,7 @@ type Product
   @resolver(
     subgraph: "storefronts"
     operation: """
-    TODO
+    query ProductByUpc($Product_upc: ID!) { product(upc: $Product_upc) { ...__export } }
     """
     kind: "FETCH"
   )

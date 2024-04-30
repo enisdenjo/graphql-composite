@@ -83,6 +83,7 @@ export const sources: FixtureSources = {
     typeDefs: /* GraphQL */ `
       type Query {
         storefront(id: ID!): Storefront
+        product(upc: ID!): Product
       }
       type Storefront {
         id: ID!
@@ -109,6 +110,8 @@ export const sources: FixtureSources = {
             ),
           };
         },
+        product: (_parent, args: { upc: string }) =>
+          products.find((product) => product.upc === args.upc),
       },
     },
   }),

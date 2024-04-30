@@ -1529,7 +1529,7 @@ exports[`fixture 'store' > should plan schema 1`] = `
         },
         "storefronts": {
           "kind": "composite",
-          "operation": "TODO",
+          "operation": "query ProductByUpc($Product_upc: ID!) { product(upc: $Product_upc) { ...__export } }",
           "source": "storefronts",
           "type": "Product",
           "typeOrField": "Product",
@@ -1593,19 +1593,6 @@ exports[`fixture 'store' > should plan schema 1`] = `
   "operations": {
     "query": {
       "fields": {
-        "_manufacturer": {
-          "name": "_manufacturer",
-          "resolvers": {
-            "products": {
-              "kind": "composite",
-              "operation": "query _manufacturer($id: ID!) { _manufacturer(id: $id) { ...__export } }",
-              "source": "products",
-              "type": "Manufacturer",
-              "typeOrField": "_manufacturer",
-              "variables": {},
-            },
-          },
-        },
         "manufacturer": {
           "name": "manufacturer",
           "resolvers": {

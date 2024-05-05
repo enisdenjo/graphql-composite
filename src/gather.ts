@@ -468,7 +468,7 @@ export function buildResolverOperation(
   }
 
   if (!fields.length) {
-    // no fields to select means we're resolving a scalar is the deepest field is what we need
+    // no fields to select means we're resolving a scalar at the deepest field
     const pathToExportData = findDeepestFieldPath(def, []);
     if (!pathToExportData.length) {
       throw new Error(`Path to the deepest field not found in\n${operation}`);

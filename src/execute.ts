@@ -35,7 +35,7 @@ export async function execute(
   return {
     ...resultRef,
     extensions: {
-      ...resultRef.extensions,
+      // we dont spread resultRef.extensions because there wont be any
       explain,
     },
   };
@@ -100,13 +100,11 @@ async function executeResolver(
     ...resolver.inlineVariables,
   };
 
-  const result = await transport.get({
-    query: resolver.operation,
-    variables,
-  });
+  const result = await transport.get({ query: resolver.operation, variables });
+
   if (result.errors?.length) {
     // stop immediately on errors, we cant traverse further
-    resultRef.errors = result.errors;
+    resultRef.errors = [...(resultRef.errors || []), ...result.errors];
     return resolver.kind === 'scalar'
       ? {
           ...resolver,
@@ -121,8 +119,8 @@ async function executeResolver(
           variables,
           includes: [],
         };
-  }
-  if (!result.data) {
+  } else if (!result.data) {
+    // no error + no data is a no-no
     const err = new Error(
       'GraphQL execution result has no errors but does not contain data',
     );
@@ -130,86 +128,19 @@ async function executeResolver(
     throw err;
   }
 
-  if (!resultRef.data) {
-    resultRef.data = {};
-  }
-
   const exportData = getAtPath(result.data, resolver.pathToExportData);
-
-  if (resolver.kind === 'scalar') {
-    // is a scalar field, export itself at the path in the result
-    setAtPath(resultRef.data, pathInData, exportData);
-  } else {
-    // otherwise, set at each field in the path of the composite field
-    if (Array.isArray(exportData)) {
-      // set key in each item of the array
-      for (let i = 0; i < exportData.length; i++) {
-        const exportDataItem = exportData[i];
-        for (const exportPath of resolver.public.map((e) => e.split('.'))) {
-          const lastKey = exportPath[exportPath.length - 1];
-          const valBeforeLast =
-            exportPath.length > 1
-              ? getAtPath(
-                  exportDataItem,
-                  exportPath.slice(0, exportPath.length - 1),
-                )
-              : null;
-
-          if (Array.isArray(valBeforeLast)) {
-            // set key in each item of the array
-            for (let j = 0; j < valBeforeLast.length; j++) {
-              setAtPath(
-                resultRef.data,
-                [
-                  ...pathInData,
-                  i,
-                  ...exportPath.slice(0, exportPath.length - 1)!,
-                  j,
-                  lastKey!,
-                ],
-                getAtPath(valBeforeLast[j], [lastKey!]),
-              );
-            }
-          } else {
-            setAtPath(
-              resultRef.data,
-              [...pathInData, i, ...exportPath],
-              getAtPath(exportDataItem, exportPath),
-            );
-          }
-        }
-      }
-    } else {
-      for (const exportPath of resolver.public.map((e) => e.split('.'))) {
-        const lastKey = exportPath[exportPath.length - 1];
-        const valBeforeLast =
-          exportPath.length > 1
-            ? getAtPath(exportData, exportPath.slice(0, exportPath.length - 1))
-            : null;
-
-        if (Array.isArray(valBeforeLast)) {
-          // set key in each item of the array
-          for (let i = 0; i < valBeforeLast.length; i++) {
-            setAtPath(
-              resultRef.data,
-              [
-                ...pathInData,
-                ...exportPath.slice(0, exportPath.length - 1)!,
-                i,
-                lastKey!,
-              ],
-              getAtPath(valBeforeLast[i], [lastKey!]),
-            );
-          }
-        } else {
-          setAtPath(
-            resultRef.data,
-            [...pathInData, ...exportPath],
-            getAtPath(exportData, exportPath),
-          );
-        }
-      }
+  if (Array.isArray(exportData)) {
+    for (let i = 0; i < exportData.length; i++) {
+      const exportDataItem = exportData[i];
+      populateResultWithExportData(
+        resolver,
+        exportDataItem,
+        [...pathInData, i],
+        resultRef,
+      );
     }
+  } else {
+    populateResultWithExportData(resolver, exportData, pathInData, resultRef);
   }
 
   return resolver.kind === 'scalar'
@@ -229,6 +160,7 @@ async function executeResolver(
         includes: await Promise.all(
           Object.entries(resolver.includes).flatMap(([field, resolver]) => {
             if (Array.isArray(exportData)) {
+              // if the export data is an array, we need to gather resolve each item
               return exportData.flatMap((exportData, i) => {
                 const fieldData = getAtPath(exportData, field);
                 if (Array.isArray(fieldData)) {
@@ -254,6 +186,7 @@ async function executeResolver(
                 );
               });
             }
+
             const fieldData = getAtPath(exportData, field);
             if (Array.isArray(fieldData)) {
               // if the include points to an array, we need to gather resolve each item
@@ -279,4 +212,65 @@ async function executeResolver(
           }),
         ),
       };
+}
+
+/**
+ * Sets each of the publicly exported fields of the composite resolver
+ * to the result object reference.
+ */
+function populateResultWithExportData(
+  resolver: GatherPlanResolver,
+  exportData: unknown,
+  /**
+   * The path in the {@link resultRef} data this gather is resolving.
+   */
+  pathInData: (string | number)[],
+  /**
+   * Reference whose object gets mutated to form the final
+   * result (the one that the caller gets).
+   */
+  resultRef: ExecutionResult,
+) {
+  if (!resultRef.data) {
+    // at this point, we're sure that there are no errors
+    // so we can initialise the result data (if not already)
+    resultRef.data = {};
+  }
+
+  if (resolver.kind === 'scalar') {
+    // scalar fields are exported directly at the path in the result
+    setAtPath(resultRef.data, pathInData, exportData);
+    return;
+  }
+
+  for (const exportPath of resolver.public.map((e) => e.split('.'))) {
+    const lastKey = exportPath[exportPath.length - 1];
+    const valBeforeLast =
+      exportPath.length > 1
+        ? getAtPath(exportData, exportPath.slice(0, exportPath.length - 1))
+        : null;
+
+    if (Array.isArray(valBeforeLast)) {
+      // if we're exporting fields in an array, set for each item of the array
+      for (let i = 0; i < valBeforeLast.length; i++) {
+        setAtPath(
+          resultRef.data,
+          [
+            ...pathInData,
+            ...exportPath.slice(0, exportPath.length - 1)!,
+            i,
+            lastKey!,
+          ],
+          getAtPath(valBeforeLast[i], [lastKey!]),
+        );
+      }
+    } else {
+      // otherwise, just set in object
+      setAtPath(
+        resultRef.data,
+        [...pathInData, ...exportPath],
+        getAtPath(exportData, exportPath),
+      );
+    }
+  }
 }

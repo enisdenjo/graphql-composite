@@ -44,61 +44,62 @@ exports[`fixture 'store' > query 'ListOperationResolver' > should execute 1`] = 
       },
     ],
   },
-  "explain": [
-    {
-      "data": {
-        "productsByUpcs": [
+  "extensions": {
+    "explain": [
+      {
+        "data": {
+          "productsByUpcs": [
+            {
+              "manufacturer": {
+                "id": "samsung",
+                "products": [
+                  {
+                    "name": "Samsung TV",
+                    "upc": "tv",
+                  },
+                  {
+                    "name": "Samsung Fold",
+                    "upc": "fold",
+                  },
+                  {
+                    "name": "Samsung Galaxy",
+                    "upc": "galaxy",
+                  },
+                ],
+              },
+              "name": "Samsung Galaxy",
+              "upc": "galaxy",
+            },
+            {
+              "manufacturer": {
+                "id": "apple",
+                "products": [
+                  {
+                    "name": "Apple iPhone",
+                    "upc": "iphone",
+                  },
+                  {
+                    "name": "iPad",
+                    "upc": "ipad",
+                  },
+                ],
+              },
+              "name": "Apple iPhone",
+              "upc": "iphone",
+            },
+          ],
+        },
+        "includes": [
           {
-            "manufacturer": {
-              "id": "samsung",
-              "products": [
-                {
-                  "name": "Samsung TV",
-                  "upc": "tv",
-                },
-                {
-                  "name": "Samsung Fold",
-                  "upc": "fold",
-                },
-                {
-                  "name": "Samsung Galaxy",
-                  "upc": "galaxy",
-                },
-              ],
+            "data": {
+              "manufacturer": {
+                "name": "Samsung",
+              },
             },
-            "name": "Samsung Galaxy",
-            "upc": "galaxy",
-          },
-          {
-            "manufacturer": {
-              "id": "apple",
-              "products": [
-                {
-                  "name": "Apple iPhone",
-                  "upc": "iphone",
-                },
-                {
-                  "name": "iPad",
-                  "upc": "ipad",
-                },
-              ],
-            },
-            "name": "Apple iPhone",
-            "upc": "iphone",
-          },
-        ],
-      },
-      "includes": [
-        {
-          "data": {
-            "manufacturer": {
-              "name": "Samsung",
-            },
-          },
-          "includes": [],
-          "inlineVariables": {},
-          "kind": "composite",
-          "operation": "query ManufacturerById($Manufacturer_id: ID!) {
+            "includes": [],
+            "inlineVariables": {},
+            "kind": "composite",
+            "operation": "query ManufacturerById($Manufacturer_id: ID!) {
   manufacturer(id: $Manufacturer_id) {
     ...__export
   }
@@ -107,35 +108,35 @@ exports[`fixture 'store' > query 'ListOperationResolver' > should execute 1`] = 
 fragment __export on Manufacturer {
   name
 }",
-          "pathInData": [
-            "productsByUpcs",
-            0,
-            "manufacturer",
-          ],
-          "pathToExportData": [
-            "manufacturer",
-          ],
-          "private": [],
-          "public": [
-            "name",
-          ],
-          "source": "manufacturers",
-          "type": "Manufacturer",
-          "typeOrField": "Manufacturer",
-          "variables": {
-            "Manufacturer_id": "samsung",
-          },
-        },
-        {
-          "data": {
-            "manufacturer": {
-              "name": "Apple",
+            "pathInData": [
+              "productsByUpcs",
+              0,
+              "manufacturer",
+            ],
+            "pathToExportData": [
+              "manufacturer",
+            ],
+            "private": [],
+            "public": [
+              "name",
+            ],
+            "source": "manufacturers",
+            "type": "Manufacturer",
+            "typeOrField": "Manufacturer",
+            "variables": {
+              "Manufacturer_id": "samsung",
             },
           },
-          "includes": [],
-          "inlineVariables": {},
-          "kind": "composite",
-          "operation": "query ManufacturerById($Manufacturer_id: ID!) {
+          {
+            "data": {
+              "manufacturer": {
+                "name": "Apple",
+              },
+            },
+            "includes": [],
+            "inlineVariables": {},
+            "kind": "composite",
+            "operation": "query ManufacturerById($Manufacturer_id: ID!) {
   manufacturer(id: $Manufacturer_id) {
     ...__export
   }
@@ -144,34 +145,34 @@ fragment __export on Manufacturer {
 fragment __export on Manufacturer {
   name
 }",
-          "pathInData": [
-            "productsByUpcs",
-            1,
-            "manufacturer",
-          ],
-          "pathToExportData": [
-            "manufacturer",
-          ],
-          "private": [],
-          "public": [
-            "name",
-          ],
-          "source": "manufacturers",
-          "type": "Manufacturer",
-          "typeOrField": "Manufacturer",
-          "variables": {
-            "Manufacturer_id": "apple",
+            "pathInData": [
+              "productsByUpcs",
+              1,
+              "manufacturer",
+            ],
+            "pathToExportData": [
+              "manufacturer",
+            ],
+            "private": [],
+            "public": [
+              "name",
+            ],
+            "source": "manufacturers",
+            "type": "Manufacturer",
+            "typeOrField": "Manufacturer",
+            "variables": {
+              "Manufacturer_id": "apple",
+            },
           },
-        },
-      ],
-      "inlineVariables": {
-        "upcs": [
-          "galaxy",
-          "iphone",
         ],
-      },
-      "kind": "composite",
-      "operation": "query productsByUpcs($upcs: [ID!]!) {
+        "inlineVariables": {
+          "upcs": [
+            "galaxy",
+            "iphone",
+          ],
+        },
+        "kind": "composite",
+        "operation": "query productsByUpcs($upcs: [ID!]!) {
   productsByUpcs(upcs: $upcs) {
     ...__export
   }
@@ -188,33 +189,34 @@ fragment __export on Product {
     id
   }
 }",
-      "pathInData": [
-        "productsByUpcs",
-      ],
-      "pathToExportData": [
-        "productsByUpcs",
-      ],
-      "private": [
-        "manufacturer.id",
-      ],
-      "public": [
-        "upc",
-        "name",
-        "manufacturer.products.upc",
-        "manufacturer.products.name",
-      ],
-      "source": "products",
-      "type": "Product",
-      "typeOrField": "productsByUpcs",
-      "variables": {
-        "id": "apple-store",
-        "upcs": [
-          "galaxy",
-          "iphone",
+        "pathInData": [
+          "productsByUpcs",
         ],
+        "pathToExportData": [
+          "productsByUpcs",
+        ],
+        "private": [
+          "manufacturer.id",
+        ],
+        "public": [
+          "upc",
+          "name",
+          "manufacturer.products.upc",
+          "manufacturer.products.name",
+        ],
+        "source": "products",
+        "type": "Product",
+        "typeOrField": "productsByUpcs",
+        "variables": {
+          "id": "apple-store",
+          "upcs": [
+            "galaxy",
+            "iphone",
+          ],
+        },
       },
-    },
-  ],
+    ],
+  },
 }
 `;
 
@@ -476,344 +478,345 @@ exports[`fixture 'store' > query 'NotBasicWithInlineVariables' > should execute 
       ],
     },
   },
-  "explain": [
-    {
-      "data": {
-        "storefront": {
+  "extensions": {
+    "explain": [
+      {
+        "data": {
+          "storefront": {
+            "id": "samsung-store",
+            "name": "Samsung",
+            "products": [
+              {
+                "upc": "tv",
+              },
+              {
+                "upc": "fold",
+              },
+              {
+                "upc": "galaxy",
+              },
+            ],
+          },
+        },
+        "includes": [
+          {
+            "data": {
+              "product": {
+                "manufacturer": {
+                  "id": "samsung",
+                  "products": [
+                    {
+                      "name": "Samsung TV",
+                      "upc": "tv",
+                    },
+                    {
+                      "name": "Samsung Fold",
+                      "upc": "fold",
+                    },
+                    {
+                      "name": "Samsung Galaxy",
+                      "upc": "galaxy",
+                    },
+                  ],
+                },
+                "name": "Samsung TV",
+              },
+            },
+            "includes": [
+              {
+                "data": {
+                  "manufacturer": {
+                    "name": "Samsung",
+                  },
+                },
+                "includes": [],
+                "inlineVariables": {},
+                "kind": "composite",
+                "operation": "query ManufacturerById($Manufacturer_id: ID!) {
+  manufacturer(id: $Manufacturer_id) {
+    ...__export
+  }
+}
+
+fragment __export on Manufacturer {
+  name
+}",
+                "pathInData": [
+                  "storefront",
+                  "products",
+                  0,
+                  "manufacturer",
+                ],
+                "pathToExportData": [
+                  "manufacturer",
+                ],
+                "private": [],
+                "public": [
+                  "name",
+                ],
+                "source": "manufacturers",
+                "type": "Manufacturer",
+                "typeOrField": "Manufacturer",
+                "variables": {
+                  "Manufacturer_id": "samsung",
+                },
+              },
+            ],
+            "inlineVariables": {},
+            "kind": "composite",
+            "operation": "query ProductByUpc($Product_upc: ID!) {
+  product(upc: $Product_upc) {
+    ...__export
+  }
+}
+
+fragment __export on Product {
+  name
+  manufacturer {
+    products {
+      upc
+      name
+    }
+    id
+  }
+}",
+            "pathInData": [
+              "storefront",
+              "products",
+              0,
+            ],
+            "pathToExportData": [
+              "product",
+            ],
+            "private": [
+              "manufacturer.id",
+            ],
+            "public": [
+              "name",
+              "manufacturer.products.upc",
+              "manufacturer.products.name",
+            ],
+            "source": "products",
+            "type": "Product",
+            "typeOrField": "Product",
+            "variables": {
+              "Product_upc": "tv",
+            },
+          },
+          {
+            "data": {
+              "product": {
+                "manufacturer": {
+                  "id": "samsung",
+                  "products": [
+                    {
+                      "name": "Samsung TV",
+                      "upc": "tv",
+                    },
+                    {
+                      "name": "Samsung Fold",
+                      "upc": "fold",
+                    },
+                    {
+                      "name": "Samsung Galaxy",
+                      "upc": "galaxy",
+                    },
+                  ],
+                },
+                "name": "Samsung Fold",
+              },
+            },
+            "includes": [
+              {
+                "data": {
+                  "manufacturer": {
+                    "name": "Samsung",
+                  },
+                },
+                "includes": [],
+                "inlineVariables": {},
+                "kind": "composite",
+                "operation": "query ManufacturerById($Manufacturer_id: ID!) {
+  manufacturer(id: $Manufacturer_id) {
+    ...__export
+  }
+}
+
+fragment __export on Manufacturer {
+  name
+}",
+                "pathInData": [
+                  "storefront",
+                  "products",
+                  1,
+                  "manufacturer",
+                ],
+                "pathToExportData": [
+                  "manufacturer",
+                ],
+                "private": [],
+                "public": [
+                  "name",
+                ],
+                "source": "manufacturers",
+                "type": "Manufacturer",
+                "typeOrField": "Manufacturer",
+                "variables": {
+                  "Manufacturer_id": "samsung",
+                },
+              },
+            ],
+            "inlineVariables": {},
+            "kind": "composite",
+            "operation": "query ProductByUpc($Product_upc: ID!) {
+  product(upc: $Product_upc) {
+    ...__export
+  }
+}
+
+fragment __export on Product {
+  name
+  manufacturer {
+    products {
+      upc
+      name
+    }
+    id
+  }
+}",
+            "pathInData": [
+              "storefront",
+              "products",
+              1,
+            ],
+            "pathToExportData": [
+              "product",
+            ],
+            "private": [
+              "manufacturer.id",
+            ],
+            "public": [
+              "name",
+              "manufacturer.products.upc",
+              "manufacturer.products.name",
+            ],
+            "source": "products",
+            "type": "Product",
+            "typeOrField": "Product",
+            "variables": {
+              "Product_upc": "fold",
+            },
+          },
+          {
+            "data": {
+              "product": {
+                "manufacturer": {
+                  "id": "samsung",
+                  "products": [
+                    {
+                      "name": "Samsung TV",
+                      "upc": "tv",
+                    },
+                    {
+                      "name": "Samsung Fold",
+                      "upc": "fold",
+                    },
+                    {
+                      "name": "Samsung Galaxy",
+                      "upc": "galaxy",
+                    },
+                  ],
+                },
+                "name": "Samsung Galaxy",
+              },
+            },
+            "includes": [
+              {
+                "data": {
+                  "manufacturer": {
+                    "name": "Samsung",
+                  },
+                },
+                "includes": [],
+                "inlineVariables": {},
+                "kind": "composite",
+                "operation": "query ManufacturerById($Manufacturer_id: ID!) {
+  manufacturer(id: $Manufacturer_id) {
+    ...__export
+  }
+}
+
+fragment __export on Manufacturer {
+  name
+}",
+                "pathInData": [
+                  "storefront",
+                  "products",
+                  2,
+                  "manufacturer",
+                ],
+                "pathToExportData": [
+                  "manufacturer",
+                ],
+                "private": [],
+                "public": [
+                  "name",
+                ],
+                "source": "manufacturers",
+                "type": "Manufacturer",
+                "typeOrField": "Manufacturer",
+                "variables": {
+                  "Manufacturer_id": "samsung",
+                },
+              },
+            ],
+            "inlineVariables": {},
+            "kind": "composite",
+            "operation": "query ProductByUpc($Product_upc: ID!) {
+  product(upc: $Product_upc) {
+    ...__export
+  }
+}
+
+fragment __export on Product {
+  name
+  manufacturer {
+    products {
+      upc
+      name
+    }
+    id
+  }
+}",
+            "pathInData": [
+              "storefront",
+              "products",
+              2,
+            ],
+            "pathToExportData": [
+              "product",
+            ],
+            "private": [
+              "manufacturer.id",
+            ],
+            "public": [
+              "name",
+              "manufacturer.products.upc",
+              "manufacturer.products.name",
+            ],
+            "source": "products",
+            "type": "Product",
+            "typeOrField": "Product",
+            "variables": {
+              "Product_upc": "galaxy",
+            },
+          },
+        ],
+        "inlineVariables": {
           "id": "samsung-store",
-          "name": "Samsung",
-          "products": [
-            {
-              "upc": "tv",
-            },
-            {
-              "upc": "fold",
-            },
-            {
-              "upc": "galaxy",
-            },
-          ],
         },
-      },
-      "includes": [
-        {
-          "data": {
-            "product": {
-              "manufacturer": {
-                "id": "samsung",
-                "products": [
-                  {
-                    "name": "Samsung TV",
-                    "upc": "tv",
-                  },
-                  {
-                    "name": "Samsung Fold",
-                    "upc": "fold",
-                  },
-                  {
-                    "name": "Samsung Galaxy",
-                    "upc": "galaxy",
-                  },
-                ],
-              },
-              "name": "Samsung TV",
-            },
-          },
-          "includes": [
-            {
-              "data": {
-                "manufacturer": {
-                  "name": "Samsung",
-                },
-              },
-              "includes": [],
-              "inlineVariables": {},
-              "kind": "composite",
-              "operation": "query ManufacturerById($Manufacturer_id: ID!) {
-  manufacturer(id: $Manufacturer_id) {
-    ...__export
-  }
-}
-
-fragment __export on Manufacturer {
-  name
-}",
-              "pathInData": [
-                "storefront",
-                "products",
-                0,
-                "manufacturer",
-              ],
-              "pathToExportData": [
-                "manufacturer",
-              ],
-              "private": [],
-              "public": [
-                "name",
-              ],
-              "source": "manufacturers",
-              "type": "Manufacturer",
-              "typeOrField": "Manufacturer",
-              "variables": {
-                "Manufacturer_id": "samsung",
-              },
-            },
-          ],
-          "inlineVariables": {},
-          "kind": "composite",
-          "operation": "query ProductByUpc($Product_upc: ID!) {
-  product(upc: $Product_upc) {
-    ...__export
-  }
-}
-
-fragment __export on Product {
-  name
-  manufacturer {
-    products {
-      upc
-      name
-    }
-    id
-  }
-}",
-          "pathInData": [
-            "storefront",
-            "products",
-            0,
-          ],
-          "pathToExportData": [
-            "product",
-          ],
-          "private": [
-            "manufacturer.id",
-          ],
-          "public": [
-            "name",
-            "manufacturer.products.upc",
-            "manufacturer.products.name",
-          ],
-          "source": "products",
-          "type": "Product",
-          "typeOrField": "Product",
-          "variables": {
-            "Product_upc": "tv",
-          },
-        },
-        {
-          "data": {
-            "product": {
-              "manufacturer": {
-                "id": "samsung",
-                "products": [
-                  {
-                    "name": "Samsung TV",
-                    "upc": "tv",
-                  },
-                  {
-                    "name": "Samsung Fold",
-                    "upc": "fold",
-                  },
-                  {
-                    "name": "Samsung Galaxy",
-                    "upc": "galaxy",
-                  },
-                ],
-              },
-              "name": "Samsung Fold",
-            },
-          },
-          "includes": [
-            {
-              "data": {
-                "manufacturer": {
-                  "name": "Samsung",
-                },
-              },
-              "includes": [],
-              "inlineVariables": {},
-              "kind": "composite",
-              "operation": "query ManufacturerById($Manufacturer_id: ID!) {
-  manufacturer(id: $Manufacturer_id) {
-    ...__export
-  }
-}
-
-fragment __export on Manufacturer {
-  name
-}",
-              "pathInData": [
-                "storefront",
-                "products",
-                1,
-                "manufacturer",
-              ],
-              "pathToExportData": [
-                "manufacturer",
-              ],
-              "private": [],
-              "public": [
-                "name",
-              ],
-              "source": "manufacturers",
-              "type": "Manufacturer",
-              "typeOrField": "Manufacturer",
-              "variables": {
-                "Manufacturer_id": "samsung",
-              },
-            },
-          ],
-          "inlineVariables": {},
-          "kind": "composite",
-          "operation": "query ProductByUpc($Product_upc: ID!) {
-  product(upc: $Product_upc) {
-    ...__export
-  }
-}
-
-fragment __export on Product {
-  name
-  manufacturer {
-    products {
-      upc
-      name
-    }
-    id
-  }
-}",
-          "pathInData": [
-            "storefront",
-            "products",
-            1,
-          ],
-          "pathToExportData": [
-            "product",
-          ],
-          "private": [
-            "manufacturer.id",
-          ],
-          "public": [
-            "name",
-            "manufacturer.products.upc",
-            "manufacturer.products.name",
-          ],
-          "source": "products",
-          "type": "Product",
-          "typeOrField": "Product",
-          "variables": {
-            "Product_upc": "fold",
-          },
-        },
-        {
-          "data": {
-            "product": {
-              "manufacturer": {
-                "id": "samsung",
-                "products": [
-                  {
-                    "name": "Samsung TV",
-                    "upc": "tv",
-                  },
-                  {
-                    "name": "Samsung Fold",
-                    "upc": "fold",
-                  },
-                  {
-                    "name": "Samsung Galaxy",
-                    "upc": "galaxy",
-                  },
-                ],
-              },
-              "name": "Samsung Galaxy",
-            },
-          },
-          "includes": [
-            {
-              "data": {
-                "manufacturer": {
-                  "name": "Samsung",
-                },
-              },
-              "includes": [],
-              "inlineVariables": {},
-              "kind": "composite",
-              "operation": "query ManufacturerById($Manufacturer_id: ID!) {
-  manufacturer(id: $Manufacturer_id) {
-    ...__export
-  }
-}
-
-fragment __export on Manufacturer {
-  name
-}",
-              "pathInData": [
-                "storefront",
-                "products",
-                2,
-                "manufacturer",
-              ],
-              "pathToExportData": [
-                "manufacturer",
-              ],
-              "private": [],
-              "public": [
-                "name",
-              ],
-              "source": "manufacturers",
-              "type": "Manufacturer",
-              "typeOrField": "Manufacturer",
-              "variables": {
-                "Manufacturer_id": "samsung",
-              },
-            },
-          ],
-          "inlineVariables": {},
-          "kind": "composite",
-          "operation": "query ProductByUpc($Product_upc: ID!) {
-  product(upc: $Product_upc) {
-    ...__export
-  }
-}
-
-fragment __export on Product {
-  name
-  manufacturer {
-    products {
-      upc
-      name
-    }
-    id
-  }
-}",
-          "pathInData": [
-            "storefront",
-            "products",
-            2,
-          ],
-          "pathToExportData": [
-            "product",
-          ],
-          "private": [
-            "manufacturer.id",
-          ],
-          "public": [
-            "name",
-            "manufacturer.products.upc",
-            "manufacturer.products.name",
-          ],
-          "source": "products",
-          "type": "Product",
-          "typeOrField": "Product",
-          "variables": {
-            "Product_upc": "galaxy",
-          },
-        },
-      ],
-      "inlineVariables": {
-        "id": "samsung-store",
-      },
-      "kind": "composite",
-      "operation": "query storefront($id: ID!) {
+        "kind": "composite",
+        "operation": "query storefront($id: ID!) {
   storefront(id: $id) {
     ...__export
   }
@@ -826,26 +829,27 @@ fragment __export on Storefront {
     upc
   }
 }",
-      "pathInData": [
-        "storefront",
-      ],
-      "pathToExportData": [
-        "storefront",
-      ],
-      "private": [],
-      "public": [
-        "id",
-        "name",
-        "products.upc",
-      ],
-      "source": "storefronts",
-      "type": "Storefront",
-      "typeOrField": "storefront",
-      "variables": {
-        "id": "samsung-store",
+        "pathInData": [
+          "storefront",
+        ],
+        "pathToExportData": [
+          "storefront",
+        ],
+        "private": [],
+        "public": [
+          "id",
+          "name",
+          "products.upc",
+        ],
+        "source": "storefronts",
+        "type": "Storefront",
+        "typeOrField": "storefront",
+        "variables": {
+          "id": "samsung-store",
+        },
       },
-    },
-  ],
+    ],
+  },
 }
 `;
 
@@ -1139,53 +1143,54 @@ exports[`fixture 'store' > query 'NotBasicWithOperationVariables' > should execu
       ],
     },
   },
-  "explain": [
-    {
-      "data": {
-        "storefront": {
-          "id": "apple-store",
-          "name": "Apple Store",
-          "products": [
-            {
-              "upc": "iphone",
-            },
-            {
-              "upc": "ipad",
-            },
-          ],
-        },
-      },
-      "includes": [
-        {
-          "data": {
-            "product": {
-              "manufacturer": {
-                "id": "apple",
-                "products": [
-                  {
-                    "name": "Apple iPhone",
-                    "upc": "iphone",
-                  },
-                  {
-                    "name": "iPad",
-                    "upc": "ipad",
-                  },
-                ],
+  "extensions": {
+    "explain": [
+      {
+        "data": {
+          "storefront": {
+            "id": "apple-store",
+            "name": "Apple Store",
+            "products": [
+              {
+                "upc": "iphone",
               },
-              "name": "Apple iPhone",
-            },
+              {
+                "upc": "ipad",
+              },
+            ],
           },
-          "includes": [
-            {
-              "data": {
+        },
+        "includes": [
+          {
+            "data": {
+              "product": {
                 "manufacturer": {
-                  "name": "Apple",
+                  "id": "apple",
+                  "products": [
+                    {
+                      "name": "Apple iPhone",
+                      "upc": "iphone",
+                    },
+                    {
+                      "name": "iPad",
+                      "upc": "ipad",
+                    },
+                  ],
                 },
+                "name": "Apple iPhone",
               },
-              "includes": [],
-              "inlineVariables": {},
-              "kind": "composite",
-              "operation": "query ManufacturerById($Manufacturer_id: ID!) {
+            },
+            "includes": [
+              {
+                "data": {
+                  "manufacturer": {
+                    "name": "Apple",
+                  },
+                },
+                "includes": [],
+                "inlineVariables": {},
+                "kind": "composite",
+                "operation": "query ManufacturerById($Manufacturer_id: ID!) {
   manufacturer(id: $Manufacturer_id) {
     ...__export
   }
@@ -1194,30 +1199,30 @@ exports[`fixture 'store' > query 'NotBasicWithOperationVariables' > should execu
 fragment __export on Manufacturer {
   name
 }",
-              "pathInData": [
-                "storefront",
-                "products",
-                0,
-                "manufacturer",
-              ],
-              "pathToExportData": [
-                "manufacturer",
-              ],
-              "private": [],
-              "public": [
-                "name",
-              ],
-              "source": "manufacturers",
-              "type": "Manufacturer",
-              "typeOrField": "Manufacturer",
-              "variables": {
-                "Manufacturer_id": "apple",
+                "pathInData": [
+                  "storefront",
+                  "products",
+                  0,
+                  "manufacturer",
+                ],
+                "pathToExportData": [
+                  "manufacturer",
+                ],
+                "private": [],
+                "public": [
+                  "name",
+                ],
+                "source": "manufacturers",
+                "type": "Manufacturer",
+                "typeOrField": "Manufacturer",
+                "variables": {
+                  "Manufacturer_id": "apple",
+                },
               },
-            },
-          ],
-          "inlineVariables": {},
-          "kind": "composite",
-          "operation": "query ProductByUpc($Product_upc: ID!) {
+            ],
+            "inlineVariables": {},
+            "kind": "composite",
+            "operation": "query ProductByUpc($Product_upc: ID!) {
   product(upc: $Product_upc) {
     ...__export
   }
@@ -1233,59 +1238,59 @@ fragment __export on Product {
     id
   }
 }",
-          "pathInData": [
-            "storefront",
-            "products",
-            0,
-          ],
-          "pathToExportData": [
-            "product",
-          ],
-          "private": [
-            "manufacturer.id",
-          ],
-          "public": [
-            "name",
-            "manufacturer.products.upc",
-            "manufacturer.products.name",
-          ],
-          "source": "products",
-          "type": "Product",
-          "typeOrField": "Product",
-          "variables": {
-            "Product_upc": "iphone",
-          },
-        },
-        {
-          "data": {
-            "product": {
-              "manufacturer": {
-                "id": "apple",
-                "products": [
-                  {
-                    "name": "Apple iPhone",
-                    "upc": "iphone",
-                  },
-                  {
-                    "name": "iPad",
-                    "upc": "ipad",
-                  },
-                ],
-              },
-              "name": "iPad",
+            "pathInData": [
+              "storefront",
+              "products",
+              0,
+            ],
+            "pathToExportData": [
+              "product",
+            ],
+            "private": [
+              "manufacturer.id",
+            ],
+            "public": [
+              "name",
+              "manufacturer.products.upc",
+              "manufacturer.products.name",
+            ],
+            "source": "products",
+            "type": "Product",
+            "typeOrField": "Product",
+            "variables": {
+              "Product_upc": "iphone",
             },
           },
-          "includes": [
-            {
-              "data": {
+          {
+            "data": {
+              "product": {
                 "manufacturer": {
-                  "name": "Apple",
+                  "id": "apple",
+                  "products": [
+                    {
+                      "name": "Apple iPhone",
+                      "upc": "iphone",
+                    },
+                    {
+                      "name": "iPad",
+                      "upc": "ipad",
+                    },
+                  ],
                 },
+                "name": "iPad",
               },
-              "includes": [],
-              "inlineVariables": {},
-              "kind": "composite",
-              "operation": "query ManufacturerById($Manufacturer_id: ID!) {
+            },
+            "includes": [
+              {
+                "data": {
+                  "manufacturer": {
+                    "name": "Apple",
+                  },
+                },
+                "includes": [],
+                "inlineVariables": {},
+                "kind": "composite",
+                "operation": "query ManufacturerById($Manufacturer_id: ID!) {
   manufacturer(id: $Manufacturer_id) {
     ...__export
   }
@@ -1294,30 +1299,30 @@ fragment __export on Product {
 fragment __export on Manufacturer {
   name
 }",
-              "pathInData": [
-                "storefront",
-                "products",
-                1,
-                "manufacturer",
-              ],
-              "pathToExportData": [
-                "manufacturer",
-              ],
-              "private": [],
-              "public": [
-                "name",
-              ],
-              "source": "manufacturers",
-              "type": "Manufacturer",
-              "typeOrField": "Manufacturer",
-              "variables": {
-                "Manufacturer_id": "apple",
+                "pathInData": [
+                  "storefront",
+                  "products",
+                  1,
+                  "manufacturer",
+                ],
+                "pathToExportData": [
+                  "manufacturer",
+                ],
+                "private": [],
+                "public": [
+                  "name",
+                ],
+                "source": "manufacturers",
+                "type": "Manufacturer",
+                "typeOrField": "Manufacturer",
+                "variables": {
+                  "Manufacturer_id": "apple",
+                },
               },
-            },
-          ],
-          "inlineVariables": {},
-          "kind": "composite",
-          "operation": "query ProductByUpc($Product_upc: ID!) {
+            ],
+            "inlineVariables": {},
+            "kind": "composite",
+            "operation": "query ProductByUpc($Product_upc: ID!) {
   product(upc: $Product_upc) {
     ...__export
   }
@@ -1333,33 +1338,33 @@ fragment __export on Product {
     id
   }
 }",
-          "pathInData": [
-            "storefront",
-            "products",
-            1,
-          ],
-          "pathToExportData": [
-            "product",
-          ],
-          "private": [
-            "manufacturer.id",
-          ],
-          "public": [
-            "name",
-            "manufacturer.products.upc",
-            "manufacturer.products.name",
-          ],
-          "source": "products",
-          "type": "Product",
-          "typeOrField": "Product",
-          "variables": {
-            "Product_upc": "ipad",
+            "pathInData": [
+              "storefront",
+              "products",
+              1,
+            ],
+            "pathToExportData": [
+              "product",
+            ],
+            "private": [
+              "manufacturer.id",
+            ],
+            "public": [
+              "name",
+              "manufacturer.products.upc",
+              "manufacturer.products.name",
+            ],
+            "source": "products",
+            "type": "Product",
+            "typeOrField": "Product",
+            "variables": {
+              "Product_upc": "ipad",
+            },
           },
-        },
-      ],
-      "inlineVariables": {},
-      "kind": "composite",
-      "operation": "query storefront($id: ID!) {
+        ],
+        "inlineVariables": {},
+        "kind": "composite",
+        "operation": "query storefront($id: ID!) {
   storefront(id: $id) {
     ...__export
   }
@@ -1372,26 +1377,27 @@ fragment __export on Storefront {
     upc
   }
 }",
-      "pathInData": [
-        "storefront",
-      ],
-      "pathToExportData": [
-        "storefront",
-      ],
-      "private": [],
-      "public": [
-        "id",
-        "name",
-        "products.upc",
-      ],
-      "source": "storefronts",
-      "type": "Storefront",
-      "typeOrField": "storefront",
-      "variables": {
-        "id": "apple-store",
+        "pathInData": [
+          "storefront",
+        ],
+        "pathToExportData": [
+          "storefront",
+        ],
+        "private": [],
+        "public": [
+          "id",
+          "name",
+          "products.upc",
+        ],
+        "source": "storefronts",
+        "type": "Storefront",
+        "typeOrField": "storefront",
+        "variables": {
+          "id": "apple-store",
+        },
       },
-    },
-  ],
+    ],
+  },
 }
 `;
 
@@ -1642,32 +1648,34 @@ exports[`fixture 'store' > query 'ScalarOperationField' > should execute 1`] = `
   "data": {
     "manufacturerName": "Samsung",
   },
-  "explain": [
-    {
-      "data": {
-        "manufacturerName": "Samsung",
-      },
-      "inlineVariables": {
-        "id": "samsung",
-      },
-      "kind": "scalar",
-      "operation": "query manufacturerName($id: ID!) {
+  "extensions": {
+    "explain": [
+      {
+        "data": {
+          "manufacturerName": "Samsung",
+        },
+        "inlineVariables": {
+          "id": "samsung",
+        },
+        "kind": "scalar",
+        "operation": "query manufacturerName($id: ID!) {
   manufacturerName(id: $id)
 }",
-      "pathInData": [
-        "manufacturerName",
-      ],
-      "pathToExportData": [
-        "manufacturerName",
-      ],
-      "source": "manufacturers",
-      "type": "String",
-      "typeOrField": "manufacturerName",
-      "variables": {
-        "id": "samsung",
+        "pathInData": [
+          "manufacturerName",
+        ],
+        "pathToExportData": [
+          "manufacturerName",
+        ],
+        "source": "manufacturers",
+        "type": "String",
+        "typeOrField": "manufacturerName",
+        "variables": {
+          "id": "samsung",
+        },
       },
-    },
-  ],
+    ],
+  },
 }
 `;
 
@@ -1722,37 +1730,39 @@ exports[`fixture 'store' > query 'ScalarOperationFieldNested' > should execute 1
   "data": {
     "productName": "iPad",
   },
-  "explain": [
-    {
-      "data": {
-        "product": {
-          "name": "iPad",
+  "extensions": {
+    "explain": [
+      {
+        "data": {
+          "product": {
+            "name": "iPad",
+          },
         },
-      },
-      "inlineVariables": {
-        "upc": "ipad",
-      },
-      "kind": "scalar",
-      "operation": "query productName($upc: ID!) {
+        "inlineVariables": {
+          "upc": "ipad",
+        },
+        "kind": "scalar",
+        "operation": "query productName($upc: ID!) {
   product(upc: $upc) {
     name
   }
 }",
-      "pathInData": [
-        "productName",
-      ],
-      "pathToExportData": [
-        "product",
-        "name",
-      ],
-      "source": "products",
-      "type": "String",
-      "typeOrField": "productName",
-      "variables": {
-        "upc": "ipad",
+        "pathInData": [
+          "productName",
+        ],
+        "pathToExportData": [
+          "product",
+          "name",
+        ],
+        "source": "products",
+        "type": "String",
+        "typeOrField": "productName",
+        "variables": {
+          "upc": "ipad",
+        },
       },
-    },
-  ],
+    ],
+  },
 }
 `;
 

@@ -13,7 +13,9 @@ export async function execute(
   transports: SourceTransports,
   plan: GatherPlan,
   operationVariables: Record<string, unknown>,
-): Promise<ExecutionResult & { explain: ExecutionExplain[] }> {
+): Promise<
+  ExecutionResult<Record<string, unknown>, { explain: ExecutionExplain[] }>
+> {
   const resultRef: ExecutionResult = {};
   // TODO: batch resolvers going to the same source
   const explain = await Promise.all(
@@ -30,7 +32,13 @@ export async function execute(
       ),
     ),
   );
-  return { ...resultRef, explain };
+  return {
+    ...resultRef,
+    extensions: {
+      ...resultRef.extensions,
+      explain,
+    },
+  };
 }
 
 export type ExecutionExplain = Omit<GatherPlanResolver, 'includes'> & {

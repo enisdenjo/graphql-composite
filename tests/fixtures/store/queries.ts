@@ -68,4 +68,25 @@ export const queries: FixtureQueries = [
       id: 'apple-store',
     },
   },
+  {
+    name: 'ListOperationResolver',
+    document: parse(/* GraphQL */ `
+      query ListOperationResolver {
+        productsByUpcs(upcs: ["galaxy", "iphone"]) {
+          upc
+          name
+          manufacturer {
+            products {
+              upc
+              name
+            }
+            name
+          }
+        }
+      }
+    `),
+    variables: {
+      id: 'apple-store',
+    },
+  },
 ];

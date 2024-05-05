@@ -133,33 +133,73 @@ async function executeResolver(
     setAtPath(resultRef.data, pathInData, exportData);
   } else {
     // otherwise, set at each field in the path of the composite field
-    for (const exportPath of resolver.public.map((e) => e.split('.'))) {
-      const lastKey = exportPath[exportPath.length - 1];
-      const valBeforeLast =
-        exportPath.length > 1
-          ? getAtPath(exportData, exportPath.slice(0, exportPath.length - 1))
-          : null;
+    if (Array.isArray(exportData)) {
+      // set key in each item of the array
+      for (let i = 0; i < exportData.length; i++) {
+        const exportDataItem = exportData[i];
+        for (const exportPath of resolver.public.map((e) => e.split('.'))) {
+          const lastKey = exportPath[exportPath.length - 1];
+          const valBeforeLast =
+            exportPath.length > 1
+              ? getAtPath(
+                  exportDataItem,
+                  exportPath.slice(0, exportPath.length - 1),
+                )
+              : null;
 
-      if (Array.isArray(valBeforeLast)) {
-        // set key in each item of the array
-        for (let i = 0; i < valBeforeLast.length; i++) {
+          if (Array.isArray(valBeforeLast)) {
+            // set key in each item of the array
+            for (let j = 0; j < valBeforeLast.length; j++) {
+              setAtPath(
+                resultRef.data,
+                [
+                  ...pathInData,
+                  i,
+                  ...exportPath.slice(0, exportPath.length - 1)!,
+                  j,
+                  lastKey!,
+                ],
+                getAtPath(valBeforeLast[j], [lastKey!]),
+              );
+            }
+          } else {
+            setAtPath(
+              resultRef.data,
+              [...pathInData, i, ...exportPath],
+              getAtPath(exportDataItem, exportPath),
+            );
+          }
+        }
+      }
+    } else {
+      for (const exportPath of resolver.public.map((e) => e.split('.'))) {
+        const lastKey = exportPath[exportPath.length - 1];
+        const valBeforeLast =
+          exportPath.length > 1
+            ? getAtPath(exportData, exportPath.slice(0, exportPath.length - 1))
+            : null;
+
+        if (Array.isArray(valBeforeLast)) {
+          // set key in each item of the array
+          for (let i = 0; i < valBeforeLast.length; i++) {
+            setAtPath(
+              resultRef.data,
+              [
+                ...pathInData,
+                ...exportPath.slice(0, exportPath.length - 1)!,
+                i,
+                lastKey!,
+              ],
+              getAtPath(valBeforeLast[i], [lastKey!]),
+            );
+          }
+        } else {
           setAtPath(
             resultRef.data,
-            [
-              ...pathInData,
-              ...exportPath.slice(0, exportPath.length - 1)!,
-              i,
-              lastKey!,
-            ],
-            getAtPath(valBeforeLast[i], [lastKey!]),
+            [...pathInData, ...exportPath],
+            getAtPath(exportData, exportPath),
           );
         }
-      } else {
-        setAtPath(
-          resultRef.data,
-          [...pathInData, ...exportPath],
-          getAtPath(exportData, exportPath),
-        );
       }
     }
   }
@@ -180,6 +220,32 @@ async function executeResolver(
         // TODO: batch resolvers going to the same source
         includes: await Promise.all(
           Object.entries(resolver.includes).flatMap(([field, resolver]) => {
+            if (Array.isArray(exportData)) {
+              return exportData.flatMap((exportData, i) => {
+                const fieldData = getAtPath(exportData, field);
+                if (Array.isArray(fieldData)) {
+                  // if the include points to an array, we need to gather resolve each item
+                  return fieldData.map((fieldDataItem, j) =>
+                    executeResolver(
+                      transports,
+                      operationVariables,
+                      resolver,
+                      fieldDataItem,
+                      [...pathInData, i, field, j],
+                      resultRef,
+                    ),
+                  );
+                }
+                return executeResolver(
+                  transports,
+                  operationVariables,
+                  resolver,
+                  fieldData,
+                  [...pathInData, i, field],
+                  resultRef,
+                );
+              });
+            }
             const fieldData = getAtPath(exportData, field);
             if (Array.isArray(fieldData)) {
               // if the include points to an array, we need to gather resolve each item

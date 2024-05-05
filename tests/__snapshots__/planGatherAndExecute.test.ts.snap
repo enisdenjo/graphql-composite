@@ -1,5 +1,408 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
+exports[`fixture 'store' > query 'ListOperationResolver' > should execute 1`] = `
+{
+  "data": {
+    "productsByUpcs": [
+      {
+        "manufacturer": {
+          "name": "Samsung",
+          "products": [
+            {
+              "name": "Samsung TV",
+              "upc": "tv",
+            },
+            {
+              "name": "Samsung Fold",
+              "upc": "fold",
+            },
+            {
+              "name": "Samsung Galaxy",
+              "upc": "galaxy",
+            },
+          ],
+        },
+        "name": "Samsung Galaxy",
+        "upc": "galaxy",
+      },
+      {
+        "manufacturer": {
+          "name": "Apple",
+          "products": [
+            {
+              "name": "Apple iPhone",
+              "upc": "iphone",
+            },
+            {
+              "name": "iPad",
+              "upc": "ipad",
+            },
+          ],
+        },
+        "name": "Apple iPhone",
+        "upc": "iphone",
+      },
+    ],
+  },
+  "explain": [
+    {
+      "data": {
+        "productsByUpcs": [
+          {
+            "manufacturer": {
+              "id": "samsung",
+              "products": [
+                {
+                  "name": "Samsung TV",
+                  "upc": "tv",
+                },
+                {
+                  "name": "Samsung Fold",
+                  "upc": "fold",
+                },
+                {
+                  "name": "Samsung Galaxy",
+                  "upc": "galaxy",
+                },
+              ],
+            },
+            "name": "Samsung Galaxy",
+            "upc": "galaxy",
+          },
+          {
+            "manufacturer": {
+              "id": "apple",
+              "products": [
+                {
+                  "name": "Apple iPhone",
+                  "upc": "iphone",
+                },
+                {
+                  "name": "iPad",
+                  "upc": "ipad",
+                },
+              ],
+            },
+            "name": "Apple iPhone",
+            "upc": "iphone",
+          },
+        ],
+      },
+      "includes": [
+        {
+          "data": {
+            "manufacturer": {
+              "name": "Samsung",
+            },
+          },
+          "includes": [],
+          "inlineVariables": {},
+          "kind": "composite",
+          "operation": "query ManufacturerById($Manufacturer_id: ID!) {
+  manufacturer(id: $Manufacturer_id) {
+    ...__export
+  }
+}
+
+fragment __export on Manufacturer {
+  name
+}",
+          "pathInData": [
+            "productsByUpcs",
+            0,
+            "manufacturer",
+          ],
+          "pathToExportData": [
+            "manufacturer",
+          ],
+          "private": [],
+          "public": [
+            "name",
+          ],
+          "source": "manufacturers",
+          "type": "Manufacturer",
+          "typeOrField": "Manufacturer",
+          "variables": {
+            "Manufacturer_id": "samsung",
+          },
+        },
+        {
+          "data": {
+            "manufacturer": {
+              "name": "Apple",
+            },
+          },
+          "includes": [],
+          "inlineVariables": {},
+          "kind": "composite",
+          "operation": "query ManufacturerById($Manufacturer_id: ID!) {
+  manufacturer(id: $Manufacturer_id) {
+    ...__export
+  }
+}
+
+fragment __export on Manufacturer {
+  name
+}",
+          "pathInData": [
+            "productsByUpcs",
+            1,
+            "manufacturer",
+          ],
+          "pathToExportData": [
+            "manufacturer",
+          ],
+          "private": [],
+          "public": [
+            "name",
+          ],
+          "source": "manufacturers",
+          "type": "Manufacturer",
+          "typeOrField": "Manufacturer",
+          "variables": {
+            "Manufacturer_id": "apple",
+          },
+        },
+      ],
+      "inlineVariables": {
+        "upcs": [
+          "galaxy",
+          "iphone",
+        ],
+      },
+      "kind": "composite",
+      "operation": "query productsByUpcs($upcs: [ID!]!) {
+  productsByUpcs(upcs: $upcs) {
+    ...__export
+  }
+}
+
+fragment __export on Product {
+  upc
+  name
+  manufacturer {
+    products {
+      upc
+      name
+    }
+    id
+  }
+}",
+      "pathInData": [
+        "productsByUpcs",
+      ],
+      "pathToExportData": [
+        "productsByUpcs",
+      ],
+      "private": [
+        "manufacturer.id",
+      ],
+      "public": [
+        "upc",
+        "name",
+        "manufacturer.products.upc",
+        "manufacturer.products.name",
+      ],
+      "source": "products",
+      "type": "Product",
+      "typeOrField": "productsByUpcs",
+      "variables": {
+        "id": "apple-store",
+        "upcs": [
+          "galaxy",
+          "iphone",
+        ],
+      },
+    },
+  ],
+}
+`;
+
+exports[`fixture 'store' > query 'ListOperationResolver' > should plan gather 1`] = `
+{
+  "operations": [
+    {
+      "fields": [
+        {
+          "fields": [
+            {
+              "inlineVariables": {},
+              "isNonNull": true,
+              "kind": "scalar",
+              "name": "upc",
+              "type": "ID",
+            },
+            {
+              "inlineVariables": {},
+              "isNonNull": true,
+              "kind": "scalar",
+              "name": "name",
+              "type": "String",
+            },
+            {
+              "fields": [
+                {
+                  "fields": [
+                    {
+                      "inlineVariables": {},
+                      "isNonNull": true,
+                      "kind": "scalar",
+                      "name": "upc",
+                      "type": "ID",
+                    },
+                    {
+                      "inlineVariables": {},
+                      "isNonNull": true,
+                      "kind": "scalar",
+                      "name": "name",
+                      "type": "String",
+                    },
+                  ],
+                  "inlineVariables": {},
+                  "isList": true,
+                  "isListItemNonNull": false,
+                  "isNonNull": true,
+                  "kind": "composite",
+                  "name": "products",
+                  "type": "Product",
+                },
+                {
+                  "inlineVariables": {},
+                  "isNonNull": true,
+                  "kind": "scalar",
+                  "name": "name",
+                  "type": "String",
+                },
+              ],
+              "inlineVariables": {},
+              "isList": false,
+              "isListItemNonNull": false,
+              "isNonNull": false,
+              "kind": "composite",
+              "name": "manufacturer",
+              "type": "Manufacturer",
+            },
+          ],
+          "inlineVariables": {
+            "upcs": [
+              "galaxy",
+              "iphone",
+            ],
+          },
+          "isList": true,
+          "isListItemNonNull": false,
+          "isNonNull": true,
+          "kind": "composite",
+          "name": "productsByUpcs",
+          "type": "Product",
+        },
+      ],
+      "name": "ListOperationResolver",
+      "resolvers": [
+        {
+          "includes": {
+            "manufacturer": {
+              "includes": {},
+              "inlineVariables": {},
+              "kind": "composite",
+              "operation": "query ManufacturerById($Manufacturer_id: ID!) {
+  manufacturer(id: $Manufacturer_id) {
+    ...__export
+  }
+}
+
+fragment __export on Manufacturer {
+  name
+}",
+              "pathToExportData": [
+                "manufacturer",
+              ],
+              "private": [],
+              "public": [
+                "name",
+              ],
+              "source": "manufacturers",
+              "type": "Manufacturer",
+              "typeOrField": "Manufacturer",
+              "variables": {
+                "Manufacturer_id": {
+                  "name": "Manufacturer_id",
+                  "select": "id",
+                },
+              },
+            },
+          },
+          "inlineVariables": {
+            "upcs": [
+              "galaxy",
+              "iphone",
+            ],
+          },
+          "kind": "composite",
+          "operation": "query productsByUpcs($upcs: [ID!]!) {
+  productsByUpcs(upcs: $upcs) {
+    ...__export
+  }
+}
+
+fragment __export on Product {
+  upc
+  name
+  manufacturer {
+    products {
+      upc
+      name
+    }
+    id
+  }
+}",
+          "pathToExportData": [
+            "productsByUpcs",
+          ],
+          "private": [
+            "manufacturer.id",
+          ],
+          "public": [
+            "upc",
+            "name",
+            "manufacturer.products.upc",
+            "manufacturer.products.name",
+          ],
+          "source": "products",
+          "type": "Product",
+          "typeOrField": "productsByUpcs",
+          "variables": {},
+        },
+      ],
+      "type": "query",
+    },
+  ],
+  "paths": [
+    "productsByUpcs",
+    "productsByUpcs.upc",
+    "productsByUpcs.name",
+    "productsByUpcs.manufacturer",
+    "productsByUpcs.manufacturer.products",
+    "productsByUpcs.manufacturer.products.upc",
+    "productsByUpcs.manufacturer.products.name",
+    "productsByUpcs.manufacturer.name",
+  ],
+  "query": "query ListOperationResolver {
+  productsByUpcs(upcs: ["galaxy", "iphone"]) {
+    upc
+    name
+    manufacturer {
+      products {
+        upc
+        name
+      }
+      name
+    }
+  }
+}",
+}
+`;
+
 exports[`fixture 'store' > query 'NotBasicWithInlineVariables' > should execute 1`] = `
 {
   "data": {
@@ -1641,6 +2044,19 @@ exports[`fixture 'store' > should plan schema 1`] = `
               "source": "products",
               "type": "String",
               "typeOrField": "productName",
+              "variables": {},
+            },
+          },
+        },
+        "productsByUpcs": {
+          "name": "productsByUpcs",
+          "resolvers": {
+            "products": {
+              "kind": "composite",
+              "operation": "query productsByUpcs($upcs: [ID!]!) { productsByUpcs(upcs: $upcs) { ...__export } }",
+              "source": "products",
+              "type": "Product",
+              "typeOrField": "productsByUpcs",
               "variables": {},
             },
           },

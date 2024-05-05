@@ -119,6 +119,7 @@ export const sources: FixtureSources = {
     typeDefs: /* GraphQL */ `
       type Query {
         product(upc: ID!): Product
+        productsByUpcs(upcs: [ID!]!): [Product]!
       }
       type Product {
         upc: ID!
@@ -133,22 +134,24 @@ export const sources: FixtureSources = {
     `,
     resolvers: {
       Query: {
-        product: (_parent, args: { upc: string }) => {
-          const product = products.find((product) => product.upc === args.upc);
+        product: (_parent, args: { upc: string }) =>
+          products.find((product) => product.upc === args.upc),
+        productsByUpcs: (_parent, args: { upcs: string[] }) =>
+          products.filter((product) => args.upcs.includes(product.upc)),
+      },
+      Product: {
+        manufacturer: (product: Product) => {
           const manufacturer = manufacturers.find(
-            (manufacturer) => manufacturer.id === product?.manufacturerId,
+            (manufacturer) => manufacturer.id === product.manufacturerId,
           );
-          return {
-            ...product,
-            manufacturer: manufacturer
-              ? {
-                  ...manufacturer,
-                  products: products.filter(
-                    (product) => product.manufacturerId === manufacturer.id,
-                  ),
-                }
-              : null,
-          };
+          return manufacturer
+            ? {
+                ...manufacturer,
+                products: products.filter(
+                  (product) => product.manufacturerId === manufacturer.id,
+                ),
+              }
+            : null;
         },
       },
     },

@@ -47,6 +47,12 @@ type Query {
       operation: "query product($upc: ID!) { product(upc: $upc) { ...__export } }"
     )
     @source(subgraph: "products", name: "product")
+  productsByUpcs(upcs: [ID!]!): [Product]!
+    @resolver(
+      subgraph: "products"
+      operation: "query productsByUpcs($upcs: [ID!]!) { productsByUpcs(upcs: $upcs) { ...__export } }"
+    )
+    @source(subgraph: "products", name: "productsByUpcs")
   productName(upc: ID!): String
     @resolver(
       subgraph: "products"

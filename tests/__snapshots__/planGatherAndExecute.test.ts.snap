@@ -2768,6 +2768,33 @@ exports[`fixture 'store' > should plan schema 1`] = `
       "name": "query",
     },
   },
+  "schema": "type Manufacturer {
+  id: ID!
+  name: String!
+  products: [Product]!
+}
+
+type Query {
+  manufacturer(id: ID!): Manufacturer
+  manufacturerName(id: ID!): String
+  product(upc: ID!): Product
+  productsByUpcs(upcs: [ID!]!): [Product]!
+  productName(upc: ID!): String
+  storefront(id: ID!): Storefront
+}
+
+type Product {
+  manufacturer: Manufacturer
+  name: String!
+  price: Float!
+  upc: ID!
+}
+
+type Storefront {
+  id: ID!
+  name: String!
+  products: [Product]!
+}",
 }
 `;
 

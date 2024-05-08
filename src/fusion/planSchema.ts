@@ -7,6 +7,7 @@ import {
   isScalarType,
   Kind,
   OperationTypeNode,
+  printSchema,
 } from 'graphql';
 import {
   SchemaPlan,
@@ -20,7 +21,11 @@ import {
 } from '../schemaPlan.js';
 
 export function planSchema(schema: GraphQLSchema): SchemaPlan {
-  const plan: SchemaPlan = { operations: {}, compositeTypes: {} };
+  const plan: SchemaPlan = {
+    schema: printSchema(schema),
+    operations: {},
+    compositeTypes: {},
+  };
 
   const types = schema.getTypeMap();
 

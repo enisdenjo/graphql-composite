@@ -19,9 +19,7 @@ describe.each(await getFixtures())(
 
     describe.each(queries)('query $name', ({ document, variables }) => {
       it('should plan gather', () => {
-        expect(
-          planGather(planSchema(schema), schema, document),
-        ).toMatchSnapshot();
+        expect(planGather(planSchema(schema), document)).toMatchSnapshot();
       });
 
       it('should execute', async () => {
@@ -34,7 +32,7 @@ describe.each(await getFixtures())(
               }),
               {},
             ),
-            planGather(planSchema(schema), schema, document),
+            planGather(planSchema(schema), document),
             variables,
           ),
         ).resolves.toMatchSnapshot();

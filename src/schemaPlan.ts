@@ -2,6 +2,8 @@ import { OperationTypeNode } from 'graphql';
 import { GatherPlanResolver } from './gather.js';
 
 export interface SchemaPlan {
+  /** The GraphQL schema SDL without directives. */
+  schema: string;
   operations: {
     [name: string /* graphql.OperationDefinitionNode */]: SchemaPlanOperation;
   };

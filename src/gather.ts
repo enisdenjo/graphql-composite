@@ -1,12 +1,12 @@
 import {
   ASTNode,
+  buildSchema,
   DocumentNode,
   FieldNode,
   FragmentDefinitionNode,
   GraphQLCompositeType,
   GraphQLEnumType,
   GraphQLScalarType,
-  GraphQLSchema,
   isCompositeType,
   isListType,
   isNonNullType,
@@ -113,7 +113,6 @@ export interface GatherPlanScalarResolver
 
 export function planGather(
   schemaPlan: SchemaPlan,
-  schema: GraphQLSchema,
   doc: DocumentNode,
 ): GatherPlan {
   const gatherPlan: GatherPlan = {
@@ -124,7 +123,7 @@ export function planGather(
 
   const entries: string[] = [];
   let depth = 0;
-  const typeInfo = new TypeInfo(schema);
+  const typeInfo = new TypeInfo(buildSchema(schemaPlan.schema));
   let currOperation: GatherPlanOperation;
   visit(
     // we want to flatten fragments in the document

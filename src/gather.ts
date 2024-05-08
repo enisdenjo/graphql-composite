@@ -21,7 +21,6 @@ import {
   visitWithTypeInfo,
 } from 'graphql';
 import {
-  planSchema,
   SchemaPlan,
   SchemaPlanCompositeResolver,
   SchemaPlanScalarResolver,
@@ -112,10 +111,10 @@ export interface GatherPlanScalarResolver
 }
 
 export function planGather(
+  schemaPlan: SchemaPlan,
   schema: GraphQLSchema,
   doc: DocumentNode,
 ): GatherPlan {
-  const schemaPlan = planSchema(schema);
   const gatherPlan: GatherPlan = {
     query: print(doc),
     paths: [],

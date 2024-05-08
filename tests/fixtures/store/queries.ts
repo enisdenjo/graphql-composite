@@ -21,6 +21,45 @@ export const queries: FixtureQueries = [
     variables: {},
   },
   {
+    name: 'BasicWithInlineFragment',
+    document: parse(/* GraphQL */ `
+      query NotBasicWithInlineVariables {
+        storefront(id: "samsung-store") {
+          id
+          name
+          products {
+            ... on Product {
+              upc
+              name
+            }
+          }
+        }
+      }
+    `),
+    variables: {},
+  },
+  {
+    name: 'BasicWithFragmentDefinition',
+    document: parse(/* GraphQL */ `
+      query BasicWithFragmentDefinition {
+        storefront(id: "apple-store") {
+          id
+          products {
+            ...P
+          }
+          name
+        }
+      }
+      fragment P on Product {
+        upc
+        manufacturer {
+          id
+        }
+      }
+    `),
+    variables: {},
+  },
+  {
     name: 'NotBasicWithInlineVariables',
     document: parse(/* GraphQL */ `
       query NotBasicWithInlineVariables {

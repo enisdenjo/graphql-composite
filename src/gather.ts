@@ -26,6 +26,7 @@ import {
   SchemaPlanScalarResolver,
   SchemaPlanSource,
 } from './schemaPlan.js';
+import { flattenFragments } from './utils.js';
 
 export interface GatherPlan {
   query: string;
@@ -126,7 +127,9 @@ export function planGather(
   const typeInfo = new TypeInfo(schema);
   let currOperation: GatherPlanOperation;
   visit(
-    doc,
+    // we want to flatten fragments in the document
+    // to just use the field visitor to build the gather
+    flattenFragments(doc),
     visitWithTypeInfo(typeInfo, {
       OperationDefinition(node) {
         currOperation = {
@@ -137,7 +140,6 @@ export function planGather(
         };
         gatherPlan.operations.push(currOperation);
       },
-      // TODO: does not properly enter fragments
       Field: {
         enter(node) {
           const fieldDef = typeInfo.getFieldDef();

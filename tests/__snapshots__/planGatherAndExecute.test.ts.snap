@@ -1,5 +1,685 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
+exports[`fixture 'store' > query 'BasicWithFragmentDefinition' > should execute 1`] = `
+{
+  "data": {
+    "storefront": {
+      "id": "apple-store",
+      "name": "Apple Store",
+      "products": [
+        {
+          "manufacturer": {
+            "id": "apple",
+          },
+          "upc": "iphone",
+        },
+        {
+          "manufacturer": {
+            "id": "apple",
+          },
+          "upc": "ipad",
+        },
+      ],
+    },
+  },
+  "extensions": {
+    "explain": [
+      {
+        "data": {
+          "storefront": {
+            "id": "apple-store",
+            "name": "Apple Store",
+            "products": [
+              {
+                "upc": "iphone",
+              },
+              {
+                "upc": "ipad",
+              },
+            ],
+          },
+        },
+        "includes": [
+          {
+            "data": {
+              "product": {
+                "manufacturer": {
+                  "id": "apple",
+                },
+              },
+            },
+            "includes": [],
+            "inlineVariables": {},
+            "kind": "composite",
+            "operation": "query ProductByUpc($Product_upc: ID!) {
+  product(upc: $Product_upc) {
+    ...__export
+  }
+}
+
+fragment __export on Product {
+  manufacturer {
+    id
+  }
+}",
+            "pathInData": [
+              "storefront",
+              "products",
+              0,
+            ],
+            "pathToExportData": [
+              "product",
+            ],
+            "private": [],
+            "public": [
+              "manufacturer.id",
+            ],
+            "source": "products",
+            "type": "Product",
+            "typeOrField": "Product",
+            "variables": {
+              "Product_upc": "iphone",
+            },
+          },
+          {
+            "data": {
+              "product": {
+                "manufacturer": {
+                  "id": "apple",
+                },
+              },
+            },
+            "includes": [],
+            "inlineVariables": {},
+            "kind": "composite",
+            "operation": "query ProductByUpc($Product_upc: ID!) {
+  product(upc: $Product_upc) {
+    ...__export
+  }
+}
+
+fragment __export on Product {
+  manufacturer {
+    id
+  }
+}",
+            "pathInData": [
+              "storefront",
+              "products",
+              1,
+            ],
+            "pathToExportData": [
+              "product",
+            ],
+            "private": [],
+            "public": [
+              "manufacturer.id",
+            ],
+            "source": "products",
+            "type": "Product",
+            "typeOrField": "Product",
+            "variables": {
+              "Product_upc": "ipad",
+            },
+          },
+        ],
+        "inlineVariables": {
+          "id": "apple-store",
+        },
+        "kind": "composite",
+        "operation": "query storefront($id: ID!) {
+  storefront(id: $id) {
+    ...__export
+  }
+}
+
+fragment __export on Storefront {
+  id
+  products {
+    upc
+  }
+  name
+}",
+        "pathInData": [
+          "storefront",
+        ],
+        "pathToExportData": [
+          "storefront",
+        ],
+        "private": [],
+        "public": [
+          "id",
+          "products.upc",
+          "name",
+        ],
+        "source": "storefronts",
+        "type": "Storefront",
+        "typeOrField": "storefront",
+        "variables": {
+          "id": "apple-store",
+        },
+      },
+    ],
+  },
+}
+`;
+
+exports[`fixture 'store' > query 'BasicWithFragmentDefinition' > should plan gather 1`] = `
+{
+  "operations": [
+    {
+      "fields": [
+        {
+          "fields": [
+            {
+              "inlineVariables": {},
+              "isNonNull": true,
+              "kind": "scalar",
+              "name": "id",
+              "type": "ID",
+            },
+            {
+              "fields": [
+                {
+                  "inlineVariables": {},
+                  "isNonNull": true,
+                  "kind": "scalar",
+                  "name": "upc",
+                  "type": "ID",
+                },
+                {
+                  "fields": [
+                    {
+                      "inlineVariables": {},
+                      "isNonNull": true,
+                      "kind": "scalar",
+                      "name": "id",
+                      "type": "ID",
+                    },
+                  ],
+                  "inlineVariables": {},
+                  "isList": false,
+                  "isListItemNonNull": false,
+                  "isNonNull": false,
+                  "kind": "composite",
+                  "name": "manufacturer",
+                  "type": "Manufacturer",
+                },
+              ],
+              "inlineVariables": {},
+              "isList": true,
+              "isListItemNonNull": false,
+              "isNonNull": true,
+              "kind": "composite",
+              "name": "products",
+              "type": "Product",
+            },
+            {
+              "inlineVariables": {},
+              "isNonNull": true,
+              "kind": "scalar",
+              "name": "name",
+              "type": "String",
+            },
+          ],
+          "inlineVariables": {
+            "id": "apple-store",
+          },
+          "isList": false,
+          "isListItemNonNull": false,
+          "isNonNull": false,
+          "kind": "composite",
+          "name": "storefront",
+          "type": "Storefront",
+        },
+      ],
+      "name": "BasicWithFragmentDefinition",
+      "resolvers": [
+        {
+          "includes": {
+            "products": {
+              "includes": {},
+              "inlineVariables": {},
+              "kind": "composite",
+              "operation": "query ProductByUpc($Product_upc: ID!) {
+  product(upc: $Product_upc) {
+    ...__export
+  }
+}
+
+fragment __export on Product {
+  manufacturer {
+    id
+  }
+}",
+              "pathToExportData": [
+                "product",
+              ],
+              "private": [],
+              "public": [
+                "manufacturer.id",
+              ],
+              "source": "products",
+              "type": "Product",
+              "typeOrField": "Product",
+              "variables": {
+                "Product_upc": {
+                  "name": "Product_upc",
+                  "select": "upc",
+                },
+              },
+            },
+          },
+          "inlineVariables": {
+            "id": "apple-store",
+          },
+          "kind": "composite",
+          "operation": "query storefront($id: ID!) {
+  storefront(id: $id) {
+    ...__export
+  }
+}
+
+fragment __export on Storefront {
+  id
+  products {
+    upc
+  }
+  name
+}",
+          "pathToExportData": [
+            "storefront",
+          ],
+          "private": [],
+          "public": [
+            "id",
+            "products.upc",
+            "name",
+          ],
+          "source": "storefronts",
+          "type": "Storefront",
+          "typeOrField": "storefront",
+          "variables": {},
+        },
+      ],
+      "type": "query",
+    },
+  ],
+  "paths": [
+    "storefront",
+    "storefront.id",
+    "storefront.products",
+    "storefront.products.upc",
+    "storefront.products.manufacturer",
+    "storefront.products.manufacturer.id",
+    "storefront.name",
+  ],
+  "query": "query BasicWithFragmentDefinition {
+  storefront(id: "apple-store") {
+    id
+    products {
+      ...P
+    }
+    name
+  }
+}
+
+fragment P on Product {
+  upc
+  manufacturer {
+    id
+  }
+}",
+}
+`;
+
+exports[`fixture 'store' > query 'BasicWithInlineFragment' > should execute 1`] = `
+{
+  "data": {
+    "storefront": {
+      "id": "samsung-store",
+      "name": "Samsung",
+      "products": [
+        {
+          "name": "Samsung TV",
+          "upc": "tv",
+        },
+        {
+          "name": "Samsung Fold",
+          "upc": "fold",
+        },
+        {
+          "name": "Samsung Galaxy",
+          "upc": "galaxy",
+        },
+      ],
+    },
+  },
+  "extensions": {
+    "explain": [
+      {
+        "data": {
+          "storefront": {
+            "id": "samsung-store",
+            "name": "Samsung",
+            "products": [
+              {
+                "upc": "tv",
+              },
+              {
+                "upc": "fold",
+              },
+              {
+                "upc": "galaxy",
+              },
+            ],
+          },
+        },
+        "includes": [
+          {
+            "data": {
+              "product": {
+                "name": "Samsung TV",
+              },
+            },
+            "includes": [],
+            "inlineVariables": {},
+            "kind": "composite",
+            "operation": "query ProductByUpc($Product_upc: ID!) {
+  product(upc: $Product_upc) {
+    ...__export
+  }
+}
+
+fragment __export on Product {
+  name
+}",
+            "pathInData": [
+              "storefront",
+              "products",
+              0,
+            ],
+            "pathToExportData": [
+              "product",
+            ],
+            "private": [],
+            "public": [
+              "name",
+            ],
+            "source": "products",
+            "type": "Product",
+            "typeOrField": "Product",
+            "variables": {
+              "Product_upc": "tv",
+            },
+          },
+          {
+            "data": {
+              "product": {
+                "name": "Samsung Fold",
+              },
+            },
+            "includes": [],
+            "inlineVariables": {},
+            "kind": "composite",
+            "operation": "query ProductByUpc($Product_upc: ID!) {
+  product(upc: $Product_upc) {
+    ...__export
+  }
+}
+
+fragment __export on Product {
+  name
+}",
+            "pathInData": [
+              "storefront",
+              "products",
+              1,
+            ],
+            "pathToExportData": [
+              "product",
+            ],
+            "private": [],
+            "public": [
+              "name",
+            ],
+            "source": "products",
+            "type": "Product",
+            "typeOrField": "Product",
+            "variables": {
+              "Product_upc": "fold",
+            },
+          },
+          {
+            "data": {
+              "product": {
+                "name": "Samsung Galaxy",
+              },
+            },
+            "includes": [],
+            "inlineVariables": {},
+            "kind": "composite",
+            "operation": "query ProductByUpc($Product_upc: ID!) {
+  product(upc: $Product_upc) {
+    ...__export
+  }
+}
+
+fragment __export on Product {
+  name
+}",
+            "pathInData": [
+              "storefront",
+              "products",
+              2,
+            ],
+            "pathToExportData": [
+              "product",
+            ],
+            "private": [],
+            "public": [
+              "name",
+            ],
+            "source": "products",
+            "type": "Product",
+            "typeOrField": "Product",
+            "variables": {
+              "Product_upc": "galaxy",
+            },
+          },
+        ],
+        "inlineVariables": {
+          "id": "samsung-store",
+        },
+        "kind": "composite",
+        "operation": "query storefront($id: ID!) {
+  storefront(id: $id) {
+    ...__export
+  }
+}
+
+fragment __export on Storefront {
+  id
+  name
+  products {
+    upc
+  }
+}",
+        "pathInData": [
+          "storefront",
+        ],
+        "pathToExportData": [
+          "storefront",
+        ],
+        "private": [],
+        "public": [
+          "id",
+          "name",
+          "products.upc",
+        ],
+        "source": "storefronts",
+        "type": "Storefront",
+        "typeOrField": "storefront",
+        "variables": {
+          "id": "samsung-store",
+        },
+      },
+    ],
+  },
+}
+`;
+
+exports[`fixture 'store' > query 'BasicWithInlineFragment' > should plan gather 1`] = `
+{
+  "operations": [
+    {
+      "fields": [
+        {
+          "fields": [
+            {
+              "inlineVariables": {},
+              "isNonNull": true,
+              "kind": "scalar",
+              "name": "id",
+              "type": "ID",
+            },
+            {
+              "inlineVariables": {},
+              "isNonNull": true,
+              "kind": "scalar",
+              "name": "name",
+              "type": "String",
+            },
+            {
+              "fields": [
+                {
+                  "inlineVariables": {},
+                  "isNonNull": true,
+                  "kind": "scalar",
+                  "name": "upc",
+                  "type": "ID",
+                },
+                {
+                  "inlineVariables": {},
+                  "isNonNull": true,
+                  "kind": "scalar",
+                  "name": "name",
+                  "type": "String",
+                },
+              ],
+              "inlineVariables": {},
+              "isList": true,
+              "isListItemNonNull": false,
+              "isNonNull": true,
+              "kind": "composite",
+              "name": "products",
+              "type": "Product",
+            },
+          ],
+          "inlineVariables": {
+            "id": "samsung-store",
+          },
+          "isList": false,
+          "isListItemNonNull": false,
+          "isNonNull": false,
+          "kind": "composite",
+          "name": "storefront",
+          "type": "Storefront",
+        },
+      ],
+      "name": "NotBasicWithInlineVariables",
+      "resolvers": [
+        {
+          "includes": {
+            "products": {
+              "includes": {},
+              "inlineVariables": {},
+              "kind": "composite",
+              "operation": "query ProductByUpc($Product_upc: ID!) {
+  product(upc: $Product_upc) {
+    ...__export
+  }
+}
+
+fragment __export on Product {
+  name
+}",
+              "pathToExportData": [
+                "product",
+              ],
+              "private": [],
+              "public": [
+                "name",
+              ],
+              "source": "products",
+              "type": "Product",
+              "typeOrField": "Product",
+              "variables": {
+                "Product_upc": {
+                  "name": "Product_upc",
+                  "select": "upc",
+                },
+              },
+            },
+          },
+          "inlineVariables": {
+            "id": "samsung-store",
+          },
+          "kind": "composite",
+          "operation": "query storefront($id: ID!) {
+  storefront(id: $id) {
+    ...__export
+  }
+}
+
+fragment __export on Storefront {
+  id
+  name
+  products {
+    upc
+  }
+}",
+          "pathToExportData": [
+            "storefront",
+          ],
+          "private": [],
+          "public": [
+            "id",
+            "name",
+            "products.upc",
+          ],
+          "source": "storefronts",
+          "type": "Storefront",
+          "typeOrField": "storefront",
+          "variables": {},
+        },
+      ],
+      "type": "query",
+    },
+  ],
+  "paths": [
+    "storefront",
+    "storefront.id",
+    "storefront.name",
+    "storefront.products",
+    "storefront.products.upc",
+    "storefront.products.name",
+  ],
+  "query": "query NotBasicWithInlineVariables {
+  storefront(id: "samsung-store") {
+    id
+    name
+    products {
+      ... on Product {
+        upc
+        name
+      }
+    }
+  }
+}",
+}
+`;
+
 exports[`fixture 'store' > query 'ListOperationResolver' > should execute 1`] = `
 {
   "data": {

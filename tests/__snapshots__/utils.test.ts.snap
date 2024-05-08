@@ -1,0 +1,99 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`flattenFragments > should flatten fragments in 'AliasesFragmentDefinition' 1`] = `
+"{
+  storefront {
+    pro: products {
+      name
+      id: upc
+    }
+  }
+}"
+`;
+
+exports[`flattenFragments > should flatten fragments in 'BasicFragmentDefinition' 1`] = `
+"{
+  storefront {
+    products {
+      name
+      upc
+    }
+  }
+}"
+`;
+
+exports[`flattenFragments > should flatten fragments in 'BasicInlineFragment' 1`] = `
+"{
+  storefront {
+    products {
+      upc
+      name
+    }
+  }
+}"
+`;
+
+exports[`flattenFragments > should flatten fragments in 'DirectivesFragmentDefinition' 1`] = `
+"{
+  storefront {
+    products {
+      name
+      upc @skip(if: false)
+      manufacturer @include(if: true) {
+        groundedAt
+      }
+    }
+  }
+}"
+`;
+
+exports[`flattenFragments > should flatten fragments in 'DuplicateFieldsFragmentDefinition' 1`] = `
+"{
+  storefront {
+    products {
+      name
+      upc
+      manufacturer {
+        name
+        groundedAt
+      }
+      id
+      upc
+      manufacturer {
+        name
+      }
+    }
+  }
+}"
+`;
+
+exports[`flattenFragments > should flatten fragments in 'NestedFragmentDefinition' 1`] = `
+"{
+  storefront {
+    products {
+      name
+      upc
+      manufacturer {
+        id
+        name
+        groundedAt
+      }
+    }
+  }
+}"
+`;
+
+exports[`flattenFragments > should flatten fragments in 'NestedInlineFragment' 1`] = `
+"{
+  storefront {
+    products {
+      name
+      upc
+      manufacturer {
+        name
+        id
+      }
+    }
+  }
+}"
+`;

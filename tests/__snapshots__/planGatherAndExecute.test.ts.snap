@@ -2122,6 +2122,94 @@ fragment __export on Storefront {
 }
 `;
 
+exports[`fixture 'store' > query 'ScalarListInOperation' > should execute 1`] = `
+{
+  "data": {
+    "productNames": [
+      "Samsung TV",
+      "Samsung Fold",
+      "Samsung Galaxy",
+      "Apple iPhone",
+      "iPad",
+    ],
+  },
+  "extensions": {
+    "explain": [
+      {
+        "data": {
+          "productNames": [
+            "Samsung TV",
+            "Samsung Fold",
+            "Samsung Galaxy",
+            "Apple iPhone",
+            "iPad",
+          ],
+        },
+        "field": {
+          "inlineVariables": {},
+          "kind": "scalar",
+          "name": "productNames",
+          "ofType": "String",
+          "path": "productNames",
+          "type": "[String!]!",
+        },
+        "kind": "scalar",
+        "ofType": "String",
+        "operation": "query productNames {
+  productNames
+}",
+        "pathInData": [
+          "productNames",
+        ],
+        "pathToExportData": [
+          "productNames",
+        ],
+        "source": "products",
+        "type": "[String!]!",
+        "variables": {},
+      },
+    ],
+  },
+}
+`;
+
+exports[`fixture 'store' > query 'ScalarListInOperation' > should plan gather 1`] = `
+{
+  "operations": [
+    {
+      "name": "ScalarListInOperation",
+      "resolvers": {
+        "productNames": {
+          "field": {
+            "inlineVariables": {},
+            "kind": "scalar",
+            "name": "productNames",
+            "ofType": "String",
+            "path": "productNames",
+            "type": "[String!]!",
+          },
+          "kind": "scalar",
+          "ofType": "String",
+          "operation": "query productNames {
+  productNames
+}",
+          "pathToExportData": [
+            "productNames",
+          ],
+          "source": "products",
+          "type": "[String!]!",
+          "variables": {},
+        },
+      },
+      "type": "query",
+    },
+  ],
+  "query": "query ScalarListInOperation {
+  productNames
+}",
+}
+`;
+
 exports[`fixture 'store' > query 'ScalarListInType' > should execute 1`] = `
 {
   "data": {
@@ -2649,6 +2737,19 @@ exports[`fixture 'store' > should plan schema 1`] = `
             },
           },
         },
+        "productNames": {
+          "name": "productNames",
+          "resolvers": {
+            "products": {
+              "kind": "scalar",
+              "ofType": "String",
+              "operation": "query productNames { productNames }",
+              "source": "products",
+              "type": "[String!]!",
+              "variables": {},
+            },
+          },
+        },
         "productsByUpcs": {
           "name": "productsByUpcs",
           "resolvers": {
@@ -2691,6 +2792,7 @@ type Query {
   product(upc: ID!): Product
   productsByUpcs(upcs: [ID!]!): [Product]!
   productName(upc: ID!): String
+  productNames: [String!]!
   storefront(id: ID!): Storefront
 }
 

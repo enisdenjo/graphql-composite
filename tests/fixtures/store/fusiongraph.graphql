@@ -57,6 +57,12 @@ type Query {
       operation: "query productName($upc: ID!) { product(upc: $upc) { name } }"
     )
     @source(subgraph: "products")
+  productNames: [String!]!
+    @resolver(
+      subgraph: "products"
+      operation: "query productNames { productNames }"
+    )
+    @source(subgraph: "products")
   storefront(id: ID!): Storefront
     @resolver(
       subgraph: "storefronts"

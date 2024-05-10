@@ -139,4 +139,13 @@ export const queries: FixtureQueries = [
     `),
     variables: {},
   },
+  {
+    name: 'ScalarListInOperation',
+    document: parse(/* GraphQL */ `
+      query ScalarListInOperation {
+        productNames
+      }
+    `),
+    variables: {},
+  },
 ];

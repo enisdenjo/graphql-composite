@@ -124,6 +124,7 @@ export const sources: FixtureSources = {
       type Query {
         product(upc: ID!): Product
         productsByUpcs(upcs: [ID!]!): [Product]!
+        productNames: [String!]!
       }
       type Product {
         upc: ID!
@@ -142,6 +143,7 @@ export const sources: FixtureSources = {
           products.find((product) => product.upc === args.upc),
         productsByUpcs: (_parent, args: { upcs: string[] }) =>
           products.filter((product) => args.upcs.includes(product.upc)),
+        productNames: () => products.map((product) => product.name),
       },
       Product: {
         manufacturer: (product: Product) => {

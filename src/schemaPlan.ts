@@ -22,7 +22,7 @@ export interface SchemaPlanOperation {
 export interface SchemaPlanOperationField {
   name: string;
   resolvers: {
-    [name in SchemaPlanSubgraph['name']]: SchemaPlanSubgraph &
+    [subgraph in SchemaPlanSubgraph['subgraph']]: SchemaPlanSubgraph &
       SchemaPlanResolver; // TODO: operation field must always have a resolver?
   };
 }
@@ -30,7 +30,7 @@ export interface SchemaPlanOperationField {
 export interface SchemaPlanCompositeType {
   name: string;
   resolvers: {
-    [name in SchemaPlanSubgraph['name']]: SchemaPlanSubgraph &
+    [subgraph in SchemaPlanSubgraph['subgraph']]: SchemaPlanSubgraph &
       SchemaPlanCompositeResolver; // TODO: type can only have one resolver at subgraph?
   };
   fields: {
@@ -45,7 +45,7 @@ export interface SchemaPlanCompositeTypeField {
 
 export interface SchemaPlanSubgraph {
   /** Unique identifier of the subgraph source. Usually the name. */
-  name: string;
+  subgraph: string;
 }
 
 export type SchemaPlanResolver =

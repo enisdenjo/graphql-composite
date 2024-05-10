@@ -6,7 +6,7 @@ import { SchemaPlanSubgraph } from './schemaPlan.js';
 import { Transport } from './transport.js';
 
 export type SourceTransports = {
-  [name in SchemaPlanSubgraph['name']]: Transport;
+  [subgraph in SchemaPlanSubgraph['subgraph']]: Transport;
 };
 
 export async function execute(
@@ -76,9 +76,9 @@ async function executeResolver(
    */
   resultRef: ExecutionResult,
 ): Promise<ExecutionExplain> {
-  const transport = transports[resolver.name];
+  const transport = transports[resolver.subgraph];
   if (!transport) {
-    throw new Error(`Transport for subgraph "${resolver.name}" not found`);
+    throw new Error(`Transport for subgraph "${resolver.subgraph}" not found`);
   }
 
   const variables = Object.values(resolver.variables).reduce(

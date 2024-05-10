@@ -348,10 +348,10 @@ function insertResolversForGatherPlanCompositeField(
       );
     }
 
-    let resolver = fieldPlan.subgraphs.includes(parentResolver.name)
+    let resolver = fieldPlan.subgraphs.includes(parentResolver.subgraph)
       ? parentResolver
       : Object.values(parentResolver.includes).find((r) =>
-          fieldPlan.subgraphs.includes(r.name),
+          fieldPlan.subgraphs.includes(r.subgraph),
         );
     if (!resolver) {
       // this field cannot be resolved from the parent's subgraph
@@ -365,7 +365,7 @@ function insertResolversForGatherPlanCompositeField(
       }
 
       const resolverPlan = Object.values(typePlan.resolvers).find((r) =>
-        fieldPlan.subgraphs.includes(r.name),
+        fieldPlan.subgraphs.includes(r.subgraph),
       );
       if (!resolverPlan) {
         throw new Error(

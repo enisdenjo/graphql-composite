@@ -66,7 +66,7 @@ export function planSchema(schema: GraphQLSchema): SchemaPlan {
             );
           }
           fieldPlan.resolvers[subgraph] = {
-            name: subgraph,
+            subgraph: subgraph,
             ...resolver,
           };
         }
@@ -94,7 +94,7 @@ export function planSchema(schema: GraphQLSchema): SchemaPlan {
         );
       }
       compositeTypePlan.resolvers[subgraph] = {
-        name: subgraph,
+        subgraph: subgraph,
         ...resolver,
       };
     }

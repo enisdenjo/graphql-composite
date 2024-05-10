@@ -30,8 +30,6 @@ import { flattenFragments } from './utils.js';
 
 export interface GatherPlan {
   query: string;
-  /** Dot notation flat list of paths in the GraphQL query. */
-  paths: string[];
   operations: GatherPlanOperation[];
 }
 
@@ -39,32 +37,8 @@ export interface GatherPlanOperation {
   /** The name of the operation to execute. */
   name: string | null;
   type: OperationTypeNode;
-  fields: GatherPlanField[];
   /** A map of operation field paths to the necessary operation resolver. */
   resolvers: Record<string, GatherPlanResolver>;
-}
-
-type GatherPlanField = GatherPlanCompositeField | GatherPlanScalarField;
-
-export interface GatherPlanCompositeField {
-  kind: 'composite';
-  name: string;
-  type: string;
-  /** The inline variables of the field this resolver resolves. */
-  inlineVariables: Record<string, unknown>;
-  isNonNull: boolean; // TODO: how to use? validating gather results?
-  isList: boolean; // TODO: how to use? validating gather results?
-  isListItemNonNull: boolean; // TODO: how to use? validating gather results?
-  fields: GatherPlanField[];
-}
-
-export interface GatherPlanScalarField {
-  kind: 'scalar';
-  name: string;
-  type: string;
-  /** The inline variables of the field this resolver resolves. */
-  inlineVariables: Record<string, unknown>;
-  isNonNull: boolean; // TODO: how to use? validating gather results?
 }
 
 export type GatherPlanResolver =
@@ -119,11 +93,10 @@ export function planGather(
 ): GatherPlan {
   const gatherPlan: GatherPlan = {
     query: print(doc),
-    paths: [],
     operations: [],
   };
 
-  const entries: string[] = [];
+  const fields: GatherPlanField[] = [];
   let depth = 0;
   const typeInfo = new TypeInfo(buildSchema(schemaPlan.schema));
   let currOperation: GatherPlanOperation;
@@ -136,7 +109,6 @@ export function planGather(
         currOperation = {
           name: node.name?.value || null,
           type: node.operation,
-          fields: [],
           resolvers: {},
         };
         gatherPlan.operations.push(currOperation);
@@ -186,7 +158,7 @@ export function planGather(
           }
 
           if (isCompositeType(type)) {
-            insertFieldToOperationAtDepth(currOperation, depth, {
+            insertFieldAtDepth(fields, depth, {
               kind: 'composite',
               name: node.name.value,
               type: type.name,
@@ -197,7 +169,7 @@ export function planGather(
               fields: [],
             });
           } else {
-            insertFieldToOperationAtDepth(currOperation, depth, {
+            insertFieldAtDepth(fields, depth, {
               kind: 'scalar',
               name: node.name.value,
               type: type.name,
@@ -206,12 +178,9 @@ export function planGather(
             });
           }
 
-          entries.push(node.name.value);
-          gatherPlan.paths.push(entries.join('.'));
           depth++;
         },
         leave() {
-          entries.pop();
           depth--;
         },
       },
@@ -219,21 +188,45 @@ export function planGather(
   );
 
   for (const operation of gatherPlan.operations) {
-    operation.resolvers = planGatherResolversForOperation(
+    operation.resolvers = planGatherResolversForOperationFields(
       schemaPlan,
       operation,
+      fields,
     );
   }
 
   return gatherPlan;
 }
 
-function insertFieldToOperationAtDepth(
-  operation: GatherPlanOperation,
+type GatherPlanField = GatherPlanCompositeField | GatherPlanScalarField;
+
+interface GatherPlanCompositeField {
+  kind: 'composite';
+  name: string;
+  type: string;
+  /** The inline variables of the field this resolver resolves. */
+  inlineVariables: Record<string, unknown>;
+  isNonNull: boolean; // TODO: how to use? validating gather results?
+  isList: boolean; // TODO: how to use? validating gather results?
+  isListItemNonNull: boolean; // TODO: how to use? validating gather results?
+  fields: GatherPlanField[];
+}
+
+interface GatherPlanScalarField {
+  kind: 'scalar';
+  name: string;
+  type: string;
+  /** The inline variables of the field this resolver resolves. */
+  inlineVariables: Record<string, unknown>;
+  isNonNull: boolean; // TODO: how to use? validating gather results?
+}
+
+function insertFieldAtDepth(
+  fields: GatherPlanField[],
   depth: number,
   field: GatherPlanField,
 ) {
-  let curr: { fields: GatherPlanField[] } = operation;
+  let curr = { fields };
   for (let i = 0; i < depth; i++) {
     // increase depth by going into the last field of the current field
     const field = curr.fields[curr.fields.length - 1]!;
@@ -247,9 +240,10 @@ function insertFieldToOperationAtDepth(
   curr.fields.push(field);
 }
 
-function planGatherResolversForOperation(
+function planGatherResolversForOperationFields(
   schemaPlan: SchemaPlan,
   operation: GatherPlanOperation,
+  fields: GatherPlanField[],
 ): Record<string, GatherPlanResolver> {
   const operationPlan = schemaPlan.operations[operation.type];
   if (!operationPlan) {
@@ -260,7 +254,7 @@ function planGatherResolversForOperation(
 
   const resolvers: Record<string, GatherPlanResolver> = {};
 
-  for (const operationField of operation.fields) {
+  for (const operationField of fields) {
     const operationFieldPlan = operationPlan.fields[operationField.name];
     if (!operationFieldPlan) {
       throw new Error(

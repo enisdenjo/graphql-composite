@@ -165,71 +165,6 @@ exports[`fixture 'store' > query 'BasicWithFragmentDefinition' > should plan gat
 {
   "operations": [
     {
-      "fields": [
-        {
-          "fields": [
-            {
-              "inlineVariables": {},
-              "isNonNull": true,
-              "kind": "scalar",
-              "name": "id",
-              "type": "ID",
-            },
-            {
-              "fields": [
-                {
-                  "inlineVariables": {},
-                  "isNonNull": true,
-                  "kind": "scalar",
-                  "name": "upc",
-                  "type": "ID",
-                },
-                {
-                  "fields": [
-                    {
-                      "inlineVariables": {},
-                      "isNonNull": true,
-                      "kind": "scalar",
-                      "name": "id",
-                      "type": "ID",
-                    },
-                  ],
-                  "inlineVariables": {},
-                  "isList": false,
-                  "isListItemNonNull": false,
-                  "isNonNull": false,
-                  "kind": "composite",
-                  "name": "manufacturer",
-                  "type": "Manufacturer",
-                },
-              ],
-              "inlineVariables": {},
-              "isList": true,
-              "isListItemNonNull": false,
-              "isNonNull": true,
-              "kind": "composite",
-              "name": "products",
-              "type": "Product",
-            },
-            {
-              "inlineVariables": {},
-              "isNonNull": true,
-              "kind": "scalar",
-              "name": "name",
-              "type": "String",
-            },
-          ],
-          "inlineVariables": {
-            "id": "apple-store",
-          },
-          "isList": false,
-          "isListItemNonNull": false,
-          "isNonNull": false,
-          "kind": "composite",
-          "name": "storefront",
-          "type": "Storefront",
-        },
-      ],
       "name": "BasicWithFragmentDefinition",
       "resolvers": {
         "storefront": {
@@ -299,15 +234,6 @@ fragment __export on Storefront {
       },
       "type": "query",
     },
-  ],
-  "paths": [
-    "storefront",
-    "storefront.id",
-    "storefront.products",
-    "storefront.products.upc",
-    "storefront.products.manufacturer",
-    "storefront.products.manufacturer.id",
-    "storefront.name",
   ],
   "query": "query BasicWithFragmentDefinition {
   storefront(id: "apple-store") {
@@ -524,60 +450,6 @@ exports[`fixture 'store' > query 'BasicWithInlineFragment' > should plan gather 
 {
   "operations": [
     {
-      "fields": [
-        {
-          "fields": [
-            {
-              "inlineVariables": {},
-              "isNonNull": true,
-              "kind": "scalar",
-              "name": "id",
-              "type": "ID",
-            },
-            {
-              "inlineVariables": {},
-              "isNonNull": true,
-              "kind": "scalar",
-              "name": "name",
-              "type": "String",
-            },
-            {
-              "fields": [
-                {
-                  "inlineVariables": {},
-                  "isNonNull": true,
-                  "kind": "scalar",
-                  "name": "upc",
-                  "type": "ID",
-                },
-                {
-                  "inlineVariables": {},
-                  "isNonNull": true,
-                  "kind": "scalar",
-                  "name": "name",
-                  "type": "String",
-                },
-              ],
-              "inlineVariables": {},
-              "isList": true,
-              "isListItemNonNull": false,
-              "isNonNull": true,
-              "kind": "composite",
-              "name": "products",
-              "type": "Product",
-            },
-          ],
-          "inlineVariables": {
-            "id": "samsung-store",
-          },
-          "isList": false,
-          "isListItemNonNull": false,
-          "isNonNull": false,
-          "kind": "composite",
-          "name": "storefront",
-          "type": "Storefront",
-        },
-      ],
       "name": "NotBasicWithInlineVariables",
       "resolvers": {
         "storefront": {
@@ -645,14 +517,6 @@ fragment __export on Storefront {
       },
       "type": "query",
     },
-  ],
-  "paths": [
-    "storefront",
-    "storefront.id",
-    "storefront.name",
-    "storefront.products",
-    "storefront.products.upc",
-    "storefront.products.name",
   ],
   "query": "query NotBasicWithInlineVariables {
   storefront(id: "samsung-store") {
@@ -890,81 +754,6 @@ exports[`fixture 'store' > query 'ListOperationResolver' > should plan gather 1`
 {
   "operations": [
     {
-      "fields": [
-        {
-          "fields": [
-            {
-              "inlineVariables": {},
-              "isNonNull": true,
-              "kind": "scalar",
-              "name": "upc",
-              "type": "ID",
-            },
-            {
-              "inlineVariables": {},
-              "isNonNull": true,
-              "kind": "scalar",
-              "name": "name",
-              "type": "String",
-            },
-            {
-              "fields": [
-                {
-                  "fields": [
-                    {
-                      "inlineVariables": {},
-                      "isNonNull": true,
-                      "kind": "scalar",
-                      "name": "upc",
-                      "type": "ID",
-                    },
-                    {
-                      "inlineVariables": {},
-                      "isNonNull": true,
-                      "kind": "scalar",
-                      "name": "name",
-                      "type": "String",
-                    },
-                  ],
-                  "inlineVariables": {},
-                  "isList": true,
-                  "isListItemNonNull": false,
-                  "isNonNull": true,
-                  "kind": "composite",
-                  "name": "products",
-                  "type": "Product",
-                },
-                {
-                  "inlineVariables": {},
-                  "isNonNull": true,
-                  "kind": "scalar",
-                  "name": "name",
-                  "type": "String",
-                },
-              ],
-              "inlineVariables": {},
-              "isList": false,
-              "isListItemNonNull": false,
-              "isNonNull": false,
-              "kind": "composite",
-              "name": "manufacturer",
-              "type": "Manufacturer",
-            },
-          ],
-          "inlineVariables": {
-            "upcs": [
-              "galaxy",
-              "iphone",
-            ],
-          },
-          "isList": true,
-          "isListItemNonNull": false,
-          "isNonNull": true,
-          "kind": "composite",
-          "name": "productsByUpcs",
-          "type": "Product",
-        },
-      ],
       "name": "ListOperationResolver",
       "resolvers": {
         "productsByUpcs": {
@@ -1042,16 +831,6 @@ fragment __export on Product {
       },
       "type": "query",
     },
-  ],
-  "paths": [
-    "productsByUpcs",
-    "productsByUpcs.upc",
-    "productsByUpcs.name",
-    "productsByUpcs.manufacturer",
-    "productsByUpcs.manufacturer.products",
-    "productsByUpcs.manufacturer.products.upc",
-    "productsByUpcs.manufacturer.products.name",
-    "productsByUpcs.manufacturer.name",
   ],
   "query": "query ListOperationResolver {
   productsByUpcs(upcs: ["galaxy", "iphone"]) {
@@ -1514,103 +1293,6 @@ exports[`fixture 'store' > query 'NotBasicWithInlineVariables' > should plan gat
 {
   "operations": [
     {
-      "fields": [
-        {
-          "fields": [
-            {
-              "inlineVariables": {},
-              "isNonNull": true,
-              "kind": "scalar",
-              "name": "id",
-              "type": "ID",
-            },
-            {
-              "inlineVariables": {},
-              "isNonNull": true,
-              "kind": "scalar",
-              "name": "name",
-              "type": "String",
-            },
-            {
-              "fields": [
-                {
-                  "inlineVariables": {},
-                  "isNonNull": true,
-                  "kind": "scalar",
-                  "name": "upc",
-                  "type": "ID",
-                },
-                {
-                  "inlineVariables": {},
-                  "isNonNull": true,
-                  "kind": "scalar",
-                  "name": "name",
-                  "type": "String",
-                },
-                {
-                  "fields": [
-                    {
-                      "fields": [
-                        {
-                          "inlineVariables": {},
-                          "isNonNull": true,
-                          "kind": "scalar",
-                          "name": "upc",
-                          "type": "ID",
-                        },
-                        {
-                          "inlineVariables": {},
-                          "isNonNull": true,
-                          "kind": "scalar",
-                          "name": "name",
-                          "type": "String",
-                        },
-                      ],
-                      "inlineVariables": {},
-                      "isList": true,
-                      "isListItemNonNull": false,
-                      "isNonNull": true,
-                      "kind": "composite",
-                      "name": "products",
-                      "type": "Product",
-                    },
-                    {
-                      "inlineVariables": {},
-                      "isNonNull": true,
-                      "kind": "scalar",
-                      "name": "name",
-                      "type": "String",
-                    },
-                  ],
-                  "inlineVariables": {},
-                  "isList": false,
-                  "isListItemNonNull": false,
-                  "isNonNull": false,
-                  "kind": "composite",
-                  "name": "manufacturer",
-                  "type": "Manufacturer",
-                },
-              ],
-              "inlineVariables": {},
-              "isList": true,
-              "isListItemNonNull": false,
-              "isNonNull": true,
-              "kind": "composite",
-              "name": "products",
-              "type": "Product",
-            },
-          ],
-          "inlineVariables": {
-            "id": "samsung-store",
-          },
-          "isList": false,
-          "isListItemNonNull": false,
-          "isNonNull": false,
-          "kind": "composite",
-          "name": "storefront",
-          "type": "Storefront",
-        },
-      ],
       "name": "NotBasicWithInlineVariables",
       "resolvers": {
         "storefront": {
@@ -1719,19 +1401,6 @@ fragment __export on Storefront {
       },
       "type": "query",
     },
-  ],
-  "paths": [
-    "storefront",
-    "storefront.id",
-    "storefront.name",
-    "storefront.products",
-    "storefront.products.upc",
-    "storefront.products.name",
-    "storefront.products.manufacturer",
-    "storefront.products.manufacturer.products",
-    "storefront.products.manufacturer.products.upc",
-    "storefront.products.manufacturer.products.name",
-    "storefront.products.manufacturer.name",
   ],
   "query": "query NotBasicWithInlineVariables {
   storefront(id: "samsung-store") {
@@ -2054,101 +1723,6 @@ exports[`fixture 'store' > query 'NotBasicWithOperationVariables' > should plan 
 {
   "operations": [
     {
-      "fields": [
-        {
-          "fields": [
-            {
-              "inlineVariables": {},
-              "isNonNull": true,
-              "kind": "scalar",
-              "name": "id",
-              "type": "ID",
-            },
-            {
-              "inlineVariables": {},
-              "isNonNull": true,
-              "kind": "scalar",
-              "name": "name",
-              "type": "String",
-            },
-            {
-              "fields": [
-                {
-                  "inlineVariables": {},
-                  "isNonNull": true,
-                  "kind": "scalar",
-                  "name": "upc",
-                  "type": "ID",
-                },
-                {
-                  "inlineVariables": {},
-                  "isNonNull": true,
-                  "kind": "scalar",
-                  "name": "name",
-                  "type": "String",
-                },
-                {
-                  "fields": [
-                    {
-                      "fields": [
-                        {
-                          "inlineVariables": {},
-                          "isNonNull": true,
-                          "kind": "scalar",
-                          "name": "upc",
-                          "type": "ID",
-                        },
-                        {
-                          "inlineVariables": {},
-                          "isNonNull": true,
-                          "kind": "scalar",
-                          "name": "name",
-                          "type": "String",
-                        },
-                      ],
-                      "inlineVariables": {},
-                      "isList": true,
-                      "isListItemNonNull": false,
-                      "isNonNull": true,
-                      "kind": "composite",
-                      "name": "products",
-                      "type": "Product",
-                    },
-                    {
-                      "inlineVariables": {},
-                      "isNonNull": true,
-                      "kind": "scalar",
-                      "name": "name",
-                      "type": "String",
-                    },
-                  ],
-                  "inlineVariables": {},
-                  "isList": false,
-                  "isListItemNonNull": false,
-                  "isNonNull": false,
-                  "kind": "composite",
-                  "name": "manufacturer",
-                  "type": "Manufacturer",
-                },
-              ],
-              "inlineVariables": {},
-              "isList": true,
-              "isListItemNonNull": false,
-              "isNonNull": true,
-              "kind": "composite",
-              "name": "products",
-              "type": "Product",
-            },
-          ],
-          "inlineVariables": {},
-          "isList": false,
-          "isListItemNonNull": false,
-          "isNonNull": false,
-          "kind": "composite",
-          "name": "storefront",
-          "type": "Storefront",
-        },
-      ],
       "name": "NotBasicWithOperationVariables",
       "resolvers": {
         "storefront": {
@@ -2256,19 +1830,6 @@ fragment __export on Storefront {
       "type": "query",
     },
   ],
-  "paths": [
-    "storefront",
-    "storefront.id",
-    "storefront.name",
-    "storefront.products",
-    "storefront.products.upc",
-    "storefront.products.name",
-    "storefront.products.manufacturer",
-    "storefront.products.manufacturer.products",
-    "storefront.products.manufacturer.products.upc",
-    "storefront.products.manufacturer.products.name",
-    "storefront.products.manufacturer.name",
-  ],
   "query": "query NotBasicWithOperationVariables($id: ID!) {
   storefront(id: $id) {
     id
@@ -2328,17 +1889,6 @@ exports[`fixture 'store' > query 'ScalarOperationField' > should plan gather 1`]
 {
   "operations": [
     {
-      "fields": [
-        {
-          "inlineVariables": {
-            "id": "samsung",
-          },
-          "isNonNull": false,
-          "kind": "scalar",
-          "name": "manufacturerName",
-          "type": "String",
-        },
-      ],
       "name": "ScalarOperationField",
       "resolvers": {
         "manufacturerName": {
@@ -2359,9 +1909,6 @@ exports[`fixture 'store' > query 'ScalarOperationField' > should plan gather 1`]
       },
       "type": "query",
     },
-  ],
-  "paths": [
-    "manufacturerName",
   ],
   "query": "query ScalarOperationField {
   manufacturerName(id: "samsung")
@@ -2413,17 +1960,6 @@ exports[`fixture 'store' > query 'ScalarOperationFieldNested' > should plan gath
 {
   "operations": [
     {
-      "fields": [
-        {
-          "inlineVariables": {
-            "upc": "ipad",
-          },
-          "isNonNull": false,
-          "kind": "scalar",
-          "name": "productName",
-          "type": "String",
-        },
-      ],
       "name": "ScalarOperationFieldNested",
       "resolvers": {
         "productName": {
@@ -2447,9 +1983,6 @@ exports[`fixture 'store' > query 'ScalarOperationFieldNested' > should plan gath
       },
       "type": "query",
     },
-  ],
-  "paths": [
-    "productName",
   ],
   "query": "query ScalarOperationFieldNested {
   productName(upc: "ipad")

@@ -15,7 +15,7 @@ export type FixtureQueries = {
 export interface Fixture {
   name: string;
   fusiongraph: string;
-  sources: FixtureSources;
+  subgraphs: FixtureSources;
   queries: FixtureQueries;
 }
 
@@ -25,12 +25,12 @@ export async function getFixture(name: string): Promise<Fixture> {
     path.join(dir, 'fusiongraph.graphql'),
     'utf-8',
   );
-  const { sources } = await import(path.join(dir, 'sources.ts'));
+  const { subgraphs } = await import(path.join(dir, 'subgraphs.ts'));
   const { queries } = await import(path.join(dir, 'queries.ts'));
   return {
     name,
     fusiongraph,
-    sources,
+    subgraphs,
     queries,
   };
 }

@@ -8,7 +8,7 @@ import { getFixtures } from './utils.js';
 
 describe.each(await getFixtures())(
   'fixture $name',
-  ({ fusiongraph, sources, queries }) => {
+  ({ fusiongraph, subgraphs, queries }) => {
     const schema = buildSchema(fusiongraph, {
       assumeValid: true,
     });
@@ -25,10 +25,10 @@ describe.each(await getFixtures())(
       it('should execute', async () => {
         await expect(
           execute(
-            Object.entries(sources).reduce(
-              (agg, [name, source]) => ({
+            Object.entries(subgraphs).reduce(
+              (agg, [name, subgraph]) => ({
                 ...agg,
-                [name]: new TransportHTTP(source.fetch),
+                [name]: new TransportHTTP(subgraph.fetch),
               }),
               {},
             ),

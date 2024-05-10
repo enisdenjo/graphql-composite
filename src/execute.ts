@@ -2,11 +2,11 @@ import { ExecutionResult, GraphQLError } from 'graphql';
 import getAtPath from 'lodash.get';
 import setAtPath from 'lodash.set';
 import { GatherPlan, GatherPlanResolver } from './gather.js';
-import { SchemaPlanSource } from './schemaPlan.js';
+import { SchemaPlanSubgraph } from './schemaPlan.js';
 import { Transport } from './transport.js';
 
 export type SourceTransports = {
-  [source in SchemaPlanSource['source']]: Transport;
+  [name in SchemaPlanSubgraph['name']]: Transport;
 };
 
 export async function execute(
@@ -17,7 +17,7 @@ export async function execute(
   ExecutionResult<Record<string, unknown>, { explain: ExecutionExplain[] }>
 > {
   const resultRef: ExecutionResult = {};
-  // TODO: batch resolvers going to the same source
+  // TODO: batch resolvers going to the same subgraph
   const explain = await Promise.all(
     plan.operations.flatMap((o) =>
       Object.entries(o.resolvers).map(([field, r]) =>
@@ -76,9 +76,9 @@ async function executeResolver(
    */
   resultRef: ExecutionResult,
 ): Promise<ExecutionExplain> {
-  const transport = transports[resolver.source];
+  const transport = transports[resolver.name];
   if (!transport) {
-    throw new Error(`Transport for source "${resolver.source}" not found`);
+    throw new Error(`Transport for subgraph "${resolver.name}" not found`);
   }
 
   const variables = Object.values(resolver.variables).reduce(
@@ -153,7 +153,7 @@ async function executeResolver(
         ...result,
         pathInData,
         variables,
-        // TODO: batch resolvers going to the same source
+        // TODO: batch resolvers going to the same subgraph
         includes: await Promise.all(
           Object.entries(resolver.includes).flatMap(([field, resolver]) => {
             if (Array.isArray(exportData)) {

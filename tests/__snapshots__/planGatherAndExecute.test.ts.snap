@@ -92,7 +92,7 @@ fragment __export on Product {
             "public": [
               "manufacturer.id",
             ],
-            "source": "products",
+            "subgraph": "products",
             "type": "Product",
             "variables": {
               "Product_upc": "iphone",
@@ -140,7 +140,7 @@ fragment __export on Product {
             "public": [
               "manufacturer.id",
             ],
-            "source": "products",
+            "subgraph": "products",
             "type": "Product",
             "variables": {
               "Product_upc": "ipad",
@@ -174,7 +174,7 @@ fragment __export on Storefront {
           "products.upc",
           "name",
         ],
-        "source": "storefronts",
+        "subgraph": "storefronts",
         "type": "Storefront",
         "variables": {
           "id": "apple-store",
@@ -233,7 +233,7 @@ fragment __export on Product {
               "public": [
                 "manufacturer.id",
               ],
-              "source": "products",
+              "subgraph": "products",
               "type": "Product",
               "variables": {
                 "Product_upc": {
@@ -268,7 +268,7 @@ fragment __export on Storefront {
             "products.upc",
             "name",
           ],
-          "source": "storefronts",
+          "subgraph": "storefronts",
           "type": "Storefront",
           "variables": {
             "id": {
@@ -391,7 +391,7 @@ fragment __export on Product {
             "public": [
               "name",
             ],
-            "source": "products",
+            "subgraph": "products",
             "type": "Product",
             "variables": {
               "Product_upc": "tv",
@@ -435,7 +435,7 @@ fragment __export on Product {
             "public": [
               "name",
             ],
-            "source": "products",
+            "subgraph": "products",
             "type": "Product",
             "variables": {
               "Product_upc": "fold",
@@ -479,7 +479,7 @@ fragment __export on Product {
             "public": [
               "name",
             ],
-            "source": "products",
+            "subgraph": "products",
             "type": "Product",
             "variables": {
               "Product_upc": "galaxy",
@@ -513,7 +513,7 @@ fragment __export on Storefront {
           "name",
           "products.upc",
         ],
-        "source": "storefronts",
+        "subgraph": "storefronts",
         "type": "Storefront",
         "variables": {
           "id": "samsung-store",
@@ -570,7 +570,7 @@ fragment __export on Product {
               "public": [
                 "name",
               ],
-              "source": "products",
+              "subgraph": "products",
               "type": "Product",
               "variables": {
                 "Product_upc": {
@@ -605,7 +605,7 @@ fragment __export on Storefront {
             "name",
             "products.upc",
           ],
-          "source": "storefronts",
+          "subgraph": "storefronts",
           "type": "Storefront",
           "variables": {
             "id": {
@@ -774,7 +774,7 @@ fragment __export on Manufacturer {
             "public": [
               "name",
             ],
-            "source": "manufacturers",
+            "subgraph": "manufacturers",
             "type": "Manufacturer",
             "variables": {
               "Manufacturer_id": "samsung",
@@ -818,7 +818,7 @@ fragment __export on Manufacturer {
             "public": [
               "name",
             ],
-            "source": "manufacturers",
+            "subgraph": "manufacturers",
             "type": "Manufacturer",
             "variables": {
               "Manufacturer_id": "apple",
@@ -859,7 +859,7 @@ fragment __export on Product {
           "manufacturer.products.upc",
           "manufacturer.products.name",
         ],
-        "source": "products",
+        "subgraph": "products",
         "type": "[Product]!",
         "variables": {
           "upcs": [
@@ -922,7 +922,7 @@ fragment __export on Manufacturer {
               "public": [
                 "name",
               ],
-              "source": "manufacturers",
+              "subgraph": "manufacturers",
               "type": "Manufacturer",
               "variables": {
                 "Manufacturer_id": {
@@ -964,7 +964,7 @@ fragment __export on Product {
             "manufacturer.products.upc",
             "manufacturer.products.name",
           ],
-          "source": "products",
+          "subgraph": "products",
           "type": "[Product]!",
           "variables": {
             "upcs": {
@@ -1168,7 +1168,7 @@ fragment __export on Manufacturer {
                 "public": [
                   "name",
                 ],
-                "source": "manufacturers",
+                "subgraph": "manufacturers",
                 "type": "Manufacturer",
                 "variables": {
                   "Manufacturer_id": "samsung",
@@ -1209,7 +1209,7 @@ fragment __export on Product {
               "manufacturer.products.upc",
               "manufacturer.products.name",
             ],
-            "source": "products",
+            "subgraph": "products",
             "type": "Product",
             "variables": {
               "Product_upc": "tv",
@@ -1286,7 +1286,7 @@ fragment __export on Manufacturer {
                 "public": [
                   "name",
                 ],
-                "source": "manufacturers",
+                "subgraph": "manufacturers",
                 "type": "Manufacturer",
                 "variables": {
                   "Manufacturer_id": "samsung",
@@ -1327,7 +1327,7 @@ fragment __export on Product {
               "manufacturer.products.upc",
               "manufacturer.products.name",
             ],
-            "source": "products",
+            "subgraph": "products",
             "type": "Product",
             "variables": {
               "Product_upc": "fold",
@@ -1404,7 +1404,7 @@ fragment __export on Manufacturer {
                 "public": [
                   "name",
                 ],
-                "source": "manufacturers",
+                "subgraph": "manufacturers",
                 "type": "Manufacturer",
                 "variables": {
                   "Manufacturer_id": "samsung",
@@ -1445,7 +1445,7 @@ fragment __export on Product {
               "manufacturer.products.upc",
               "manufacturer.products.name",
             ],
-            "source": "products",
+            "subgraph": "products",
             "type": "Product",
             "variables": {
               "Product_upc": "galaxy",
@@ -1479,7 +1479,7 @@ fragment __export on Storefront {
           "name",
           "products.upc",
         ],
-        "source": "storefronts",
+        "subgraph": "storefronts",
         "type": "Storefront",
         "variables": {
           "id": "samsung-store",
@@ -1546,7 +1546,7 @@ fragment __export on Manufacturer {
                   "public": [
                     "name",
                   ],
-                  "source": "manufacturers",
+                  "subgraph": "manufacturers",
                   "type": "Manufacturer",
                   "variables": {
                     "Manufacturer_id": {
@@ -1586,7 +1586,7 @@ fragment __export on Product {
                 "manufacturer.products.upc",
                 "manufacturer.products.name",
               ],
-              "source": "products",
+              "subgraph": "products",
               "type": "Product",
               "variables": {
                 "Product_upc": {
@@ -1621,7 +1621,7 @@ fragment __export on Storefront {
             "name",
             "products.upc",
           ],
-          "source": "storefronts",
+          "subgraph": "storefronts",
           "type": "Storefront",
           "variables": {
             "id": {
@@ -1791,7 +1791,7 @@ fragment __export on Manufacturer {
                 "public": [
                   "name",
                 ],
-                "source": "manufacturers",
+                "subgraph": "manufacturers",
                 "type": "Manufacturer",
                 "variables": {
                   "Manufacturer_id": "apple",
@@ -1832,7 +1832,7 @@ fragment __export on Product {
               "manufacturer.products.upc",
               "manufacturer.products.name",
             ],
-            "source": "products",
+            "subgraph": "products",
             "type": "Product",
             "variables": {
               "Product_upc": "iphone",
@@ -1905,7 +1905,7 @@ fragment __export on Manufacturer {
                 "public": [
                   "name",
                 ],
-                "source": "manufacturers",
+                "subgraph": "manufacturers",
                 "type": "Manufacturer",
                 "variables": {
                   "Manufacturer_id": "apple",
@@ -1946,7 +1946,7 @@ fragment __export on Product {
               "manufacturer.products.upc",
               "manufacturer.products.name",
             ],
-            "source": "products",
+            "subgraph": "products",
             "type": "Product",
             "variables": {
               "Product_upc": "ipad",
@@ -1980,7 +1980,7 @@ fragment __export on Storefront {
           "name",
           "products.upc",
         ],
-        "source": "storefronts",
+        "subgraph": "storefronts",
         "type": "Storefront",
         "variables": {
           "id": "apple-store",
@@ -2045,7 +2045,7 @@ fragment __export on Manufacturer {
                   "public": [
                     "name",
                   ],
-                  "source": "manufacturers",
+                  "subgraph": "manufacturers",
                   "type": "Manufacturer",
                   "variables": {
                     "Manufacturer_id": {
@@ -2085,7 +2085,7 @@ fragment __export on Product {
                 "manufacturer.products.upc",
                 "manufacturer.products.name",
               ],
-              "source": "products",
+              "subgraph": "products",
               "type": "Product",
               "variables": {
                 "Product_upc": {
@@ -2120,7 +2120,7 @@ fragment __export on Storefront {
             "name",
             "products.upc",
           ],
-          "source": "storefronts",
+          "subgraph": "storefronts",
           "type": "Storefront",
           "variables": {
             "id": {
@@ -2195,7 +2195,7 @@ exports[`fixture 'store' > query 'ScalarListInOperation' > should execute 1`] = 
         "pathToExportData": [
           "productNames",
         ],
-        "source": "products",
+        "subgraph": "products",
         "type": "[String!]!",
         "variables": {},
       },
@@ -2227,7 +2227,7 @@ exports[`fixture 'store' > query 'ScalarListInOperation' > should plan gather 1`
           "pathToExportData": [
             "productNames",
           ],
-          "source": "products",
+          "subgraph": "products",
           "type": "[String!]!",
           "variables": {},
         },
@@ -2294,7 +2294,7 @@ fragment __export on Storefront {
         "public": [
           "productNames",
         ],
-        "source": "storefronts",
+        "subgraph": "storefronts",
         "type": "Storefront",
         "variables": {
           "id": "apple-store",
@@ -2341,7 +2341,7 @@ fragment __export on Storefront {
           "public": [
             "productNames",
           ],
-          "source": "storefronts",
+          "subgraph": "storefronts",
           "type": "Storefront",
           "variables": {
             "id": {
@@ -2394,7 +2394,7 @@ exports[`fixture 'store' > query 'ScalarOperationField' > should execute 1`] = `
         "pathToExportData": [
           "manufacturerName",
         ],
-        "source": "manufacturers",
+        "subgraph": "manufacturers",
         "type": "String",
         "variables": {
           "id": "samsung",
@@ -2430,7 +2430,7 @@ exports[`fixture 'store' > query 'ScalarOperationField' > should plan gather 1`]
           "pathToExportData": [
             "manufacturerName",
           ],
-          "source": "manufacturers",
+          "subgraph": "manufacturers",
           "type": "String",
           "variables": {
             "id": {
@@ -2486,7 +2486,7 @@ exports[`fixture 'store' > query 'ScalarOperationFieldNested' > should execute 1
           "product",
           "name",
         ],
-        "source": "products",
+        "subgraph": "products",
         "type": "String",
         "variables": {
           "upc": "ipad",
@@ -2525,7 +2525,7 @@ exports[`fixture 'store' > query 'ScalarOperationFieldNested' > should plan gath
             "product",
             "name",
           ],
-          "source": "products",
+          "subgraph": "products",
           "type": "String",
           "variables": {
             "upc": {
@@ -2551,28 +2551,28 @@ exports[`fixture 'store' > should plan schema 1`] = `
       "fields": {
         "id": {
           "name": "id",
-          "sources": {
+          "subgraphs": {
             "manufacturers": {
-              "source": "manufacturers",
+              "subgraph": "manufacturers",
             },
             "products": {
-              "source": "products",
+              "subgraph": "products",
             },
           },
         },
         "name": {
           "name": "name",
-          "sources": {
+          "subgraphs": {
             "manufacturers": {
-              "source": "manufacturers",
+              "subgraph": "manufacturers",
             },
           },
         },
         "products": {
           "name": "products",
-          "sources": {
+          "subgraphs": {
             "products": {
-              "source": "products",
+              "subgraph": "products",
             },
           },
         },
@@ -2583,7 +2583,7 @@ exports[`fixture 'store' > should plan schema 1`] = `
           "kind": "composite",
           "ofType": "Manufacturer",
           "operation": "query ManufacturerById($Manufacturer_id: ID!) { manufacturer(id: $Manufacturer_id) { ...__export } }",
-          "source": "manufacturers",
+          "subgraph": "manufacturers",
           "type": "Manufacturer",
           "variables": {
             "Manufacturer_id": {
@@ -2597,7 +2597,7 @@ exports[`fixture 'store' > should plan schema 1`] = `
           "kind": "composite",
           "ofType": "Manufacturer",
           "operation": "query ManufacturerById($Manufacturer_id: ID!) { _manufacturer(id: $Manufacturer_id) { ...__export } }",
-          "source": "products",
+          "subgraph": "products",
           "type": "Manufacturer",
           "variables": {
             "Manufacturer_id": {
@@ -2613,36 +2613,36 @@ exports[`fixture 'store' > should plan schema 1`] = `
       "fields": {
         "manufacturer": {
           "name": "manufacturer",
-          "sources": {
+          "subgraphs": {
             "products": {
-              "source": "products",
+              "subgraph": "products",
             },
           },
         },
         "name": {
           "name": "name",
-          "sources": {
+          "subgraphs": {
             "products": {
-              "source": "products",
+              "subgraph": "products",
             },
           },
         },
         "price": {
           "name": "price",
-          "sources": {
+          "subgraphs": {
             "products": {
-              "source": "products",
+              "subgraph": "products",
             },
           },
         },
         "upc": {
           "name": "upc",
-          "sources": {
+          "subgraphs": {
             "products": {
-              "source": "products",
+              "subgraph": "products",
             },
             "storefronts": {
-              "source": "storefronts",
+              "subgraph": "storefronts",
             },
           },
         },
@@ -2653,7 +2653,7 @@ exports[`fixture 'store' > should plan schema 1`] = `
           "kind": "composite",
           "ofType": "Product",
           "operation": "query ProductByUpc($Product_upc: ID!) { product(upc: $Product_upc) { ...__export } }",
-          "source": "products",
+          "subgraph": "products",
           "type": "Product",
           "variables": {
             "Product_upc": {
@@ -2667,7 +2667,7 @@ exports[`fixture 'store' > should plan schema 1`] = `
           "kind": "composite",
           "ofType": "Product",
           "operation": "query ProductByUpc($Product_upc: ID!) { product(upc: $Product_upc) { ...__export } }",
-          "source": "storefronts",
+          "subgraph": "storefronts",
           "type": "Product",
           "variables": {
             "Product_upc": {
@@ -2683,33 +2683,33 @@ exports[`fixture 'store' > should plan schema 1`] = `
       "fields": {
         "id": {
           "name": "id",
-          "sources": {
+          "subgraphs": {
             "storefronts": {
-              "source": "storefronts",
+              "subgraph": "storefronts",
             },
           },
         },
         "name": {
           "name": "name",
-          "sources": {
+          "subgraphs": {
             "storefronts": {
-              "source": "storefronts",
+              "subgraph": "storefronts",
             },
           },
         },
         "productNames": {
           "name": "productNames",
-          "sources": {
+          "subgraphs": {
             "storefronts": {
-              "source": "storefronts",
+              "subgraph": "storefronts",
             },
           },
         },
         "products": {
           "name": "products",
-          "sources": {
+          "subgraphs": {
             "storefronts": {
-              "source": "storefronts",
+              "subgraph": "storefronts",
             },
           },
         },
@@ -2720,7 +2720,7 @@ exports[`fixture 'store' > should plan schema 1`] = `
           "kind": "composite",
           "ofType": "Storefront",
           "operation": "query StorefrontById($Storefront_id: ID!) { storefront(id: $Storefront_id) { ...__export } }",
-          "source": "storefronts",
+          "subgraph": "storefronts",
           "type": "Storefront",
           "variables": {
             "Storefront_id": {
@@ -2743,7 +2743,7 @@ exports[`fixture 'store' > should plan schema 1`] = `
               "kind": "composite",
               "ofType": "Manufacturer",
               "operation": "query manufacturer($id: ID!) { manufacturer(id: $id) { ...__export } }",
-              "source": "manufacturers",
+              "subgraph": "manufacturers",
               "type": "Manufacturer",
               "variables": {
                 "id": {
@@ -2761,7 +2761,7 @@ exports[`fixture 'store' > should plan schema 1`] = `
               "kind": "scalar",
               "ofType": "String",
               "operation": "query manufacturerName($id: ID!) { manufacturerName(id: $id) }",
-              "source": "manufacturers",
+              "subgraph": "manufacturers",
               "type": "String",
               "variables": {
                 "id": {
@@ -2779,7 +2779,7 @@ exports[`fixture 'store' > should plan schema 1`] = `
               "kind": "composite",
               "ofType": "Product",
               "operation": "query product($upc: ID!) { product(upc: $upc) { ...__export } }",
-              "source": "products",
+              "subgraph": "products",
               "type": "Product",
               "variables": {
                 "upc": {
@@ -2797,7 +2797,7 @@ exports[`fixture 'store' > should plan schema 1`] = `
               "kind": "scalar",
               "ofType": "String",
               "operation": "query productName($upc: ID!) { product(upc: $upc) { name } }",
-              "source": "products",
+              "subgraph": "products",
               "type": "String",
               "variables": {
                 "upc": {
@@ -2815,7 +2815,7 @@ exports[`fixture 'store' > should plan schema 1`] = `
               "kind": "scalar",
               "ofType": "String",
               "operation": "query productNames { productNames }",
-              "source": "products",
+              "subgraph": "products",
               "type": "[String!]!",
               "variables": {},
             },
@@ -2828,7 +2828,7 @@ exports[`fixture 'store' > should plan schema 1`] = `
               "kind": "composite",
               "ofType": "Product",
               "operation": "query productsByUpcs($upcs: [ID!]!) { productsByUpcs(upcs: $upcs) { ...__export } }",
-              "source": "products",
+              "subgraph": "products",
               "type": "[Product]!",
               "variables": {
                 "upcs": {
@@ -2846,7 +2846,7 @@ exports[`fixture 'store' > should plan schema 1`] = `
               "kind": "composite",
               "ofType": "Storefront",
               "operation": "query storefront($id: ID!) { storefront(id: $id) { ...__export } }",
-              "source": "storefronts",
+              "subgraph": "storefronts",
               "type": "Storefront",
               "variables": {
                 "id": {

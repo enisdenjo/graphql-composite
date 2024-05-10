@@ -22,7 +22,7 @@ export interface SchemaPlanOperation {
 export interface SchemaPlanOperationField {
   name: string;
   resolvers: {
-    [source in SchemaPlanSource['source']]: SchemaPlanSource &
+    [name in SchemaPlanSubgraph['name']]: SchemaPlanSubgraph &
       SchemaPlanResolver; // TODO: operation field must always have a resolver?
   };
 }
@@ -30,8 +30,8 @@ export interface SchemaPlanOperationField {
 export interface SchemaPlanCompositeType {
   name: string;
   resolvers: {
-    [source in SchemaPlanSource['source']]: SchemaPlanSource &
-      SchemaPlanCompositeResolver; // TODO: type can only have one resolver at source?
+    [name in SchemaPlanSubgraph['name']]: SchemaPlanSubgraph &
+      SchemaPlanCompositeResolver; // TODO: type can only have one resolver at subgraph?
   };
   fields: {
     [name in SchemaPlanCompositeTypeField['name']]: SchemaPlanCompositeTypeField;
@@ -40,16 +40,16 @@ export interface SchemaPlanCompositeType {
 
 export interface SchemaPlanCompositeTypeField {
   name: string;
-  sources: {
-    [source in SchemaPlanSource['source']]:
-      | (SchemaPlanSource & SchemaPlanResolver)
-      | SchemaPlanSource; // a type field may not have a resolver, assuming it's in available in the type
+  subgraphs: {
+    [subgraph in SchemaPlanSubgraph['subgraph']]:
+      | (SchemaPlanSubgraph & SchemaPlanResolver)
+      | SchemaPlanSubgraph; // a type field may not have a resolver, assuming it's in available in the type
   };
 }
 
-export interface SchemaPlanSource {
-  /** Unique identifier of the source. Usually the subgraph name. */
-  source: string;
+export interface SchemaPlanSubgraph {
+  /** Unique identifier of the subgraph source. Usually the name. */
+  name: string;
 }
 
 export type SchemaPlanResolver =
@@ -73,7 +73,7 @@ export interface SchemaPlanCompositeResolver {
    */
   ofType: string;
   /**
-   * Operation to execute on the source. The operation **must** include
+   * Operation to execute on the subgraph. The operation **must** include
    * a spread of the `__export` fragment which will have the fields populated
    * during the gather phase.
    *
@@ -110,7 +110,7 @@ export interface SchemaPlanScalarResolver {
    */
   ofType: string;
   /**
-   * Operation to execute on the source. The operation's deepest
+   * Operation to execute on the subgraph. The operation's deepest
    * field is where the scalar is located.
    *
    * A well-formatted operation looks like this:

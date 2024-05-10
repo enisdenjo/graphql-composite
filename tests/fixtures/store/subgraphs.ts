@@ -1,4 +1,7 @@
-import { createSource, FixtureSources } from '../../utils.js';
+import {
+  createSource,
+  FixtureSources as FixtureSubgraphs,
+} from '../../utils.js';
 
 interface Manufacturer {
   id: string;
@@ -78,7 +81,7 @@ const storefronts: Storefront[] = [
   },
 ];
 
-export const sources: FixtureSources = {
+export const subgraphs: FixtureSubgraphs = {
   storefronts: createSource({
     typeDefs: /* GraphQL */ `
       type Query {

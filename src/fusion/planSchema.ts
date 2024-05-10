@@ -17,7 +17,6 @@ import {
   SchemaPlanOperationField,
   SchemaPlanResolver,
   SchemaPlanResolverVariable,
-  SchemaPlanSource,
 } from '../schemaPlan.js';
 
 export function planSchema(schema: GraphQLSchema): SchemaPlan {
@@ -55,19 +54,19 @@ export function planSchema(schema: GraphQLSchema): SchemaPlan {
           name,
           resolvers: {},
         };
-        for (const source of getSourcesFromDirectives(type, field)) {
-          const resolver = getResolverForSourceFromDirectives(
+        for (const subgraph of getSubgraphsFromDirectives(type, field)) {
+          const resolver = getResolverForSubgraphFromDirectives(
             type,
             field,
-            source,
+            subgraph,
           );
           if (!resolver) {
             throw new Error(
               `Operation field "${field.name}" must have a resolver`,
             );
           }
-          fieldPlan.resolvers[source.source] = {
-            ...source,
+          fieldPlan.resolvers[subgraph] = {
+            name: subgraph,
             ...resolver,
           };
         }
@@ -83,27 +82,34 @@ export function planSchema(schema: GraphQLSchema): SchemaPlan {
       fields: {},
       resolvers: {},
     };
-    for (const source of getSourcesFromDirectives(type, null)) {
-      const resolver = getResolverForSourceFromDirectives(type, null, source);
+    for (const subgraph of getSubgraphsFromDirectives(type, null)) {
+      const resolver = getResolverForSubgraphFromDirectives(
+        type,
+        null,
+        subgraph,
+      );
       if (resolver.kind === 'scalar') {
         throw new Error(
           `Composite type plan for "${type.name}" cannot have a scalar resolver`,
         );
       }
-      compositeTypePlan.resolvers[source.source] = { ...source, ...resolver };
+      compositeTypePlan.resolvers[subgraph] = {
+        name: subgraph,
+        ...resolver,
+      };
     }
     for (const [name, field] of Object.entries(type.getFields())) {
       const fieldPlan: SchemaPlanCompositeTypeField = {
         name,
-        sources: {},
+        subgraphs: {},
       };
-      for (const source of getSourcesFromDirectives(type, field)) {
-        const resolver = getResolverForSourceFromDirectives(
+      for (const subgraph of getSubgraphsFromDirectives(type, field)) {
+        const resolver = getResolverForSubgraphFromDirectives(
           type,
           field,
-          source,
+          subgraph,
         );
-        fieldPlan.sources[source.source] = { ...source, ...resolver };
+        fieldPlan.subgraphs[subgraph] = { subgraph, ...resolver };
       }
       compositeTypePlan.fields[fieldPlan.name] = fieldPlan;
     }
@@ -114,56 +120,51 @@ export function planSchema(schema: GraphQLSchema): SchemaPlan {
 }
 
 /**
- * Gets the sources of either the `field`, if provided, or the `type`.
+ * Gets the subgraphs of either the `field`, if provided, or the `type`.
  * Both arguments are used to better the error messages.
  */
-function getSourcesFromDirectives(
+function getSubgraphsFromDirectives(
   type: GraphQLObjectType,
   field: GraphQLField<unknown, unknown, unknown> | null,
-): SchemaPlanSource[] {
+): string[] {
   const fieldOrType = field || type;
-  const sources: SchemaPlanSource[] = [];
+  const subgraphs: string[] = [];
   for (const sourceDirective of fieldOrType.astNode?.directives?.filter(
     (d) => d.name.value === 'source',
   ) || []) {
-    // TODO: make sure source doesnt already exist
-    sources.push({
-      source: mustGetStringArgumentValue(
-        type,
-        field,
-        sourceDirective,
-        'subgraph',
-      ),
-    });
+    // TODO: make sure subgraph doesnt already exist
+    subgraphs.push(
+      mustGetStringArgumentValue(type, field, sourceDirective, 'subgraph'),
+    );
   }
-  return sources;
+  return subgraphs;
 }
 
 /**
- * Gets the resolver of the source in either the `field`, if provided, or the `type`.
+ * Gets the resolver of the subgraph in either the `field`, if provided, or the `type`.
  * Both arguments are used to better the error messages.
  */
-function getResolverForSourceFromDirectives(
+function getResolverForSubgraphFromDirectives(
   type: GraphQLObjectType,
   field: null,
-  source: SchemaPlanSource,
+  subgraph: string,
 ): SchemaPlanResolver;
-function getResolverForSourceFromDirectives(
+function getResolverForSubgraphFromDirectives(
   type: GraphQLObjectType,
   field: GraphQLField<unknown, unknown, unknown>,
-  source: SchemaPlanSource,
+  subgraph: string,
 ): SchemaPlanResolver | null;
-function getResolverForSourceFromDirectives(
+function getResolverForSubgraphFromDirectives(
   type: GraphQLObjectType,
   field: GraphQLField<unknown, unknown, unknown> | null,
-  source: SchemaPlanSource,
+  subgraph: string,
 ): SchemaPlanResolver | null {
   const fieldOrType = field || type;
   const directives = fieldOrType.astNode?.directives || [];
   const resolverDirs = directives.filter(
     (d) =>
       d.name.value === 'resolver' &&
-      mustGetStringArgumentValue(type, field, d, 'subgraph') === source.source,
+      mustGetStringArgumentValue(type, field, d, 'subgraph') === subgraph,
   );
   const resolverDir = resolverDirs[0];
   if (!resolverDir) {
@@ -172,12 +173,12 @@ function getResolverForSourceFromDirectives(
       return null;
     }
     throw new Error(
-      `source "${source.source}" on type "${type.name}" has no resolver directive`,
+      `Subgraph "${subgraph}" on type "${type.name}" has no resolver directive`,
     );
   }
   if (resolverDirs.length > 1) {
     throw new Error(
-      `source "${source.source}" on type "${type.name}" has multiple resolver directives`,
+      `Subgraph "${subgraph}" on type "${type.name}" has multiple resolver directives`,
     );
   }
 
@@ -185,13 +186,13 @@ function getResolverForSourceFromDirectives(
   for (const variableDir of directives.filter(
     (d) => d.name.value === 'variable',
   )) {
-    const subgraph = getStringArgumentValue(
+    const subgraphArg = getStringArgumentValue(
       type,
       field,
       variableDir,
       'subgraph',
     );
-    if (!subgraph) {
+    if (!subgraphArg) {
       const variable: SchemaPlanResolverVariable = {
         kind: 'user',
         name: mustGetStringArgumentValue(type, field, variableDir, 'name'),
@@ -203,7 +204,7 @@ function getResolverForSourceFromDirectives(
       }
       variables[variable.name] = variable;
     }
-    if (subgraph !== source.source) {
+    if (subgraphArg !== subgraph) {
       continue;
     }
     const variable: SchemaPlanResolverVariable = {

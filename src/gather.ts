@@ -20,7 +20,7 @@ import {
   SchemaPlan,
   SchemaPlanCompositeResolver,
   SchemaPlanScalarResolver,
-  SchemaPlanSource,
+  SchemaPlanSubgraph,
 } from './schemaPlan.js';
 import { flattenFragments } from './utils.js';
 
@@ -42,7 +42,7 @@ export type GatherPlanResolver =
   | GatherPlanScalarResolver;
 
 export interface GatherPlanCompositeResolver
-  extends SchemaPlanSource,
+  extends SchemaPlanSubgraph,
     SchemaPlanCompositeResolver {
   /**
    * The field in user's operation this resolver resolves
@@ -76,7 +76,7 @@ export interface GatherPlanCompositeResolver
 }
 
 export interface GatherPlanScalarResolver
-  extends SchemaPlanSource,
+  extends SchemaPlanSubgraph,
     SchemaPlanScalarResolver {
   /**
    * The field in user's operation this resolver resolves
@@ -348,13 +348,13 @@ function insertResolversForGatherPlanCompositeField(
       );
     }
 
-    let resolver = fieldPlan.sources[parentResolver.source]
+    let resolver = fieldPlan.subgraphs[parentResolver.name]
       ? parentResolver
       : Object.values(parentResolver.includes).find(
-          (r) => fieldPlan.sources[r.source],
+          (r) => fieldPlan.subgraphs[r.name],
         );
     if (!resolver) {
-      // this field cannot be resolved from the parent's source
+      // this field cannot be resolved from the parent's subgraph
       // add an dependant resolver to the parent for the field(s)
 
       const typePlan = schemaPlan.compositeTypes[parent.ofType];
@@ -365,11 +365,11 @@ function insertResolversForGatherPlanCompositeField(
       }
 
       const resolverPlan = Object.values(typePlan.resolvers).find(
-        (r) => fieldPlan.sources[r.source],
+        (r) => fieldPlan.subgraphs[r.name],
       );
       if (!resolverPlan) {
         throw new Error(
-          `Schema plan composite type "${typePlan.name}" doesn't have a resolver for any of the "${fieldPlan.name}" field sources`,
+          `Schema plan composite type "${typePlan.name}" doesn't have a resolver for any of the "${fieldPlan.name}" field subgraphs`,
         );
       }
       if (!Object.keys(resolverPlan.variables).length) {
@@ -394,7 +394,7 @@ function insertResolversForGatherPlanCompositeField(
         const parentExport = parentResolver.public.find((e) => e === path);
         if (!parentExport) {
           // TODO: disallow pushing same path multiple times
-          // TODO: what happens if the parent source cannot resolve this field?
+          // TODO: what happens if the parent cannot resolve this field?
 
           // TODO: if the parent cant resolve, insert here the necessary field resolver
           //       add this resolver to its includes

@@ -101,15 +101,10 @@ export function planSchema(schema: GraphQLSchema): SchemaPlan {
     for (const [name, field] of Object.entries(type.getFields())) {
       const fieldPlan: SchemaPlanCompositeTypeField = {
         name,
-        subgraphs: {},
+        subgraphs: [],
       };
       for (const subgraph of getSubgraphsFromDirectives(type, field)) {
-        const resolver = getResolverForSubgraphFromDirectives(
-          type,
-          field,
-          subgraph,
-        );
-        fieldPlan.subgraphs[subgraph] = { subgraph, ...resolver };
+        fieldPlan.subgraphs.push(subgraph);
       }
       compositeTypePlan.fields[fieldPlan.name] = fieldPlan;
     }

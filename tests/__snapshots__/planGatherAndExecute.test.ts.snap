@@ -2551,30 +2551,22 @@ exports[`fixture 'store' > should plan schema 1`] = `
       "fields": {
         "id": {
           "name": "id",
-          "subgraphs": {
-            "manufacturers": {
-              "subgraph": "manufacturers",
-            },
-            "products": {
-              "subgraph": "products",
-            },
-          },
+          "subgraphs": [
+            "manufacturers",
+            "products",
+          ],
         },
         "name": {
           "name": "name",
-          "subgraphs": {
-            "manufacturers": {
-              "subgraph": "manufacturers",
-            },
-          },
+          "subgraphs": [
+            "manufacturers",
+          ],
         },
         "products": {
           "name": "products",
-          "subgraphs": {
-            "products": {
-              "subgraph": "products",
-            },
-          },
+          "subgraphs": [
+            "products",
+          ],
         },
       },
       "name": "Manufacturer",
@@ -2613,38 +2605,28 @@ exports[`fixture 'store' > should plan schema 1`] = `
       "fields": {
         "manufacturer": {
           "name": "manufacturer",
-          "subgraphs": {
-            "products": {
-              "subgraph": "products",
-            },
-          },
+          "subgraphs": [
+            "products",
+          ],
         },
         "name": {
           "name": "name",
-          "subgraphs": {
-            "products": {
-              "subgraph": "products",
-            },
-          },
+          "subgraphs": [
+            "products",
+          ],
         },
         "price": {
           "name": "price",
-          "subgraphs": {
-            "products": {
-              "subgraph": "products",
-            },
-          },
+          "subgraphs": [
+            "products",
+          ],
         },
         "upc": {
           "name": "upc",
-          "subgraphs": {
-            "products": {
-              "subgraph": "products",
-            },
-            "storefronts": {
-              "subgraph": "storefronts",
-            },
-          },
+          "subgraphs": [
+            "products",
+            "storefronts",
+          ],
         },
       },
       "name": "Product",
@@ -2683,35 +2665,27 @@ exports[`fixture 'store' > should plan schema 1`] = `
       "fields": {
         "id": {
           "name": "id",
-          "subgraphs": {
-            "storefronts": {
-              "subgraph": "storefronts",
-            },
-          },
+          "subgraphs": [
+            "storefronts",
+          ],
         },
         "name": {
           "name": "name",
-          "subgraphs": {
-            "storefronts": {
-              "subgraph": "storefronts",
-            },
-          },
+          "subgraphs": [
+            "storefronts",
+          ],
         },
         "productNames": {
           "name": "productNames",
-          "subgraphs": {
-            "storefronts": {
-              "subgraph": "storefronts",
-            },
-          },
+          "subgraphs": [
+            "storefronts",
+          ],
         },
         "products": {
           "name": "products",
-          "subgraphs": {
-            "storefronts": {
-              "subgraph": "storefronts",
-            },
-          },
+          "subgraphs": [
+            "storefronts",
+          ],
         },
       },
       "name": "Storefront",

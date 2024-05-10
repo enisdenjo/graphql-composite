@@ -40,11 +40,7 @@ export interface SchemaPlanCompositeType {
 
 export interface SchemaPlanCompositeTypeField {
   name: string;
-  subgraphs: {
-    [subgraph in SchemaPlanSubgraph['subgraph']]:
-      | (SchemaPlanSubgraph & SchemaPlanResolver)
-      | SchemaPlanSubgraph; // a type field may not have a resolver, assuming it's in available in the type
-  };
+  subgraphs: string[];
 }
 
 export interface SchemaPlanSubgraph {

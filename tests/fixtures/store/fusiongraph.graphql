@@ -3,8 +3,8 @@ schema {
 }
 
 type Manufacturer
-  @source(subgraph: "manufacturers", name: "Manufacturer")
-  @source(subgraph: "products", name: "Manufacturer")
+  @source(subgraph: "manufacturers")
+  @source(subgraph: "products")
   @resolver(
     subgraph: "manufacturers"
     operation: """
@@ -21,11 +21,9 @@ type Manufacturer
   )
   @variable(subgraph: "manufacturers", name: "Manufacturer_id", select: "id")
   @variable(subgraph: "products", name: "Manufacturer_id", select: "id") {
-  id: ID!
-    @source(subgraph: "manufacturers", name: "id")
-    @source(subgraph: "products", name: "id")
-  name: String! @source(subgraph: "manufacturers", name: "name")
-  products: [Product]! @source(subgraph: "products", name: "products")
+  id: ID! @source(subgraph: "manufacturers") @source(subgraph: "products")
+  name: String! @source(subgraph: "manufacturers")
+  products: [Product]! @source(subgraph: "products")
 }
 
 type Query {
@@ -34,42 +32,42 @@ type Query {
       subgraph: "manufacturers"
       operation: "query manufacturer($id: ID!) { manufacturer(id: $id) { ...__export } }"
     )
-    @source(subgraph: "manufacturers", name: "manufacturer")
+    @source(subgraph: "manufacturers")
   manufacturerName(id: ID!): String
     @resolver(
       subgraph: "manufacturers"
       operation: "query manufacturerName($id: ID!) { manufacturerName(id: $id) }"
     )
-    @source(subgraph: "manufacturers", name: "manufacturerName")
+    @source(subgraph: "manufacturers")
   product(upc: ID!): Product
     @resolver(
       subgraph: "products"
       operation: "query product($upc: ID!) { product(upc: $upc) { ...__export } }"
     )
-    @source(subgraph: "products", name: "product")
+    @source(subgraph: "products")
   productsByUpcs(upcs: [ID!]!): [Product]!
     @resolver(
       subgraph: "products"
       operation: "query productsByUpcs($upcs: [ID!]!) { productsByUpcs(upcs: $upcs) { ...__export } }"
     )
-    @source(subgraph: "products", name: "productsByUpcs")
+    @source(subgraph: "products")
   productName(upc: ID!): String
     @resolver(
       subgraph: "products"
       operation: "query productName($upc: ID!) { product(upc: $upc) { name } }"
     )
-    @source(subgraph: "products", name: "productName")
+    @source(subgraph: "products")
   storefront(id: ID!): Storefront
     @resolver(
       subgraph: "storefronts"
       operation: "query storefront($id: ID!) { storefront(id: $id) { ...__export } }"
     )
-    @source(subgraph: "storefronts", name: "storefront")
+    @source(subgraph: "storefronts")
 }
 
 type Product
-  @source(subgraph: "products", name: "Product")
-  @source(subgraph: "storefronts", name: "Product")
+  @source(subgraph: "products")
+  @source(subgraph: "storefronts")
   @resolver(
     subgraph: "products"
     operation: """
@@ -86,16 +84,14 @@ type Product
   )
   @variable(subgraph: "products", name: "Product_upc", select: "upc")
   @variable(subgraph: "storefronts", name: "Product_upc", select: "upc") {
-  manufacturer: Manufacturer @source(subgraph: "products", name: "manufacturer")
-  name: String! @source(subgraph: "products", name: "name")
-  price: Float! @source(subgraph: "products", name: "price")
-  upc: ID!
-    @source(subgraph: "products", name: "upc")
-    @source(subgraph: "storefronts", name: "upc")
+  manufacturer: Manufacturer @source(subgraph: "products")
+  name: String! @source(subgraph: "products")
+  price: Float! @source(subgraph: "products")
+  upc: ID! @source(subgraph: "products") @source(subgraph: "storefronts")
 }
 
 type Storefront
-  @source(subgraph: "storefronts", name: "Storefront")
+  @source(subgraph: "storefronts")
   @resolver(
     subgraph: "storefronts"
     operation: """
@@ -104,7 +100,7 @@ type Storefront
     kind: "FETCH"
   )
   @variable(subgraph: "storefronts", name: "Storefront_id", select: "id") {
-  id: ID! @source(subgraph: "storefronts", name: "id")
-  name: String! @source(subgraph: "storefronts", name: "name")
-  products: [Product]! @source(subgraph: "storefronts", name: "products")
+  id: ID! @source(subgraph: "storefronts")
+  name: String! @source(subgraph: "storefronts")
+  products: [Product]! @source(subgraph: "storefronts")
 }

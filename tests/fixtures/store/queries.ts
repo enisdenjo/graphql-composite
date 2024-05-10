@@ -124,9 +124,7 @@ export const queries: FixtureQueries = [
         }
       }
     `),
-    variables: {
-      id: 'apple-store',
-    },
+    variables: {},
   },
   {
     name: 'ScalarListInType',

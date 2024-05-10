@@ -850,7 +850,6 @@ fragment __export on Product {
         "source": "products",
         "type": "[Product]!",
         "variables": {
-          "id": "apple-store",
           "upcs": [
             "galaxy",
             "iphone",

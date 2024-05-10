@@ -126,19 +126,24 @@ export interface SchemaPlanScalarResolver {
 }
 
 export type SchemaPlanResolverVariable =
-  | SchemaPlanResolverSelectVariable
-  | SchemaPlanResolverConstantVariable;
+  | SchemaPlanResolverUserVariable
+  | SchemaPlanResolverSelectVariable;
 
+/**
+ * Variable that must be provided by the user with the name as the key.
+ * Either inline or an operation variable.
+ */
+export interface SchemaPlanResolverUserVariable {
+  kind: 'user';
+  /** Name of the variable to use in the resolver's operation. */
+  name: string;
+}
+
+/** Variable that is selected from the resolving type. */
 export interface SchemaPlanResolverSelectVariable {
-  /** Name of the variable to use in the related operation. */
+  kind: 'select';
+  /** Name of the variable to use in the resolver's operation. */
   name: string;
   /** Which field in the type to use (select) as this variable. */
   select: string;
-}
-
-export interface SchemaPlanResolverConstantVariable {
-  /** Name of the variable to use in the related operation. */
-  name: string;
-  /** The hard-coded (constant) value to use as this variable. */
-  constant: unknown;
 }

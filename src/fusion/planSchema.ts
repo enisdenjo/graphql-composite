@@ -183,11 +183,31 @@ function getResolverForSourceFromDirectives(
 
   const variables: Record<string, SchemaPlanResolverVariable> = {};
   for (const variableDir of directives.filter(
-    (d) =>
-      d.name.value === 'variable' &&
-      mustGetStringArgumentValue(type, field, d, 'subgraph') === source.source,
+    (d) => d.name.value === 'variable',
   )) {
+    const subgraph = getStringArgumentValue(
+      type,
+      field,
+      variableDir,
+      'subgraph',
+    );
+    if (!subgraph) {
+      const variable: SchemaPlanResolverVariable = {
+        kind: 'user',
+        name: mustGetStringArgumentValue(type, field, variableDir, 'name'),
+      };
+      if (variables[variable.name]) {
+        throw new Error(
+          `Variable "${variable.name}" on type "${type.name}" already defined`,
+        );
+      }
+      variables[variable.name] = variable;
+    }
+    if (subgraph !== source.source) {
+      continue;
+    }
     const variable: SchemaPlanResolverVariable = {
+      kind: 'select',
       name: mustGetStringArgumentValue(type, field, variableDir, 'name'),
       select: mustGetStringArgumentValue(type, field, variableDir, 'select'),
     };
@@ -223,11 +243,24 @@ function mustGetStringArgumentValue(
   directive: ConstDirectiveNode,
   name: string,
 ): string {
-  const arg = directive.arguments?.find((s) => s.name.value === name)?.value;
-  if (!arg) {
+  const val = getStringArgumentValue(type, field, directive, name);
+  if (!val) {
     throw new Error(
       `directive @${directive.name.value} on type "${type.name}"${field ? ` at field "${field.name}"` : ''} doesnt have an "${name}" argument`,
     );
+  }
+  return val;
+}
+
+function getStringArgumentValue(
+  type: GraphQLObjectType,
+  field: GraphQLField<unknown, unknown, unknown> | null,
+  directive: ConstDirectiveNode,
+  name: string,
+): string | null {
+  const arg = directive.arguments?.find((s) => s.name.value === name)?.value;
+  if (!arg) {
+    return null;
   }
   if (arg.kind !== Kind.STRING) {
     throw new Error(

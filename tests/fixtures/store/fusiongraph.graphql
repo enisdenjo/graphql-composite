@@ -32,30 +32,35 @@ type Query {
       subgraph: "manufacturers"
       operation: "query manufacturer($id: ID!) { manufacturer(id: $id) { ...__export } }"
     )
+    @variable(name: "id")
     @source(subgraph: "manufacturers")
   manufacturerName(id: ID!): String
     @resolver(
       subgraph: "manufacturers"
       operation: "query manufacturerName($id: ID!) { manufacturerName(id: $id) }"
     )
+    @variable(name: "id")
     @source(subgraph: "manufacturers")
   product(upc: ID!): Product
     @resolver(
       subgraph: "products"
       operation: "query product($upc: ID!) { product(upc: $upc) { ...__export } }"
     )
+    @variable(name: "upc")
     @source(subgraph: "products")
   productsByUpcs(upcs: [ID!]!): [Product]!
     @resolver(
       subgraph: "products"
       operation: "query productsByUpcs($upcs: [ID!]!) { productsByUpcs(upcs: $upcs) { ...__export } }"
     )
+    @variable(name: "upcs")
     @source(subgraph: "products")
   productName(upc: ID!): String
     @resolver(
       subgraph: "products"
       operation: "query productName($upc: ID!) { product(upc: $upc) { name } }"
     )
+    @variable(name: "upc")
     @source(subgraph: "products")
   productNames: [String!]!
     @resolver(
@@ -68,6 +73,7 @@ type Query {
       subgraph: "storefronts"
       operation: "query storefront($id: ID!) { storefront(id: $id) { ...__export } }"
     )
+    @variable(name: "id")
     @source(subgraph: "storefronts")
 }
 

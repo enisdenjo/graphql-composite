@@ -81,24 +81,21 @@ async function executeResolver(
     throw new Error(`Transport for source "${resolver.source}" not found`);
   }
 
-  const variables = {
-    ...(!parentExportData
-      ? // this is the operation (root) resolver because there's no parent data
-        operationVariables
-      : // this is a included resolver because the includer's providing data
-        Object.values(resolver.variables).reduce(
-          (agg, variable) => ({
-            ...agg,
-            [variable.name]:
-              'select' in variable
-                ? getAtPath(parentExportData, variable.select)
-                : variable.constant,
-          }),
-          {},
-        )),
-    // TODO: should the inline variables override?
-    ...resolver.field.inlineVariables,
-  };
+  const variables = Object.values(resolver.variables).reduce(
+    (agg, variable) => ({
+      ...agg,
+      [variable.name]:
+        variable.kind === 'select'
+          ? getAtPath(parentExportData, variable.select)
+          : // variable.kind === 'user'
+            {
+              ...operationVariables,
+              // TODO: should the inline variables override?
+              ...resolver.field.inlineVariables,
+            }[variable.name],
+    }),
+    {},
+  );
 
   const result = await transport.get({ query: resolver.operation, variables });
 

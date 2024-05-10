@@ -201,11 +201,12 @@ function getResolverForSourceFromDirectives(
 
   // when resolving a field, then its type is the one being resolved by the resolver
   // otherwise its the type (the resolver is directly on a type in that case)
-  const resolvingType = getNamedType(field ? field.type : type);
+  const ofType = getNamedType(field ? field.type : type);
 
   return {
-    kind: isScalarType(resolvingType) ? 'scalar' : 'composite',
-    type: resolvingType.name,
+    kind: isScalarType(ofType) ? 'scalar' : 'composite',
+    type: String(field ? field.type : type),
+    ofType: ofType.name,
     operation: mustGetStringArgumentValue(
       type,
       field,

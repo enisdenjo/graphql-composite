@@ -97,7 +97,7 @@ async function executeResolver(
           {},
         )),
     // TODO: should the inline variables override?
-    ...resolver.inlineVariables,
+    ...resolver.field.inlineVariables,
   };
 
   const result = await transport.get({ query: resolver.operation, variables });

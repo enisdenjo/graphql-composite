@@ -4,12 +4,8 @@ import {
   DocumentNode,
   FieldNode,
   FragmentDefinitionNode,
-  GraphQLCompositeType,
-  GraphQLEnumType,
-  GraphQLScalarType,
+  getNamedType,
   isCompositeType,
-  isListType,
-  isNonNullType,
   Kind,
   OperationTypeNode,
   parse,
@@ -48,12 +44,15 @@ export type GatherPlanResolver =
 export interface GatherPlanCompositeResolver
   extends SchemaPlanSource,
     SchemaPlanCompositeResolver {
-  /** The inline variables of the field this resolver resolves. */
-  inlineVariables: Record<string, unknown>;
+  /**
+   * The field in user's operation this resolver resolves
+   * at the location of this resolver in the structure.
+   */
+  field: GatherPlanResolverField;
   /** The path to the `__export` fragment in the execution result. */
   pathToExportData: string[];
   /**
-   * Dot notation flat list of field paths to add to the `__export`
+   * Dot-notation flat list of field paths to add to the `__export`
    * fragment on the query that are NOT available in the final result,
    * but only to the included resolvers.
    *
@@ -61,7 +60,7 @@ export interface GatherPlanCompositeResolver
    */
   private: string[];
   /**
-   * Dot notation flat list of field paths to add to the `__export`
+   * Dot-notation flat list of field paths to add to the `__export`
    * fragment on the query that are also available in the final result.
    */
   public: string[];
@@ -79,12 +78,43 @@ export interface GatherPlanCompositeResolver
 export interface GatherPlanScalarResolver
   extends SchemaPlanSource,
     SchemaPlanScalarResolver {
-  /** The inline variables of the field this resolver resolves. */
-  inlineVariables: Record<string, unknown>;
+  /**
+   * The field in user's operation this resolver resolves
+   * at the location of this resolver in the structure.
+   */
+  field: GatherPlanResolverField;
   /**
    * The path to the scalar in the execution result.
    */
   pathToExportData: string[];
+}
+
+export interface GatherPlanResolverField {
+  kind: 'scalar' | 'composite';
+  /** Dot-notation path to the field in user's operation. */
+  path: string;
+  /**
+   * The name of the field in user's operation.
+   * It matches the last part of {@link path field's path}.
+   */
+  name: string;
+  /** The type this field resolves. */
+  type: string;
+  /**
+   * Concrete/unwrapped type of the {@link type field type}.
+   *
+   * For example, it's `Product` if the {@link type field type} is:
+   *   - `Product`
+   *   - `Product!`
+   *   - `[Product]!`
+   *   - `[Product!]`
+   *   - `[Product!]!`
+   *
+   * *_Same example applies for scalar {@link type field type}._
+   */
+  ofType: string;
+  /** The inline variables of the field. */
+  inlineVariables: Record<string, unknown>;
 }
 
 export function planGather(
@@ -96,8 +126,8 @@ export function planGather(
     operations: [],
   };
 
-  const fields: GatherPlanField[] = [];
-  let depth = 0;
+  const fields: Field[] = [];
+  const entries: string[] = [];
   const typeInfo = new TypeInfo(buildSchema(schemaPlan.schema));
   let currOperation: GatherPlanOperation;
   visit(
@@ -115,6 +145,8 @@ export function planGather(
       },
       Field: {
         enter(node) {
+          entries.push(node.name.value);
+
           const fieldDef = typeInfo.getFieldDef();
           if (!fieldDef) {
             throw new Error(`No field definition found for ${node.name.value}`);
@@ -125,22 +157,11 @@ export function planGather(
             throw new Error(`No parent type found for node ${node.name.value}`);
           }
 
-          let type = typeInfo.getType();
-          let isNonNull = false;
-          type = isNonNullType(type) ? ((isNonNull = true), type.ofType) : type;
-          let isList = false;
-          type = isListType(type) ? ((isList = true), type.ofType) : type;
-          let isListItemNonNull = false;
-          type = isNonNullType(type)
-            ? ((isListItemNonNull = true), type.ofType)
-            : type;
-          if (!type) {
-            throw new Error(`No type found for node ${node.name.value}`);
+          const type = typeInfo.getType();
+          const ofType = getNamedType(type);
+          if (!ofType) {
+            throw new Error(`No named type found for node ${node.name.value}`);
           }
-          type = type as
-            | GraphQLScalarType
-            | GraphQLCompositeType
-            | GraphQLEnumType;
 
           const inlineVariables: Record<string, unknown> = {};
           for (const arg of node.arguments || []) {
@@ -157,31 +178,29 @@ export function planGather(
             );
           }
 
-          if (isCompositeType(type)) {
-            insertFieldAtDepth(fields, depth, {
+          if (isCompositeType(ofType)) {
+            insertFieldAtDepth(fields, entries.length - 1, {
               kind: 'composite',
+              path: entries.join('.'),
               name: node.name.value,
-              type: type.name,
+              type: String(type),
+              ofType: ofType.name,
               inlineVariables,
-              isNonNull,
-              isList,
-              isListItemNonNull,
               fields: [],
             });
           } else {
-            insertFieldAtDepth(fields, depth, {
+            insertFieldAtDepth(fields, entries.length - 1, {
               kind: 'scalar',
+              path: entries.join('.'),
               name: node.name.value,
-              type: type.name,
+              type: String(type),
+              ofType: ofType.name,
               inlineVariables,
-              isNonNull,
             });
           }
-
-          depth++;
         },
         leave() {
-          depth--;
+          entries.pop();
         },
       },
     }),
@@ -198,34 +217,30 @@ export function planGather(
   return gatherPlan;
 }
 
-type GatherPlanField = GatherPlanCompositeField | GatherPlanScalarField;
+type Field = FieldComposite | FieldScalar;
 
-interface GatherPlanCompositeField {
+interface FieldComposite extends GatherPlanResolverField {
   kind: 'composite';
-  name: string;
-  type: string;
-  /** The inline variables of the field this resolver resolves. */
-  inlineVariables: Record<string, unknown>;
-  isNonNull: boolean; // TODO: how to use? validating gather results?
-  isList: boolean; // TODO: how to use? validating gather results?
-  isListItemNonNull: boolean; // TODO: how to use? validating gather results?
-  fields: GatherPlanField[];
+  fields: Field[];
 }
 
-interface GatherPlanScalarField {
+interface FieldScalar extends GatherPlanResolverField {
   kind: 'scalar';
-  name: string;
-  type: string;
-  /** The inline variables of the field this resolver resolves. */
-  inlineVariables: Record<string, unknown>;
-  isNonNull: boolean; // TODO: how to use? validating gather results?
 }
 
-function insertFieldAtDepth(
-  fields: GatherPlanField[],
-  depth: number,
-  field: GatherPlanField,
-) {
+function fieldToResolverField(field: Field): GatherPlanResolverField {
+  return {
+    // we write out the props to avoid any extra ones (like the `fields` property)
+    kind: field.kind,
+    path: field.path,
+    name: field.name,
+    type: field.type,
+    ofType: field.ofType,
+    inlineVariables: field.inlineVariables,
+  };
+}
+
+function insertFieldAtDepth(fields: Field[], depth: number, field: Field) {
   let curr = { fields };
   for (let i = 0; i < depth; i++) {
     // increase depth by going into the last field of the current field
@@ -243,7 +258,7 @@ function insertFieldAtDepth(
 function planGatherResolversForOperationFields(
   schemaPlan: SchemaPlan,
   operation: GatherPlanOperation,
-  fields: GatherPlanField[],
+  fields: Field[],
 ): Record<string, GatherPlanResolver> {
   const operationPlan = schemaPlan.operations[operation.type];
   if (!operationPlan) {
@@ -276,12 +291,12 @@ function planGatherResolversForOperationFields(
       operationFieldResolver.kind === 'scalar'
         ? ({
             ...operationFieldResolver,
-            inlineVariables: operationField.inlineVariables,
+            field: fieldToResolverField(operationField),
             pathToExportData: [],
           } satisfies GatherPlanScalarResolver)
         : ({
             ...operationFieldResolver,
-            inlineVariables: operationField.inlineVariables,
+            field: fieldToResolverField(operationField),
             pathToExportData: [],
             private: [],
             public: [],
@@ -304,7 +319,7 @@ function planGatherResolversForOperationFields(
     resolvers[operationField.name] = resolver;
   }
 
-  // we build resolvers operations only after gather
+  // we build resolvers operations only after gather.
   // this way we ensure that all fields are available
   // in both the private and public lists
   buildAndInsertOperationsInResolvers(Object.values(resolvers));
@@ -314,15 +329,15 @@ function planGatherResolversForOperationFields(
 
 function insertResolversForGatherPlanCompositeField(
   schemaPlan: SchemaPlan,
-  parent: GatherPlanCompositeField,
+  parent: FieldComposite,
   parentResolver: GatherPlanCompositeResolver,
   pathPrefix: string,
 ) {
   for (const field of parent.fields) {
-    const typePlan = schemaPlan.compositeTypes[parent.type];
+    const typePlan = schemaPlan.compositeTypes[parent.ofType];
     if (!typePlan) {
       throw new Error(
-        `Schema plan doesn't have the "${parent.type}" composite type`,
+        `Schema plan doesn't have the "${parent.ofType}" composite type`,
       );
     }
 
@@ -342,10 +357,10 @@ function insertResolversForGatherPlanCompositeField(
       // this field cannot be resolved from the parent's source
       // add an dependant resolver to the parent for the field(s)
 
-      const typePlan = schemaPlan.compositeTypes[parent.type];
+      const typePlan = schemaPlan.compositeTypes[parent.ofType];
       if (!typePlan) {
         throw new Error(
-          `Schema plan doesn't have the "${parent.type}" composite type`,
+          `Schema plan doesn't have the "${parent.ofType}" composite type`,
         );
       }
 
@@ -389,7 +404,7 @@ function insertResolversForGatherPlanCompositeField(
 
       resolver = {
         ...resolverPlan,
-        inlineVariables: field.inlineVariables,
+        field: fieldToResolverField(field),
         pathToExportData: [],
         private: [],
         public: [],
@@ -399,7 +414,7 @@ function insertResolversForGatherPlanCompositeField(
       parentResolver.includes[`${pathPrefix}${parent.name}`] = resolver;
     }
 
-    const resolvingParentType = resolver.type === parent.type;
+    const resolvingParentType = resolver.ofType === parent.ofType;
 
     const path = `${pathPrefix}${
       resolvingParentType
@@ -439,7 +454,7 @@ export function buildAndInsertOperationsInResolvers(
   for (const resolver of resolvers) {
     const { operation, pathToExportData } = buildResolverOperation(
       resolver.operation,
-      resolver.type,
+      resolver.ofType,
       resolver.kind === 'scalar'
         ? []
         : [...resolver.public, ...resolver.private],
@@ -455,6 +470,7 @@ export function buildAndInsertOperationsInResolvers(
 export function buildResolverOperation(
   operation: string,
   type: string,
+  /** List of dot-notation paths of fields for the resolving type. */
   fields: string[],
 ): { operation: string; pathToExportData: string[] } {
   const doc = parse(operation);

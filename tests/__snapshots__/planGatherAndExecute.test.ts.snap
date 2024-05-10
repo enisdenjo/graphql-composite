@@ -39,6 +39,16 @@ exports[`fixture 'store' > query 'BasicWithFragmentDefinition' > should execute 
             ],
           },
         },
+        "field": {
+          "inlineVariables": {
+            "id": "apple-store",
+          },
+          "kind": "composite",
+          "name": "storefront",
+          "ofType": "Storefront",
+          "path": "storefront",
+          "type": "Storefront",
+        },
         "includes": [
           {
             "data": {
@@ -48,9 +58,17 @@ exports[`fixture 'store' > query 'BasicWithFragmentDefinition' > should execute 
                 },
               },
             },
+            "field": {
+              "inlineVariables": {},
+              "kind": "composite",
+              "name": "manufacturer",
+              "ofType": "Manufacturer",
+              "path": "storefront.products.manufacturer",
+              "type": "Manufacturer",
+            },
             "includes": [],
-            "inlineVariables": {},
             "kind": "composite",
+            "ofType": "Product",
             "operation": "query ProductByUpc($Product_upc: ID!) {
   product(upc: $Product_upc) {
     ...__export
@@ -88,9 +106,17 @@ fragment __export on Product {
                 },
               },
             },
+            "field": {
+              "inlineVariables": {},
+              "kind": "composite",
+              "name": "manufacturer",
+              "ofType": "Manufacturer",
+              "path": "storefront.products.manufacturer",
+              "type": "Manufacturer",
+            },
             "includes": [],
-            "inlineVariables": {},
             "kind": "composite",
+            "ofType": "Product",
             "operation": "query ProductByUpc($Product_upc: ID!) {
   product(upc: $Product_upc) {
     ...__export
@@ -121,10 +147,8 @@ fragment __export on Product {
             },
           },
         ],
-        "inlineVariables": {
-          "id": "apple-store",
-        },
         "kind": "composite",
+        "ofType": "Storefront",
         "operation": "query storefront($id: ID!) {
   storefront(id: $id) {
     ...__export
@@ -168,11 +192,29 @@ exports[`fixture 'store' > query 'BasicWithFragmentDefinition' > should plan gat
       "name": "BasicWithFragmentDefinition",
       "resolvers": {
         "storefront": {
+          "field": {
+            "inlineVariables": {
+              "id": "apple-store",
+            },
+            "kind": "composite",
+            "name": "storefront",
+            "ofType": "Storefront",
+            "path": "storefront",
+            "type": "Storefront",
+          },
           "includes": {
             "products": {
+              "field": {
+                "inlineVariables": {},
+                "kind": "composite",
+                "name": "manufacturer",
+                "ofType": "Manufacturer",
+                "path": "storefront.products.manufacturer",
+                "type": "Manufacturer",
+              },
               "includes": {},
-              "inlineVariables": {},
               "kind": "composite",
+              "ofType": "Product",
               "operation": "query ProductByUpc($Product_upc: ID!) {
   product(upc: $Product_upc) {
     ...__export
@@ -201,10 +243,8 @@ fragment __export on Product {
               },
             },
           },
-          "inlineVariables": {
-            "id": "apple-store",
-          },
           "kind": "composite",
+          "ofType": "Storefront",
           "operation": "query storefront($id: ID!) {
   storefront(id: $id) {
     ...__export
@@ -296,6 +336,16 @@ exports[`fixture 'store' > query 'BasicWithInlineFragment' > should execute 1`] 
             ],
           },
         },
+        "field": {
+          "inlineVariables": {
+            "id": "samsung-store",
+          },
+          "kind": "composite",
+          "name": "storefront",
+          "ofType": "Storefront",
+          "path": "storefront",
+          "type": "Storefront",
+        },
         "includes": [
           {
             "data": {
@@ -303,9 +353,17 @@ exports[`fixture 'store' > query 'BasicWithInlineFragment' > should execute 1`] 
                 "name": "Samsung TV",
               },
             },
+            "field": {
+              "inlineVariables": {},
+              "kind": "scalar",
+              "name": "name",
+              "ofType": "String",
+              "path": "storefront.products.name",
+              "type": "String!",
+            },
             "includes": [],
-            "inlineVariables": {},
             "kind": "composite",
+            "ofType": "Product",
             "operation": "query ProductByUpc($Product_upc: ID!) {
   product(upc: $Product_upc) {
     ...__export
@@ -339,9 +397,17 @@ fragment __export on Product {
                 "name": "Samsung Fold",
               },
             },
+            "field": {
+              "inlineVariables": {},
+              "kind": "scalar",
+              "name": "name",
+              "ofType": "String",
+              "path": "storefront.products.name",
+              "type": "String!",
+            },
             "includes": [],
-            "inlineVariables": {},
             "kind": "composite",
+            "ofType": "Product",
             "operation": "query ProductByUpc($Product_upc: ID!) {
   product(upc: $Product_upc) {
     ...__export
@@ -375,9 +441,17 @@ fragment __export on Product {
                 "name": "Samsung Galaxy",
               },
             },
+            "field": {
+              "inlineVariables": {},
+              "kind": "scalar",
+              "name": "name",
+              "ofType": "String",
+              "path": "storefront.products.name",
+              "type": "String!",
+            },
             "includes": [],
-            "inlineVariables": {},
             "kind": "composite",
+            "ofType": "Product",
             "operation": "query ProductByUpc($Product_upc: ID!) {
   product(upc: $Product_upc) {
     ...__export
@@ -406,10 +480,8 @@ fragment __export on Product {
             },
           },
         ],
-        "inlineVariables": {
-          "id": "samsung-store",
-        },
         "kind": "composite",
+        "ofType": "Storefront",
         "operation": "query storefront($id: ID!) {
   storefront(id: $id) {
     ...__export
@@ -453,11 +525,29 @@ exports[`fixture 'store' > query 'BasicWithInlineFragment' > should plan gather 
       "name": "NotBasicWithInlineVariables",
       "resolvers": {
         "storefront": {
+          "field": {
+            "inlineVariables": {
+              "id": "samsung-store",
+            },
+            "kind": "composite",
+            "name": "storefront",
+            "ofType": "Storefront",
+            "path": "storefront",
+            "type": "Storefront",
+          },
           "includes": {
             "products": {
+              "field": {
+                "inlineVariables": {},
+                "kind": "scalar",
+                "name": "name",
+                "ofType": "String",
+                "path": "storefront.products.name",
+                "type": "String!",
+              },
               "includes": {},
-              "inlineVariables": {},
               "kind": "composite",
+              "ofType": "Product",
               "operation": "query ProductByUpc($Product_upc: ID!) {
   product(upc: $Product_upc) {
     ...__export
@@ -484,10 +574,8 @@ fragment __export on Product {
               },
             },
           },
-          "inlineVariables": {
-            "id": "samsung-store",
-          },
           "kind": "composite",
+          "ofType": "Storefront",
           "operation": "query storefront($id: ID!) {
   storefront(id: $id) {
     ...__export
@@ -622,6 +710,19 @@ exports[`fixture 'store' > query 'ListOperationResolver' > should execute 1`] = 
             },
           ],
         },
+        "field": {
+          "inlineVariables": {
+            "upcs": [
+              "galaxy",
+              "iphone",
+            ],
+          },
+          "kind": "composite",
+          "name": "productsByUpcs",
+          "ofType": "Product",
+          "path": "productsByUpcs",
+          "type": "[Product]!",
+        },
         "includes": [
           {
             "data": {
@@ -629,9 +730,17 @@ exports[`fixture 'store' > query 'ListOperationResolver' > should execute 1`] = 
                 "name": "Samsung",
               },
             },
+            "field": {
+              "inlineVariables": {},
+              "kind": "scalar",
+              "name": "name",
+              "ofType": "String",
+              "path": "productsByUpcs.manufacturer.name",
+              "type": "String!",
+            },
             "includes": [],
-            "inlineVariables": {},
             "kind": "composite",
+            "ofType": "Manufacturer",
             "operation": "query ManufacturerById($Manufacturer_id: ID!) {
   manufacturer(id: $Manufacturer_id) {
     ...__export
@@ -665,9 +774,17 @@ fragment __export on Manufacturer {
                 "name": "Apple",
               },
             },
+            "field": {
+              "inlineVariables": {},
+              "kind": "scalar",
+              "name": "name",
+              "ofType": "String",
+              "path": "productsByUpcs.manufacturer.name",
+              "type": "String!",
+            },
             "includes": [],
-            "inlineVariables": {},
             "kind": "composite",
+            "ofType": "Manufacturer",
             "operation": "query ManufacturerById($Manufacturer_id: ID!) {
   manufacturer(id: $Manufacturer_id) {
     ...__export
@@ -696,13 +813,8 @@ fragment __export on Manufacturer {
             },
           },
         ],
-        "inlineVariables": {
-          "upcs": [
-            "galaxy",
-            "iphone",
-          ],
-        },
         "kind": "composite",
+        "ofType": "Product",
         "operation": "query productsByUpcs($upcs: [ID!]!) {
   productsByUpcs(upcs: $upcs) {
     ...__export
@@ -736,7 +848,7 @@ fragment __export on Product {
           "manufacturer.products.name",
         ],
         "source": "products",
-        "type": "Product",
+        "type": "[Product]!",
         "variables": {
           "id": "apple-store",
           "upcs": [
@@ -757,11 +869,32 @@ exports[`fixture 'store' > query 'ListOperationResolver' > should plan gather 1`
       "name": "ListOperationResolver",
       "resolvers": {
         "productsByUpcs": {
+          "field": {
+            "inlineVariables": {
+              "upcs": [
+                "galaxy",
+                "iphone",
+              ],
+            },
+            "kind": "composite",
+            "name": "productsByUpcs",
+            "ofType": "Product",
+            "path": "productsByUpcs",
+            "type": "[Product]!",
+          },
           "includes": {
             "manufacturer": {
+              "field": {
+                "inlineVariables": {},
+                "kind": "scalar",
+                "name": "name",
+                "ofType": "String",
+                "path": "productsByUpcs.manufacturer.name",
+                "type": "String!",
+              },
               "includes": {},
-              "inlineVariables": {},
               "kind": "composite",
+              "ofType": "Manufacturer",
               "operation": "query ManufacturerById($Manufacturer_id: ID!) {
   manufacturer(id: $Manufacturer_id) {
     ...__export
@@ -788,13 +921,8 @@ fragment __export on Manufacturer {
               },
             },
           },
-          "inlineVariables": {
-            "upcs": [
-              "galaxy",
-              "iphone",
-            ],
-          },
           "kind": "composite",
+          "ofType": "Product",
           "operation": "query productsByUpcs($upcs: [ID!]!) {
   productsByUpcs(upcs: $upcs) {
     ...__export
@@ -825,7 +953,7 @@ fragment __export on Product {
             "manufacturer.products.name",
           ],
           "source": "products",
-          "type": "Product",
+          "type": "[Product]!",
           "variables": {},
         },
       },
@@ -941,6 +1069,16 @@ exports[`fixture 'store' > query 'NotBasicWithInlineVariables' > should execute 
             ],
           },
         },
+        "field": {
+          "inlineVariables": {
+            "id": "samsung-store",
+          },
+          "kind": "composite",
+          "name": "storefront",
+          "ofType": "Storefront",
+          "path": "storefront",
+          "type": "Storefront",
+        },
         "includes": [
           {
             "data": {
@@ -965,6 +1103,14 @@ exports[`fixture 'store' > query 'NotBasicWithInlineVariables' > should execute 
                 "name": "Samsung TV",
               },
             },
+            "field": {
+              "inlineVariables": {},
+              "kind": "scalar",
+              "name": "name",
+              "ofType": "String",
+              "path": "storefront.products.name",
+              "type": "String!",
+            },
             "includes": [
               {
                 "data": {
@@ -972,9 +1118,17 @@ exports[`fixture 'store' > query 'NotBasicWithInlineVariables' > should execute 
                     "name": "Samsung",
                   },
                 },
+                "field": {
+                  "inlineVariables": {},
+                  "kind": "scalar",
+                  "name": "name",
+                  "ofType": "String",
+                  "path": "storefront.products.manufacturer.name",
+                  "type": "String!",
+                },
                 "includes": [],
-                "inlineVariables": {},
                 "kind": "composite",
+                "ofType": "Manufacturer",
                 "operation": "query ManufacturerById($Manufacturer_id: ID!) {
   manufacturer(id: $Manufacturer_id) {
     ...__export
@@ -1004,8 +1158,8 @@ fragment __export on Manufacturer {
                 },
               },
             ],
-            "inlineVariables": {},
             "kind": "composite",
+            "ofType": "Product",
             "operation": "query ProductByUpc($Product_upc: ID!) {
   product(upc: $Product_upc) {
     ...__export
@@ -1067,6 +1221,14 @@ fragment __export on Product {
                 "name": "Samsung Fold",
               },
             },
+            "field": {
+              "inlineVariables": {},
+              "kind": "scalar",
+              "name": "name",
+              "ofType": "String",
+              "path": "storefront.products.name",
+              "type": "String!",
+            },
             "includes": [
               {
                 "data": {
@@ -1074,9 +1236,17 @@ fragment __export on Product {
                     "name": "Samsung",
                   },
                 },
+                "field": {
+                  "inlineVariables": {},
+                  "kind": "scalar",
+                  "name": "name",
+                  "ofType": "String",
+                  "path": "storefront.products.manufacturer.name",
+                  "type": "String!",
+                },
                 "includes": [],
-                "inlineVariables": {},
                 "kind": "composite",
+                "ofType": "Manufacturer",
                 "operation": "query ManufacturerById($Manufacturer_id: ID!) {
   manufacturer(id: $Manufacturer_id) {
     ...__export
@@ -1106,8 +1276,8 @@ fragment __export on Manufacturer {
                 },
               },
             ],
-            "inlineVariables": {},
             "kind": "composite",
+            "ofType": "Product",
             "operation": "query ProductByUpc($Product_upc: ID!) {
   product(upc: $Product_upc) {
     ...__export
@@ -1169,6 +1339,14 @@ fragment __export on Product {
                 "name": "Samsung Galaxy",
               },
             },
+            "field": {
+              "inlineVariables": {},
+              "kind": "scalar",
+              "name": "name",
+              "ofType": "String",
+              "path": "storefront.products.name",
+              "type": "String!",
+            },
             "includes": [
               {
                 "data": {
@@ -1176,9 +1354,17 @@ fragment __export on Product {
                     "name": "Samsung",
                   },
                 },
+                "field": {
+                  "inlineVariables": {},
+                  "kind": "scalar",
+                  "name": "name",
+                  "ofType": "String",
+                  "path": "storefront.products.manufacturer.name",
+                  "type": "String!",
+                },
                 "includes": [],
-                "inlineVariables": {},
                 "kind": "composite",
+                "ofType": "Manufacturer",
                 "operation": "query ManufacturerById($Manufacturer_id: ID!) {
   manufacturer(id: $Manufacturer_id) {
     ...__export
@@ -1208,8 +1394,8 @@ fragment __export on Manufacturer {
                 },
               },
             ],
-            "inlineVariables": {},
             "kind": "composite",
+            "ofType": "Product",
             "operation": "query ProductByUpc($Product_upc: ID!) {
   product(upc: $Product_upc) {
     ...__export
@@ -1249,10 +1435,8 @@ fragment __export on Product {
             },
           },
         ],
-        "inlineVariables": {
-          "id": "samsung-store",
-        },
         "kind": "composite",
+        "ofType": "Storefront",
         "operation": "query storefront($id: ID!) {
   storefront(id: $id) {
     ...__export
@@ -1296,13 +1480,39 @@ exports[`fixture 'store' > query 'NotBasicWithInlineVariables' > should plan gat
       "name": "NotBasicWithInlineVariables",
       "resolvers": {
         "storefront": {
+          "field": {
+            "inlineVariables": {
+              "id": "samsung-store",
+            },
+            "kind": "composite",
+            "name": "storefront",
+            "ofType": "Storefront",
+            "path": "storefront",
+            "type": "Storefront",
+          },
           "includes": {
             "products": {
+              "field": {
+                "inlineVariables": {},
+                "kind": "scalar",
+                "name": "name",
+                "ofType": "String",
+                "path": "storefront.products.name",
+                "type": "String!",
+              },
               "includes": {
                 "manufacturer": {
+                  "field": {
+                    "inlineVariables": {},
+                    "kind": "scalar",
+                    "name": "name",
+                    "ofType": "String",
+                    "path": "storefront.products.manufacturer.name",
+                    "type": "String!",
+                  },
                   "includes": {},
-                  "inlineVariables": {},
                   "kind": "composite",
+                  "ofType": "Manufacturer",
                   "operation": "query ManufacturerById($Manufacturer_id: ID!) {
   manufacturer(id: $Manufacturer_id) {
     ...__export
@@ -1329,8 +1539,8 @@ fragment __export on Manufacturer {
                   },
                 },
               },
-              "inlineVariables": {},
               "kind": "composite",
+              "ofType": "Product",
               "operation": "query ProductByUpc($Product_upc: ID!) {
   product(upc: $Product_upc) {
     ...__export
@@ -1368,10 +1578,8 @@ fragment __export on Product {
               },
             },
           },
-          "inlineVariables": {
-            "id": "samsung-store",
-          },
           "kind": "composite",
+          "ofType": "Storefront",
           "operation": "query storefront($id: ID!) {
   storefront(id: $id) {
     ...__export
@@ -1483,6 +1691,14 @@ exports[`fixture 'store' > query 'NotBasicWithOperationVariables' > should execu
             ],
           },
         },
+        "field": {
+          "inlineVariables": {},
+          "kind": "composite",
+          "name": "storefront",
+          "ofType": "Storefront",
+          "path": "storefront",
+          "type": "Storefront",
+        },
         "includes": [
           {
             "data": {
@@ -1503,6 +1719,14 @@ exports[`fixture 'store' > query 'NotBasicWithOperationVariables' > should execu
                 "name": "Apple iPhone",
               },
             },
+            "field": {
+              "inlineVariables": {},
+              "kind": "scalar",
+              "name": "name",
+              "ofType": "String",
+              "path": "storefront.products.name",
+              "type": "String!",
+            },
             "includes": [
               {
                 "data": {
@@ -1510,9 +1734,17 @@ exports[`fixture 'store' > query 'NotBasicWithOperationVariables' > should execu
                     "name": "Apple",
                   },
                 },
+                "field": {
+                  "inlineVariables": {},
+                  "kind": "scalar",
+                  "name": "name",
+                  "ofType": "String",
+                  "path": "storefront.products.manufacturer.name",
+                  "type": "String!",
+                },
                 "includes": [],
-                "inlineVariables": {},
                 "kind": "composite",
+                "ofType": "Manufacturer",
                 "operation": "query ManufacturerById($Manufacturer_id: ID!) {
   manufacturer(id: $Manufacturer_id) {
     ...__export
@@ -1542,8 +1774,8 @@ fragment __export on Manufacturer {
                 },
               },
             ],
-            "inlineVariables": {},
             "kind": "composite",
+            "ofType": "Product",
             "operation": "query ProductByUpc($Product_upc: ID!) {
   product(upc: $Product_upc) {
     ...__export
@@ -1601,6 +1833,14 @@ fragment __export on Product {
                 "name": "iPad",
               },
             },
+            "field": {
+              "inlineVariables": {},
+              "kind": "scalar",
+              "name": "name",
+              "ofType": "String",
+              "path": "storefront.products.name",
+              "type": "String!",
+            },
             "includes": [
               {
                 "data": {
@@ -1608,9 +1848,17 @@ fragment __export on Product {
                     "name": "Apple",
                   },
                 },
+                "field": {
+                  "inlineVariables": {},
+                  "kind": "scalar",
+                  "name": "name",
+                  "ofType": "String",
+                  "path": "storefront.products.manufacturer.name",
+                  "type": "String!",
+                },
                 "includes": [],
-                "inlineVariables": {},
                 "kind": "composite",
+                "ofType": "Manufacturer",
                 "operation": "query ManufacturerById($Manufacturer_id: ID!) {
   manufacturer(id: $Manufacturer_id) {
     ...__export
@@ -1640,8 +1888,8 @@ fragment __export on Manufacturer {
                 },
               },
             ],
-            "inlineVariables": {},
             "kind": "composite",
+            "ofType": "Product",
             "operation": "query ProductByUpc($Product_upc: ID!) {
   product(upc: $Product_upc) {
     ...__export
@@ -1681,8 +1929,8 @@ fragment __export on Product {
             },
           },
         ],
-        "inlineVariables": {},
         "kind": "composite",
+        "ofType": "Storefront",
         "operation": "query storefront($id: ID!) {
   storefront(id: $id) {
     ...__export
@@ -1726,13 +1974,37 @@ exports[`fixture 'store' > query 'NotBasicWithOperationVariables' > should plan 
       "name": "NotBasicWithOperationVariables",
       "resolvers": {
         "storefront": {
+          "field": {
+            "inlineVariables": {},
+            "kind": "composite",
+            "name": "storefront",
+            "ofType": "Storefront",
+            "path": "storefront",
+            "type": "Storefront",
+          },
           "includes": {
             "products": {
+              "field": {
+                "inlineVariables": {},
+                "kind": "scalar",
+                "name": "name",
+                "ofType": "String",
+                "path": "storefront.products.name",
+                "type": "String!",
+              },
               "includes": {
                 "manufacturer": {
+                  "field": {
+                    "inlineVariables": {},
+                    "kind": "scalar",
+                    "name": "name",
+                    "ofType": "String",
+                    "path": "storefront.products.manufacturer.name",
+                    "type": "String!",
+                  },
                   "includes": {},
-                  "inlineVariables": {},
                   "kind": "composite",
+                  "ofType": "Manufacturer",
                   "operation": "query ManufacturerById($Manufacturer_id: ID!) {
   manufacturer(id: $Manufacturer_id) {
     ...__export
@@ -1759,8 +2031,8 @@ fragment __export on Manufacturer {
                   },
                 },
               },
-              "inlineVariables": {},
               "kind": "composite",
+              "ofType": "Product",
               "operation": "query ProductByUpc($Product_upc: ID!) {
   product(upc: $Product_upc) {
     ...__export
@@ -1798,8 +2070,8 @@ fragment __export on Product {
               },
             },
           },
-          "inlineVariables": {},
           "kind": "composite",
+          "ofType": "Storefront",
           "operation": "query storefront($id: ID!) {
   storefront(id: $id) {
     ...__export
@@ -1861,10 +2133,18 @@ exports[`fixture 'store' > query 'ScalarOperationField' > should execute 1`] = `
         "data": {
           "manufacturerName": "Samsung",
         },
-        "inlineVariables": {
-          "id": "samsung",
+        "field": {
+          "inlineVariables": {
+            "id": "samsung",
+          },
+          "kind": "scalar",
+          "name": "manufacturerName",
+          "ofType": "String",
+          "path": "manufacturerName",
+          "type": "String",
         },
         "kind": "scalar",
+        "ofType": "String",
         "operation": "query manufacturerName($id: ID!) {
   manufacturerName(id: $id)
 }",
@@ -1892,10 +2172,18 @@ exports[`fixture 'store' > query 'ScalarOperationField' > should plan gather 1`]
       "name": "ScalarOperationField",
       "resolvers": {
         "manufacturerName": {
-          "inlineVariables": {
-            "id": "samsung",
+          "field": {
+            "inlineVariables": {
+              "id": "samsung",
+            },
+            "kind": "scalar",
+            "name": "manufacturerName",
+            "ofType": "String",
+            "path": "manufacturerName",
+            "type": "String",
           },
           "kind": "scalar",
+          "ofType": "String",
           "operation": "query manufacturerName($id: ID!) {
   manufacturerName(id: $id)
 }",
@@ -1929,10 +2217,18 @@ exports[`fixture 'store' > query 'ScalarOperationFieldNested' > should execute 1
             "name": "iPad",
           },
         },
-        "inlineVariables": {
-          "upc": "ipad",
+        "field": {
+          "inlineVariables": {
+            "upc": "ipad",
+          },
+          "kind": "scalar",
+          "name": "productName",
+          "ofType": "String",
+          "path": "productName",
+          "type": "String",
         },
         "kind": "scalar",
+        "ofType": "String",
         "operation": "query productName($upc: ID!) {
   product(upc: $upc) {
     name
@@ -1963,10 +2259,18 @@ exports[`fixture 'store' > query 'ScalarOperationFieldNested' > should plan gath
       "name": "ScalarOperationFieldNested",
       "resolvers": {
         "productName": {
-          "inlineVariables": {
-            "upc": "ipad",
+          "field": {
+            "inlineVariables": {
+              "upc": "ipad",
+            },
+            "kind": "scalar",
+            "name": "productName",
+            "ofType": "String",
+            "path": "productName",
+            "type": "String",
           },
           "kind": "scalar",
+          "ofType": "String",
           "operation": "query productName($upc: ID!) {
   product(upc: $upc) {
     name
@@ -2027,6 +2331,7 @@ exports[`fixture 'store' > should plan schema 1`] = `
       "resolvers": {
         "manufacturers": {
           "kind": "composite",
+          "ofType": "Manufacturer",
           "operation": "query ManufacturerById($Manufacturer_id: ID!) { manufacturer(id: $Manufacturer_id) { ...__export } }",
           "source": "manufacturers",
           "type": "Manufacturer",
@@ -2039,6 +2344,7 @@ exports[`fixture 'store' > should plan schema 1`] = `
         },
         "products": {
           "kind": "composite",
+          "ofType": "Manufacturer",
           "operation": "query ManufacturerById($Manufacturer_id: ID!) { _manufacturer(id: $Manufacturer_id) { ...__export } }",
           "source": "products",
           "type": "Manufacturer",
@@ -2093,6 +2399,7 @@ exports[`fixture 'store' > should plan schema 1`] = `
       "resolvers": {
         "products": {
           "kind": "composite",
+          "ofType": "Product",
           "operation": "query ProductByUpc($Product_upc: ID!) { product(upc: $Product_upc) { ...__export } }",
           "source": "products",
           "type": "Product",
@@ -2105,6 +2412,7 @@ exports[`fixture 'store' > should plan schema 1`] = `
         },
         "storefronts": {
           "kind": "composite",
+          "ofType": "Product",
           "operation": "query ProductByUpc($Product_upc: ID!) { product(upc: $Product_upc) { ...__export } }",
           "source": "storefronts",
           "type": "Product",
@@ -2148,6 +2456,7 @@ exports[`fixture 'store' > should plan schema 1`] = `
       "resolvers": {
         "storefronts": {
           "kind": "composite",
+          "ofType": "Storefront",
           "operation": "query StorefrontById($Storefront_id: ID!) { storefront(id: $Storefront_id) { ...__export } }",
           "source": "storefronts",
           "type": "Storefront",
@@ -2169,6 +2478,7 @@ exports[`fixture 'store' > should plan schema 1`] = `
           "resolvers": {
             "manufacturers": {
               "kind": "composite",
+              "ofType": "Manufacturer",
               "operation": "query manufacturer($id: ID!) { manufacturer(id: $id) { ...__export } }",
               "source": "manufacturers",
               "type": "Manufacturer",
@@ -2181,6 +2491,7 @@ exports[`fixture 'store' > should plan schema 1`] = `
           "resolvers": {
             "manufacturers": {
               "kind": "scalar",
+              "ofType": "String",
               "operation": "query manufacturerName($id: ID!) { manufacturerName(id: $id) }",
               "source": "manufacturers",
               "type": "String",
@@ -2193,6 +2504,7 @@ exports[`fixture 'store' > should plan schema 1`] = `
           "resolvers": {
             "products": {
               "kind": "composite",
+              "ofType": "Product",
               "operation": "query product($upc: ID!) { product(upc: $upc) { ...__export } }",
               "source": "products",
               "type": "Product",
@@ -2205,6 +2517,7 @@ exports[`fixture 'store' > should plan schema 1`] = `
           "resolvers": {
             "products": {
               "kind": "scalar",
+              "ofType": "String",
               "operation": "query productName($upc: ID!) { product(upc: $upc) { name } }",
               "source": "products",
               "type": "String",
@@ -2217,9 +2530,10 @@ exports[`fixture 'store' > should plan schema 1`] = `
           "resolvers": {
             "products": {
               "kind": "composite",
+              "ofType": "Product",
               "operation": "query productsByUpcs($upcs: [ID!]!) { productsByUpcs(upcs: $upcs) { ...__export } }",
               "source": "products",
-              "type": "Product",
+              "type": "[Product]!",
               "variables": {},
             },
           },
@@ -2229,6 +2543,7 @@ exports[`fixture 'store' > should plan schema 1`] = `
           "resolvers": {
             "storefronts": {
               "kind": "composite",
+              "ofType": "Storefront",
               "operation": "query storefront($id: ID!) { storefront(id: $id) { ...__export } }",
               "source": "storefronts",
               "type": "Storefront",

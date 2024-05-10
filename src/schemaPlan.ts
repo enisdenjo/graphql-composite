@@ -58,11 +58,20 @@ export type SchemaPlanResolver =
 
 export interface SchemaPlanCompositeResolver {
   kind: 'composite';
-  /**
-   * The type this resolver resolves.
-   * Is actually the type of the `__export` fragment.
-   */
+  /** The type resolved. */
   type: string;
+  /**
+   * Concrete/unwrapped composite type of the {@link type resolved type}.
+   * Is actually the type of the `__export` fragment.
+   *
+   * For example, the type is `Product` if the {@link type resolved type} is:
+   *   - `Product`
+   *   - `Product!`
+   *   - `[Product]!`
+   *   - `[Product!]`
+   *   - `[Product!]!`
+   */
+  ofType: string;
   /**
    * Operation to execute on the source. The operation **must** include
    * a spread of the `__export` fragment which will have the fields populated
@@ -87,8 +96,19 @@ export interface SchemaPlanCompositeResolver {
 
 export interface SchemaPlanScalarResolver {
   kind: 'scalar';
-  /** The type of the scalar this resolver resolves. */
+  /** The type resolved. */
   type: string;
+  /**
+   * Concrete/unwrapped type of the {@link type resolved type}.
+   *
+   * For example, the type is `String` if the {@link type resolved type} is:
+   *   - `String`
+   *   - `String!`
+   *   - `[String]!`
+   *   - `[String!]`
+   *   - `[String!]!`
+   */
+  ofType: string;
   /**
    * Operation to execute on the source. The operation's deepest
    * field is where the scalar is located.

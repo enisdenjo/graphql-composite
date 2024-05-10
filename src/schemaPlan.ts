@@ -50,8 +50,6 @@ export interface SchemaPlanCompositeTypeField {
 export interface SchemaPlanSource {
   /** Unique identifier of the source. Usually the subgraph name. */
   source: string;
-  /** Name of the type or field in the source subgraph. */
-  typeOrField: string;
 }
 
 export type SchemaPlanResolver =

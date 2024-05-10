@@ -134,12 +134,6 @@ function getSourcesFromDirectives(
         sourceDirective,
         'subgraph',
       ),
-      typeOrField: mustGetStringArgumentValue(
-        type,
-        field,
-        sourceDirective,
-        'name',
-      ),
     });
   }
   return sources;

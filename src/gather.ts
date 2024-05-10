@@ -36,10 +36,12 @@ export interface GatherPlan {
 }
 
 export interface GatherPlanOperation {
+  /** The name of the operation to execute. */
   name: string | null;
   type: OperationTypeNode;
   fields: GatherPlanField[];
-  resolvers: GatherPlanResolver[];
+  /** A map of operation field paths to the necessary operation resolver. */
+  resolvers: Record<string, GatherPlanResolver>;
 }
 
 type GatherPlanField = GatherPlanCompositeField | GatherPlanScalarField;
@@ -135,7 +137,7 @@ export function planGather(
           name: node.name?.value || null,
           type: node.operation,
           fields: [],
-          resolvers: [],
+          resolvers: {},
         };
         gatherPlan.operations.push(currOperation);
       },
@@ -248,7 +250,7 @@ function insertFieldToOperationAtDepth(
 function planGatherResolversForOperation(
   schemaPlan: SchemaPlan,
   operation: GatherPlanOperation,
-): GatherPlanResolver[] {
+): Record<string, GatherPlanResolver> {
   const operationPlan = schemaPlan.operations[operation.type];
   if (!operationPlan) {
     throw new Error(
@@ -256,7 +258,7 @@ function planGatherResolversForOperation(
     );
   }
 
-  const resolvers: GatherPlanResolver[] = [];
+  const resolvers: Record<string, GatherPlanResolver> = {};
 
   for (const operationField of operation.fields) {
     const operationFieldPlan = operationPlan.fields[operationField.name];
@@ -305,13 +307,13 @@ function planGatherResolversForOperation(
       );
     }
 
-    resolvers.push(resolver);
+    resolvers[operationField.name] = resolver;
   }
 
   // we build resolvers operations only after gather
   // this way we ensure that all fields are available
   // in both the private and public lists
-  buildAndInsertOperationsInResolvers(resolvers);
+  buildAndInsertOperationsInResolvers(Object.values(resolvers));
 
   return resolvers;
 }

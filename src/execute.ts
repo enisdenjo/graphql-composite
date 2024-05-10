@@ -20,13 +20,13 @@ export async function execute(
   // TODO: batch resolvers going to the same source
   const explain = await Promise.all(
     plan.operations.flatMap((o) =>
-      o.resolvers.map((r) =>
+      Object.entries(o.resolvers).map(([field, r]) =>
         executeResolver(
           transports,
           operationVariables,
           r,
           null,
-          [r.typeOrField],
+          [field],
           resultRef,
         ),
       ),

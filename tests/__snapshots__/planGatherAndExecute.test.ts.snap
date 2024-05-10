@@ -2122,6 +2122,122 @@ fragment __export on Storefront {
 }
 `;
 
+exports[`fixture 'store' > query 'ScalarListInType' > should execute 1`] = `
+{
+  "data": {
+    "storefront": {
+      "productNames": [
+        "Apple iPhone",
+        "iPad",
+      ],
+    },
+  },
+  "extensions": {
+    "explain": [
+      {
+        "data": {
+          "storefront": {
+            "productNames": [
+              "Apple iPhone",
+              "iPad",
+            ],
+          },
+        },
+        "field": {
+          "inlineVariables": {
+            "id": "apple-store",
+          },
+          "kind": "composite",
+          "name": "storefront",
+          "ofType": "Storefront",
+          "path": "storefront",
+          "type": "Storefront",
+        },
+        "includes": [],
+        "kind": "composite",
+        "ofType": "Storefront",
+        "operation": "query storefront($id: ID!) {
+  storefront(id: $id) {
+    ...__export
+  }
+}
+
+fragment __export on Storefront {
+  productNames
+}",
+        "pathInData": [
+          "storefront",
+        ],
+        "pathToExportData": [
+          "storefront",
+        ],
+        "private": [],
+        "public": [
+          "productNames",
+        ],
+        "source": "storefronts",
+        "type": "Storefront",
+        "variables": {
+          "id": "apple-store",
+        },
+      },
+    ],
+  },
+}
+`;
+
+exports[`fixture 'store' > query 'ScalarListInType' > should plan gather 1`] = `
+{
+  "operations": [
+    {
+      "name": "ScalarListInType",
+      "resolvers": {
+        "storefront": {
+          "field": {
+            "inlineVariables": {
+              "id": "apple-store",
+            },
+            "kind": "composite",
+            "name": "storefront",
+            "ofType": "Storefront",
+            "path": "storefront",
+            "type": "Storefront",
+          },
+          "includes": {},
+          "kind": "composite",
+          "ofType": "Storefront",
+          "operation": "query storefront($id: ID!) {
+  storefront(id: $id) {
+    ...__export
+  }
+}
+
+fragment __export on Storefront {
+  productNames
+}",
+          "pathToExportData": [
+            "storefront",
+          ],
+          "private": [],
+          "public": [
+            "productNames",
+          ],
+          "source": "storefronts",
+          "type": "Storefront",
+          "variables": {},
+        },
+      },
+      "type": "query",
+    },
+  ],
+  "query": "query ScalarListInType {
+  storefront(id: "apple-store") {
+    productNames
+  }
+}",
+}
+`;
+
 exports[`fixture 'store' > query 'ScalarOperationField' > should execute 1`] = `
 {
   "data": {
@@ -2443,6 +2559,14 @@ exports[`fixture 'store' > should plan schema 1`] = `
             },
           },
         },
+        "productNames": {
+          "name": "productNames",
+          "sources": {
+            "storefronts": {
+              "source": "storefronts",
+            },
+          },
+        },
         "products": {
           "name": "products",
           "sources": {
@@ -2581,6 +2705,7 @@ type Storefront {
   id: ID!
   name: String!
   products: [Product]!
+  productNames: [String!]!
 }",
 }
 `;

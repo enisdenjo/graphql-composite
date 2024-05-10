@@ -89,6 +89,7 @@ export const sources: FixtureSources = {
         id: ID!
         name: String!
         products: [Product]!
+        productNames: [String!]!
       }
       type Product {
         upc: ID!
@@ -108,6 +109,9 @@ export const sources: FixtureSources = {
             products: products.filter((product) =>
               storefront.productUpcs.includes(product.upc),
             ),
+            productNames: products
+              .filter((product) => storefront.productUpcs.includes(product.upc))
+              .map((product) => product.name),
           };
         },
         product: (_parent, args: { upc: string }) =>

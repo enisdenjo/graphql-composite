@@ -103,4 +103,5 @@ type Storefront
   id: ID! @source(subgraph: "storefronts")
   name: String! @source(subgraph: "storefronts")
   products: [Product]! @source(subgraph: "storefronts")
+  productNames: [String!]! @source(subgraph: "storefronts")
 }

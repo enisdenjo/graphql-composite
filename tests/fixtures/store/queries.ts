@@ -128,4 +128,15 @@ export const queries: FixtureQueries = [
       id: 'apple-store',
     },
   },
+  {
+    name: 'ScalarListInType',
+    document: parse(/* GraphQL */ `
+      query ScalarListInType {
+        storefront(id: "apple-store") {
+          productNames
+        }
+      }
+    `),
+    variables: {},
+  },
 ];

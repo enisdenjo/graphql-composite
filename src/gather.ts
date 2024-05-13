@@ -2,14 +2,13 @@ import {
   ASTNode,
   buildSchema,
   DocumentNode,
-  FieldNode,
-  FragmentDefinitionNode,
   getNamedType,
   isCompositeType,
   Kind,
   OperationTypeNode,
   parse,
   print,
+  SelectionNode,
   SelectionSetNode,
   TypeInfo,
   valueFromAST,
@@ -22,7 +21,7 @@ import {
   SchemaPlanScalarResolver,
   SchemaPlanSubgraph,
 } from './schemaPlan.js';
-import { flattenFragments } from './utils.js';
+import { createSelectionSetForFields, flattenFragments } from './utils.js';
 
 export interface GatherPlan {
   query: string;
@@ -474,10 +473,9 @@ export function buildAndInsertOperationsInResolvers(
   for (const resolver of resolvers) {
     const { operation, pathToExportData } = buildResolverOperation(
       resolver.operation,
-      resolver.ofType,
       resolver.kind === 'scalar'
-        ? []
-        : [...resolver.public, ...resolver.private],
+        ? {}
+        : { [resolver.ofType]: [...resolver.public, ...resolver.private] },
     );
     resolver.operation = operation;
     resolver.pathToExportData = pathToExportData;
@@ -489,9 +487,30 @@ export function buildAndInsertOperationsInResolvers(
 
 export function buildResolverOperation(
   operation: string,
-  type: string,
-  /** List of dot-notation paths of fields for the resolving type. */
-  fields: string[],
+  /**
+   * Map of composite types to dot-notation paths of fields for
+   * that type to replace at the location of the __export fragment.
+   *
+   * For example, exports like this:
+   * ```json
+   * {
+   *   "Animal": ["id", "name"],
+   *   "Dog": ["barks"]
+   * }
+   * ```
+   * will create an operation like this:
+   * ```gql
+   * {
+   *   animal(id: ID!) {
+   *     ... on Animal { id name }
+   *     ... on Dog { barks }
+   *   }
+   * }
+   * ```
+   */
+  exports: {
+    [type: string]: /* fields: */ string[];
+  },
 ): { operation: string; pathToExportData: string[] } {
   const doc = parse(operation);
   const def = doc.definitions.find((d) => d.kind === Kind.OPERATION_DEFINITION);
@@ -499,7 +518,7 @@ export function buildResolverOperation(
     throw new Error(`No operation definition found in\n${operation}`);
   }
 
-  if (!fields.length) {
+  if (!Object.values(exports).length) {
     // no fields to select means we're resolving a scalar at the deepest field
     const pathToExportData = findDeepestFieldPath(def, []);
     if (!pathToExportData.length) {
@@ -511,50 +530,48 @@ export function buildResolverOperation(
     };
   }
 
-  const pathToExportData = findExportDataPath(def, []);
-  if (!pathToExportData) {
-    throw new Error(`Path to the __export fragment not found in\n${operation}`);
+  const path = findExportFragment(def, []);
+  if (!path) {
+    throw new Error(`__export fragment not found in\n${operation}`);
   }
-
-  const docWithFragment: DocumentNode = {
-    ...doc,
-    definitions: [
-      ...doc.definitions,
-      {
-        kind: Kind.FRAGMENT_DEFINITION,
+  const [selectionSet, pathToExportData] = path;
+  const selections: SelectionNode[] = [];
+  for (const [type, fields] of Object.entries(exports)) {
+    selections.push({
+      kind: Kind.INLINE_FRAGMENT,
+      typeCondition: {
+        kind: Kind.NAMED_TYPE,
         name: {
           kind: Kind.NAME,
-          value: '__export',
+          value: type,
         },
-        typeCondition: {
-          kind: Kind.NAMED_TYPE,
-          name: {
-            kind: Kind.NAME,
-            value: type,
-          },
-        },
-        selectionSet: createSelectionSetForFields(fields),
-      } satisfies FragmentDefinitionNode,
-    ],
-  };
+      },
+      selectionSet: createSelectionSetForFields(fields),
+    });
+  }
+
+  // yes, we intentionally mutate the original doc. this is safe to do because we never share the DocumentNode reference
+  selectionSet.selections = selections;
 
   return {
-    operation: print(docWithFragment), // pretty print operation
+    operation: print(doc), // pretty print operation
     pathToExportData,
   };
 }
 
-function findExportDataPath(node: ASTNode, path: string[]): string[] | null {
+function findExportFragment(
+  node: ASTNode,
+  path: string[],
+): [parentSelectionSet: SelectionSetNode, path: string[]] | null {
   if ('selectionSet' in node && node.selectionSet) {
     for (const child of node.selectionSet.selections) {
       if (
         child.kind === Kind.FRAGMENT_SPREAD &&
         child.name.value === '__export'
       ) {
-        return path;
+        return [node.selectionSet, path];
       }
-
-      const foundPath = findExportDataPath(
+      const foundPath = findExportFragment(
         child,
         child.kind === Kind.FIELD ? [...path, child.name.value] : path,
       );
@@ -576,32 +593,4 @@ function findDeepestFieldPath(node: ASTNode, path: string[]): string[] {
     }
   }
   return path;
-}
-
-function createSelectionSetForFields(fields: string[]): SelectionSetNode {
-  const sel: SelectionSetNode = {
-    kind: Kind.SELECTION_SET,
-    selections: [],
-  };
-  for (const paths of fields.map((f) => f.split('.'))) {
-    let target: SelectionSetNode = sel;
-    for (const field of paths) {
-      let loc = (target.selections as FieldNode[]).find(
-        (s) => s.name.value === field,
-      );
-      if (!loc) {
-        loc = {
-          kind: Kind.FIELD,
-          name: { kind: Kind.NAME, value: field! },
-          selectionSet: {
-            kind: Kind.SELECTION_SET,
-            selections: [],
-          },
-        };
-        target.selections = [...target.selections, loc];
-      }
-      target = loc.selectionSet!;
-    }
-  }
-  return sel;
 }

@@ -36,44 +36,66 @@ it.each([
     name: 'storefront',
     operation:
       'query storefront($id: ID!) { storefront(id: $id) { ...__export } }',
-    type: 'Storefront',
-    fields: ['id', 'name', 'products.upc'],
+    fields: { Storefront: ['id', 'name', 'products.upc'] },
   },
   {
     name: 'ProductByUpc',
     operation:
       'query ProductByUpc($Product_upc: ID!) { product(upc: $Product_upc) { ...__export } }',
-    type: 'Product',
-    fields: [
-      'name',
-      'manufacturer.products.upc',
-      'manufacturer.products.name',
-      'manufacturer.id',
-    ],
+    fields: {
+      Product: [
+        'name',
+        'manufacturer.products.upc',
+        'manufacturer.products.name',
+        'manufacturer.id',
+      ],
+    },
   },
   {
     name: 'ManufacturerById',
     operation:
       'query ManufacturerById($Manufacturer_id: ID!) { manufacturer(id: $Manufacturer_id) { ...__export } }',
-    type: 'Manufacturer',
-    fields: ['id', 'name'],
+    fields: { Manufacturer: ['id', 'name'] },
   },
   {
     name: 'ManufacturerNested',
     operation:
       'query ManufacturerNested { manufacturer { nested { deep { ...__export } } } }',
-    type: 'Manufacturer',
-    fields: ['id', 'name', 'products.manufacturer.location', 'products.name'],
+    fields: {
+      Manufacturer: [
+        'id',
+        'name',
+        'products.manufacturer.location',
+        'products.name',
+      ],
+    },
   },
   {
     name: 'FindDeepestPath',
     operation: 'query FindDeepestPath { manufacturer { nested { deep } } }',
-    type: 'String',
-    fields: [],
+    fields: {},
+  },
+  {
+    name: 'MultipleTypes',
+    operation: 'query MultipleTypes { productAndManufaturer { ...__export } }',
+    fields: {
+      Product: [
+        'name',
+        'manufacturer.products.upc',
+        'manufacturer.products.name',
+        'manufacturer.id',
+      ],
+      Manufacturer: [
+        'id',
+        'name',
+        'products.manufacturer.location',
+        'products.name',
+      ],
+    },
   },
 ])(
   'should build proper operation and find export path for $name resolver',
-  ({ operation, type, fields }) => {
-    expect(buildResolverOperation(operation, type, fields)).toMatchSnapshot();
+  ({ operation, fields }) => {
+    expect(buildResolverOperation(operation, fields)).toMatchSnapshot();
   },
 );

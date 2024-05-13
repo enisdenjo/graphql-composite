@@ -1,14 +1,50 @@
 import {
   ASTNode,
   DocumentNode,
+  FieldNode,
   FragmentDefinitionNode,
   Kind,
   OperationDefinitionNode,
   SelectionNode,
+  SelectionSetNode,
 } from 'graphql';
 
 export function isRecord(val: unknown): val is Record<string, unknown> {
   return val != null && typeof val === 'object' && !Array.isArray(val);
+}
+
+/**
+ * Creates a GraphQL selection set for dot-notation list of fields.
+ * It will expand the fields' dots to nested paths.
+ */
+export function createSelectionSetForFields(
+  fields: string[],
+): SelectionSetNode {
+  const sel: SelectionSetNode = {
+    kind: Kind.SELECTION_SET,
+    selections: [],
+  };
+  for (const paths of fields.map((f) => f.split('.'))) {
+    let target: SelectionSetNode = sel;
+    for (const field of paths) {
+      let loc = (target.selections as FieldNode[]).find(
+        (s) => s.name.value === field,
+      );
+      if (!loc) {
+        loc = {
+          kind: Kind.FIELD,
+          name: { kind: Kind.NAME, value: field! },
+          selectionSet: {
+            kind: Kind.SELECTION_SET,
+            selections: [],
+          },
+        };
+        target.selections = [...target.selections, loc];
+      }
+      target = loc.selectionSet!;
+    }
+  }
+  return sel;
 }
 
 /**

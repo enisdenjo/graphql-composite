@@ -73,13 +73,11 @@ exports[`fixture 'store' > query 'BasicWithFragmentDefinition' > should execute 
             "ofType": "Product",
             "operation": "query ProductByUpc($Product_upc: ID!) {
   product(upc: $Product_upc) {
-    ...__export
-  }
-}
-
-fragment __export on Product {
-  manufacturer {
-    id
+    ... on Product {
+      manufacturer {
+        id
+      }
+    }
   }
 }",
             "pathInData": [
@@ -122,13 +120,11 @@ fragment __export on Product {
             "ofType": "Product",
             "operation": "query ProductByUpc($Product_upc: ID!) {
   product(upc: $Product_upc) {
-    ...__export
-  }
-}
-
-fragment __export on Product {
-  manufacturer {
-    id
+    ... on Product {
+      manufacturer {
+        id
+      }
+    }
   }
 }",
             "pathInData": [
@@ -154,16 +150,14 @@ fragment __export on Product {
         "ofType": "Storefront",
         "operation": "query storefront($id: ID!) {
   storefront(id: $id) {
-    ...__export
+    ... on Storefront {
+      id
+      products {
+        upc
+      }
+      name
+    }
   }
-}
-
-fragment __export on Storefront {
-  id
-  products {
-    upc
-  }
-  name
 }",
         "pathInData": [
           "storefront",
@@ -222,13 +216,11 @@ exports[`fixture 'store' > query 'BasicWithFragmentDefinition' > should plan gat
               "ofType": "Product",
               "operation": "query ProductByUpc($Product_upc: ID!) {
   product(upc: $Product_upc) {
-    ...__export
-  }
-}
-
-fragment __export on Product {
-  manufacturer {
-    id
+    ... on Product {
+      manufacturer {
+        id
+      }
+    }
   }
 }",
               "pathToExportData": [
@@ -253,16 +245,14 @@ fragment __export on Product {
           "ofType": "Storefront",
           "operation": "query storefront($id: ID!) {
   storefront(id: $id) {
-    ...__export
+    ... on Storefront {
+      id
+      products {
+        upc
+      }
+      name
+    }
   }
-}
-
-fragment __export on Storefront {
-  id
-  products {
-    upc
-  }
-  name
 }",
           "pathToExportData": [
             "storefront",
@@ -379,12 +369,10 @@ exports[`fixture 'store' > query 'BasicWithInlineFragment' > should execute 1`] 
             "ofType": "Product",
             "operation": "query ProductByUpc($Product_upc: ID!) {
   product(upc: $Product_upc) {
-    ...__export
+    ... on Product {
+      name
+    }
   }
-}
-
-fragment __export on Product {
-  name
 }",
             "pathInData": [
               "storefront",
@@ -424,12 +412,10 @@ fragment __export on Product {
             "ofType": "Product",
             "operation": "query ProductByUpc($Product_upc: ID!) {
   product(upc: $Product_upc) {
-    ...__export
+    ... on Product {
+      name
+    }
   }
-}
-
-fragment __export on Product {
-  name
 }",
             "pathInData": [
               "storefront",
@@ -469,12 +455,10 @@ fragment __export on Product {
             "ofType": "Product",
             "operation": "query ProductByUpc($Product_upc: ID!) {
   product(upc: $Product_upc) {
-    ...__export
+    ... on Product {
+      name
+    }
   }
-}
-
-fragment __export on Product {
-  name
 }",
             "pathInData": [
               "storefront",
@@ -499,15 +483,13 @@ fragment __export on Product {
         "ofType": "Storefront",
         "operation": "query storefront($id: ID!) {
   storefront(id: $id) {
-    ...__export
-  }
-}
-
-fragment __export on Storefront {
-  id
-  name
-  products {
-    upc
+    ... on Storefront {
+      id
+      name
+      products {
+        upc
+      }
+    }
   }
 }",
         "pathInData": [
@@ -567,12 +549,10 @@ exports[`fixture 'store' > query 'BasicWithInlineFragment' > should plan gather 
               "ofType": "Product",
               "operation": "query ProductByUpc($Product_upc: ID!) {
   product(upc: $Product_upc) {
-    ...__export
+    ... on Product {
+      name
+    }
   }
-}
-
-fragment __export on Product {
-  name
 }",
               "pathToExportData": [
                 "product",
@@ -596,15 +576,13 @@ fragment __export on Product {
           "ofType": "Storefront",
           "operation": "query storefront($id: ID!) {
   storefront(id: $id) {
-    ...__export
-  }
-}
-
-fragment __export on Storefront {
-  id
-  name
-  products {
-    upc
+    ... on Storefront {
+      id
+      name
+      products {
+        upc
+      }
+    }
   }
 }",
           "pathToExportData": [
@@ -768,12 +746,10 @@ exports[`fixture 'store' > query 'ListOperationResolver' > should execute 1`] = 
             "ofType": "Manufacturer",
             "operation": "query ManufacturerById($Manufacturer_id: ID!) {
   manufacturer(id: $Manufacturer_id) {
-    ...__export
+    ... on Manufacturer {
+      name
+    }
   }
-}
-
-fragment __export on Manufacturer {
-  name
 }",
             "pathInData": [
               "productsByUpcs",
@@ -813,12 +789,10 @@ fragment __export on Manufacturer {
             "ofType": "Manufacturer",
             "operation": "query ManufacturerById($Manufacturer_id: ID!) {
   manufacturer(id: $Manufacturer_id) {
-    ...__export
+    ... on Manufacturer {
+      name
+    }
   }
-}
-
-fragment __export on Manufacturer {
-  name
 }",
             "pathInData": [
               "productsByUpcs",
@@ -843,19 +817,17 @@ fragment __export on Manufacturer {
         "ofType": "Product",
         "operation": "query productsByUpcs($upcs: [ID!]!) {
   productsByUpcs(upcs: $upcs) {
-    ...__export
-  }
-}
-
-fragment __export on Product {
-  upc
-  name
-  manufacturer {
-    products {
+    ... on Product {
       upc
       name
+      manufacturer {
+        products {
+          upc
+          name
+        }
+        id
+      }
     }
-    id
   }
 }",
         "pathInData": [
@@ -924,12 +896,10 @@ exports[`fixture 'store' > query 'ListOperationResolver' > should plan gather 1`
               "ofType": "Manufacturer",
               "operation": "query ManufacturerById($Manufacturer_id: ID!) {
   manufacturer(id: $Manufacturer_id) {
-    ...__export
+    ... on Manufacturer {
+      name
+    }
   }
-}
-
-fragment __export on Manufacturer {
-  name
 }",
               "pathToExportData": [
                 "manufacturer",
@@ -953,19 +923,17 @@ fragment __export on Manufacturer {
           "ofType": "Product",
           "operation": "query productsByUpcs($upcs: [ID!]!) {
   productsByUpcs(upcs: $upcs) {
-    ...__export
-  }
-}
-
-fragment __export on Product {
-  upc
-  name
-  manufacturer {
-    products {
+    ... on Product {
       upc
       name
+      manufacturer {
+        products {
+          upc
+          name
+        }
+        id
+      }
     }
-    id
   }
 }",
           "pathToExportData": [
@@ -1167,12 +1135,10 @@ exports[`fixture 'store' > query 'NotBasicWithInlineVariables' > should execute 
                 "ofType": "Manufacturer",
                 "operation": "query ManufacturerById($Manufacturer_id: ID!) {
   manufacturer(id: $Manufacturer_id) {
-    ...__export
+    ... on Manufacturer {
+      name
+    }
   }
-}
-
-fragment __export on Manufacturer {
-  name
 }",
                 "pathInData": [
                   "storefront",
@@ -1198,18 +1164,16 @@ fragment __export on Manufacturer {
             "ofType": "Product",
             "operation": "query ProductByUpc($Product_upc: ID!) {
   product(upc: $Product_upc) {
-    ...__export
-  }
-}
-
-fragment __export on Product {
-  name
-  manufacturer {
-    products {
-      upc
+    ... on Product {
       name
+      manufacturer {
+        products {
+          upc
+          name
+        }
+        id
+      }
     }
-    id
   }
 }",
             "pathInData": [
@@ -1287,12 +1251,10 @@ fragment __export on Product {
                 "ofType": "Manufacturer",
                 "operation": "query ManufacturerById($Manufacturer_id: ID!) {
   manufacturer(id: $Manufacturer_id) {
-    ...__export
+    ... on Manufacturer {
+      name
+    }
   }
-}
-
-fragment __export on Manufacturer {
-  name
 }",
                 "pathInData": [
                   "storefront",
@@ -1318,18 +1280,16 @@ fragment __export on Manufacturer {
             "ofType": "Product",
             "operation": "query ProductByUpc($Product_upc: ID!) {
   product(upc: $Product_upc) {
-    ...__export
-  }
-}
-
-fragment __export on Product {
-  name
-  manufacturer {
-    products {
-      upc
+    ... on Product {
       name
+      manufacturer {
+        products {
+          upc
+          name
+        }
+        id
+      }
     }
-    id
   }
 }",
             "pathInData": [
@@ -1407,12 +1367,10 @@ fragment __export on Product {
                 "ofType": "Manufacturer",
                 "operation": "query ManufacturerById($Manufacturer_id: ID!) {
   manufacturer(id: $Manufacturer_id) {
-    ...__export
+    ... on Manufacturer {
+      name
+    }
   }
-}
-
-fragment __export on Manufacturer {
-  name
 }",
                 "pathInData": [
                   "storefront",
@@ -1438,18 +1396,16 @@ fragment __export on Manufacturer {
             "ofType": "Product",
             "operation": "query ProductByUpc($Product_upc: ID!) {
   product(upc: $Product_upc) {
-    ...__export
-  }
-}
-
-fragment __export on Product {
-  name
-  manufacturer {
-    products {
-      upc
+    ... on Product {
       name
+      manufacturer {
+        products {
+          upc
+          name
+        }
+        id
+      }
     }
-    id
   }
 }",
             "pathInData": [
@@ -1479,15 +1435,13 @@ fragment __export on Product {
         "ofType": "Storefront",
         "operation": "query storefront($id: ID!) {
   storefront(id: $id) {
-    ...__export
-  }
-}
-
-fragment __export on Storefront {
-  id
-  name
-  products {
-    upc
+    ... on Storefront {
+      id
+      name
+      products {
+        upc
+      }
+    }
   }
 }",
         "pathInData": [
@@ -1558,12 +1512,10 @@ exports[`fixture 'store' > query 'NotBasicWithInlineVariables' > should plan gat
                   "ofType": "Manufacturer",
                   "operation": "query ManufacturerById($Manufacturer_id: ID!) {
   manufacturer(id: $Manufacturer_id) {
-    ...__export
+    ... on Manufacturer {
+      name
+    }
   }
-}
-
-fragment __export on Manufacturer {
-  name
 }",
                   "pathToExportData": [
                     "manufacturer",
@@ -1587,18 +1539,16 @@ fragment __export on Manufacturer {
               "ofType": "Product",
               "operation": "query ProductByUpc($Product_upc: ID!) {
   product(upc: $Product_upc) {
-    ...__export
-  }
-}
-
-fragment __export on Product {
-  name
-  manufacturer {
-    products {
-      upc
+    ... on Product {
       name
+      manufacturer {
+        products {
+          upc
+          name
+        }
+        id
+      }
     }
-    id
   }
 }",
               "pathToExportData": [
@@ -1627,15 +1577,13 @@ fragment __export on Product {
           "ofType": "Storefront",
           "operation": "query storefront($id: ID!) {
   storefront(id: $id) {
-    ...__export
-  }
-}
-
-fragment __export on Storefront {
-  id
-  name
-  products {
-    upc
+    ... on Storefront {
+      id
+      name
+      products {
+        upc
+      }
+    }
   }
 }",
           "pathToExportData": [
@@ -1800,12 +1748,10 @@ exports[`fixture 'store' > query 'NotBasicWithOperationVariables' > should execu
                 "ofType": "Manufacturer",
                 "operation": "query ManufacturerById($Manufacturer_id: ID!) {
   manufacturer(id: $Manufacturer_id) {
-    ...__export
+    ... on Manufacturer {
+      name
+    }
   }
-}
-
-fragment __export on Manufacturer {
-  name
 }",
                 "pathInData": [
                   "storefront",
@@ -1831,18 +1777,16 @@ fragment __export on Manufacturer {
             "ofType": "Product",
             "operation": "query ProductByUpc($Product_upc: ID!) {
   product(upc: $Product_upc) {
-    ...__export
-  }
-}
-
-fragment __export on Product {
-  name
-  manufacturer {
-    products {
-      upc
+    ... on Product {
       name
+      manufacturer {
+        products {
+          upc
+          name
+        }
+        id
+      }
     }
-    id
   }
 }",
             "pathInData": [
@@ -1916,12 +1860,10 @@ fragment __export on Product {
                 "ofType": "Manufacturer",
                 "operation": "query ManufacturerById($Manufacturer_id: ID!) {
   manufacturer(id: $Manufacturer_id) {
-    ...__export
+    ... on Manufacturer {
+      name
+    }
   }
-}
-
-fragment __export on Manufacturer {
-  name
 }",
                 "pathInData": [
                   "storefront",
@@ -1947,18 +1889,16 @@ fragment __export on Manufacturer {
             "ofType": "Product",
             "operation": "query ProductByUpc($Product_upc: ID!) {
   product(upc: $Product_upc) {
-    ...__export
-  }
-}
-
-fragment __export on Product {
-  name
-  manufacturer {
-    products {
-      upc
+    ... on Product {
       name
+      manufacturer {
+        products {
+          upc
+          name
+        }
+        id
+      }
     }
-    id
   }
 }",
             "pathInData": [
@@ -1988,15 +1928,13 @@ fragment __export on Product {
         "ofType": "Storefront",
         "operation": "query storefront($id: ID!) {
   storefront(id: $id) {
-    ...__export
-  }
-}
-
-fragment __export on Storefront {
-  id
-  name
-  products {
-    upc
+    ... on Storefront {
+      id
+      name
+      products {
+        upc
+      }
+    }
   }
 }",
         "pathInData": [
@@ -2065,12 +2003,10 @@ exports[`fixture 'store' > query 'NotBasicWithOperationVariables' > should plan 
                   "ofType": "Manufacturer",
                   "operation": "query ManufacturerById($Manufacturer_id: ID!) {
   manufacturer(id: $Manufacturer_id) {
-    ...__export
+    ... on Manufacturer {
+      name
+    }
   }
-}
-
-fragment __export on Manufacturer {
-  name
 }",
                   "pathToExportData": [
                     "manufacturer",
@@ -2094,18 +2030,16 @@ fragment __export on Manufacturer {
               "ofType": "Product",
               "operation": "query ProductByUpc($Product_upc: ID!) {
   product(upc: $Product_upc) {
-    ...__export
-  }
-}
-
-fragment __export on Product {
-  name
-  manufacturer {
-    products {
-      upc
+    ... on Product {
       name
+      manufacturer {
+        products {
+          upc
+          name
+        }
+        id
+      }
     }
-    id
   }
 }",
               "pathToExportData": [
@@ -2134,15 +2068,13 @@ fragment __export on Product {
           "ofType": "Storefront",
           "operation": "query storefront($id: ID!) {
   storefront(id: $id) {
-    ...__export
-  }
-}
-
-fragment __export on Storefront {
-  id
-  name
-  products {
-    upc
+    ... on Storefront {
+      id
+      name
+      products {
+        upc
+      }
+    }
   }
 }",
           "pathToExportData": [
@@ -2314,12 +2246,10 @@ exports[`fixture 'store' > query 'ScalarListInType' > should execute 1`] = `
         "ofType": "Storefront",
         "operation": "query storefront($id: ID!) {
   storefront(id: $id) {
-    ...__export
+    ... on Storefront {
+      productNames
+    }
   }
-}
-
-fragment __export on Storefront {
-  productNames
 }",
         "pathInData": [
           "storefront",
@@ -2365,12 +2295,10 @@ exports[`fixture 'store' > query 'ScalarListInType' > should plan gather 1`] = `
           "ofType": "Storefront",
           "operation": "query storefront($id: ID!) {
   storefront(id: $id) {
-    ...__export
+    ... on Storefront {
+      productNames
+    }
   }
-}
-
-fragment __export on Storefront {
-  productNames
 }",
           "pathToExportData": [
             "storefront",
@@ -2607,13 +2535,11 @@ exports[`should build proper operation and find export path for 'ManufacturerByI
 {
   "operation": "query ManufacturerById($Manufacturer_id: ID!) {
   manufacturer(id: $Manufacturer_id) {
-    ...__export
+    ... on Manufacturer {
+      id
+      name
+    }
   }
-}
-
-fragment __export on Manufacturer {
-  id
-  name
 }",
   "pathToExportData": [
     "manufacturer",
@@ -2627,20 +2553,18 @@ exports[`should build proper operation and find export path for 'ManufacturerNes
   manufacturer {
     nested {
       deep {
-        ...__export
+        ... on Manufacturer {
+          id
+          name
+          products {
+            manufacturer {
+              location
+            }
+            name
+          }
+        }
       }
     }
-  }
-}
-
-fragment __export on Manufacturer {
-  id
-  name
-  products {
-    manufacturer {
-      location
-    }
-    name
   }
 }",
   "pathToExportData": [
@@ -2651,22 +2575,52 @@ fragment __export on Manufacturer {
 }
 `;
 
+exports[`should build proper operation and find export path for 'MultipleTypes' resolver 1`] = `
+{
+  "operation": "query MultipleTypes {
+  productAndManufaturer {
+    ... on Product {
+      name
+      manufacturer {
+        products {
+          upc
+          name
+        }
+        id
+      }
+    }
+    ... on Manufacturer {
+      id
+      name
+      products {
+        manufacturer {
+          location
+        }
+        name
+      }
+    }
+  }
+}",
+  "pathToExportData": [
+    "productAndManufaturer",
+  ],
+}
+`;
+
 exports[`should build proper operation and find export path for 'ProductByUpc' resolver 1`] = `
 {
   "operation": "query ProductByUpc($Product_upc: ID!) {
   product(upc: $Product_upc) {
-    ...__export
-  }
-}
-
-fragment __export on Product {
-  name
-  manufacturer {
-    products {
-      upc
+    ... on Product {
       name
+      manufacturer {
+        products {
+          upc
+          name
+        }
+        id
+      }
     }
-    id
   }
 }",
   "pathToExportData": [
@@ -2679,15 +2633,13 @@ exports[`should build proper operation and find export path for 'storefront' res
 {
   "operation": "query storefront($id: ID!) {
   storefront(id: $id) {
-    ...__export
-  }
-}
-
-fragment __export on Storefront {
-  id
-  name
-  products {
-    upc
+    ... on Storefront {
+      id
+      name
+      products {
+        upc
+      }
+    }
   }
 }",
   "pathToExportData": [

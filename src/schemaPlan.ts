@@ -79,10 +79,8 @@ export interface SchemaPlanCompositeResolver {
    * ```
    * will be populated by the necessary fields during gather at the {@link GatherPlanResolver} like this:
    * ```graphql
-   * query ProductByUPC($upc: ID!) { product(upc: $upc) { ...__export } }
-   * fragment __export on Product { upc name manufacturer { id } }
+   * query ProductByUPC($upc: ID!) { product(upc: $upc) { ... on Product { upc name manufacturer { id } } } }
    * ```
-   *
    */
   operation: string;
   variables: {

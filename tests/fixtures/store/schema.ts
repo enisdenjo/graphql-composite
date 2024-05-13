@@ -199,7 +199,7 @@ export const schema: SchemaPlan = {
       },
     },
   },
-  compositeTypes: {
+  types: {
     Manufacturer: {
       name: 'Manufacturer',
       fields: {

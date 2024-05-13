@@ -7,8 +7,8 @@ export interface SchemaPlan {
   operations: {
     [name: string /* graphql.OperationDefinitionNode */]: SchemaPlanOperation;
   };
-  compositeTypes: {
-    [name in SchemaPlanCompositeType['name']]: SchemaPlanCompositeType;
+  types: {
+    [name in SchemaPlanType['name']]: SchemaPlanType;
   };
 }
 
@@ -27,18 +27,18 @@ export interface SchemaPlanOperationField {
   };
 }
 
-export interface SchemaPlanCompositeType {
+export interface SchemaPlanType {
   name: string;
   resolvers: {
     [subgraph in SchemaPlanSubgraph['subgraph']]: SchemaPlanSubgraph &
       SchemaPlanCompositeResolver; // TODO: type can only have one resolver at subgraph?
   };
   fields: {
-    [name in SchemaPlanCompositeTypeField['name']]: SchemaPlanCompositeTypeField;
+    [name in SchemaPlanTypeField['name']]: SchemaPlanTypeField;
   };
 }
 
-export interface SchemaPlanCompositeTypeField {
+export interface SchemaPlanTypeField {
   name: string;
   subgraphs: string[];
 }

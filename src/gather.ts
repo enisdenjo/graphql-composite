@@ -334,7 +334,7 @@ function insertResolversForGatherPlanCompositeField(
   pathPrefix: string,
 ) {
   for (const field of parent.fields) {
-    const typePlan = schemaPlan.compositeTypes[parent.ofType];
+    const typePlan = schemaPlan.types[parent.ofType];
     if (!typePlan) {
       throw new Error(
         `Schema plan doesn't have the "${parent.ofType}" composite type`,
@@ -357,7 +357,7 @@ function insertResolversForGatherPlanCompositeField(
       // this field cannot be resolved from the parent's subgraph
       // add an dependant resolver to the parent for the field(s)
 
-      const typePlan = schemaPlan.compositeTypes[parent.ofType];
+      const typePlan = schemaPlan.types[parent.ofType];
       if (!typePlan) {
         throw new Error(
           `Schema plan doesn't have the "${parent.ofType}" composite type`,

@@ -98,6 +98,25 @@ export interface GatherPlanResolverField {
    * It matches the last part of {@link path field's path}.
    */
   name: string;
+  /**
+   * The type of this field's parent. Useful for fragments spread
+   * within interfaces.
+   *
+   * If you have a query:
+   * ```gql
+   * {
+   *   animal(name: "Cathew") {
+   *     name
+   *     ... on Cat {
+   *       meows
+   *     }
+   *   }
+   * }
+   * ```
+   * the parent type of the `animal.meows` path will be `Cat` (and not `Animal`),
+   * while the type of the `animal.name` path will remain `Animal`.
+   */
+  parentType: string;
   /** The type this field resolves. */
   type: string;
   /**
@@ -183,6 +202,7 @@ export function planGather(
               kind: 'composite',
               path: entries.join('.'),
               name: node.name.value,
+              parentType: parentType.name,
               type: String(type),
               ofType: ofType.name,
               inlineVariables,
@@ -192,6 +212,7 @@ export function planGather(
             insertFieldAtDepth(fields, entries.length - 1, {
               kind: 'scalar',
               path: entries.join('.'),
+              parentType: parentType.name,
               name: node.name.value,
               type: String(type),
               ofType: ofType.name,
@@ -234,6 +255,7 @@ function fieldToResolverField(field: Field): GatherPlanResolverField {
     kind: field.kind,
     path: field.path,
     name: field.name,
+    parentType: field.parentType,
     type: field.type,
     ofType: field.ofType,
     inlineVariables: field.inlineVariables,

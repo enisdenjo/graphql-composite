@@ -1,25 +1,15 @@
-import { buildSchema } from 'graphql';
 import { describe, expect, it } from 'vitest';
 import { execute } from '../src/execute.js';
-import { planSchema } from '../src/fusion/planSchema.js';
 import { buildResolverOperation, planGather } from '../src/gather.js';
 import { TransportHTTP } from '../src/transport.js';
 import { getFixtures } from './utils.js';
 
 describe.each(await getFixtures())(
   'fixture $name',
-  ({ fusiongraph, subgraphs, queries }) => {
-    const schema = buildSchema(fusiongraph, {
-      assumeValid: true,
-    });
-
-    it('should plan schema', () => {
-      expect(planSchema(schema)).toMatchSnapshot();
-    });
-
+  ({ schema, subgraphs, queries }) => {
     describe.each(queries)('query $name', ({ document, variables }) => {
       it('should plan gather', () => {
-        expect(planGather(planSchema(schema), document)).toMatchSnapshot();
+        expect(planGather(schema, document)).toMatchSnapshot();
       });
 
       it('should execute', async () => {
@@ -32,7 +22,7 @@ describe.each(await getFixtures())(
               }),
               {},
             ),
-            planGather(planSchema(schema), document),
+            planGather(schema, document),
             variables,
           ),
         ).resolves.toMatchSnapshot();

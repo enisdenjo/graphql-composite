@@ -3,6 +3,7 @@ import path from 'path';
 import { IExecutableSchemaDefinition } from '@graphql-tools/schema';
 import { DocumentNode } from 'graphql';
 import { createSchema, createYoga } from 'graphql-yoga';
+import { SchemaPlan } from '../src/schemaPlan.js';
 
 export type FixtureSources = Record<string, Source>;
 
@@ -14,22 +15,19 @@ export type FixtureQueries = {
 
 export interface Fixture {
   name: string;
-  fusiongraph: string;
+  schema: SchemaPlan;
   subgraphs: FixtureSources;
   queries: FixtureQueries;
 }
 
 export async function getFixture(name: string): Promise<Fixture> {
   const dir = path.join(__dirname, 'fixtures', name);
-  const fusiongraph = await fs.readFile(
-    path.join(dir, 'fusiongraph.graphql'),
-    'utf-8',
-  );
+  const { schema } = await import(path.join(dir, 'schema.ts'));
   const { subgraphs } = await import(path.join(dir, 'subgraphs.ts'));
   const { queries } = await import(path.join(dir, 'queries.ts'));
   return {
     name,
-    fusiongraph,
+    schema,
     subgraphs,
     queries,
   };

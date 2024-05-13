@@ -4,8 +4,10 @@ exports[`flattenFragments > should flatten fragments in 'AliasesFragmentDefiniti
 "{
   storefront {
     pro: products {
-      name
-      id: upc
+      ... on Product {
+        name
+        id: upc
+      }
     }
   }
 }"
@@ -15,8 +17,10 @@ exports[`flattenFragments > should flatten fragments in 'BasicFragmentDefinition
 "{
   storefront {
     products {
-      name
-      upc
+      ... on Product {
+        name
+        upc
+      }
     }
   }
 }"
@@ -26,8 +30,10 @@ exports[`flattenFragments > should flatten fragments in 'BasicInlineFragment' 1`
 "{
   storefront {
     products {
-      upc
-      name
+      ... on Product {
+        upc
+        name
+      }
     }
   }
 }"
@@ -37,10 +43,12 @@ exports[`flattenFragments > should flatten fragments in 'DirectivesFragmentDefin
 "{
   storefront {
     products {
-      name
-      upc @skip(if: false)
-      manufacturer @include(if: true) {
-        groundedAt
+      ... on Product {
+        name
+        upc @skip(if: false)
+        manufacturer @include(if: true) {
+          groundedAt
+        }
       }
     }
   }
@@ -51,16 +59,20 @@ exports[`flattenFragments > should flatten fragments in 'DuplicateFieldsFragment
 "{
   storefront {
     products {
-      name
-      upc
-      manufacturer {
+      ... on Product {
         name
-        groundedAt
+        upc
+        manufacturer {
+          name
+          groundedAt
+        }
       }
-      id
-      upc
-      manufacturer {
-        name
+      ... on Product {
+        id
+        upc
+        manufacturer {
+          name
+        }
       }
     }
   }
@@ -71,12 +83,16 @@ exports[`flattenFragments > should flatten fragments in 'NestedFragmentDefinitio
 "{
   storefront {
     products {
-      name
-      upc
-      manufacturer {
-        id
+      ... on Product {
         name
-        groundedAt
+        upc
+        manufacturer {
+          ... on Manufacturer {
+            id
+            name
+          }
+          groundedAt
+        }
       }
     }
   }
@@ -87,11 +103,15 @@ exports[`flattenFragments > should flatten fragments in 'NestedInlineFragment' 1
 "{
   storefront {
     products {
-      name
-      upc
-      manufacturer {
+      ... on Product {
         name
-        id
+        upc
+        manufacturer {
+          ... on Manufacturer {
+            name
+          }
+          id
+        }
       }
     }
   }

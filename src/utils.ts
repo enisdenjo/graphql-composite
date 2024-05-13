@@ -11,6 +11,14 @@ export function isRecord(val: unknown): val is Record<string, unknown> {
   return val != null && typeof val === 'object' && !Array.isArray(val);
 }
 
+/**
+ * Flattens fragment definitions to inline fragments of the query.
+ * Making sure the gather planning can just use the `Field` visitor and
+ * get proper order for the plan.
+ *
+ * We intentionally dont flatten fragments into just fields because
+ * of interfaces/unions support.
+ */
 export function flattenFragments(doc: DocumentNode): DocumentNode {
   function flattenSelectionNodeIntoSelections(
     node: SelectionNode,
@@ -18,6 +26,8 @@ export function flattenFragments(doc: DocumentNode): DocumentNode {
   ) {
     switch (node.kind) {
       case Kind.FIELD:
+      case Kind.INLINE_FRAGMENT: {
+        // we leave inline fragments as is because their types are important to interfaces/unions
         const selections: SelectionNode[] = [];
         dest.push({
           ...node,
@@ -30,12 +40,8 @@ export function flattenFragments(doc: DocumentNode): DocumentNode {
           flattenSelectionNodeIntoSelections(sel, selections);
         }
         break;
-      case Kind.INLINE_FRAGMENT:
-        for (const sel of node.selectionSet.selections) {
-          flattenSelectionNodeIntoSelections(sel, dest);
-        }
-        break;
-      case Kind.FRAGMENT_SPREAD:
+      }
+      case Kind.FRAGMENT_SPREAD: {
         const frag = doc.definitions.find(
           (d) =>
             d.kind === Kind.FRAGMENT_DEFINITION &&
@@ -46,10 +52,21 @@ export function flattenFragments(doc: DocumentNode): DocumentNode {
             `Fragment definition for "${node.name.value}" not found`,
           );
         }
+        // we convert a fragment definition to an inline fragment to retain the type information
+        const selections: SelectionNode[] = [];
+        dest.push({
+          kind: Kind.INLINE_FRAGMENT,
+          typeCondition: frag.typeCondition,
+          selectionSet: {
+            kind: Kind.SELECTION_SET,
+            selections,
+          },
+        });
         for (const sel of frag.selectionSet.selections) {
-          flattenSelectionNodeIntoSelections(sel, dest);
+          flattenSelectionNodeIntoSelections(sel, selections);
         }
         break;
+      }
     }
   }
 

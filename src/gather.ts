@@ -356,17 +356,15 @@ function insertResolversForGatherPlanCompositeField(
   pathPrefix: string,
 ) {
   for (const field of parent.fields) {
-    const typePlan = schemaPlan.types[parent.ofType];
-    if (!typePlan) {
-      throw new Error(
-        `Schema plan doesn't have the "${parent.ofType}" composite type`,
-      );
+    const objectPlan = schemaPlan.objects[parent.ofType];
+    if (!objectPlan) {
+      throw new Error(`Schema plan doesn't have the "${parent.ofType}" object`);
     }
 
-    const fieldPlan = typePlan.fields[field.name];
+    const fieldPlan = objectPlan.fields[field.name];
     if (!fieldPlan) {
       throw new Error(
-        `Schema plan "${typePlan.name}" composite type doesn't have a "${field.name}" field`,
+        `Schema plan "${objectPlan.name}" object doesn't have a "${field.name}" field`,
       );
     }
 
@@ -379,25 +377,25 @@ function insertResolversForGatherPlanCompositeField(
       // this field cannot be resolved from the parent's subgraph
       // add an dependant resolver to the parent for the field(s)
 
-      const typePlan = schemaPlan.types[parent.ofType];
-      if (!typePlan) {
+      const objectPlan = schemaPlan.objects[parent.ofType];
+      if (!objectPlan) {
         throw new Error(
-          `Schema plan doesn't have the "${parent.ofType}" composite type`,
+          `Schema plan doesn't have the "${parent.ofType}" object`,
         );
       }
 
-      const resolverPlan = Object.values(typePlan.resolvers).find((r) =>
+      const resolverPlan = Object.values(objectPlan.resolvers).find((r) =>
         fieldPlan.subgraphs.includes(r.subgraph),
       );
       if (!resolverPlan) {
         throw new Error(
-          `Schema plan composite type "${typePlan.name}" doesn't have a resolver for any of the "${fieldPlan.name}" field subgraphs`,
+          `Schema plan object "${objectPlan.name}" doesn't have a resolver for any of the "${fieldPlan.name}" field subgraphs`,
         );
       }
       if (!Object.keys(resolverPlan.variables).length) {
-        // TODO: composite type resolver must always have variables, right?
+        // TODO: object resolver must always have variables, right?
         throw new Error(
-          `Schema plan composite type "${typePlan.name}" field "${fieldPlan.name}" resolver doesn't require variables`,
+          `Schema plan object "${objectPlan.name}" field "${fieldPlan.name}" resolver doesn't require variables`,
         );
       }
 

@@ -7,6 +7,9 @@ export interface SchemaPlan {
   operations: {
     [name: string /* graphql.OperationDefinitionNode */]: SchemaPlanOperation;
   };
+  interfaces: {
+    [name in SchemaPlanInterface['name']]: SchemaPlanInterface;
+  };
   objects: {
     [name in SchemaPlanObject['name']]: SchemaPlanObject;
   };
@@ -22,58 +25,66 @@ export interface SchemaPlanOperation {
 export interface SchemaPlanOperationField {
   name: string;
   resolvers: {
-    [subgraph in SchemaPlanSubgraph['subgraph']]: SchemaPlanSubgraph &
-      SchemaPlanResolver; // TODO: operation field must always have a resolver?
+    [subgraph in SchemaPlanResolver['subgraph']]: SchemaPlanResolver; // TODO: operation field must always have a resolver?
+  };
+}
+
+export interface SchemaPlanInterface {
+  name: string;
+  resolvers: {
+    [subgraph in SchemaPlanInterfaceResolver['subgraph']]: SchemaPlanInterfaceResolver; // TODO: type can only have one resolver at subgraph?
+  };
+  fields: {
+    [name in SchemaPlanField['name']]: SchemaPlanField;
   };
 }
 
 export interface SchemaPlanObject {
   name: string;
+  /** List of interface names this type implements, if any. */
+  implements: SchemaPlanInterface['name'][];
   resolvers: {
-    [subgraph in SchemaPlanSubgraph['subgraph']]: SchemaPlanSubgraph &
-      SchemaPlanCompositeResolver; // TODO: type can only have one resolver at subgraph?
+    [subgraph in SchemaPlanObjectResolver['subgraph']]: SchemaPlanObjectResolver; // TODO: type can only have one resolver at subgraph?
   };
   fields: {
-    [name in SchemaPlanObjectField['name']]: SchemaPlanObjectField;
+    [name in SchemaPlanField['name']]: SchemaPlanField;
   };
 }
 
-export interface SchemaPlanObjectField {
+export interface SchemaPlanField {
   name: string;
   subgraphs: string[];
 }
 
-export interface SchemaPlanSubgraph {
-  /** Unique identifier of the subgraph source. Usually the name. */
+export interface SchemaPlanAnyResolver {
+  kind: 'interface' | 'object' | 'scalar';
+  /** Unique identifier of a specific subgraph. */
   subgraph: string;
-}
-
-export type SchemaPlanResolver =
-  | SchemaPlanCompositeResolver
-  | SchemaPlanScalarResolver;
-
-export interface SchemaPlanCompositeResolver {
-  kind: 'composite';
   /** The type resolved. */
   type: string;
   /**
-   * Concrete/unwrapped composite type of the {@link type resolved type}.
-   * Is actually the type of the `__export` fragment.
+   * Unwrapped type of the {@link type resolved type}.
    *
-   * For example, the type is `Product` if the {@link type resolved type} is:
+   * For example, it'll be `Product` if the {@link type resolved type} is:
    *   - `Product`
    *   - `Product!`
    *   - `[Product]!`
    *   - `[Product!]`
    *   - `[Product!]!`
+   *
+   * *_Same logic applies for `scalar` {@link kind}._
    */
   ofType: string;
   /**
-   * Operation to execute on the subgraph. The operation **must** include
-   * a spread of the `__export` fragment which will have the fields populated
-   * during the gather phase.
+   * Operation to execute on the subgraph.
    *
-   * A well-formatted operation like this in the {@link SchemaPlanFetchResolver}:
+   * The operation **must** include a spread of the `__export` fragment if the
+   * {@link kind} is either `interface` or `object`. Otherwise, the operation's deepest
+   * field is where the `scalar` is located.
+   *
+   * ---
+   *
+   * A well-formatted operation for `interface` and `object` {@link kind} is:
    * ```graphql
    * query ProductByUPC($upc: ID!) { product(upc: $upc) { ...__export } }
    * ```
@@ -81,43 +92,41 @@ export interface SchemaPlanCompositeResolver {
    * ```graphql
    * query ProductByUPC($upc: ID!) { product(upc: $upc) { ... on Product { upc name manufacturer { id } } } }
    * ```
+   *
+   * ---
+   *
+   * A well-formatted operation for `scalar` {@link kind} is:
+   * ```graphql
+   * query ProductNameByUPC($upc: ID!) { product(upc: $upc) { name } }
+   * ```
    */
   operation: string;
+  /** Necessary variables for performing the {@link operation}. */
   variables: {
     [name in SchemaPlanResolverVariable['name']]: SchemaPlanResolverVariable;
   };
 }
 
-export interface SchemaPlanScalarResolver {
-  kind: 'scalar';
-  /** The type resolved. */
-  type: string;
-  /**
-   * Concrete/unwrapped type of the {@link type resolved type}.
-   *
-   * For example, the type is `String` if the {@link type resolved type} is:
-   *   - `String`
-   *   - `String!`
-   *   - `[String]!`
-   *   - `[String!]`
-   *   - `[String!]!`
-   */
-  ofType: string;
-  /**
-   * Operation to execute on the subgraph. The operation's deepest
-   * field is where the scalar is located.
-   *
-   * A well-formatted operation looks like this:
-   * ```graphql
-   * query ProductNameUPC($upc: ID!) { product(upc: $upc) { name } }
-   * ```
-   *
-   */
-  operation: string;
-  variables: {
-    [name in SchemaPlanResolverVariable['name']]: SchemaPlanResolverVariable;
-  };
+export interface SchemaPlanInterfaceResolver extends SchemaPlanAnyResolver {
+  kind: 'interface';
 }
+
+export interface SchemaPlanObjectResolver extends SchemaPlanAnyResolver {
+  kind: 'object';
+}
+
+export interface SchemaPlanCompositeResolver extends SchemaPlanAnyResolver {
+  kind: 'interface' | 'object';
+}
+
+export interface SchemaPlanScalarResolver extends SchemaPlanAnyResolver {
+  kind: 'scalar';
+}
+
+export type SchemaPlanResolver =
+  | SchemaPlanInterfaceResolver
+  | SchemaPlanObjectResolver
+  | SchemaPlanScalarResolver;
 
 export type SchemaPlanResolverVariable =
   | SchemaPlanResolverUserVariable

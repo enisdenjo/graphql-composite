@@ -42,7 +42,7 @@ export const schema: SchemaPlan = {
           resolvers: {
             manufacturers: {
               subgraph: 'manufacturers',
-              kind: 'composite',
+              kind: 'object',
               type: 'Manufacturer',
               ofType: 'Manufacturer',
               operation: /* GraphQL */ `
@@ -88,7 +88,7 @@ export const schema: SchemaPlan = {
           resolvers: {
             products: {
               subgraph: 'products',
-              kind: 'composite',
+              kind: 'object',
               type: 'Product',
               ofType: 'Product',
               operation: /* GraphQL */ `
@@ -112,7 +112,7 @@ export const schema: SchemaPlan = {
           resolvers: {
             products: {
               subgraph: 'products',
-              kind: 'composite',
+              kind: 'object',
               type: '[Product]!',
               ofType: 'Product',
               operation: /* GraphQL */ `
@@ -177,7 +177,7 @@ export const schema: SchemaPlan = {
           resolvers: {
             storefronts: {
               subgraph: 'storefronts',
-              kind: 'composite',
+              kind: 'object',
               type: 'Storefront',
               ofType: 'Storefront',
               operation: /* GraphQL */ `
@@ -199,9 +199,11 @@ export const schema: SchemaPlan = {
       },
     },
   },
+  interfaces: {},
   objects: {
     Manufacturer: {
       name: 'Manufacturer',
+      implements: [],
       fields: {
         id: {
           name: 'id',
@@ -219,7 +221,7 @@ export const schema: SchemaPlan = {
       resolvers: {
         manufacturers: {
           subgraph: 'manufacturers',
-          kind: 'composite',
+          kind: 'object',
           type: 'Manufacturer',
           ofType: 'Manufacturer',
           operation: /* GraphQL */ `
@@ -239,7 +241,7 @@ export const schema: SchemaPlan = {
         },
         products: {
           subgraph: 'products',
-          kind: 'composite',
+          kind: 'object',
           type: 'Manufacturer',
           ofType: 'Manufacturer',
           operation: /* GraphQL */ `
@@ -261,6 +263,7 @@ export const schema: SchemaPlan = {
     },
     Product: {
       name: 'Product',
+      implements: [],
       fields: {
         manufacturer: {
           name: 'manufacturer',
@@ -282,7 +285,7 @@ export const schema: SchemaPlan = {
       resolvers: {
         products: {
           subgraph: 'products',
-          kind: 'composite',
+          kind: 'object',
           type: 'Product',
           ofType: 'Product',
           operation: /* GraphQL */ `
@@ -302,7 +305,7 @@ export const schema: SchemaPlan = {
         },
         storefronts: {
           subgraph: 'storefronts',
-          kind: 'composite',
+          kind: 'object',
           type: 'Product',
           ofType: 'Product',
           operation: /* GraphQL */ `
@@ -324,6 +327,7 @@ export const schema: SchemaPlan = {
     },
     Storefront: {
       name: 'Storefront',
+      implements: [],
       fields: {
         id: {
           name: 'id',
@@ -345,7 +349,7 @@ export const schema: SchemaPlan = {
       resolvers: {
         storefronts: {
           subgraph: 'storefronts',
-          kind: 'composite',
+          kind: 'object',
           type: 'Storefront',
           ofType: 'Storefront',
           operation: /* GraphQL */ `

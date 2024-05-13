@@ -1,5 +1,9 @@
-import { parse, print } from 'graphql';
+import { Kind, OperationTypeNode, parse, print } from 'graphql';
 import { describe, expect, it } from 'vitest';
+import {
+  createSelectionsForExports,
+  GatherPlanCompositeResolverExport,
+} from '../src/gather.js';
 import { flattenFragments } from '../src/utils.js';
 
 describe('flattenFragments', () => {

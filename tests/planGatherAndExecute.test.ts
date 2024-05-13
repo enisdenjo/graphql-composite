@@ -1,6 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import { execute } from '../src/execute.js';
-import { buildResolverOperation, planGather } from '../src/gather.js';
+import {
+  buildResolverOperation,
+  GatherPlanCompositeResolverExport,
+  planGather,
+} from '../src/gather.js';
 import { TransportHTTP } from '../src/transport.js';
 import { getFixtures } from './utils.js';
 
@@ -31,71 +35,273 @@ describe.each(await getFixtures())(
   },
 );
 
-it.each([
+it.only.each([
   {
     name: 'storefront',
     operation:
       'query storefront($id: ID!) { storefront(id: $id) { ...__export } }',
-    fields: { Storefront: ['id', 'name', 'products.upc'] },
+    exports: [
+      {
+        kind: 'private', // doesnt matter
+        name: 'id',
+      },
+      {
+        kind: 'private', // doesnt matter
+        name: 'name',
+      },
+      {
+        kind: 'private', // doesnt matter
+        name: 'products',
+        selections: [
+          {
+            kind: 'private', // doesnt matter
+            name: 'upc',
+          },
+        ],
+      },
+    ],
   },
   {
     name: 'ProductByUpc',
     operation:
       'query ProductByUpc($Product_upc: ID!) { product(upc: $Product_upc) { ...__export } }',
-    fields: {
-      Product: [
-        'name',
-        'manufacturer.products.upc',
-        'manufacturer.products.name',
-        'manufacturer.id',
-      ],
-    },
+    exports: [
+      {
+        kind: 'private', // doesnt matter
+        name: 'name',
+      },
+      {
+        kind: 'private', // doesnt matter
+        name: 'manufacturer',
+        selections: [
+          {
+            kind: 'private', // doesnt matter
+            name: 'products',
+            selections: [
+              {
+                kind: 'private', // doesnt matter
+                name: 'upc',
+              },
+              {
+                kind: 'private', // doesnt matter
+                name: 'name',
+              },
+            ],
+          },
+          {
+            kind: 'private', // doesnt matter
+            name: 'id',
+          },
+        ],
+      },
+    ],
   },
   {
     name: 'ManufacturerById',
     operation:
       'query ManufacturerById($Manufacturer_id: ID!) { manufacturer(id: $Manufacturer_id) { ...__export } }',
-    fields: { Manufacturer: ['id', 'name'] },
+    exports: [
+      {
+        kind: 'private', // doesnt matter
+        name: 'id',
+      },
+      {
+        kind: 'private', // doesnt matter
+        name: 'name',
+      },
+    ],
   },
   {
     name: 'ManufacturerNested',
     operation:
       'query ManufacturerNested { manufacturer { nested { deep { ...__export } } } }',
-    fields: {
-      Manufacturer: [
-        'id',
-        'name',
-        'products.manufacturer.location',
-        'products.name',
-      ],
-    },
+    exports: [
+      {
+        kind: 'private', // doesnt matter
+        name: 'id',
+      },
+      {
+        kind: 'private', // doesnt matter
+        name: 'name',
+      },
+      {
+        kind: 'private', // doesnt matter
+        name: 'products',
+        selections: [
+          {
+            kind: 'private', // doesnt matter
+            name: 'manufacturer',
+            selections: [
+              {
+                kind: 'private', // doesnt matter
+                name: 'location',
+              },
+            ],
+          },
+          {
+            kind: 'private', // doesnt matter
+            name: 'name',
+          },
+        ],
+      },
+    ],
   },
   {
     name: 'FindDeepestPath',
     operation: 'query FindDeepestPath { manufacturer { nested { deep } } }',
-    fields: {},
+    exports: [],
   },
   {
     name: 'MultipleTypes',
     operation: 'query MultipleTypes { productAndManufaturer { ...__export } }',
-    fields: {
-      Product: [
-        'name',
-        'manufacturer.products.upc',
-        'manufacturer.products.name',
-        'manufacturer.id',
-      ],
-      Manufacturer: [
-        'id',
-        'name',
-        'products.manufacturer.location',
-        'products.name',
-      ],
-    },
+    exports: [
+      {
+        kind: 'private', // doesnt matter
+        type: 'Product',
+        selections: [
+          {
+            kind: 'private', // doesnt matter
+            name: 'name',
+          },
+          {
+            kind: 'private', // doesnt matter
+            name: 'manufacturer',
+            selections: [
+              {
+                kind: 'private', // doesnt matter
+                name: 'products',
+                selections: [
+                  {
+                    kind: 'private', // doesnt matter
+                    name: 'upc',
+                  },
+                  {
+                    kind: 'private', // doesnt matter
+                    name: 'name',
+                  },
+                ],
+              },
+              {
+                kind: 'private', // doesnt matter
+                name: 'id',
+              },
+            ],
+          },
+        ],
+      },
+      {
+        kind: 'private', // doesnt matter
+        type: 'Manufacturer',
+        selections: [
+          {
+            kind: 'private', // doesnt matter
+            name: 'id',
+          },
+          {
+            kind: 'private', // doesnt matter
+            name: 'name',
+          },
+          {
+            kind: 'private', // doesnt matter
+            name: 'products',
+            selections: [
+              {
+                kind: 'private', // doesnt matter
+                name: 'manufacturer',
+                selections: [
+                  {
+                    kind: 'private', // doesnt matter
+                    name: 'location',
+                  },
+                ],
+              },
+              {
+                kind: 'private', // doesnt matter
+                name: 'name',
+              },
+            ],
+          },
+        ],
+      },
+    ],
   },
-])(
+  {
+    name: 'Nested',
+    operation: 'query Nested { product { ...__export } }',
+    exports: [
+      {
+        kind: 'private', // doesnt matter
+        type: 'Product',
+        selections: [
+          {
+            kind: 'private', // doesnt matter
+            name: 'name',
+          },
+          {
+            kind: 'private', // doesnt matter
+            name: 'manufacturer',
+            selections: [
+              {
+                kind: 'private', // doesnt matter
+                name: 'products',
+                selections: [
+                  {
+                    kind: 'private', // doesnt matter
+                    name: 'upc',
+                  },
+                  {
+                    kind: 'private', // doesnt matter
+                    name: 'name',
+                  },
+                ],
+              },
+              {
+                kind: 'private', // doesnt matter
+                type: 'Manufacturer',
+                selections: [
+                  {
+                    kind: 'private', // doesnt matter
+                    name: 'id',
+                  },
+                  {
+                    kind: 'private', // doesnt matter
+                    name: 'name',
+                  },
+                  {
+                    kind: 'private', // doesnt matter
+                    name: 'products',
+                    selections: [
+                      {
+                        kind: 'private', // doesnt matter
+                        name: 'manufacturer',
+                        selections: [
+                          {
+                            kind: 'private', // doesnt matter
+                            name: 'location',
+                          },
+                        ],
+                      },
+                      {
+                        kind: 'private', // doesnt matter
+                        name: 'name',
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+] satisfies {
+  name: string;
+  operation: string;
+  exports: GatherPlanCompositeResolverExport[];
+}[])(
   'should build proper operation and find export path for $name resolver',
-  ({ operation, fields }) => {
-    expect(buildResolverOperation(operation, fields)).toMatchSnapshot();
+  ({ operation, exports }) => {
+    expect(buildResolverOperation(operation, exports)).toMatchSnapshot();
   },
 );

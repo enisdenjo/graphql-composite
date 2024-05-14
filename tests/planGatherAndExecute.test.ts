@@ -35,7 +35,7 @@ describe.each(await getFixtures())(
   },
 );
 
-it.only.each([
+it.each([
   {
     name: 'storefront',
     operation:

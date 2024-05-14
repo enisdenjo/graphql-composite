@@ -1,11 +1,7 @@
 import { ExecutionResult, GraphQLError } from 'graphql';
 import getAtPath from 'lodash.get';
 import setAtPath from 'lodash.set';
-import {
-  GatherPlan,
-  GatherPlanCompositeResolverExport,
-  GatherPlanResolver,
-} from './gather.js';
+import { GatherPlan, GatherPlanResolver, OperationExport } from './gather.js';
 import { Transport } from './transport.js';
 
 export type SourceTransports = {
@@ -316,18 +312,13 @@ function populateResultWithExportData(
  * ]
  * ```
  */
-function getPublicPathsOfExport(
-  exp: GatherPlanCompositeResolverExport,
-): string[][] {
-  if (exp.kind === 'private') {
+function getPublicPathsOfExport(exp: OperationExport): string[][] {
+  if (exp.private) {
     // we care about public exports only
     return [];
   }
 
-  if (!exp.selections?.length) {
-    if (!('name' in exp)) {
-      throw new Error('Export without selections must have a name');
-    }
+  if (exp.kind === 'scalar') {
     return [[exp.name]];
   }
 

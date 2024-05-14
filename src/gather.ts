@@ -50,11 +50,12 @@ export interface GatherPlanCompositeResolver
   field: GatherPlanResolverField;
   /** The path to the `__export` fragment in the execution result. */
   pathToExportData: string[];
-  /** The exports of the resolver that are to be available for the
-   * includes; and, when `public` {@link GatherPlanCompositeResolverExport.kind kind},
+  /**
+   * The exports of the resolver that are to be available for the
+   * {@link includes}; and, when public (not {@link OperationExport.private private}),
    * also in the final result for the user.
    */
-  exports: GatherPlanCompositeResolverExport[];
+  exports: OperationExport[];
   /**
    * Other resolvers that depend on fields from this resolver.
    * These are often resolvers of fields that don't exist in the resolver.
@@ -64,43 +65,6 @@ export interface GatherPlanCompositeResolver
    * Only composite resolvers can include composite resolvers.
    */
   includes: Record<string, GatherPlanCompositeResolver>;
-}
-
-export type GatherPlanCompositeResolverExport =
-  | GatherPlanCompositeResolverExportField
-  | GatherPlanCompositeResolverExportFragment;
-
-export interface GatherPlanCompositeResolverExportField {
-  /**
-   * Whether the export is public or private.
-   *
-   * `public` exports are are also available in the final result for the user,
-   * while `private` exports are not available to the user. They're often used
-   * when parent has to resolve additional fields for its includes.
-   */
-  kind: 'private' | 'public';
-  /** Name of the field. */
-  name: string;
-  /** Nested selections of the export. */
-  selections?: GatherPlanCompositeResolverExport[];
-}
-
-export interface GatherPlanCompositeResolverExportFragment {
-  /**
-   * Whether the export is public or private.
-   *
-   * `public` exports are are also available in the final result for the user,
-   * while `private` exports are not available to the user. They're often used
-   * when parent has to resolve additional fields for its includes.
-   */
-  kind: 'private' | 'public';
-  /**
-   * The type of the parent for this selection.
-   * Will be used as inline fragment type when rendering.
-   */
-  type: string;
-  /** Nested selections of the export. */
-  selections: GatherPlanCompositeResolverExport[];
 }
 
 export interface GatherPlanScalarResolver extends SchemaPlanScalarResolver {
@@ -374,7 +338,7 @@ function insertResolversForGatherPlanCompositeField(
   schemaPlan: SchemaPlan,
   field: GatherPlanResolverCompositeField,
   parentResolver: GatherPlanCompositeResolver,
-  parentExport: GatherPlanCompositeResolverExport | null,
+  parentExport: OperationCompositeExport | null, // TODO: support fragment kind
 ) {
   for (const sel of field.selections) {
     let fieldPlan: SchemaPlanField;
@@ -459,9 +423,9 @@ function insertResolversForGatherPlanCompositeField(
       for (const variable of Object.values(resolverPlan.variables).filter(
         isSchemaPlanResolverSelectVariable,
       )) {
-        if (!parentExport?.selections) {
+        if (!parentExport) {
           throw new Error(
-            'Cannot select variables from a parent that doesnt have an export with selections',
+            'Cannot select variables from a parent without export',
           );
         }
 
@@ -485,7 +449,8 @@ function insertResolversForGatherPlanCompositeField(
           // TODO: if the parent cant resolve, insert here the necessary field resolver
           //       add this resolver to its includes
           parentExport.selections.push({
-            kind: 'private',
+            private: true,
+            kind: 'scalar', // TODO: do variables alway select scalars?
             name: variable.select,
           });
         }
@@ -502,15 +467,20 @@ function insertResolversForGatherPlanCompositeField(
       parentResolver.includes[field.name] = resolver;
     }
 
-    const exp: GatherPlanCompositeResolverExport = {
-      kind: 'public',
-      name: sel.name,
-    };
+    // TODO: support fragment kind
+    const exp: OperationExport =
+      sel.kind === 'composite'
+        ? {
+            kind: 'composite',
+            name: sel.name,
+            selections: [],
+          }
+        : {
+            kind: 'scalar',
+            name: sel.name,
+          };
 
     if (resolver === parentResolver && parentExport) {
-      if (!parentExport.selections) {
-        parentExport.selections = [];
-      }
       parentExport.selections.push(exp);
     } else {
       resolver.exports.push(exp);
@@ -521,7 +491,8 @@ function insertResolversForGatherPlanCompositeField(
         schemaPlan,
         sel,
         resolver,
-        exp,
+        // export is composite when selection is composite (see `exp` definition above)
+        exp as OperationCompositeExport,
       );
     }
   }
@@ -547,9 +518,52 @@ function buildAndInsertOperationsInResolvers(
   }
 }
 
+export type OperationExport =
+  | OperationScalarExport
+  | OperationCompositeExport
+  | OperationFragmentExport;
+
+export interface OperationExportAvailability {
+  /**
+   * Whether the export is public or private.
+   *
+   * Public (not private) exports are are also available in the final result for the user,
+   * while private exports are not available to the user. Private exports are often used
+   * when parent has to resolve additional fields for its includes.
+   *
+   * This flag only changes the behaviour of resolver execution, it does not alter the operation.
+   */
+  private?: true;
+}
+
+export interface OperationScalarExport extends OperationExportAvailability {
+  kind: 'scalar';
+  /** Name of the scalar field. */
+  name: string;
+}
+
+export interface OperationCompositeExport extends OperationExportAvailability {
+  kind: 'composite';
+  /** Name of the composite field. */
+  name: string;
+  /** Nested selections of the field. */
+  selections: OperationExport[];
+}
+
+export interface OperationFragmentExport extends OperationExportAvailability {
+  kind: 'fragment';
+  /**
+   * The type of the fragment for this selection.
+   * Will be used as the inline fragment's type when rendering.
+   */
+  type: string;
+  /** Selections of the fragment. */
+  selections: OperationExport[];
+}
+
 export function buildResolverOperation(
   operation: string,
-  exports: GatherPlanCompositeResolverExport[],
+  exports: OperationExport[],
 ): { operation: string; pathToExportData: string[] } {
   const doc = parse(operation);
   const def = doc.definitions.find((d) => d.kind === Kind.OPERATION_DEFINITION);
@@ -621,10 +635,7 @@ function findDeepestFieldPath(node: ASTNode, path: string[]): string[] {
 }
 
 /**
- * Creates a GraphQL selection set for dot-notation nested list of fields in fragments.
- * It will expand the fields' dots to nested paths.
- *
- * For example, if {@link exports} is:
+ * If {@link exports} is:
  * ```json
  * [
  *   {
@@ -705,12 +716,11 @@ function findDeepestFieldPath(node: ASTNode, path: string[]): string[] {
  * ```
  */
 function createSelectionsForExports(
-  exports: GatherPlanCompositeResolverExport[],
+  exports: OperationExport[],
 ): readonly SelectionNode[] {
   const sels: SelectionNode[] = [];
   for (const exp of exports) {
-    if ('type' in exp) {
-      // inline fragment
+    if (exp.kind === 'fragment') {
       sels.push({
         kind: Kind.INLINE_FRAGMENT,
         typeCondition: {
@@ -725,8 +735,7 @@ function createSelectionsForExports(
           selections: createSelectionsForExports(exp.selections),
         },
       });
-    } else {
-      // field
+    } else if (exp.kind === 'composite') {
       sels.push({
         kind: Kind.FIELD,
         name: {
@@ -735,9 +744,15 @@ function createSelectionsForExports(
         },
         selectionSet: {
           kind: Kind.SELECTION_SET,
-          selections: exp.selections
-            ? createSelectionsForExports(exp.selections)
-            : [],
+          selections: createSelectionsForExports(exp.selections),
+        },
+      });
+    } /* exp.kind === 'scalar' */ else {
+      sels.push({
+        kind: Kind.FIELD,
+        name: {
+          kind: Kind.NAME,
+          value: exp.name,
         },
       });
     }

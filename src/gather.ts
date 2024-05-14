@@ -521,7 +521,7 @@ function insertResolversForGatherPlanCompositeField(
   }
 }
 
-export function buildAndInsertOperationsInResolvers(
+function buildAndInsertOperationsInResolvers(
   schemaPlan: SchemaPlan,
   resolvers: GatherPlanResolver[],
 ) {
@@ -698,7 +698,7 @@ function findDeepestFieldPath(node: ASTNode, path: string[]): string[] {
  * }
  * ```
  */
-export function createSelectionsForExports(
+function createSelectionsForExports(
   exports: GatherPlanCompositeResolverExport[],
 ): readonly SelectionNode[] {
   const sels: SelectionNode[] = [];

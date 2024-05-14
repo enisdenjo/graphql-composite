@@ -620,44 +620,81 @@ function findDeepestFieldPath(node: ASTNode, path: string[]): string[] {
  *
  * For example, if {@link exports} is:
  * ```json
- * {
- *   "type": "Product",
- *   "path": "",
- *   "selections": [
- *     "name",
- *     {
- *       "type": "Manufacturer",
- *       "path": "manufacturer",
- *       "selections": [
- *         "name",
- *         {
- *           "type": "Product",
- *           "path": "products",
- *           "selections": ["upc"],
- *          },
- *        ],
- *     },
- *     "manufacturer.id",
- *     "price",
- *   ],
- * }
+ * [
+ *   {
+ *     "type":"Product",
+ *     "selections":[
+ *       {
+ *         "name":"name"
+ *       },
+ *       {
+ *         "name":"manufacturer",
+ *         "selections":[
+ *           {
+ *             "name":"products",
+ *             "selections":[
+ *               {
+ *                 "name":"upc"
+ *               },
+ *               {
+ *                 "name":"name"
+ *               }
+ *             ]
+ *           },
+ *           {
+ *             "type":"Manufacturer",
+ *             "selections":[
+ *               {
+ *                 "name":"id"
+ *               },
+ *               {
+ *                 "name":"name"
+ *               },
+ *               {
+ *                 "name":"products",
+ *                 "selections":[
+ *                   {
+ *                     "name":"manufacturer",
+ *                     "selections":[
+ *                       {
+ *                         "kind":"private",
+ *                         "name":"location"
+ *                       }
+ *                     ]
+ *                   },
+ *                   {
+ *                     "name":"name"
+ *                   }
+ *                 ]
+ *               }
+ *             ]
+ *           }
+ *         ]
+ *       }
+ *     ]
+ *   }
+ * ]
  * ```
  * the printed result will be:
  * ```graphql
  * ... on Product {
  *   name
  *   manufacturer {
+ *     products {
+ *       upc
+ *       name
+ *     }
  *     ... on Manufacturer {
+ *       id
  *       name
  *       products {
- *         ... on Product {
- *           upc
+ *         manufacturer {
+ *           location
  *         }
+ *         name
  *       }
  *     }
- *     id
  *   }
- *   price
  * }
  * ```
  */

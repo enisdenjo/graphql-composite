@@ -1,7 +1,11 @@
 import { ExecutionResult, GraphQLError } from 'graphql';
 import getAtPath from 'lodash.get';
 import setAtPath from 'lodash.set';
-import { GatherPlan, GatherPlanResolver } from './gather.js';
+import {
+  GatherPlan,
+  GatherPlanCompositeResolverExport,
+  GatherPlanResolver,
+} from './gather.js';
 import { Transport } from './transport.js';
 
 export type SourceTransports = {
@@ -239,7 +243,7 @@ function populateResultWithExportData(
     return;
   }
 
-  for (const exportPath of resolver.public.map((e) => e.split('.'))) {
+  for (const exportPath of resolver.exports.flatMap(getPublicPathsOfExport)) {
     const lastKey = exportPath[exportPath.length - 1];
     const valBeforeLast =
       exportPath.length > 1
@@ -269,4 +273,74 @@ function populateResultWithExportData(
       );
     }
   }
+}
+
+/**
+ * TODO: write tests
+ *
+ * Creates a list of paths to all public exports considering nested selections.
+ *
+ * For example, if {@link exp} is:
+ * ```json
+ * {
+ *   "kind": "public",
+ *   "name": "products",
+ *   "selections": [
+ *     {
+ *       "kind": "public",
+ *       "name": "upc"
+ *     },
+ *     {
+ *       "kind": "public",
+ *       "name": "manufacturer",
+ *       "selections": [
+ *         {
+ *           "kind": "public",
+ *           "name": "name"
+ *         }
+ *       ]
+ *     },
+ *     {
+ *       "kind": "public",
+ *       "name": "price"
+ *     }
+ *   ]
+ * }
+ * ```
+ * the result will be:
+ * ```json
+ * [
+ *   ["products", "upc"],
+ *   ["products", "manufacturer", "name"],
+ *   ["products", "price"]
+ * ]
+ * ```
+ */
+function getPublicPathsOfExport(
+  exp: GatherPlanCompositeResolverExport,
+): string[][] {
+  if (exp.kind === 'private') {
+    // we care about public exports only
+    return [];
+  }
+
+  if (!exp.selections?.length) {
+    if (!('name' in exp)) {
+      throw new Error('Export without selections must have a name');
+    }
+    return [[exp.name]];
+  }
+
+  const paths: string[][] = [];
+  for (const sel of exp.selections || []) {
+    const selPaths = getPublicPathsOfExport(sel);
+    for (const path of selPaths) {
+      if ('name' in exp) {
+        paths.push([exp.name, ...path]);
+      } else {
+        paths.push(path);
+      }
+    }
+  }
+  return paths;
 }

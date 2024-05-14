@@ -16,6 +16,7 @@ import {
   visitWithTypeInfo,
 } from 'graphql';
 import {
+  isSchemaPlanResolverSelectVariable,
   SchemaPlan,
   SchemaPlanCompositeResolver,
   SchemaPlanField,
@@ -354,7 +355,7 @@ function planGatherResolversForOperationFields(
         schemaPlan,
         operationField,
         resolver,
-        '',
+        null,
       );
     }
 
@@ -371,16 +372,16 @@ function planGatherResolversForOperationFields(
 
 function insertResolversForGatherPlanCompositeField(
   schemaPlan: SchemaPlan,
-  parent: GatherPlanResolverCompositeField,
+  field: GatherPlanResolverCompositeField,
   parentResolver: GatherPlanCompositeResolver,
-  pathPrefix: string,
+  parentExport: GatherPlanCompositeResolverExport | null,
 ) {
-  for (const field of parent.selections) {
+  for (const sel of field.selections) {
     let fieldPlan: SchemaPlanField;
-    const interfacePlan = schemaPlan.interfaces[parent.ofType];
+    const interfacePlan = schemaPlan.interfaces[field.ofType];
     if (interfacePlan) {
       // field is in an interface type
-      const interfaceFieldPlan = interfacePlan.fields[field.name];
+      const interfaceFieldPlan = interfacePlan.fields[sel.name];
       if (interfaceFieldPlan) {
         fieldPlan = interfaceFieldPlan;
       } else {
@@ -388,53 +389,55 @@ function insertResolversForGatherPlanCompositeField(
         const objectPlan = Object.values(schemaPlan.objects).find(
           (o) =>
             o.implements.includes(interfacePlan.name) && // object must implement the interface
-            o.name === field.parentType,
+            o.name === sel.parentType,
         );
         if (!objectPlan) {
           throw new Error(
-            `Schema plan doesn't have a "${parent.ofType}" object implementing the "${interfacePlan.name}" interface`,
+            `Schema plan doesn't have a "${field.ofType}" object implementing the "${interfacePlan.name}" interface`,
           );
         }
-        const objectFieldPlan = objectPlan.fields[field.name];
+        const objectFieldPlan = objectPlan.fields[sel.name];
         if (!objectFieldPlan) {
           throw new Error(
-            `Schema plan "${objectPlan.name}" object doesn't have a "${field.name}" field`,
+            `Schema plan "${objectPlan.name}" object doesn't have a "${sel.name}" field`,
           );
         }
         fieldPlan = objectFieldPlan;
       }
     } else {
       // field is in an object type
-      const objectPlan = schemaPlan.objects[parent.ofType];
+      const objectPlan = schemaPlan.objects[field.ofType];
       if (!objectPlan) {
         throw new Error(
-          `Schema plan doesn't have the "${parent.ofType}" object`,
+          `Schema plan doesn't have the "${field.ofType}" object`,
         );
       }
-      const objectFieldPlan = objectPlan.fields[field.name];
+      const objectFieldPlan = objectPlan.fields[sel.name];
       if (!objectFieldPlan) {
         throw new Error(
-          `Schema plan "${objectPlan.name}" object doesn't have a "${field.name}" field`,
+          `Schema plan "${objectPlan.name}" object doesn't have a "${sel.name}" field`,
         );
       }
       fieldPlan = objectFieldPlan;
     }
 
+    // use the parent resolver if the field is available in its subgraph;
+    // if not, try finding a resolver in parents includes
     let resolver = fieldPlan.subgraphs.includes(parentResolver.subgraph)
       ? parentResolver
       : Object.values(parentResolver.includes).find((r) =>
           fieldPlan.subgraphs.includes(r.subgraph),
         );
     if (!resolver) {
-      // this field cannot be resolved from the parent's subgraph
+      // this field cannot be resolved using existing resolvers
       // add an dependant resolver to the parent for the field(s)
 
       // TODO: handle interfaces
 
-      const objectPlan = schemaPlan.objects[parent.ofType];
+      const objectPlan = schemaPlan.objects[field.ofType];
       if (!objectPlan) {
         throw new Error(
-          `Schema plan doesn't have the "${parent.ofType}" object`,
+          `Schema plan doesn't have the "${field.ofType}" object`,
         );
       }
 
@@ -453,10 +456,15 @@ function insertResolversForGatherPlanCompositeField(
         );
       }
 
-      for (const variable of Object.values(resolverPlan.variables)) {
-        if (!('select' in variable)) {
-          continue;
+      for (const variable of Object.values(resolverPlan.variables).filter(
+        isSchemaPlanResolverSelectVariable,
+      )) {
+        if (!parentExport?.selections) {
+          throw new Error(
+            'Cannot select variables from a parent that doesnt have an export with selections',
+          );
         }
+
         // make sure parent resolver exports fields that are needed
         // as variables to perform the resolution
         //
@@ -464,58 +472,56 @@ function insertResolversForGatherPlanCompositeField(
         // to parents export for resolution during execution
         //
         // *parent resolver is the one that {@link GatherPlanCompositeResolver.includes} this resolver
-        const path = `${pathPrefix}${parent.name}.${variable.select}`;
-        const parentExport = parentResolver.public.find((e) => e === path);
-        if (!parentExport) {
+        if (
+          !parentExport.selections.find((e) => {
+            // TODO: support selects of nested paths, like `manufacturer.id`
+            // @ts-expect-error support selecting a variable thats on the root but under a fragment
+            return e.name === variable.select;
+          })
+        ) {
           // TODO: disallow pushing same path multiple times
           // TODO: what happens if the parent cannot resolve this field?
 
           // TODO: if the parent cant resolve, insert here the necessary field resolver
           //       add this resolver to its includes
-          parentResolver.private.push(path);
+          parentExport.selections.push({
+            kind: 'private',
+            name: variable.select,
+          });
         }
       }
 
       resolver = {
         ...resolverPlan,
-        field,
+        field: sel,
         pathToExportData: [],
         exports: [],
         includes: {},
       };
 
-      parentResolver.includes[`${pathPrefix}${parent.name}`] = resolver;
+      parentResolver.includes[field.name] = resolver;
     }
 
-    const resolvingParentType = resolver.ofType === parent.ofType;
+    const exp: GatherPlanCompositeResolverExport = {
+      kind: 'public',
+      name: sel.name,
+    };
 
-    const path = `${pathPrefix}${
-      resolvingParentType
-        ? ''
-        : // include the parent field only if we're NOT directly resolving
-          // the parent; meaning, this field is a nested field of the parent
-          `${parent.name}.`
-    }${field.name}`;
-
-    if (field.kind === 'composite') {
-      // dont include the root of the composite type as an export path
-      //   1. operation `{ products { name } }` should have the following exports:
-      //      ['products.name'] and not ['products', 'products.name']
-      //   2. operation `{ products { manifacturer { name } } }` should have the following exports:
-      //      ['products.manifacturer.name'] and not ['products', 'products.manifacturer', 'products.manifacturer.name']
+    if (resolver === parentResolver && parentExport) {
+      if (!parentExport.selections) {
+        parentExport.selections = [];
+      }
+      parentExport.selections.push(exp);
     } else {
-      resolver.public.push(path);
+      resolver.exports.push(exp);
     }
 
-    if (field.kind === 'composite') {
+    if (sel.kind === 'composite') {
       insertResolversForGatherPlanCompositeField(
         schemaPlan,
-        field,
+        sel,
         resolver,
-        resolvingParentType
-          ? pathPrefix
-          : // same reasoning as above, this field is a nested field of the parent
-            path + '.',
+        exp,
       );
     }
   }

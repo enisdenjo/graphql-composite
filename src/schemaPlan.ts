@@ -150,3 +150,9 @@ export interface SchemaPlanResolverSelectVariable {
   /** Which field in the type to use (select) as this variable. */
   select: string;
 }
+
+export function isSchemaPlanResolverSelectVariable(
+  v: SchemaPlanResolverVariable,
+): v is SchemaPlanResolverSelectVariable {
+  return v.kind === 'select';
+}

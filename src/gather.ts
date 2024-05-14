@@ -124,6 +124,7 @@ export function planGather(
 
   const fields: OperationField[] = [];
   const entries: string[] = [];
+  let depth = 0;
   const typeInfo = new TypeInfo(buildSchema(schemaPlan.schema));
   let currOperation: GatherPlanOperation;
   visit(
@@ -139,8 +140,26 @@ export function planGather(
         };
         gatherPlan.operations.push(currOperation);
       },
+      InlineFragment: {
+        enter(node) {
+          depth++;
+          if (!node.typeCondition) {
+            throw new Error('Inline fragment must have a type condition');
+          }
+          insertOperationFieldAtDepth(fields, depth - 1, {
+            kind: 'fragment',
+            path: entries.join('.'),
+            typeCondition: node.typeCondition.name.value,
+            selections: [],
+          });
+        },
+        leave() {
+          depth--;
+        },
+      },
       Field: {
         enter(node) {
+          depth++;
           entries.push(node.name.value);
 
           const fieldDef = typeInfo.getFieldDef();
@@ -175,21 +194,19 @@ export function planGather(
           }
 
           if (isCompositeType(ofType)) {
-            insertOperationFieldAtDepth(fields, entries.length - 1, {
+            insertOperationFieldAtDepth(fields, depth - 1, {
               kind: 'object',
               path: entries.join('.'),
               name: node.name.value,
-              parentType: parentType.name,
               type: String(type),
               ofType: ofType.name,
               inlineVariables,
               selections: [],
             });
           } else {
-            insertOperationFieldAtDepth(fields, entries.length - 1, {
+            insertOperationFieldAtDepth(fields, depth - 1, {
               kind: 'scalar',
               path: entries.join('.'),
-              parentType: parentType.name,
               name: node.name.value,
               type: String(type),
               ofType: ofType.name,
@@ -198,6 +215,7 @@ export function planGather(
           }
         },
         leave() {
+          depth--;
           entries.pop();
         },
       },
@@ -215,33 +233,29 @@ export function planGather(
   return gatherPlan;
 }
 
-interface OperationFieldDefinition {
+interface OperationScalarField extends OperationScalarExport {
   /** Dot-notation path to the field in the operation. */
   path: string;
+  /** The type this field resolves. */
+  type: string;
   /**
-   * The name of the field in the operation.
-   * It matches the last part of {@link path field's path}.
-   */
-  name: string;
-  /**
-   * The type of this field's parent. Useful for fragments spread
-   * within interfaces.
+   * Concrete/unwrapped type of the {@link type field type}.
    *
-   * If you have a query:
-   * ```graphql
-   * {
-   *   animal(name: "Cathew") {
-   *     name
-   *     ... on Cat {
-   *       meows
-   *     }
-   *   }
-   * }
-   * ```
-   * the parent type of the `animal.meows` path will be `Cat` (and not `Animal`),
-   * while the type of the `animal.name` path will remain `Animal`.
+   * For example, it's `String` if the {@link type field type} is:
+   *   - `String`
+   *   - `String!`
+   *   - `[String]!`
+   *   - `[String!]`
+   *   - `[String!]!`
    */
-  parentType: string;
+  ofType: string;
+  /** The inline variables on the field. */
+  inlineVariables: Record<string, unknown>;
+}
+
+interface OperationObjectField extends OperationObjectExport {
+  /** Dot-notation path to the field in the operation. */
+  path: string;
   /** The type this field resolves. */
   type: string;
   /**
@@ -253,34 +267,24 @@ interface OperationFieldDefinition {
    *   - `[Product]!`
    *   - `[Product!]`
    *   - `[Product!]!`
-   *
-   * *_Same example applies for scalar {@link type field type}._
    */
   ofType: string;
+  /** We override the {@link OperationObjectField.selections} because we need other {@link OperationField}s. */
+  selections: OperationField[];
   /** The inline variables on the field. */
   inlineVariables: Record<string, unknown>;
 }
 
-interface OperationScalarField
-  extends OperationFieldDefinition,
-    OperationScalarExport {}
-
-interface OperationObjectField
-  extends OperationFieldDefinition,
-    OperationObjectExport {
-  /** We override the {@link OperationObjectField.selections} because we need other {@link OperationField}s. */
+interface OperationFragmentField extends OperationFragmentExport {
+  /** Dot-notation path to the fragment in the operation. */
+  path: string;
+  /** We override the {@link OperationFragmentField.selections} because we need other {@link OperationField}s. */
   selections: OperationField[];
 }
 
-// TODO:
-// interface OperationFragmentField
-//   extends OperationField,
-//     OperationFragmentExport {
-//   /** We override the {@link OperationFragmentField.selections} because we need other {@link OperationField}s. */
-//   selections: OperationFragmentField[];
-// }
+type OperationField = OperationScalarField | OperationCompositeField;
 
-type OperationField = OperationObjectField | OperationScalarField;
+type OperationCompositeField = OperationObjectField | OperationFragmentField;
 
 function insertOperationFieldAtDepth(
   selections: OperationField[],
@@ -337,12 +341,18 @@ function planGatherResolversForOperationFields(
       operationFieldResolver.kind === 'scalar'
         ? {
             ...operationFieldResolver,
-            inlineVariables: operationField.inlineVariables,
+            inlineVariables:
+              'inlineVariables' in operationField
+                ? operationField.inlineVariables
+                : {},
             pathToExportData: [],
           }
         : {
             ...operationFieldResolver,
-            inlineVariables: operationField.inlineVariables,
+            inlineVariables:
+              'inlineVariables' in operationField
+                ? operationField.inlineVariables
+                : {},
             pathToExportData: [],
             exports: [],
             includes: {},
@@ -353,6 +363,10 @@ function planGatherResolversForOperationFields(
         throw new Error(
           'Composite operation field must not have a scalar resolver',
         );
+      }
+      if (operationField.kind === 'fragment') {
+        // TODO: can this even happen?
+        throw new Error('TODO');
       }
       insertResolversForGatherPlanCompositeField(
         schemaPlan,
@@ -375,7 +389,7 @@ function planGatherResolversForOperationFields(
 
 function insertResolversForGatherPlanCompositeField(
   schemaPlan: SchemaPlan,
-  field: OperationObjectField,
+  field: OperationCompositeField,
   parentResolver: GatherPlanCompositeResolver,
   parentExport: OperationObjectExport | null, // TODO: support fragment kind
 ) {

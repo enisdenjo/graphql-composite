@@ -43,13 +43,10 @@ export type GatherPlanResolver =
 
 export interface GatherPlanCompositeResolver
   extends SchemaPlanCompositeResolver {
-  /**
-   * The field in user's operation this resolver resolves
-   * at the location of this resolver in the structure.
-   */
-  field: GatherPlanResolverField;
   /** The path to the `__export` fragment in the execution result. */
   pathToExportData: string[];
+  /** Inline variables of the operation field in user's query. */
+  inlineVariables: Record<string, unknown>;
   /**
    * The exports of the resolver that are to be available for the
    * {@link includes}; and, when public (not {@link OperationExport.private private}),
@@ -68,78 +65,53 @@ export interface GatherPlanCompositeResolver
 }
 
 export interface GatherPlanScalarResolver extends SchemaPlanScalarResolver {
-  /**
-   * The field in user's operation this resolver resolves
-   * at the location of this resolver in the structure.
-   */
-  field: GatherPlanResolverField;
+  /** Inline variables of the operation field in user's query. */
+  inlineVariables: Record<string, unknown>;
   /**
    * The path to the scalar in the execution result.
    */
   pathToExportData: string[];
 }
 
-export interface GatherPlanResolverAnyField {
-  kind: 'scalar' | 'composite';
-  /** Dot-notation path to the field in user's operation. */
-  path: string;
+export type OperationExport =
+  | OperationScalarExport
+  | OperationObjectExport
+  | OperationFragmentExport;
+
+export interface OperationExportAvailability {
   /**
-   * The name of the field in user's operation.
-   * It matches the last part of {@link path field's path}.
-   */
-  name: string;
-  /**
-   * The type of this field's parent. Useful for fragments spread
-   * within interfaces.
+   * Whether the export is public or private.
    *
-   * If you have a query:
-   * ```graphql
-   * {
-   *   animal(name: "Cathew") {
-   *     name
-   *     ... on Cat {
-   *       meows
-   *     }
-   *   }
-   * }
-   * ```
-   * the parent type of the `animal.meows` path will be `Cat` (and not `Animal`),
-   * while the type of the `animal.name` path will remain `Animal`.
-   */
-  parentType: string;
-  /** The type this field resolves. */
-  type: string;
-  /**
-   * Concrete/unwrapped type of the {@link type field type}.
+   * Public (not private) exports are are also available in the final result for the user,
+   * while private exports are not available to the user. Private exports are often used
+   * when parent has to resolve additional fields for its includes.
    *
-   * For example, it's `Product` if the {@link type field type} is:
-   *   - `Product`
-   *   - `Product!`
-   *   - `[Product]!`
-   *   - `[Product!]`
-   *   - `[Product!]!`
-   *
-   * *_Same example applies for scalar {@link type field type}._
+   * This flag only changes the behaviour of resolver execution, it does not alter the operation.
    */
-  ofType: string;
-  /** The inline variables on the field. */
-  inlineVariables: Record<string, unknown>;
+  private?: true;
 }
 
-export interface GatherPlanResolverCompositeField
-  extends GatherPlanResolverAnyField {
-  kind: 'composite';
-  selections: GatherPlanResolverField[];
-}
-
-export interface GatherPlanResolverScalarField
-  extends GatherPlanResolverAnyField {
+export interface OperationScalarExport extends OperationExportAvailability {
   kind: 'scalar';
+  /** Name of the scalar field. */
+  name: string;
 }
 
-type GatherPlanResolverField =
-  | GatherPlanResolverCompositeField
-  | GatherPlanResolverScalarField;
+export interface OperationObjectExport extends OperationExportAvailability {
+  kind: 'object';
+  /** Name of the composite field. */
+  name: string;
+  /** Nested selections of the field. */
+  selections: OperationExport[];
+}
+
+export interface OperationFragmentExport extends OperationExportAvailability {
+  kind: 'fragment';
+  /** The type condition of the fragment. */
+  typeCondition: string;
+  /** Selections of the fragment. */
+  selections: OperationExport[];
+}
 
 export function planGather(
   schemaPlan: SchemaPlan,
@@ -150,7 +122,7 @@ export function planGather(
     operations: [],
   };
 
-  const fields: GatherPlanResolverField[] = [];
+  const fields: OperationField[] = [];
   const entries: string[] = [];
   const typeInfo = new TypeInfo(buildSchema(schemaPlan.schema));
   let currOperation: GatherPlanOperation;
@@ -203,8 +175,8 @@ export function planGather(
           }
 
           if (isCompositeType(ofType)) {
-            insertFieldAtDepth(fields, entries.length - 1, {
-              kind: 'composite',
+            insertOperationFieldAtDepth(fields, entries.length - 1, {
+              kind: 'object',
               path: entries.join('.'),
               name: node.name.value,
               parentType: parentType.name,
@@ -214,7 +186,7 @@ export function planGather(
               selections: [],
             });
           } else {
-            insertFieldAtDepth(fields, entries.length - 1, {
+            insertOperationFieldAtDepth(fields, entries.length - 1, {
               kind: 'scalar',
               path: entries.join('.'),
               parentType: parentType.name,
@@ -243,10 +215,77 @@ export function planGather(
   return gatherPlan;
 }
 
-function insertFieldAtDepth(
-  selections: GatherPlanResolverField[],
+interface OperationFieldDefinition {
+  /** Dot-notation path to the field in the operation. */
+  path: string;
+  /**
+   * The name of the field in the operation.
+   * It matches the last part of {@link path field's path}.
+   */
+  name: string;
+  /**
+   * The type of this field's parent. Useful for fragments spread
+   * within interfaces.
+   *
+   * If you have a query:
+   * ```graphql
+   * {
+   *   animal(name: "Cathew") {
+   *     name
+   *     ... on Cat {
+   *       meows
+   *     }
+   *   }
+   * }
+   * ```
+   * the parent type of the `animal.meows` path will be `Cat` (and not `Animal`),
+   * while the type of the `animal.name` path will remain `Animal`.
+   */
+  parentType: string;
+  /** The type this field resolves. */
+  type: string;
+  /**
+   * Concrete/unwrapped type of the {@link type field type}.
+   *
+   * For example, it's `Product` if the {@link type field type} is:
+   *   - `Product`
+   *   - `Product!`
+   *   - `[Product]!`
+   *   - `[Product!]`
+   *   - `[Product!]!`
+   *
+   * *_Same example applies for scalar {@link type field type}._
+   */
+  ofType: string;
+  /** The inline variables on the field. */
+  inlineVariables: Record<string, unknown>;
+}
+
+interface OperationScalarField
+  extends OperationFieldDefinition,
+    OperationScalarExport {}
+
+interface OperationObjectField
+  extends OperationFieldDefinition,
+    OperationObjectExport {
+  /** We override the {@link OperationObjectField.selections} because we need other {@link OperationField}s. */
+  selections: OperationField[];
+}
+
+// TODO:
+// interface OperationFragmentField
+//   extends OperationField,
+//     OperationFragmentExport {
+//   /** We override the {@link OperationFragmentField.selections} because we need other {@link OperationField}s. */
+//   selections: OperationFragmentField[];
+// }
+
+type OperationField = OperationObjectField | OperationScalarField;
+
+function insertOperationFieldAtDepth(
+  selections: OperationField[],
   depth: number,
-  field: GatherPlanResolverField,
+  field: OperationField,
 ) {
   let curr = { selections };
   for (let i = 0; i < depth; i++) {
@@ -265,7 +304,7 @@ function insertFieldAtDepth(
 function planGatherResolversForOperationFields(
   schemaPlan: SchemaPlan,
   operation: GatherPlanOperation,
-  fields: GatherPlanResolverField[],
+  fields: OperationField[],
 ): Record<string, GatherPlanResolver> {
   const operationPlan = schemaPlan.operations[operation.type];
   if (!operationPlan) {
@@ -298,21 +337,21 @@ function planGatherResolversForOperationFields(
       operationFieldResolver.kind === 'scalar'
         ? {
             ...operationFieldResolver,
-            field: operationField,
+            inlineVariables: operationField.inlineVariables,
             pathToExportData: [],
           }
         : {
             ...operationFieldResolver,
-            field: operationField,
+            inlineVariables: operationField.inlineVariables,
             pathToExportData: [],
             exports: [],
             includes: {},
           };
 
-    if (operationField.kind === 'composite') {
-      if (resolver.kind !== 'interface' && resolver.kind !== 'object') {
+    if (operationField.kind !== 'scalar') {
+      if (resolver.kind === 'scalar') {
         throw new Error(
-          'Composite operation field must have and interface or object resolver',
+          'Composite operation field must not have a scalar resolver',
         );
       }
       insertResolversForGatherPlanCompositeField(
@@ -336,9 +375,9 @@ function planGatherResolversForOperationFields(
 
 function insertResolversForGatherPlanCompositeField(
   schemaPlan: SchemaPlan,
-  field: GatherPlanResolverCompositeField,
+  field: OperationObjectField,
   parentResolver: GatherPlanCompositeResolver,
-  parentExport: OperationCompositeExport | null, // TODO: support fragment kind
+  parentExport: OperationObjectExport | null, // TODO: support fragment kind
 ) {
   for (const sel of field.selections) {
     let fieldPlan: SchemaPlanField;
@@ -458,7 +497,7 @@ function insertResolversForGatherPlanCompositeField(
 
       resolver = {
         ...resolverPlan,
-        field: sel,
+        inlineVariables: sel.inlineVariables,
         pathToExportData: [],
         exports: [],
         includes: {},
@@ -469,15 +508,15 @@ function insertResolversForGatherPlanCompositeField(
 
     // TODO: support fragment kind
     const exp: OperationExport =
-      sel.kind === 'composite'
+      sel.kind === 'scalar'
         ? {
-            kind: 'composite',
-            name: sel.name,
-            selections: [],
-          }
-        : {
             kind: 'scalar',
             name: sel.name,
+          }
+        : {
+            kind: 'object',
+            name: sel.name,
+            selections: [],
           };
 
     if (resolver === parentResolver && parentExport) {
@@ -486,13 +525,13 @@ function insertResolversForGatherPlanCompositeField(
       resolver.exports.push(exp);
     }
 
-    if (sel.kind === 'composite') {
+    if (sel.kind !== 'scalar') {
       insertResolversForGatherPlanCompositeField(
         schemaPlan,
         sel,
         resolver,
         // export is composite when selection is composite (see `exp` definition above)
-        exp as OperationCompositeExport,
+        exp as OperationObjectExport,
       );
     }
   }
@@ -516,49 +555,6 @@ function buildAndInsertOperationsInResolvers(
       );
     }
   }
-}
-
-export type OperationExport =
-  | OperationScalarExport
-  | OperationCompositeExport
-  | OperationFragmentExport;
-
-export interface OperationExportAvailability {
-  /**
-   * Whether the export is public or private.
-   *
-   * Public (not private) exports are are also available in the final result for the user,
-   * while private exports are not available to the user. Private exports are often used
-   * when parent has to resolve additional fields for its includes.
-   *
-   * This flag only changes the behaviour of resolver execution, it does not alter the operation.
-   */
-  private?: true;
-}
-
-export interface OperationScalarExport extends OperationExportAvailability {
-  kind: 'scalar';
-  /** Name of the scalar field. */
-  name: string;
-}
-
-export interface OperationCompositeExport extends OperationExportAvailability {
-  kind: 'composite';
-  /** Name of the composite field. */
-  name: string;
-  /** Nested selections of the field. */
-  selections: OperationExport[];
-}
-
-export interface OperationFragmentExport extends OperationExportAvailability {
-  kind: 'fragment';
-  /**
-   * The type of the fragment for this selection.
-   * Will be used as the inline fragment's type when rendering.
-   */
-  type: string;
-  /** Selections of the fragment. */
-  selections: OperationExport[];
 }
 
 export function buildResolverOperation(
@@ -727,7 +723,7 @@ function createSelectionsForExports(
           kind: Kind.NAMED_TYPE,
           name: {
             kind: Kind.NAME,
-            value: exp.type,
+            value: exp.typeCondition,
           },
         },
         selectionSet: {
@@ -735,7 +731,7 @@ function createSelectionsForExports(
           selections: createSelectionsForExports(exp.selections),
         },
       });
-    } else if (exp.kind === 'composite') {
+    } else if (exp.kind === 'object') {
       sels.push({
         kind: Kind.FIELD,
         name: {

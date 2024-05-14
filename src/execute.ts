@@ -90,7 +90,7 @@ async function executeResolver(
             {
               ...operationVariables,
               // TODO: should the inline variables override?
-              ...resolver.field.inlineVariables,
+              ...resolver.inlineVariables,
             }[variable.name],
     }),
     {},

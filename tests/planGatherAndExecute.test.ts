@@ -50,7 +50,7 @@ it.each([
         name: 'name',
       },
       {
-        kind: 'composite',
+        kind: 'object',
         name: 'products',
         selections: [
           {
@@ -71,11 +71,11 @@ it.each([
         name: 'name',
       },
       {
-        kind: 'composite',
+        kind: 'object',
         name: 'manufacturer',
         selections: [
           {
-            kind: 'composite',
+            kind: 'object',
             name: 'products',
             selections: [
               {
@@ -125,11 +125,11 @@ it.each([
         name: 'name',
       },
       {
-        kind: 'composite',
+        kind: 'object',
         name: 'products',
         selections: [
           {
-            kind: 'composite',
+            kind: 'object',
             name: 'manufacturer',
             selections: [
               {
@@ -157,18 +157,18 @@ it.each([
     exports: [
       {
         kind: 'fragment',
-        type: 'Product',
+        typeCondition: 'Product',
         selections: [
           {
             kind: 'scalar',
             name: 'name',
           },
           {
-            kind: 'composite',
+            kind: 'object',
             name: 'manufacturer',
             selections: [
               {
-                kind: 'composite',
+                kind: 'object',
                 name: 'products',
                 selections: [
                   {
@@ -191,7 +191,7 @@ it.each([
       },
       {
         kind: 'fragment',
-        type: 'Manufacturer',
+        typeCondition: 'Manufacturer',
         selections: [
           {
             kind: 'scalar',
@@ -202,11 +202,11 @@ it.each([
             name: 'name',
           },
           {
-            kind: 'composite',
+            kind: 'object',
             name: 'products',
             selections: [
               {
-                kind: 'composite',
+                kind: 'object',
                 name: 'manufacturer',
                 selections: [
                   {
@@ -231,18 +231,18 @@ it.each([
     exports: [
       {
         kind: 'fragment',
-        type: 'Product',
+        typeCondition: 'Product',
         selections: [
           {
             kind: 'scalar',
             name: 'name',
           },
           {
-            kind: 'composite',
+            kind: 'object',
             name: 'manufacturer',
             selections: [
               {
-                kind: 'composite',
+                kind: 'object',
                 name: 'products',
                 selections: [
                   {
@@ -257,7 +257,7 @@ it.each([
               },
               {
                 kind: 'fragment',
-                type: 'Manufacturer',
+                typeCondition: 'Manufacturer',
                 selections: [
                   {
                     kind: 'scalar',
@@ -268,11 +268,11 @@ it.each([
                     name: 'name',
                   },
                   {
-                    kind: 'composite',
+                    kind: 'object',
                     name: 'products',
                     selections: [
                       {
-                        kind: 'composite',
+                        kind: 'object',
                         name: 'manufacturer',
                         selections: [
                           {

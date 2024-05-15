@@ -25,7 +25,7 @@ export interface SchemaPlanOperation {
 export interface SchemaPlanOperationField {
   name: string;
   resolvers: {
-    [subgraph in SchemaPlanResolver['subgraph']]: SchemaPlanResolver; // TODO: operation field must always have a resolver?
+    [subgraph in SchemaPlanResolver['subgraph']]: SchemaPlanAnyResolver; // TODO: operation field must always have a resolver?
   };
 }
 
@@ -56,8 +56,7 @@ export interface SchemaPlanField {
   subgraphs: string[];
 }
 
-export interface SchemaPlanAnyResolver {
-  kind: 'interface' | 'object' | 'scalar';
+export interface SchemaPlanResolver {
   /** Unique identifier of a specific subgraph. */
   subgraph: string;
   /** The type resolved. */
@@ -107,23 +106,23 @@ export interface SchemaPlanAnyResolver {
   };
 }
 
-export interface SchemaPlanInterfaceResolver extends SchemaPlanAnyResolver {
+export interface SchemaPlanInterfaceResolver extends SchemaPlanResolver {
   kind: 'interface';
 }
 
-export interface SchemaPlanObjectResolver extends SchemaPlanAnyResolver {
+export interface SchemaPlanObjectResolver extends SchemaPlanResolver {
   kind: 'object';
 }
 
-export interface SchemaPlanCompositeResolver extends SchemaPlanAnyResolver {
+export interface SchemaPlanCompositeResolver extends SchemaPlanResolver {
   kind: 'interface' | 'object';
 }
 
-export interface SchemaPlanScalarResolver extends SchemaPlanAnyResolver {
+export interface SchemaPlanScalarResolver extends SchemaPlanResolver {
   kind: 'scalar';
 }
 
-export type SchemaPlanResolver =
+export type SchemaPlanAnyResolver =
   | SchemaPlanInterfaceResolver
   | SchemaPlanObjectResolver
   | SchemaPlanScalarResolver;

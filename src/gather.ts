@@ -422,7 +422,7 @@ function insertResolversForGatherPlanCompositeField(
   schemaPlan: SchemaPlan,
   parent: OperationCompositeSelection,
   parentResolver: GatherPlanCompositeResolver,
-  parentExport: OperationFragmentExport | OperationObjectExport | null, // TODO: support fragment kind
+  parentExport: OperationFragmentExport | OperationObjectExport | null,
 ) {
   for (const sel of parent.selections) {
     if (sel.kind === 'fragment') {

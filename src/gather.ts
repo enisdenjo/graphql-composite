@@ -26,6 +26,7 @@ import {
   SchemaPlanResolver,
   SchemaPlanResolverConstantVariable,
   SchemaPlanScalarResolver,
+  SchemaPlanType,
 } from './schemaPlan.js';
 import { flattenFragments } from './utils.js';
 
@@ -431,14 +432,14 @@ function insertResolversForGatherPlanCompositeField(
       }
       if (sel.typeCondition !== parent.ofType) {
         // fragment is of an object type that parent's interface should implement
-        const interfacePlan = schemaPlan.interfaces[parent.ofType];
-        if (!interfacePlan) {
+        const interfacePlan = schemaPlan.types[parent.ofType];
+        if (!interfacePlan || interfacePlan.kind !== 'interface') {
           throw new Error(
             "Cannot have a fragment of different type spread in a field that's not an interface",
           );
         }
-        const objectPlan = schemaPlan.objects[sel.typeCondition];
-        if (!objectPlan) {
+        const objectPlan = schemaPlan.types[sel.typeCondition];
+        if (!objectPlan || objectPlan.kind !== 'object') {
           throw new Error(
             `Schema plan doesn't have a "${sel.typeCondition}" object`,
           );
@@ -450,12 +451,9 @@ function insertResolversForGatherPlanCompositeField(
         }
       } else {
         // fragment is of the same interface/object type as the parent
-        if (
-          !schemaPlan.interfaces[parent.ofType] &&
-          !schemaPlan.objects[parent.ofType]
-        ) {
+        if (!schemaPlan.types[parent.ofType]) {
           throw new Error(
-            "Fragment's type spread in a field of a different type",
+            "Fragment's type spread in a field of a doesnt have type in schem plan",
           );
         }
       }
@@ -486,22 +484,15 @@ function insertResolversForGatherPlanCompositeField(
 
     const parentOfType =
       parent.kind === 'fragment' ? parent.typeCondition : parent.ofType;
-    let compositePlan: SchemaPlanInterface | SchemaPlanObject | undefined =
-      schemaPlan.interfaces[parentOfType];
-    if (!compositePlan) {
-      const objectPlan = schemaPlan.objects[parentOfType];
-      if (!objectPlan) {
-        throw new Error(
-          `Schema plan doesn't have a "${parentOfType}" interface or object`,
-        );
-      }
-      compositePlan = objectPlan;
+    const typePlan = schemaPlan.types[parentOfType];
+    if (!typePlan) {
+      throw new Error(`Schema plan doesn't have a "${parentOfType}" type`);
     }
 
-    const fieldPlan = compositePlan.fields[sel.name];
+    const fieldPlan = typePlan.fields[sel.name];
     if (!fieldPlan) {
       throw new Error(
-        `Schema plan "${compositePlan.name}" for interface or object doesn't have a "${sel.name}" field`,
+        `Schema plan "${typePlan.name}" for type doesn't have a "${sel.name}" field`,
       );
     }
 
@@ -520,18 +511,18 @@ function insertResolversForGatherPlanCompositeField(
       const resolverPlan:
         | SchemaPlanInterfaceResolver
         | SchemaPlanObjectResolver
-        | undefined = Object.values(compositePlan.resolvers).find((r) =>
+        | undefined = Object.values(typePlan.resolvers).find((r) =>
         fieldPlan.subgraphs.includes(r.subgraph),
       );
       if (!resolverPlan) {
         throw new Error(
-          `Schema plan object "${compositePlan.name}" doesn't have a resolver for any of the "${fieldPlan.name}" field subgraphs`,
+          `Schema plan object "${typePlan.name}" doesn't have a resolver for any of the "${fieldPlan.name}" field subgraphs`,
         );
       }
       if (!Object.keys(resolverPlan.variables).length) {
         // TODO: object resolver must always have variables, right?
         throw new Error(
-          `Schema plan object "${compositePlan.name}" field "${fieldPlan.name}" resolver doesn't require variables`,
+          `Schema plan object "${typePlan.name}" field "${fieldPlan.name}" resolver doesn't require variables`,
         );
       }
 

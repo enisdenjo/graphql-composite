@@ -7,11 +7,8 @@ export interface SchemaPlan {
   operations: {
     [name: string /* graphql.OperationDefinitionNode */]: SchemaPlanOperation;
   };
-  interfaces: {
-    [name in SchemaPlanInterface['name']]: SchemaPlanInterface;
-  };
-  objects: {
-    [name in SchemaPlanObject['name']]: SchemaPlanObject;
+  types: {
+    [name in SchemaPlanType['name']]: SchemaPlanType;
   };
 }
 
@@ -29,7 +26,10 @@ export interface SchemaPlanOperationField {
   };
 }
 
+export type SchemaPlanType = SchemaPlanInterface | SchemaPlanObject;
+
 export interface SchemaPlanInterface {
+  kind: 'interface';
   name: string;
   resolvers: {
     [subgraph in SchemaPlanInterfaceResolver['subgraph']]: SchemaPlanInterfaceResolver; // TODO: type can only have one resolver at subgraph?
@@ -40,6 +40,7 @@ export interface SchemaPlanInterface {
 }
 
 export interface SchemaPlanObject {
+  kind: 'object';
   name: string;
   /** List of interface names this type implements, if any. */
   implements: SchemaPlanInterface['name'][];

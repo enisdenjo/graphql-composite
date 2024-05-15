@@ -77,8 +77,9 @@ export const schema: SchemaPlan = {
       },
     },
   },
-  interfaces: {
+  types: {
     Animal: {
+      kind: 'interface',
       name: 'Animal',
       fields: {
         name: {
@@ -137,9 +138,8 @@ export const schema: SchemaPlan = {
         },
       },
     },
-  },
-  objects: {
     Cat: {
+      kind: 'object',
       name: 'Cat',
       implements: ['Animal'],
       fields: {
@@ -204,6 +204,7 @@ export const schema: SchemaPlan = {
       },
     },
     Dog: {
+      kind: 'object',
       name: 'Dog',
       implements: ['Animal'],
       fields: {

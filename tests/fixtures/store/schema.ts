@@ -199,9 +199,9 @@ export const schema: SchemaPlan = {
       },
     },
   },
-  interfaces: {},
-  objects: {
+  types: {
     Manufacturer: {
+      kind: 'object',
       name: 'Manufacturer',
       implements: [],
       fields: {
@@ -262,6 +262,7 @@ export const schema: SchemaPlan = {
       },
     },
     Product: {
+      kind: 'object',
       name: 'Product',
       implements: [],
       fields: {
@@ -326,6 +327,7 @@ export const schema: SchemaPlan = {
       },
     },
     Storefront: {
+      kind: 'object',
       name: 'Storefront',
       implements: [],
       fields: {

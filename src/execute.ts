@@ -86,12 +86,10 @@ async function executeResolver(
       [variable.name]:
         variable.kind === 'select'
           ? getAtPath(parentExportData, variable.select)
-          : // variable.kind === 'user'
-            {
-              ...operationVariables,
-              // TODO: should the inline variables override?
-              ...resolver.inlineVariables,
-            }[variable.name],
+          : variable.kind === 'constant'
+            ? variable.value
+            : // variable.kind === 'user'
+              operationVariables[variable.name],
     }),
     {},
   );

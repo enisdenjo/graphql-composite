@@ -130,6 +130,7 @@ export type SchemaPlanResolver =
 
 export type SchemaPlanResolverVariable =
   | SchemaPlanResolverUserVariable
+  | SchemaPlanResolverConstantVariable
   | SchemaPlanResolverSelectVariable;
 
 /**
@@ -140,6 +141,19 @@ export interface SchemaPlanResolverUserVariable {
   kind: 'user';
   /** Name of the variable to use in the resolver's operation. */
   name: string;
+}
+
+/**
+ * Variable that is constant.
+ * Is also used when a user's query provides inline variables for fields,
+ * the inline variables will be converted to a resolver constant variable.
+ */
+export interface SchemaPlanResolverConstantVariable {
+  kind: 'constant';
+  /** Name of the variable to use in the resolver's operation. */
+  name: string;
+  /** The value of the constant. */
+  value: unknown;
 }
 
 /** Variable that is selected from the resolving type. */

@@ -31,9 +31,6 @@ exports[`fixture 'interfaces' > query 'BasicCat' > should execute > explain 1`] 
       },
     ],
     "includes": [],
-    "inlineVariables": {
-      "name": "Cathew",
-    },
     "kind": "interface",
     "ofType": "Animal",
     "operation": "query animal($name: ID!) {
@@ -88,9 +85,6 @@ exports[`fixture 'interfaces' > query 'BasicCat' > should plan gather 1`] = `
             },
           ],
           "includes": {},
-          "inlineVariables": {
-            "name": "Cathew",
-          },
           "kind": "interface",
           "ofType": "Animal",
           "operation": "query animal($name: ID!) {
@@ -109,8 +103,9 @@ exports[`fixture 'interfaces' > query 'BasicCat' > should plan gather 1`] = `
           "type": "Animal",
           "variables": {
             "name": {
-              "kind": "user",
+              "kind": "constant",
               "name": "name",
+              "value": "Cathew",
             },
           },
         },
@@ -185,9 +180,6 @@ exports[`fixture 'interfaces' > query 'BasicNestedAnimal' > should execute > exp
       },
     ],
     "includes": [],
-    "inlineVariables": {
-      "name": "Dogeth",
-    },
     "kind": "interface",
     "ofType": "Animal",
     "operation": "query animal($name: ID!) {
@@ -268,9 +260,6 @@ exports[`fixture 'interfaces' > query 'BasicNestedAnimal' > should plan gather 1
             },
           ],
           "includes": {},
-          "inlineVariables": {
-            "name": "Dogeth",
-          },
           "kind": "interface",
           "ofType": "Animal",
           "operation": "query animal($name: ID!) {
@@ -295,8 +284,9 @@ exports[`fixture 'interfaces' > query 'BasicNestedAnimal' > should plan gather 1
           "type": "Animal",
           "variables": {
             "name": {
-              "kind": "user",
+              "kind": "constant",
               "name": "name",
+              "value": "Dogeth",
             },
           },
         },
@@ -349,14 +339,8 @@ exports[`fixture 'store' > query 'BasicWithFragmentDefinition' > should execute 
         "name": "products",
         "selections": [
           {
-            "kind": "fragment",
-            "selections": [
-              {
-                "kind": "scalar",
-                "name": "upc",
-              },
-            ],
-            "typeCondition": "Product",
+            "kind": "scalar",
+            "name": "upc",
           },
         ],
       },
@@ -387,7 +371,6 @@ exports[`fixture 'store' > query 'BasicWithFragmentDefinition' > should execute 
           },
         ],
         "includes": [],
-        "inlineVariables": {},
         "kind": "object",
         "ofType": "Product",
         "operation": "query ProductByUpc($Product_upc: ID!) {
@@ -432,7 +415,6 @@ exports[`fixture 'store' > query 'BasicWithFragmentDefinition' > should execute 
           },
         ],
         "includes": [],
-        "inlineVariables": {},
         "kind": "object",
         "ofType": "Product",
         "operation": "query ProductByUpc($Product_upc: ID!) {
@@ -457,18 +439,13 @@ exports[`fixture 'store' > query 'BasicWithFragmentDefinition' > should execute 
         },
       },
     ],
-    "inlineVariables": {
-      "id": "apple-store",
-    },
     "kind": "object",
     "ofType": "Storefront",
     "operation": "query storefront($id: ID!) {
   storefront(id: $id) {
     id
     products {
-      ... on Product {
-        upc
-      }
+      upc
     }
     name
   }
@@ -505,14 +482,8 @@ exports[`fixture 'store' > query 'BasicWithFragmentDefinition' > should plan gat
               "name": "products",
               "selections": [
                 {
-                  "kind": "fragment",
-                  "selections": [
-                    {
-                      "kind": "scalar",
-                      "name": "upc",
-                    },
-                  ],
-                  "typeCondition": "Product",
+                  "kind": "scalar",
+                  "name": "upc",
                 },
               ],
             },
@@ -536,7 +507,6 @@ exports[`fixture 'store' > query 'BasicWithFragmentDefinition' > should plan gat
                 },
               ],
               "includes": {},
-              "inlineVariables": {},
               "kind": "object",
               "ofType": "Product",
               "operation": "query ProductByUpc($Product_upc: ID!) {
@@ -560,18 +530,13 @@ exports[`fixture 'store' > query 'BasicWithFragmentDefinition' > should plan gat
               },
             },
           },
-          "inlineVariables": {
-            "id": "apple-store",
-          },
           "kind": "object",
           "ofType": "Storefront",
           "operation": "query storefront($id: ID!) {
   storefront(id: $id) {
     id
     products {
-      ... on Product {
-        upc
-      }
+      upc
     }
     name
   }
@@ -583,8 +548,9 @@ exports[`fixture 'store' > query 'BasicWithFragmentDefinition' > should plan gat
           "type": "Storefront",
           "variables": {
             "id": {
-              "kind": "user",
+              "kind": "constant",
               "name": "id",
+              "value": "apple-store",
             },
           },
         },
@@ -645,14 +611,8 @@ exports[`fixture 'store' > query 'BasicWithInlineFragment' > should execute > ex
         "name": "products",
         "selections": [
           {
-            "kind": "fragment",
-            "selections": [
-              {
-                "kind": "scalar",
-                "name": "upc",
-              },
-            ],
-            "typeCondition": "Product",
+            "kind": "scalar",
+            "name": "upc",
           },
         ],
       },
@@ -671,7 +631,6 @@ exports[`fixture 'store' > query 'BasicWithInlineFragment' > should execute > ex
           },
         ],
         "includes": [],
-        "inlineVariables": {},
         "kind": "object",
         "ofType": "Product",
         "operation": "query ProductByUpc($Product_upc: ID!) {
@@ -706,7 +665,6 @@ exports[`fixture 'store' > query 'BasicWithInlineFragment' > should execute > ex
           },
         ],
         "includes": [],
-        "inlineVariables": {},
         "kind": "object",
         "ofType": "Product",
         "operation": "query ProductByUpc($Product_upc: ID!) {
@@ -741,7 +699,6 @@ exports[`fixture 'store' > query 'BasicWithInlineFragment' > should execute > ex
           },
         ],
         "includes": [],
-        "inlineVariables": {},
         "kind": "object",
         "ofType": "Product",
         "operation": "query ProductByUpc($Product_upc: ID!) {
@@ -764,9 +721,6 @@ exports[`fixture 'store' > query 'BasicWithInlineFragment' > should execute > ex
         },
       },
     ],
-    "inlineVariables": {
-      "id": "samsung-store",
-    },
     "kind": "object",
     "ofType": "Storefront",
     "operation": "query storefront($id: ID!) {
@@ -774,9 +728,7 @@ exports[`fixture 'store' > query 'BasicWithInlineFragment' > should execute > ex
     id
     name
     products {
-      ... on Product {
-        upc
-      }
+      upc
     }
   }
 }",
@@ -816,14 +768,8 @@ exports[`fixture 'store' > query 'BasicWithInlineFragment' > should plan gather 
               "name": "products",
               "selections": [
                 {
-                  "kind": "fragment",
-                  "selections": [
-                    {
-                      "kind": "scalar",
-                      "name": "upc",
-                    },
-                  ],
-                  "typeCondition": "Product",
+                  "kind": "scalar",
+                  "name": "upc",
                 },
               ],
             },
@@ -837,7 +783,6 @@ exports[`fixture 'store' > query 'BasicWithInlineFragment' > should plan gather 
                 },
               ],
               "includes": {},
-              "inlineVariables": {},
               "kind": "object",
               "ofType": "Product",
               "operation": "query ProductByUpc($Product_upc: ID!) {
@@ -859,9 +804,6 @@ exports[`fixture 'store' > query 'BasicWithInlineFragment' > should plan gather 
               },
             },
           },
-          "inlineVariables": {
-            "id": "samsung-store",
-          },
           "kind": "object",
           "ofType": "Storefront",
           "operation": "query storefront($id: ID!) {
@@ -869,9 +811,7 @@ exports[`fixture 'store' > query 'BasicWithInlineFragment' > should plan gather 
     id
     name
     products {
-      ... on Product {
-        upc
-      }
+      upc
     }
   }
 }",
@@ -882,8 +822,9 @@ exports[`fixture 'store' > query 'BasicWithInlineFragment' > should plan gather 
           "type": "Storefront",
           "variables": {
             "id": {
-              "kind": "user",
+              "kind": "constant",
               "name": "id",
+              "value": "samsung-store",
             },
           },
         },
@@ -1000,7 +941,6 @@ exports[`fixture 'store' > query 'ListOperationResolver' > should execute > expl
           },
         ],
         "includes": [],
-        "inlineVariables": {},
         "kind": "object",
         "ofType": "Manufacturer",
         "operation": "query ManufacturerById($Manufacturer_id: ID!) {
@@ -1035,7 +975,6 @@ exports[`fixture 'store' > query 'ListOperationResolver' > should execute > expl
           },
         ],
         "includes": [],
-        "inlineVariables": {},
         "kind": "object",
         "ofType": "Manufacturer",
         "operation": "query ManufacturerById($Manufacturer_id: ID!) {
@@ -1058,12 +997,6 @@ exports[`fixture 'store' > query 'ListOperationResolver' > should execute > expl
         },
       },
     ],
-    "inlineVariables": {
-      "upcs": [
-        "galaxy",
-        "iphone",
-      ],
-    },
     "kind": "object",
     "ofType": "Product",
     "operation": "query productsByUpcs($upcs: [ID!]!) {
@@ -1148,7 +1081,6 @@ exports[`fixture 'store' > query 'ListOperationResolver' > should plan gather 1`
                 },
               ],
               "includes": {},
-              "inlineVariables": {},
               "kind": "object",
               "ofType": "Manufacturer",
               "operation": "query ManufacturerById($Manufacturer_id: ID!) {
@@ -1169,12 +1101,6 @@ exports[`fixture 'store' > query 'ListOperationResolver' > should plan gather 1`
                 },
               },
             },
-          },
-          "inlineVariables": {
-            "upcs": [
-              "galaxy",
-              "iphone",
-            ],
           },
           "kind": "object",
           "ofType": "Product",
@@ -1198,8 +1124,12 @@ exports[`fixture 'store' > query 'ListOperationResolver' > should plan gather 1`
           "type": "[Product]!",
           "variables": {
             "upcs": {
-              "kind": "user",
+              "kind": "constant",
               "name": "upcs",
+              "value": [
+                "galaxy",
+                "iphone",
+              ],
             },
           },
         },
@@ -1332,7 +1262,6 @@ exports[`fixture 'store' > query 'NotBasicWithInlineVariables' > should execute 
               },
             ],
             "includes": [],
-            "inlineVariables": {},
             "kind": "object",
             "ofType": "Manufacturer",
             "operation": "query ManufacturerById($Manufacturer_id: ID!) {
@@ -1356,7 +1285,6 @@ exports[`fixture 'store' > query 'NotBasicWithInlineVariables' > should execute 
             },
           },
         ],
-        "inlineVariables": {},
         "kind": "object",
         "ofType": "Product",
         "operation": "query ProductByUpc($Product_upc: ID!) {
@@ -1453,7 +1381,6 @@ exports[`fixture 'store' > query 'NotBasicWithInlineVariables' > should execute 
               },
             ],
             "includes": [],
-            "inlineVariables": {},
             "kind": "object",
             "ofType": "Manufacturer",
             "operation": "query ManufacturerById($Manufacturer_id: ID!) {
@@ -1477,7 +1404,6 @@ exports[`fixture 'store' > query 'NotBasicWithInlineVariables' > should execute 
             },
           },
         ],
-        "inlineVariables": {},
         "kind": "object",
         "ofType": "Product",
         "operation": "query ProductByUpc($Product_upc: ID!) {
@@ -1574,7 +1500,6 @@ exports[`fixture 'store' > query 'NotBasicWithInlineVariables' > should execute 
               },
             ],
             "includes": [],
-            "inlineVariables": {},
             "kind": "object",
             "ofType": "Manufacturer",
             "operation": "query ManufacturerById($Manufacturer_id: ID!) {
@@ -1598,7 +1523,6 @@ exports[`fixture 'store' > query 'NotBasicWithInlineVariables' > should execute 
             },
           },
         ],
-        "inlineVariables": {},
         "kind": "object",
         "ofType": "Product",
         "operation": "query ProductByUpc($Product_upc: ID!) {
@@ -1628,9 +1552,6 @@ exports[`fixture 'store' > query 'NotBasicWithInlineVariables' > should execute 
         },
       },
     ],
-    "inlineVariables": {
-      "id": "samsung-store",
-    },
     "kind": "object",
     "ofType": "Storefront",
     "operation": "query storefront($id: ID!) {
@@ -1726,7 +1647,6 @@ exports[`fixture 'store' > query 'NotBasicWithInlineVariables' > should plan gat
                     },
                   ],
                   "includes": {},
-                  "inlineVariables": {},
                   "kind": "object",
                   "ofType": "Manufacturer",
                   "operation": "query ManufacturerById($Manufacturer_id: ID!) {
@@ -1748,7 +1668,6 @@ exports[`fixture 'store' > query 'NotBasicWithInlineVariables' > should plan gat
                   },
                 },
               },
-              "inlineVariables": {},
               "kind": "object",
               "ofType": "Product",
               "operation": "query ProductByUpc($Product_upc: ID!) {
@@ -1777,9 +1696,6 @@ exports[`fixture 'store' > query 'NotBasicWithInlineVariables' > should plan gat
               },
             },
           },
-          "inlineVariables": {
-            "id": "samsung-store",
-          },
           "kind": "object",
           "ofType": "Storefront",
           "operation": "query storefront($id: ID!) {
@@ -1798,8 +1714,9 @@ exports[`fixture 'store' > query 'NotBasicWithInlineVariables' > should plan gat
           "type": "Storefront",
           "variables": {
             "id": {
-              "kind": "user",
+              "kind": "constant",
               "name": "id",
+              "value": "samsung-store",
             },
           },
         },
@@ -1929,7 +1846,6 @@ exports[`fixture 'store' > query 'NotBasicWithOperationVariables' > should execu
               },
             ],
             "includes": [],
-            "inlineVariables": {},
             "kind": "object",
             "ofType": "Manufacturer",
             "operation": "query ManufacturerById($Manufacturer_id: ID!) {
@@ -1953,7 +1869,6 @@ exports[`fixture 'store' > query 'NotBasicWithOperationVariables' > should execu
             },
           },
         ],
-        "inlineVariables": {},
         "kind": "object",
         "ofType": "Product",
         "operation": "query ProductByUpc($Product_upc: ID!) {
@@ -2046,7 +1961,6 @@ exports[`fixture 'store' > query 'NotBasicWithOperationVariables' > should execu
               },
             ],
             "includes": [],
-            "inlineVariables": {},
             "kind": "object",
             "ofType": "Manufacturer",
             "operation": "query ManufacturerById($Manufacturer_id: ID!) {
@@ -2070,7 +1984,6 @@ exports[`fixture 'store' > query 'NotBasicWithOperationVariables' > should execu
             },
           },
         ],
-        "inlineVariables": {},
         "kind": "object",
         "ofType": "Product",
         "operation": "query ProductByUpc($Product_upc: ID!) {
@@ -2100,7 +2013,6 @@ exports[`fixture 'store' > query 'NotBasicWithOperationVariables' > should execu
         },
       },
     ],
-    "inlineVariables": {},
     "kind": "object",
     "ofType": "Storefront",
     "operation": "query storefront($id: ID!) {
@@ -2196,7 +2108,6 @@ exports[`fixture 'store' > query 'NotBasicWithOperationVariables' > should plan 
                     },
                   ],
                   "includes": {},
-                  "inlineVariables": {},
                   "kind": "object",
                   "ofType": "Manufacturer",
                   "operation": "query ManufacturerById($Manufacturer_id: ID!) {
@@ -2218,7 +2129,6 @@ exports[`fixture 'store' > query 'NotBasicWithOperationVariables' > should plan 
                   },
                 },
               },
-              "inlineVariables": {},
               "kind": "object",
               "ofType": "Product",
               "operation": "query ProductByUpc($Product_upc: ID!) {
@@ -2247,7 +2157,6 @@ exports[`fixture 'store' > query 'NotBasicWithOperationVariables' > should plan 
               },
             },
           },
-          "inlineVariables": {},
           "kind": "object",
           "ofType": "Storefront",
           "operation": "query storefront($id: ID!) {
@@ -2307,7 +2216,6 @@ exports[`fixture 'store' > query 'ScalarListInOperation' > should execute > expl
         "iPad",
       ],
     },
-    "inlineVariables": {},
     "kind": "scalar",
     "ofType": "String",
     "operation": "query productNames {
@@ -2333,7 +2241,6 @@ exports[`fixture 'store' > query 'ScalarListInOperation' > should plan gather 1`
       "name": "ScalarListInOperation",
       "resolvers": {
         "productNames": {
-          "inlineVariables": {},
           "kind": "scalar",
           "ofType": "String",
           "operation": "query productNames {
@@ -2374,9 +2281,6 @@ exports[`fixture 'store' > query 'ScalarListInType' > should execute > explain 1
       },
     ],
     "includes": [],
-    "inlineVariables": {
-      "id": "apple-store",
-    },
     "kind": "object",
     "ofType": "Storefront",
     "operation": "query storefront($id: ID!) {
@@ -2413,9 +2317,6 @@ exports[`fixture 'store' > query 'ScalarListInType' > should plan gather 1`] = `
             },
           ],
           "includes": {},
-          "inlineVariables": {
-            "id": "apple-store",
-          },
           "kind": "object",
           "ofType": "Storefront",
           "operation": "query storefront($id: ID!) {
@@ -2430,8 +2331,9 @@ exports[`fixture 'store' > query 'ScalarListInType' > should plan gather 1`] = `
           "type": "Storefront",
           "variables": {
             "id": {
-              "kind": "user",
+              "kind": "constant",
               "name": "id",
+              "value": "apple-store",
             },
           },
         },
@@ -2452,9 +2354,6 @@ exports[`fixture 'store' > query 'ScalarOperationField' > should execute > expla
   {
     "data": {
       "manufacturerName": "Samsung",
-    },
-    "inlineVariables": {
-      "id": "samsung",
     },
     "kind": "scalar",
     "ofType": "String",
@@ -2483,9 +2382,6 @@ exports[`fixture 'store' > query 'ScalarOperationField' > should plan gather 1`]
       "name": "ScalarOperationField",
       "resolvers": {
         "manufacturerName": {
-          "inlineVariables": {
-            "id": "samsung",
-          },
           "kind": "scalar",
           "ofType": "String",
           "operation": "query manufacturerName($id: ID!) {
@@ -2498,8 +2394,9 @@ exports[`fixture 'store' > query 'ScalarOperationField' > should plan gather 1`]
           "type": "String",
           "variables": {
             "id": {
-              "kind": "user",
+              "kind": "constant",
               "name": "id",
+              "value": "samsung",
             },
           },
         },
@@ -2520,9 +2417,6 @@ exports[`fixture 'store' > query 'ScalarOperationFieldNested' > should execute >
       "product": {
         "name": "iPad",
       },
-    },
-    "inlineVariables": {
-      "upc": "ipad",
     },
     "kind": "scalar",
     "ofType": "String",
@@ -2554,9 +2448,6 @@ exports[`fixture 'store' > query 'ScalarOperationFieldNested' > should plan gath
       "name": "ScalarOperationFieldNested",
       "resolvers": {
         "productName": {
-          "inlineVariables": {
-            "upc": "ipad",
-          },
           "kind": "scalar",
           "ofType": "String",
           "operation": "query productName($upc: ID!) {
@@ -2572,8 +2463,9 @@ exports[`fixture 'store' > query 'ScalarOperationFieldNested' > should plan gath
           "type": "String",
           "variables": {
             "upc": {
-              "kind": "user",
+              "kind": "constant",
               "name": "upc",
+              "value": "ipad",
             },
           },
         },

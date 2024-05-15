@@ -23,6 +23,8 @@ import {
   SchemaPlanInterfaceResolver,
   SchemaPlanObject,
   SchemaPlanObjectResolver,
+  SchemaPlanResolver,
+  SchemaPlanResolverConstantVariable,
   SchemaPlanScalarResolver,
 } from './schemaPlan.js';
 import { flattenFragments } from './utils.js';
@@ -48,8 +50,6 @@ export interface GatherPlanCompositeResolver
   extends SchemaPlanCompositeResolver {
   /** The path to the `__export` fragment in the execution result. */
   pathToExportData: string[];
-  /** Inline variables of the operation field in user's query. */
-  inlineVariables: Record<string, unknown>;
   /**
    * The exports of the resolver that are to be available for the
    * {@link includes}; and, when public (not {@link OperationExport.private private}),
@@ -68,8 +68,6 @@ export interface GatherPlanCompositeResolver
 }
 
 export interface GatherPlanScalarResolver extends SchemaPlanScalarResolver {
-  /** Inline variables of the operation field in user's query. */
-  inlineVariables: Record<string, unknown>;
   /**
    * The path to the scalar in the execution result.
    */
@@ -317,6 +315,30 @@ function insertOperationFieldAtDepth(
   curr.selections.push(field);
 }
 
+/**
+ * Finds inline variables of the field that match by name resolver's required
+ * variables and creates {@link SchemaPlanResolverConstantVariable}s them.
+ */
+function inlineToResolverConstantVariables(
+  resolver: SchemaPlanResolver,
+  field: OperationField,
+) {
+  const variables: SchemaPlanResolver['variables'] = {};
+  for (const [name, variable] of Object.entries(resolver.variables)) {
+    const inlineVariable = field.inlineVariables[name];
+    if (inlineVariable) {
+      variables[name] = {
+        kind: 'constant',
+        name,
+        value: inlineVariable,
+      };
+    } else {
+      variables[name] = variable;
+    }
+  }
+  return variables;
+}
+
 function planGatherResolversForOperationFields(
   schemaPlan: SchemaPlan,
   operation: GatherPlanOperation,
@@ -353,18 +375,18 @@ function planGatherResolversForOperationFields(
       operationFieldResolver.kind === 'scalar'
         ? {
             ...operationFieldResolver,
-            inlineVariables:
-              'inlineVariables' in operationField
-                ? operationField.inlineVariables
-                : {},
+            variables: inlineToResolverConstantVariables(
+              operationFieldResolver,
+              operationField,
+            ),
             pathToExportData: [],
           }
         : {
             ...operationFieldResolver,
-            inlineVariables:
-              'inlineVariables' in operationField
-                ? operationField.inlineVariables
-                : {},
+            variables: inlineToResolverConstantVariables(
+              operationFieldResolver,
+              operationField,
+            ),
             pathToExportData: [],
             exports: [],
             includes: {},
@@ -551,7 +573,7 @@ function insertResolversForGatherPlanCompositeField(
 
       resolver = {
         ...resolverPlan,
-        inlineVariables: sel.inlineVariables,
+        variables: inlineToResolverConstantVariables(resolverPlan, sel),
         pathToExportData: [],
         exports: [],
         includes: {},

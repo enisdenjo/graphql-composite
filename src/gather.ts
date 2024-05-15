@@ -19,14 +19,11 @@ import {
   isSchemaPlanResolverSelectVariable,
   SchemaPlan,
   SchemaPlanCompositeResolver,
-  SchemaPlanInterface,
   SchemaPlanInterfaceResolver,
-  SchemaPlanObject,
   SchemaPlanObjectResolver,
   SchemaPlanResolver,
   SchemaPlanResolverConstantVariable,
   SchemaPlanScalarResolver,
-  SchemaPlanType,
 } from './schemaPlan.js';
 import { flattenFragments } from './utils.js';
 
@@ -124,8 +121,7 @@ export function planGather(
     operations: [],
   };
 
-  // TODO: can an operation field be a fragment?
-  const operationFields: (OperationScalarField | OperationObjectField)[] = [];
+  const operationFields: OperationOperationField[] = [];
   const entries: string[] = [];
   let depth = 0;
   const typeInfo = new TypeInfo(buildSchema(schemaPlan.schema));
@@ -292,6 +288,9 @@ type OperationSelection =
   | OperationScalarField
   | OperationObjectField
   | OperationFragment;
+
+/** TODO: can an operation field be a fragment? */
+type OperationOperationField = OperationScalarField | OperationObjectField;
 
 type OperationField = OperationObjectField | OperationScalarField;
 

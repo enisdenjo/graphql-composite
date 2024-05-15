@@ -438,16 +438,20 @@ function insertResolversForGatherPlanCompositeField(
         }
       }
 
-      // fragment is ok, insert export for it into the available resolver
-      const exp: OperationFragmentExport = {
-        kind: 'fragment',
-        typeCondition: sel.typeCondition,
-        selections: [],
-      };
-      if (parentExport) {
-        parentExport.selections.push(exp);
-      } else {
-        parentResolver.exports.push(exp);
+      let exp = parentExport;
+      if (sel.typeCondition !== parent.ofType) {
+        // insert export for the fragment into the available resolver
+        // only if its type condition is different from the parent
+        exp = {
+          kind: 'fragment',
+          typeCondition: sel.typeCondition,
+          selections: [],
+        };
+        if (parentExport) {
+          parentExport.selections.push(exp);
+        } else {
+          parentResolver.exports.push(exp);
+        }
       }
       insertResolversForGatherPlanCompositeField(
         schemaPlan,

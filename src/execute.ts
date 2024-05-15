@@ -62,7 +62,7 @@ async function executeResolver(
    */
   resolver: GatherPlanResolver,
   /**
-   * Data of the `__export` fragment in the parent resolver.
+   * Data of the export in the parent resolver.
    */
   parentExportData: Record<string, unknown> | null,
   /**

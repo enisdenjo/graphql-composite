@@ -19,7 +19,10 @@ import {
   isSchemaPlanResolverSelectVariable,
   SchemaPlan,
   SchemaPlanCompositeResolver,
-  SchemaPlanField,
+  SchemaPlanInterface,
+  SchemaPlanInterfaceResolver,
+  SchemaPlanObject,
+  SchemaPlanObjectResolver,
   SchemaPlanScalarResolver,
 } from './schemaPlan.js';
 import { flattenFragments } from './utils.js';
@@ -122,7 +125,8 @@ export function planGather(
     operations: [],
   };
 
-  const fields: OperationField[] = [];
+  // TODO: can an operation field be a fragment?
+  const operationFields: (OperationScalarField | OperationObjectField)[] = [];
   const entries: string[] = [];
   let depth = 0;
   const typeInfo = new TypeInfo(buildSchema(schemaPlan.schema));
@@ -146,8 +150,9 @@ export function planGather(
           if (!node.typeCondition) {
             throw new Error('Inline fragment must have a type condition');
           }
-          insertOperationFieldAtDepth(fields, depth - 1, {
+          insertOperationFieldAtDepth(operationFields, depth - 1, {
             kind: 'fragment',
+            fieldName: entries[entries.length - 1]!,
             path: entries.join('.'),
             typeCondition: node.typeCondition.name.value,
             selections: [],
@@ -194,7 +199,7 @@ export function planGather(
           }
 
           if (isCompositeType(ofType)) {
-            insertOperationFieldAtDepth(fields, depth - 1, {
+            insertOperationFieldAtDepth(operationFields, depth - 1, {
               kind: 'object',
               path: entries.join('.'),
               name: node.name.value,
@@ -204,7 +209,7 @@ export function planGather(
               selections: [],
             });
           } else {
-            insertOperationFieldAtDepth(fields, depth - 1, {
+            insertOperationFieldAtDepth(operationFields, depth - 1, {
               kind: 'scalar',
               path: entries.join('.'),
               name: node.name.value,
@@ -226,7 +231,7 @@ export function planGather(
     operation.resolvers = planGatherResolversForOperationFields(
       schemaPlan,
       operation,
-      fields,
+      operationFields,
     );
   }
 
@@ -269,27 +274,34 @@ interface OperationObjectField extends OperationObjectExport {
    *   - `[Product!]!`
    */
   ofType: string;
-  /** We override the {@link OperationObjectField.selections} because we need other {@link OperationField}s. */
-  selections: OperationField[];
+  /** We override the {@link OperationObjectField.selections} because we need other {@link OperationSelection}s. */
+  selections: OperationSelection[];
   /** The inline variables on the field. */
   inlineVariables: Record<string, unknown>;
 }
 
-interface OperationFragmentField extends OperationFragmentExport {
+interface OperationFragment extends OperationFragmentExport {
+  /** The parent's field name where this fragment is spread. */
+  fieldName: string;
   /** Dot-notation path to the fragment in the operation. */
   path: string;
-  /** We override the {@link OperationFragmentField.selections} because we need other {@link OperationField}s. */
-  selections: OperationField[];
+  /** We override the {@link OperationFragment.selections} because we need other {@link OperationSelection}s. */
+  selections: OperationSelection[];
 }
 
-type OperationField = OperationScalarField | OperationCompositeField;
+type OperationSelection =
+  | OperationScalarField
+  | OperationObjectField
+  | OperationFragment;
 
-type OperationCompositeField = OperationObjectField | OperationFragmentField;
+type OperationField = OperationObjectField | OperationScalarField;
+
+type OperationCompositeSelection = OperationObjectField | OperationFragment;
 
 function insertOperationFieldAtDepth(
-  selections: OperationField[],
+  selections: OperationSelection[],
   depth: number,
-  field: OperationField,
+  field: OperationSelection,
 ) {
   let curr = { selections };
   for (let i = 0; i < depth; i++) {
@@ -308,7 +320,7 @@ function insertOperationFieldAtDepth(
 function planGatherResolversForOperationFields(
   schemaPlan: SchemaPlan,
   operation: GatherPlanOperation,
-  fields: OperationField[],
+  operationFields: OperationField[],
 ): Record<string, GatherPlanResolver> {
   const operationPlan = schemaPlan.operations[operation.type];
   if (!operationPlan) {
@@ -319,7 +331,7 @@ function planGatherResolversForOperationFields(
 
   const resolvers: Record<string, GatherPlanResolver> = {};
 
-  for (const operationField of fields) {
+  for (const operationField of operationFields) {
     const operationFieldPlan = operationPlan.fields[operationField.name];
     if (!operationFieldPlan) {
       throw new Error(
@@ -364,10 +376,6 @@ function planGatherResolversForOperationFields(
           'Composite operation field must not have a scalar resolver',
         );
       }
-      if (operationField.kind === 'fragment') {
-        // TODO: can this even happen?
-        throw new Error('TODO');
-      }
       insertResolversForGatherPlanCompositeField(
         schemaPlan,
         operationField,
@@ -389,53 +397,86 @@ function planGatherResolversForOperationFields(
 
 function insertResolversForGatherPlanCompositeField(
   schemaPlan: SchemaPlan,
-  field: OperationCompositeField,
+  parent: OperationCompositeSelection,
   parentResolver: GatherPlanCompositeResolver,
-  parentExport: OperationObjectExport | null, // TODO: support fragment kind
+  parentExport: OperationFragmentExport | OperationObjectExport | null, // TODO: support fragment kind
 ) {
-  for (const sel of field.selections) {
-    let fieldPlan: SchemaPlanField;
-    const interfacePlan = schemaPlan.interfaces[field.ofType];
-    if (interfacePlan) {
-      // field is in an interface type
-      const interfaceFieldPlan = interfacePlan.fields[sel.name];
-      if (interfaceFieldPlan) {
-        fieldPlan = interfaceFieldPlan;
-      } else {
-        // field is in an object that implements the interface
-        const objectPlan = Object.values(schemaPlan.objects).find(
-          (o) =>
-            o.implements.includes(interfacePlan.name) && // object must implement the interface
-            o.name === sel.parentType,
-        );
+  for (const sel of parent.selections) {
+    if (sel.kind === 'fragment') {
+      // validation
+      if (parent.kind !== 'object') {
+        throw new Error('Only object fields can have fragments');
+      }
+      if (sel.typeCondition !== parent.ofType) {
+        // fragment is of an object type that parent's interface should implement
+        const interfacePlan = schemaPlan.interfaces[parent.ofType];
+        if (!interfacePlan) {
+          throw new Error(
+            "Cannot have a fragment of different type spread in a field that's not an interface",
+          );
+        }
+        const objectPlan = schemaPlan.objects[sel.typeCondition];
         if (!objectPlan) {
           throw new Error(
-            `Schema plan doesn't have a "${field.ofType}" object implementing the "${interfacePlan.name}" interface`,
+            `Schema plan doesn't have a "${sel.typeCondition}" object`,
           );
         }
-        const objectFieldPlan = objectPlan.fields[sel.name];
-        if (!objectFieldPlan) {
+        if (!objectPlan.implements.includes(interfacePlan.name)) {
           throw new Error(
-            `Schema plan "${objectPlan.name}" object doesn't have a "${sel.name}" field`,
+            `Schema plan "${sel.typeCondition}" object doesn't implement the "${interfacePlan.name}" interface`,
           );
         }
-        fieldPlan = objectFieldPlan;
+      } else {
+        // fragment is of the same interface/object type as the parent
+        if (
+          !schemaPlan.interfaces[parent.ofType] &&
+          !schemaPlan.objects[parent.ofType]
+        ) {
+          throw new Error(
+            "Fragment's type spread in a field of a different type",
+          );
+        }
       }
-    } else {
-      // field is in an object type
-      const objectPlan = schemaPlan.objects[field.ofType];
+
+      // fragment is ok, insert export for it into the available resolver
+      const exp: OperationFragmentExport = {
+        kind: 'fragment',
+        typeCondition: sel.typeCondition,
+        selections: [],
+      };
+      if (parentExport) {
+        parentExport.selections.push(exp);
+      } else {
+        parentResolver.exports.push(exp);
+      }
+      insertResolversForGatherPlanCompositeField(
+        schemaPlan,
+        sel,
+        parentResolver,
+        exp,
+      );
+      continue;
+    }
+
+    const parentOfType =
+      parent.kind === 'fragment' ? parent.typeCondition : parent.ofType;
+    let compositePlan: SchemaPlanInterface | SchemaPlanObject | undefined =
+      schemaPlan.interfaces[parentOfType];
+    if (!compositePlan) {
+      const objectPlan = schemaPlan.objects[parentOfType];
       if (!objectPlan) {
         throw new Error(
-          `Schema plan doesn't have the "${field.ofType}" object`,
+          `Schema plan doesn't have a "${parentOfType}" interface or object`,
         );
       }
-      const objectFieldPlan = objectPlan.fields[sel.name];
-      if (!objectFieldPlan) {
-        throw new Error(
-          `Schema plan "${objectPlan.name}" object doesn't have a "${sel.name}" field`,
-        );
-      }
-      fieldPlan = objectFieldPlan;
+      compositePlan = objectPlan;
+    }
+
+    const fieldPlan = compositePlan.fields[sel.name];
+    if (!fieldPlan) {
+      throw new Error(
+        `Schema plan "${compositePlan.name}" for interface or object doesn't have a "${sel.name}" field`,
+      );
     }
 
     // use the parent resolver if the field is available in its subgraph;
@@ -449,27 +490,22 @@ function insertResolversForGatherPlanCompositeField(
       // this field cannot be resolved using existing resolvers
       // add an dependant resolver to the parent for the field(s)
 
-      // TODO: handle interfaces
-
-      const objectPlan = schemaPlan.objects[field.ofType];
-      if (!objectPlan) {
-        throw new Error(
-          `Schema plan doesn't have the "${field.ofType}" object`,
-        );
-      }
-
-      const resolverPlan = Object.values(objectPlan.resolvers).find((r) =>
+      // TODO: fix the typings here, avoid casting
+      const resolverPlan:
+        | SchemaPlanInterfaceResolver
+        | SchemaPlanObjectResolver
+        | undefined = Object.values(compositePlan.resolvers).find((r) =>
         fieldPlan.subgraphs.includes(r.subgraph),
       );
       if (!resolverPlan) {
         throw new Error(
-          `Schema plan object "${objectPlan.name}" doesn't have a resolver for any of the "${fieldPlan.name}" field subgraphs`,
+          `Schema plan object "${compositePlan.name}" doesn't have a resolver for any of the "${fieldPlan.name}" field subgraphs`,
         );
       }
       if (!Object.keys(resolverPlan.variables).length) {
         // TODO: object resolver must always have variables, right?
         throw new Error(
-          `Schema plan object "${objectPlan.name}" field "${fieldPlan.name}" resolver doesn't require variables`,
+          `Schema plan object "${compositePlan.name}" field "${fieldPlan.name}" resolver doesn't require variables`,
         );
       }
 
@@ -477,6 +513,7 @@ function insertResolversForGatherPlanCompositeField(
         isSchemaPlanResolverSelectVariable,
       )) {
         if (!parentExport) {
+          // TODO: in this case, make another resolver?
           throw new Error(
             'Cannot select variables from a parent without export',
           );
@@ -498,7 +535,6 @@ function insertResolversForGatherPlanCompositeField(
         ) {
           // TODO: disallow pushing same path multiple times
           // TODO: what happens if the parent cannot resolve this field?
-
           // TODO: if the parent cant resolve, insert here the necessary field resolver
           //       add this resolver to its includes
           parentExport.selections.push({
@@ -517,11 +553,12 @@ function insertResolversForGatherPlanCompositeField(
         includes: {},
       };
 
-      parentResolver.includes[field.name] = resolver;
+      parentResolver.includes[
+        parent.kind === 'fragment' ? parent.fieldName : parent.name
+      ] = resolver;
     }
 
-    // TODO: support fragment kind
-    const exp: OperationExport =
+    const exp: OperationObjectExport | OperationScalarExport =
       sel.kind === 'scalar'
         ? {
             kind: 'scalar',
@@ -534,18 +571,22 @@ function insertResolversForGatherPlanCompositeField(
           };
 
     if (resolver === parentResolver && parentExport) {
+      // push to parents exports only if we're not creating a new resolver
       parentExport.selections.push(exp);
     } else {
       resolver.exports.push(exp);
     }
 
-    if (sel.kind !== 'scalar') {
+    if (sel.kind === 'object') {
+      if (sel.kind !== exp.kind) {
+        // should never happen, but let's make TS happy
+        throw new Error('Selection kind must match the export kind');
+      }
       insertResolversForGatherPlanCompositeField(
         schemaPlan,
         sel,
         resolver,
-        // export is composite when selection is composite (see `exp` definition above)
-        exp as OperationObjectExport,
+        exp,
       );
     }
   }

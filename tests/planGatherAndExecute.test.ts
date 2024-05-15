@@ -12,7 +12,7 @@ describe.each(await getFixtures())(
   'fixture $name',
   ({ schema, subgraphs, queries }) => {
     describe.each(queries)('query $name', ({ document, variables, result }) => {
-      it.only('should plan gather', () => {
+      it('should plan gather', () => {
         expect(planGather(schema, document)).toMatchSnapshot();
       });
 

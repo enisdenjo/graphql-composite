@@ -50,6 +50,12 @@ const cats: Cat[] = [
   },
 ];
 
+function getBestFriend({ name }: Animal) {
+  return name === 'Cathew'
+    ? dogs.find((d) => d.name === 'Dogeth')
+    : cats.find((c) => c.name === 'Cathew');
+}
+
 export const subgraphs: FixtureSubgraphs = {
   shelter: createSource({
     typeDefs: /* GraphQL */ `
@@ -79,12 +85,9 @@ export const subgraphs: FixtureSubgraphs = {
         animal: (_parent, args: { name: string }) =>
           [...cats, ...dogs].find((animal) => animal.name === args.name),
       },
-      Animal: {
-        bestFriend: ({ name }: Animal) =>
-          name === 'Cathew'
-            ? dogs.find((d) => d.name === 'Dogeth')
-            : cats.find((c) => c.name === 'Cathew'),
-      },
+      Animal: { bestFriend: getBestFriend },
+      Cat: { bestFriend: getBestFriend },
+      Dog: { bestFriend: getBestFriend },
     },
   }),
   store: createSource({
@@ -115,12 +118,9 @@ export const subgraphs: FixtureSubgraphs = {
         animal: (_parent, args: { name: string }) =>
           [...cats, ...dogs].find((animal) => animal.name === args.name),
       },
-      Animal: {
-        bestFriend: ({ name }: Animal) =>
-          name === 'Cathew'
-            ? dogs.find((d) => d.name === 'Dogeth')
-            : cats.find((c) => c.name === 'Cathew'),
-      },
+      Animal: { bestFriend: getBestFriend },
+      Cat: { bestFriend: getBestFriend },
+      Dog: { bestFriend: getBestFriend },
     },
   }),
 };

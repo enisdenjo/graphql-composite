@@ -42,7 +42,13 @@ export interface SchemaPlanInterface {
 export interface SchemaPlanObject {
   kind: 'object';
   name: string;
-  /** List of interface names this type implements, if any. */
+  /**
+   * List of interface names this type implements, if any.
+   *
+   * Note that the type mustn't have all fields of the {@link SchemaPlanInterface},
+   * this is necessary because some subgraphs, that have the interface, may not
+   * have this type.
+   */
   implements: SchemaPlanInterface['name'][];
   resolvers: {
     [subgraph in SchemaPlanObjectResolver['subgraph']]: SchemaPlanObjectResolver; // TODO: type can only have one resolver at subgraph?
@@ -73,8 +79,6 @@ export interface SchemaPlanResolver {
    *   - `[Product]!`
    *   - `[Product!]`
    *   - `[Product!]!`
-   *
-   * *_Same logic applies for `scalar` {@link kind}._
    */
   ofType: string;
   /**

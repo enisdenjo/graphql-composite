@@ -449,6 +449,8 @@ function insertResolversForGatherPlanCompositeField(
   /**
    * We're resolving fields inside a fragment spread on the parent.
    * This indicates that resolved fields are additional fields of the parent.
+   *
+   * TODO: when inside a fragment, the positions of exports may be off
    */
   insideFragment: boolean,
 ) {

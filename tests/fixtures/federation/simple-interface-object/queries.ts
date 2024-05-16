@@ -154,6 +154,7 @@ export const queries: FixtureQueries = [
           ... on User {
             age
             id
+            name
             username
           }
           id

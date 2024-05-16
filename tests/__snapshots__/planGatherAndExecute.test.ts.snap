@@ -665,6 +665,155 @@ exports[`fixture 'federation/simple-interface-object' > query 'AnotherUsersWithU
 }
 `;
 
+exports[`fixture 'federation/simple-interface-object' > query 'UsersWithAdvancedUserSpread' > should execute > explain 1`] = `
+[
+  {
+    "data": {
+      "users": [
+        {
+          "age": 11,
+          "id": "u1",
+          "name": "u1-name",
+        },
+        {
+          "age": 22,
+          "id": "u2",
+          "name": "u2-name",
+        },
+      ],
+    },
+    "exports": [
+      {
+        "kind": "fragment",
+        "selections": [
+          {
+            "kind": "scalar",
+            "name": "age",
+          },
+          {
+            "kind": "scalar",
+            "name": "id",
+          },
+          {
+            "kind": "scalar",
+            "name": "name",
+          },
+        ],
+        "typeCondition": "User",
+      },
+      {
+        "kind": "scalar",
+        "name": "id",
+      },
+      {
+        "kind": "scalar",
+        "name": "name",
+      },
+    ],
+    "includes": [
+      {
+        "data": {
+          "_entities": [
+            {
+              "username": "u1-username",
+            },
+          ],
+        },
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "username",
+          },
+        ],
+        "includes": [],
+        "kind": "interface",
+        "ofType": "NodeWithName",
+        "operation": "query ($id: ID!) {
+  _entities(representations: [{__typename: "NodeWithName", id: $id}]) {
+    ... on NodeWithName {
+      username
+    }
+  }
+}",
+        "pathInData": [
+          "users",
+          0,
+        ],
+        "pathToExportData": [
+          "_entities",
+          0,
+        ],
+        "subgraph": "b",
+        "type": "[NodeWithName]!",
+        "variables": {
+          "id": "u1",
+        },
+      },
+      {
+        "data": {
+          "_entities": [
+            {
+              "username": "u2-username",
+            },
+          ],
+        },
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "username",
+          },
+        ],
+        "includes": [],
+        "kind": "interface",
+        "ofType": "NodeWithName",
+        "operation": "query ($id: ID!) {
+  _entities(representations: [{__typename: "NodeWithName", id: $id}]) {
+    ... on NodeWithName {
+      username
+    }
+  }
+}",
+        "pathInData": [
+          "users",
+          1,
+        ],
+        "pathToExportData": [
+          "_entities",
+          0,
+        ],
+        "subgraph": "b",
+        "type": "[NodeWithName]!",
+        "variables": {
+          "id": "u2",
+        },
+      },
+    ],
+    "kind": "interface",
+    "ofType": "NodeWithName",
+    "operation": "{
+  users {
+    ... on User {
+      age
+      id
+      name
+    }
+    id
+    name
+  }
+}",
+    "pathInData": [
+      "users",
+    ],
+    "pathToExportData": [
+      "users",
+    ],
+    "subgraph": "a",
+    "type": "[NodeWithName!]!",
+    "variables": {},
+  },
+]
+`;
+
 exports[`fixture 'federation/simple-interface-object' > query 'UsersWithAdvancedUserSpread' > should plan gather 1`] = `
 {
   "operations": [
@@ -684,6 +833,10 @@ exports[`fixture 'federation/simple-interface-object' > query 'UsersWithAdvanced
                   "kind": "scalar",
                   "name": "id",
                 },
+                {
+                  "kind": "scalar",
+                  "name": "name",
+                },
               ],
               "typeCondition": "User",
             },
@@ -697,7 +850,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'UsersWithAdvanced
             },
           ],
           "includes": {
-            "users": {
+            "": {
               "exports": [
                 {
                   "kind": "scalar",
@@ -736,6 +889,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'UsersWithAdvanced
     ... on User {
       age
       id
+      name
     }
     id
     name
@@ -757,6 +911,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'UsersWithAdvanced
     ... on User {
       age
       id
+      name
       username
     }
     id

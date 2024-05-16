@@ -480,24 +480,31 @@ function insertResolversForGatherPlanCompositeField(
         }
       }
 
+      let frag: OperationFragmentExport | null = null;
       if (sel.typeCondition !== parent.ofType) {
         // insert export for the fragment into the available resolver
         // only if its type condition is different from the parent
-        getSelectionsAtDepth(parentResolver.exports, depth).push({
+        frag = {
           kind: 'fragment',
           typeCondition: sel.typeCondition,
           selections: [],
-        } satisfies OperationFragmentExport);
-
-        // increase depth because we want the exports in fragment's selections
-        depth++;
+        };
+        getSelectionsAtDepth(parentResolver.exports, depth).push(frag);
       }
       insertResolversForGatherPlanCompositeField(
         schemaPlan,
         sel,
         parentResolver,
-        depth,
+        frag ? depth + 1 : depth,
       );
+      if (frag && !frag.selections.length) {
+        // when dealing with interfaces, a including resolver may have
+        // ejected a field from the fragment in cases where the parent
+        // resolver doesnt have the resolver type implementing the interface.
+        // in that case, we're left with an empty fragment that we can just remove
+        const sels = getSelectionsAtDepth(parentResolver.exports, depth);
+        sels.splice(sels.indexOf(frag), 1);
+      }
       continue;
     }
 
@@ -574,7 +581,9 @@ function insertResolversForGatherPlanCompositeField(
             typePlan.implements.includes(parentTypePlan.name)
           ) {
             // selected field is available on the interface at the root
-            selections = getSelectionsAtDepth(parentResolver.exports, 0);
+            // we need to go one up since we're dealing with a fragment spread
+            depth--;
+            selections = getSelectionsAtDepth(parentResolver.exports, depth);
           } else {
             throw new Error('TODO: explanatory error message');
           }

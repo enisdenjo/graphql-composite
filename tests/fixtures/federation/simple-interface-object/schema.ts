@@ -156,5 +156,48 @@ export const schema: SchemaPlan = {
         },
       },
     },
+    User: {
+      kind: 'object',
+      name: 'User',
+      implements: ['NodeWithName'],
+      fields: {
+        id: {
+          name: 'id',
+          subgraphs: ['a'],
+        },
+        name: {
+          name: 'name',
+          subgraphs: ['a'],
+        },
+        age: {
+          name: 'age',
+          subgraphs: ['a'],
+        },
+      },
+      resolvers: {
+        a: {
+          subgraph: 'a',
+          kind: 'object',
+          type: '[User]!',
+          ofType: 'User',
+          operation: /* GraphQL */ `
+            query ($id: ID!) {
+              _entities(representations: [{ __typename: "User", id: $id }]) {
+                ... on User {
+                  ...__export
+                }
+              }
+            }
+          `,
+          variables: {
+            id: {
+              kind: 'select',
+              name: 'id',
+              select: 'id',
+            },
+          },
+        },
+      },
+    },
   },
 };

@@ -35,11 +35,29 @@ export async function getFixture(name: string): Promise<Fixture> {
 }
 
 export async function getFixtures(): Promise<Fixture[]> {
-  const fixtures: Fixture[] = [];
-  for (const name of await fs.readdir(path.join(__dirname, 'fixtures'))) {
-    fixtures.push(await getFixture(name));
+  const paths = await getFixtureNames(path.join(__dirname, 'fixtures'), '');
+  return Promise.all(paths.map((p) => getFixture(p)));
+}
+
+async function getFixtureNames(dir: string, prefix: string): Promise<string[]> {
+  const names: string[] = [];
+  for (const name of await fs.readdir(dir)) {
+    const hasSchema = await fs
+      .stat(path.join(dir, name, 'schema.ts'))
+      .then(() => true)
+      .catch(() => false);
+    if (hasSchema) {
+      names.push(prefix + name);
+    } else {
+      names.push(
+        ...(await getFixtureNames(
+          path.join(path.join(dir, name)),
+          `${prefix + name}/`,
+        )),
+      );
+    }
   }
-  return fixtures;
+  return names;
 }
 
 export interface Source {
@@ -52,10 +70,7 @@ export function createSource(
 ): Source {
   const yoga = createYoga({
     maskedErrors: false,
-    schema:
-      defOrSchema instanceof GraphQLSchema
-        ? defOrSchema
-        : createSchema(defOrSchema),
+    schema: 'typeDefs' in defOrSchema ? createSchema(defOrSchema) : defOrSchema,
   });
   return {
     yoga,

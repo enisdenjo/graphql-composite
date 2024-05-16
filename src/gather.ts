@@ -502,6 +502,7 @@ function insertResolversForGatherPlanCompositeField(
         // ejected a field from the fragment in cases where the parent
         // resolver doesnt have the resolver type implementing the interface.
         // in that case, we're left with an empty fragment that we can just remove
+        // TODO: maybe do this at that location where the eject is done
         const sels = getSelectionsAtDepth(parentResolver.exports, depth);
         sels.splice(sels.indexOf(frag), 1);
       }

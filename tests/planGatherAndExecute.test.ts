@@ -38,8 +38,13 @@ describe.each(await getFixtures())(
 it.each([
   {
     name: 'storefront',
-    operation:
-      'query storefront($id: ID!) { storefront(id: $id) { ...__export } }',
+    operation: /* GraphQL */ `
+      query storefront($id: ID!) {
+        storefront(id: $id) {
+          ...__export
+        }
+      }
+    `,
     exports: [
       {
         kind: 'scalar',
@@ -63,8 +68,13 @@ it.each([
   },
   {
     name: 'ProductByUpc',
-    operation:
-      'query ProductByUpc($Product_upc: ID!) { product(upc: $Product_upc) { ...__export } }',
+    operation: /* GraphQL */ `
+      query ProductByUpc($Product_upc: ID!) {
+        product(upc: $Product_upc) {
+          ...__export
+        }
+      }
+    `,
     exports: [
       {
         kind: 'scalar',
@@ -98,8 +108,13 @@ it.each([
   },
   {
     name: 'ManufacturerById',
-    operation:
-      'query ManufacturerById($Manufacturer_id: ID!) { manufacturer(id: $Manufacturer_id) { ...__export } }',
+    operation: /* GraphQL */ `
+      query ManufacturerById($Manufacturer_id: ID!) {
+        manufacturer(id: $Manufacturer_id) {
+          ...__export
+        }
+      }
+    `,
     exports: [
       {
         kind: 'scalar',
@@ -113,8 +128,17 @@ it.each([
   },
   {
     name: 'ManufacturerNested',
-    operation:
-      'query ManufacturerNested { manufacturer { nested { deep { ...__export } } } }',
+    operation: /* GraphQL */ `
+      query ManufacturerNested {
+        manufacturer {
+          nested {
+            deep {
+              ...__export
+            }
+          }
+        }
+      }
+    `,
     exports: [
       {
         kind: 'scalar',
@@ -148,12 +172,26 @@ it.each([
   },
   {
     name: 'FindDeepestPath',
-    operation: 'query FindDeepestPath { manufacturer { nested { deep } } }',
+    operation: /* GraphQL */ `
+      query FindDeepestPath {
+        manufacturer {
+          nested {
+            deep
+          }
+        }
+      }
+    `,
     exports: [],
   },
   {
     name: 'MultipleTypes',
-    operation: 'query MultipleTypes { productAndManufaturer { ...__export } }',
+    operation: /* GraphQL */ `
+      query MultipleTypes {
+        productAndManufaturer {
+          ...__export
+        }
+      }
+    `,
     exports: [
       {
         kind: 'fragment',
@@ -227,7 +265,13 @@ it.each([
   },
   {
     name: 'Nested',
-    operation: 'query Nested { product { ...__export } }',
+    operation: /* GraphQL */ `
+      query Nested {
+        product {
+          ...__export
+        }
+      }
+    `,
     exports: [
       {
         kind: 'fragment',

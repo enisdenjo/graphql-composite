@@ -396,6 +396,104 @@ exports[`fixture 'federation/simple-interface-object' > query 'AnotherUsersWithU
 }
 `;
 
+exports[`fixture 'federation/simple-interface-object' > query 'UsersWithUserSpread' > should execute and explain 1`] = `
+[
+  {
+    "data": {
+      "users": [
+        {
+          "age": 11,
+        },
+        {
+          "age": 22,
+        },
+      ],
+    },
+    "exports": [
+      {
+        "kind": "fragment",
+        "selections": [
+          {
+            "kind": "scalar",
+            "name": "age",
+          },
+        ],
+        "typeCondition": "User",
+      },
+    ],
+    "includes": [],
+    "kind": "interface",
+    "ofType": "NodeWithName",
+    "operation": "{
+  users {
+    ... on User {
+      age
+    }
+  }
+}",
+    "pathInData": [
+      "users",
+    ],
+    "pathToExportData": [
+      "users",
+    ],
+    "subgraph": "a",
+    "type": "[NodeWithName!]!",
+    "variables": {},
+  },
+]
+`;
+
+exports[`fixture 'federation/simple-interface-object' > query 'UsersWithUserSpread' > should plan gather 1`] = `
+{
+  "operations": [
+    {
+      "name": "UsersWithUserSpread",
+      "resolvers": {
+        "users": {
+          "exports": [
+            {
+              "kind": "fragment",
+              "selections": [
+                {
+                  "kind": "scalar",
+                  "name": "age",
+                },
+              ],
+              "typeCondition": "User",
+            },
+          ],
+          "includes": {},
+          "kind": "interface",
+          "ofType": "NodeWithName",
+          "operation": "{
+  users {
+    ... on User {
+      age
+    }
+  }
+}",
+          "pathToExportData": [
+            "users",
+          ],
+          "subgraph": "a",
+          "type": "[NodeWithName!]!",
+          "variables": {},
+        },
+      },
+      "type": "query",
+    },
+  ],
+  "query": "query UsersWithUserSpread {
+  users {
+    ... on User {
+      age
+    }
+  }
+}",
+}
+`;
+
 exports[`fixture 'federation/simple-interface-object' > query 'UsersWithUsername' > should execute and explain 1`] = `
 [
   {

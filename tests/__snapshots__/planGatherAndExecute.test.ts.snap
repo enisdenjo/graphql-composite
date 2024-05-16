@@ -100,9 +100,11 @@ exports[`fixture 'federation/simple-interface-object' > query 'UsersWithUsername
       "users": [
         {
           "id": "u1",
+          "name": "u1-name",
         },
         {
           "id": "u2",
+          "name": "u2-name",
         },
       ],
     },
@@ -110,6 +112,10 @@ exports[`fixture 'federation/simple-interface-object' > query 'UsersWithUsername
       {
         "kind": "scalar",
         "name": "id",
+      },
+      {
+        "kind": "scalar",
+        "name": "name",
       },
     ],
     "includes": [
@@ -195,6 +201,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'UsersWithUsername
     "operation": "{
   users {
     id
+    name
   }
 }",
     "pathInData": [
@@ -214,13 +221,17 @@ exports[`fixture 'federation/simple-interface-object' > query 'UsersWithUsername
 {
   "operations": [
     {
-      "name": "BasicUsers",
+      "name": "UsersWithUsername",
       "resolvers": {
         "users": {
           "exports": [
             {
               "kind": "scalar",
               "name": "id",
+            },
+            {
+              "kind": "scalar",
+              "name": "name",
             },
           ],
           "includes": {
@@ -261,6 +272,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'UsersWithUsername
           "operation": "{
   users {
     id
+    name
   }
 }",
           "pathToExportData": [
@@ -274,9 +286,10 @@ exports[`fixture 'federation/simple-interface-object' > query 'UsersWithUsername
       "type": "query",
     },
   ],
-  "query": "query BasicUsers {
+  "query": "query UsersWithUsername {
   users {
     id
+    name
     username
   }
 }",

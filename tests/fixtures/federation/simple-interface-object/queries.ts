@@ -31,9 +31,10 @@ export const queries: FixtureQueries = [
   {
     name: 'UsersWithUsername',
     document: parse(/* GraphQL */ `
-      query BasicUsers {
+      query UsersWithUsername {
         users {
           id
+          name
           username
         }
       }
@@ -44,10 +45,12 @@ export const queries: FixtureQueries = [
         users: [
           {
             id: 'u1',
+            name: 'u1-name',
             username: 'u1-username',
           },
           {
             id: 'u2',
+            name: 'u2-name',
             username: 'u2-username',
           },
         ],

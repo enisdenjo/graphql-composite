@@ -1,17 +1,17 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`fixture 'federation/simple-interface-object' > query 'BasicUsers' > should execute > explain 1`] = `
+exports[`fixture 'federation/simple-interface-object' > query 'AnotherUsers' > should execute > explain 1`] = `
 [
   {
     "data": {
-      "users": [
+      "anotherUsers": [
         {
           "id": "u1",
-          "name": "u1-name",
+          "username": "u1-username",
         },
         {
           "id": "u2",
-          "name": "u2-name",
+          "username": "u2-username",
         },
       ],
     },
@@ -22,38 +22,115 @@ exports[`fixture 'federation/simple-interface-object' > query 'BasicUsers' > sho
       },
       {
         "kind": "scalar",
-        "name": "name",
+        "name": "username",
       },
     ],
-    "includes": [],
+    "includes": [
+      {
+        "data": {
+          "_entities": [
+            {
+              "name": "u1-name",
+            },
+          ],
+        },
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "name",
+          },
+        ],
+        "includes": [],
+        "kind": "interface",
+        "ofType": "NodeWithName",
+        "operation": "query ($id: ID!) {
+  _entities(representations: [{__typename: "NodeWithName", id: $id}]) {
+    ... on NodeWithName {
+      name
+    }
+  }
+}",
+        "pathInData": [
+          "anotherUsers",
+          0,
+        ],
+        "pathToExportData": [
+          "_entities",
+          0,
+        ],
+        "subgraph": "a",
+        "type": "[NodeWithName]!",
+        "variables": {
+          "id": "u1",
+        },
+      },
+      {
+        "data": {
+          "_entities": [
+            {
+              "name": "u2-name",
+            },
+          ],
+        },
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "name",
+          },
+        ],
+        "includes": [],
+        "kind": "interface",
+        "ofType": "NodeWithName",
+        "operation": "query ($id: ID!) {
+  _entities(representations: [{__typename: "NodeWithName", id: $id}]) {
+    ... on NodeWithName {
+      name
+    }
+  }
+}",
+        "pathInData": [
+          "anotherUsers",
+          1,
+        ],
+        "pathToExportData": [
+          "_entities",
+          0,
+        ],
+        "subgraph": "a",
+        "type": "[NodeWithName]!",
+        "variables": {
+          "id": "u2",
+        },
+      },
+    ],
     "kind": "interface",
     "ofType": "NodeWithName",
     "operation": "{
-  users {
+  anotherUsers {
     id
-    name
+    username
   }
 }",
     "pathInData": [
-      "users",
+      "anotherUsers",
     ],
     "pathToExportData": [
-      "users",
+      "anotherUsers",
     ],
-    "subgraph": "a",
+    "subgraph": "b",
     "type": "[NodeWithName!]!",
     "variables": {},
   },
 ]
 `;
 
-exports[`fixture 'federation/simple-interface-object' > query 'BasicUsers' > should plan gather 1`] = `
+exports[`fixture 'federation/simple-interface-object' > query 'AnotherUsers' > should plan gather 1`] = `
 {
   "operations": [
     {
-      "name": "BasicUsers",
+      "name": "AnotherUsers",
       "resolvers": {
-        "users": {
+        "anotherUsers": {
           "exports": [
             {
               "kind": "scalar",
@@ -61,22 +138,54 @@ exports[`fixture 'federation/simple-interface-object' > query 'BasicUsers' > sho
             },
             {
               "kind": "scalar",
-              "name": "name",
+              "name": "username",
             },
           ],
-          "includes": {},
+          "includes": {
+            "": {
+              "exports": [
+                {
+                  "kind": "scalar",
+                  "name": "name",
+                },
+              ],
+              "includes": {},
+              "kind": "interface",
+              "ofType": "NodeWithName",
+              "operation": "query ($id: ID!) {
+  _entities(representations: [{__typename: "NodeWithName", id: $id}]) {
+    ... on NodeWithName {
+      name
+    }
+  }
+}",
+              "pathToExportData": [
+                "_entities",
+                0,
+              ],
+              "subgraph": "a",
+              "type": "[NodeWithName]!",
+              "variables": {
+                "id": {
+                  "kind": "select",
+                  "name": "id",
+                  "select": "id",
+                },
+              },
+            },
+          },
           "kind": "interface",
           "ofType": "NodeWithName",
           "operation": "{
-  users {
+  anotherUsers {
     id
-    name
+    username
   }
 }",
           "pathToExportData": [
-            "users",
+            "anotherUsers",
           ],
-          "subgraph": "a",
+          "subgraph": "b",
           "type": "[NodeWithName!]!",
           "variables": {},
         },
@@ -84,10 +193,11 @@ exports[`fixture 'federation/simple-interface-object' > query 'BasicUsers' > sho
       "type": "query",
     },
   ],
-  "query": "query BasicUsers {
-  users {
+  "query": "query AnotherUsers {
+  anotherUsers {
     id
     name
+    username
   }
 }",
 }

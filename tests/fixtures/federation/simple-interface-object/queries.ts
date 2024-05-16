@@ -3,26 +3,29 @@ import { FixtureQueries } from '../../../utils.js';
 
 export const queries: FixtureQueries = [
   {
-    name: 'BasicUsers',
+    name: 'AnotherUsers',
     document: parse(/* GraphQL */ `
-      query BasicUsers {
-        users {
+      query AnotherUsers {
+        anotherUsers {
           id
           name
+          username
         }
       }
     `),
     variables: {},
     result: {
       data: {
-        users: [
+        anotherUsers: [
           {
             id: 'u1',
             name: 'u1-name',
+            username: 'u1-username',
           },
           {
             id: 'u2',
             name: 'u2-name',
+            username: 'u2-username',
           },
         ],
       },

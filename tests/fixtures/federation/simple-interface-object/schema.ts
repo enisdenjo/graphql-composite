@@ -65,6 +65,25 @@ export const schema: SchemaPlan = {
             },
           },
         },
+        anotherUsers: {
+          name: 'anotherUsers',
+          resolvers: {
+            b: {
+              subgraph: 'b',
+              kind: 'interface',
+              type: '[NodeWithName!]!',
+              ofType: 'NodeWithName',
+              operation: /* GraphQL */ `
+                {
+                  anotherUsers {
+                    ...__export
+                  }
+                }
+              `,
+              variables: {},
+            },
+          },
+        },
       },
     },
   },

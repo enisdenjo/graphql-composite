@@ -665,6 +665,107 @@ exports[`fixture 'federation/simple-interface-object' > query 'AnotherUsersWithU
 }
 `;
 
+exports[`fixture 'federation/simple-interface-object' > query 'UsersWithAdvancedUserSpread' > should plan gather 1`] = `
+{
+  "operations": [
+    {
+      "name": "UsersWithAdvancedUserSpread",
+      "resolvers": {
+        "users": {
+          "exports": [
+            {
+              "kind": "fragment",
+              "selections": [
+                {
+                  "kind": "scalar",
+                  "name": "age",
+                },
+                {
+                  "kind": "scalar",
+                  "name": "id",
+                },
+              ],
+              "typeCondition": "User",
+            },
+            {
+              "kind": "scalar",
+              "name": "id",
+            },
+            {
+              "kind": "scalar",
+              "name": "name",
+            },
+          ],
+          "includes": {
+            "users": {
+              "exports": [
+                {
+                  "kind": "scalar",
+                  "name": "username",
+                },
+              ],
+              "includes": {},
+              "kind": "interface",
+              "ofType": "NodeWithName",
+              "operation": "query ($id: ID!) {
+  _entities(representations: [{__typename: "NodeWithName", id: $id}]) {
+    ... on NodeWithName {
+      username
+    }
+  }
+}",
+              "pathToExportData": [
+                "_entities",
+                0,
+              ],
+              "subgraph": "b",
+              "type": "[NodeWithName]!",
+              "variables": {
+                "id": {
+                  "kind": "select",
+                  "name": "id",
+                  "select": "id",
+                },
+              },
+            },
+          },
+          "kind": "interface",
+          "ofType": "NodeWithName",
+          "operation": "{
+  users {
+    ... on User {
+      age
+      id
+    }
+    id
+    name
+  }
+}",
+          "pathToExportData": [
+            "users",
+          ],
+          "subgraph": "a",
+          "type": "[NodeWithName!]!",
+          "variables": {},
+        },
+      },
+      "type": "query",
+    },
+  ],
+  "query": "query UsersWithAdvancedUserSpread {
+  users {
+    ... on User {
+      age
+      id
+      username
+    }
+    id
+    name
+  }
+}",
+}
+`;
+
 exports[`fixture 'federation/simple-interface-object' > query 'UsersWithUserSpread' > should execute and explain 1`] = `
 [
   {

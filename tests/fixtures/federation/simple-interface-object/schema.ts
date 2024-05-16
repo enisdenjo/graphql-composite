@@ -173,10 +173,11 @@ export const schema: SchemaPlan = {
           name: 'age',
           subgraphs: ['a'],
         },
-        username: {
-          name: 'username',
-          subgraphs: ['b'],
-        },
+        // there is no username field on "b", but the NodeWithName implements it
+        // username: {
+        //   name: 'username',
+        //   subgraphs: ['b'],
+        // },
       },
       resolvers: {
         a: {

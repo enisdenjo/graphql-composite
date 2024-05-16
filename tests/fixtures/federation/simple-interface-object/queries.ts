@@ -146,4 +146,39 @@ export const queries: FixtureQueries = [
       },
     },
   },
+  {
+    name: 'UsersWithAdvancedUserSpread',
+    document: parse(/* GraphQL */ `
+      query UsersWithAdvancedUserSpread {
+        users {
+          ... on User {
+            age
+            id
+            username
+          }
+          id
+          name
+        }
+      }
+    `),
+    variables: {},
+    result: {
+      data: {
+        users: [
+          {
+            age: 11,
+            id: 'u1',
+            name: 'u1-name',
+            username: 'u1-username',
+          },
+          {
+            age: 22,
+            id: 'u2',
+            name: 'u2-name',
+            username: 'u2-username',
+          },
+        ],
+      },
+    },
+  },
 ];

@@ -511,16 +511,34 @@ function insertResolversForGatherPlanCompositeField(
 
     const parentOfType =
       parent.kind === 'fragment' ? parent.typeCondition : parent.ofType;
-    const typePlan = schemaPlan.types[parentOfType];
+    let typePlan = schemaPlan.types[parentOfType];
     if (!typePlan) {
       throw new Error(`Schema plan doesn't have a "${parentOfType}" type`);
     }
 
-    const fieldPlan = typePlan.fields[sel.name];
+    let fieldPlan = typePlan.fields[sel.name];
     if (!fieldPlan) {
-      throw new Error(
-        `Schema plan for type "${typePlan.name}" doesn't have a "${sel.name}" field`,
-      );
+      // a subgraph may not implement the specific type of the selection
+      // but its interface may (if the type implements one)
+      if (typePlan.kind === 'object' && typePlan.implements.length) {
+        const interfaceType = typePlan.implements[0]!; // TODO: for now use first
+        const interfacePlan = schemaPlan.types[interfaceType];
+        if (interfacePlan) {
+          if (!interfacePlan.fields[sel.name]) {
+            throw new Error(
+              `Schema plan interface "${interfacePlan?.name}" that type "${typePlan.name}" implements doesn't have a "${sel.name}" field`,
+            );
+          }
+          typePlan = interfacePlan;
+          fieldPlan = interfacePlan.fields[sel.name];
+        }
+      }
+
+      if (!fieldPlan) {
+        throw new Error(
+          `Schema plan for type "${typePlan.name}" doesn't have a "${sel.name}" field`,
+        );
+      }
     }
 
     // use the parent resolver if the field is available in its subgraph;
@@ -560,34 +578,18 @@ function insertResolversForGatherPlanCompositeField(
         // TODO: what happens if the parent cannot resolve this variable selection?
         //       if the parent cant resolve, insert here the necessary field resolver
         //       add this resolver to its includes
-        const parentTypePlan = schemaPlan.types[parentResolver.ofType]!; // must exist at this point
-        const parentTypeCanResolveSelection = !!Object.values(
-          !depth
-            ? parentTypePlan.fields
-            : // nested field in parent's selection, we already know that
-              // the root field can be resolved, so we only need to check whether
-              // this selection is available at parent's resolver subgraph
-              typePlan.fields,
-        ).find(
-          (f) =>
-            f.name === variable.select &&
-            f.subgraphs.includes(parentResolver.subgraph),
-        );
-
         let selections = getSelectionsAtDepth(parentResolver.exports, depth);
-        if (!parentTypeCanResolveSelection) {
-          if (
-            parentTypePlan.kind === 'interface' &&
-            typePlan.kind === 'object' &&
-            typePlan.implements.includes(parentTypePlan.name)
-          ) {
-            // selected field is available on the interface at the root
-            // we need to go one up since we're dealing with a fragment spread
-            depth--;
-            selections = getSelectionsAtDepth(parentResolver.exports, depth);
-          } else {
-            throw new Error('TODO: explanatory error message');
-          }
+
+        const parentTypePlan = schemaPlan.types[parentResolver.ofType]!; // must exist at this point
+        if (
+          parentTypePlan.kind === 'interface' &&
+          typePlan.kind === 'object' &&
+          typePlan.implements.includes(parentTypePlan.name)
+        ) {
+          // selected field is available on the interface at parent, no need
+          // to set the field in the fragment. we therefore need to go one up
+          depth--;
+          selections = getSelectionsAtDepth(parentResolver.exports, depth);
         }
 
         // make sure parent resolver exports fields that are needed
@@ -628,13 +630,13 @@ function insertResolversForGatherPlanCompositeField(
       // TODO: what if parentResolver.includes already has this key? solution: an include may have multiple resolvers
 
       parentResolver.includes[
-        !depth
-          ? // we're resolving additional fields for parent's resolver
-            ''
-          : // we're resolving a field in parent's resolver
+        depth
+          ? // we're resolving a field in parent's resolver
             parent.kind === 'fragment'
             ? parent.fieldName
             : parent.name
+          : // we're resolving additional fields for parent's resolver
+            ''
       ] = resolver;
     }
 

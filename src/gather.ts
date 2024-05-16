@@ -519,7 +519,7 @@ function insertResolversForGatherPlanCompositeField(
     const fieldPlan = typePlan.fields[sel.name];
     if (!fieldPlan) {
       throw new Error(
-        `Schema plan "${typePlan.name}" for type doesn't have a "${sel.name}" field`,
+        `Schema plan for type "${typePlan.name}" doesn't have a "${sel.name}" field`,
       );
     }
 

@@ -153,10 +153,15 @@ async function executeResolver(
         // TODO: batch resolvers going to the same subgraph
         includes: await Promise.all(
           Object.entries(resolver.includes).flatMap(([field, resolver]) => {
+            // if there's no field specified, we're resolving additional fields for the current one
+            const resolvingAdditionalFields = !field;
+
             if (Array.isArray(exportData)) {
               // if the export data is an array, we need to gather resolve each item
               return exportData.flatMap((exportData, i) => {
-                const fieldData = getAtPath(exportData, field);
+                const fieldData = resolvingAdditionalFields
+                  ? exportData
+                  : getAtPath(exportData, field);
                 if (Array.isArray(fieldData)) {
                   // if the include points to an array, we need to gather resolve each item
                   return fieldData.map((fieldDataItem, j) =>
@@ -165,7 +170,9 @@ async function executeResolver(
                       operationVariables,
                       resolver,
                       fieldDataItem,
-                      [...pathInData, i, field, j],
+                      resolvingAdditionalFields
+                        ? [...pathInData, i, j]
+                        : [...pathInData, i, field, j],
                       resultRef,
                     ),
                   );
@@ -175,13 +182,17 @@ async function executeResolver(
                   operationVariables,
                   resolver,
                   fieldData,
-                  [...pathInData, i, field],
+                  resolvingAdditionalFields
+                    ? [...pathInData, i]
+                    : [...pathInData, i, field],
                   resultRef,
                 );
               });
             }
 
-            const fieldData = getAtPath(exportData, field);
+            const fieldData = resolvingAdditionalFields
+              ? exportData
+              : getAtPath(exportData, field);
             if (Array.isArray(fieldData)) {
               // if the include points to an array, we need to gather resolve each item
               return fieldData.map((fieldDataItem, i) =>
@@ -190,7 +201,9 @@ async function executeResolver(
                   operationVariables,
                   resolver,
                   fieldDataItem,
-                  [...pathInData, field, i],
+                  resolvingAdditionalFields
+                    ? [...pathInData, i]
+                    : [...pathInData, field, i],
                   resultRef,
                 ),
               );
@@ -200,7 +213,7 @@ async function executeResolver(
               operationVariables,
               resolver,
               fieldData,
-              [...pathInData, field],
+              resolvingAdditionalFields ? pathInData : [...pathInData, field],
               resultRef,
             );
           }),

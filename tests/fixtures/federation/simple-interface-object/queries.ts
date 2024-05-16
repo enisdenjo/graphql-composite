@@ -28,4 +28,30 @@ export const queries: FixtureQueries = [
       },
     },
   },
+  {
+    name: 'UsersWithUsername',
+    document: parse(/* GraphQL */ `
+      query BasicUsers {
+        users {
+          id
+          username
+        }
+      }
+    `),
+    variables: {},
+    result: {
+      data: {
+        users: [
+          {
+            id: 'u1',
+            username: 'u1-username',
+          },
+          {
+            id: 'u2',
+            username: 'u2-username',
+          },
+        ],
+      },
+    },
+  },
 ];

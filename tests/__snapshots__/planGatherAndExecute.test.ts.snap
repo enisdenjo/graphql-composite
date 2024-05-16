@@ -93,6 +93,196 @@ exports[`fixture 'federation/simple-interface-object' > query 'BasicUsers' > sho
 }
 `;
 
+exports[`fixture 'federation/simple-interface-object' > query 'UsersWithUsername' > should execute > explain 1`] = `
+[
+  {
+    "data": {
+      "users": [
+        {
+          "id": "u1",
+        },
+        {
+          "id": "u2",
+        },
+      ],
+    },
+    "exports": [
+      {
+        "kind": "scalar",
+        "name": "id",
+      },
+    ],
+    "includes": [
+      {
+        "data": {
+          "_entities": [
+            {
+              "username": "u1-username",
+            },
+          ],
+        },
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "username",
+          },
+        ],
+        "includes": [],
+        "kind": "interface",
+        "ofType": "NodeWithName",
+        "operation": "query ($id: ID!) {
+  _entities(representations: [{__typename: "NodeWithName", id: $id}]) {
+    ... on NodeWithName {
+      username
+    }
+  }
+}",
+        "pathInData": [
+          "users",
+          0,
+        ],
+        "pathToExportData": [
+          "_entities",
+          0,
+        ],
+        "subgraph": "b",
+        "type": "[NodeWithName]!",
+        "variables": {
+          "id": "u1",
+        },
+      },
+      {
+        "data": {
+          "_entities": [
+            {
+              "username": "u2-username",
+            },
+          ],
+        },
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "username",
+          },
+        ],
+        "includes": [],
+        "kind": "interface",
+        "ofType": "NodeWithName",
+        "operation": "query ($id: ID!) {
+  _entities(representations: [{__typename: "NodeWithName", id: $id}]) {
+    ... on NodeWithName {
+      username
+    }
+  }
+}",
+        "pathInData": [
+          "users",
+          1,
+        ],
+        "pathToExportData": [
+          "_entities",
+          0,
+        ],
+        "subgraph": "b",
+        "type": "[NodeWithName]!",
+        "variables": {
+          "id": "u2",
+        },
+      },
+    ],
+    "kind": "interface",
+    "ofType": "NodeWithName",
+    "operation": "{
+  users {
+    id
+  }
+}",
+    "pathInData": [
+      "users",
+    ],
+    "pathToExportData": [
+      "users",
+    ],
+    "subgraph": "a",
+    "type": "[NodeWithName!]!",
+    "variables": {},
+  },
+]
+`;
+
+exports[`fixture 'federation/simple-interface-object' > query 'UsersWithUsername' > should plan gather 1`] = `
+{
+  "operations": [
+    {
+      "name": "BasicUsers",
+      "resolvers": {
+        "users": {
+          "exports": [
+            {
+              "kind": "scalar",
+              "name": "id",
+            },
+          ],
+          "includes": {
+            "": {
+              "exports": [
+                {
+                  "kind": "scalar",
+                  "name": "username",
+                },
+              ],
+              "includes": {},
+              "kind": "interface",
+              "ofType": "NodeWithName",
+              "operation": "query ($id: ID!) {
+  _entities(representations: [{__typename: "NodeWithName", id: $id}]) {
+    ... on NodeWithName {
+      username
+    }
+  }
+}",
+              "pathToExportData": [
+                "_entities",
+                0,
+              ],
+              "subgraph": "b",
+              "type": "[NodeWithName]!",
+              "variables": {
+                "id": {
+                  "kind": "select",
+                  "name": "id",
+                  "select": "id",
+                },
+              },
+            },
+          },
+          "kind": "interface",
+          "ofType": "NodeWithName",
+          "operation": "{
+  users {
+    id
+  }
+}",
+          "pathToExportData": [
+            "users",
+          ],
+          "subgraph": "a",
+          "type": "[NodeWithName!]!",
+          "variables": {},
+        },
+      },
+      "type": "query",
+    },
+  ],
+  "query": "query BasicUsers {
+  users {
+    id
+    username
+  }
+}",
+}
+`;
+
 exports[`fixture 'interfaces' > query 'BasicCat' > should execute > explain 1`] = `
 [
   {

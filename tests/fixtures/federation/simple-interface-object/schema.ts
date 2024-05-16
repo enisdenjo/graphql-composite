@@ -97,7 +97,33 @@ export const schema: SchemaPlan = {
               _entities(
                 representations: [{ __typename: "NodeWithName", id: $id }]
               ) {
-                ...__export
+                ... on NodeWithName {
+                  ...__export
+                }
+              }
+            }
+          `,
+          variables: {
+            id: {
+              kind: 'select',
+              name: 'id',
+              select: 'id',
+            },
+          },
+        },
+        b: {
+          subgraph: 'b',
+          kind: 'interface',
+          type: '[NodeWithName]!',
+          ofType: 'NodeWithName',
+          operation: /* GraphQL */ `
+            query ($id: ID!) {
+              _entities(
+                representations: [{ __typename: "NodeWithName", id: $id }]
+              ) {
+                ... on NodeWithName {
+                  ...__export
+                }
               }
             }
           `,

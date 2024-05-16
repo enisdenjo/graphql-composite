@@ -7,6 +7,7 @@ import {
   Kind,
   OperationTypeNode,
   parse,
+  parseType,
   print,
   SelectionNode,
   SelectionSetNode,
@@ -47,7 +48,7 @@ export type GatherPlanResolver =
 export interface GatherPlanCompositeResolver
   extends SchemaPlanCompositeResolver {
   /** The path to the `__export` fragment in the execution result. */
-  pathToExportData: string[];
+  pathToExportData: (string | number)[];
   /**
    * The exports of the resolver that are to be available for the
    * {@link includes}; and, when public (not {@link OperationExport.private private}),
@@ -55,12 +56,12 @@ export interface GatherPlanCompositeResolver
    */
   exports: OperationExport[];
   /**
-   * Other resolvers that depend on fields from this resolver.
-   * These are often resolvers of fields that don't exist in the resolver.
+   * Other resolvers that are necessary to fulfill the data. They depend
+   * on fields from this resolver. These resolvers of fields that don't
+   * exist in this resolver.
    *
-   * A map of field paths to the necessary resolver.
-   *
-   * Only composite resolvers can include composite resolvers.
+   * A map of field paths to the necessary resolver. If the field path is an empty string,
+   * the include is resolving additional fields for the current resolver.
    */
   includes: Record<string, GatherPlanCompositeResolver>;
 }
@@ -69,7 +70,7 @@ export interface GatherPlanScalarResolver extends SchemaPlanScalarResolver {
   /**
    * The path to the scalar in the execution result.
    */
-  pathToExportData: string[];
+  pathToExportData: (string | number)[];
 }
 
 export type OperationExport =
@@ -412,7 +413,7 @@ function planGatherResolversForOperationFields(
   // we build resolvers operations only after gather.
   // this way we ensure that all fields are available
   // in both the private and public lists
-  buildAndInsertOperationsInResolvers(schemaPlan, Object.values(resolvers));
+  buildAndInsertOperationsInResolvers(Object.values(resolvers));
 
   return resolvers;
 }
@@ -528,12 +529,12 @@ function insertResolversForGatherPlanCompositeField(
       for (const variable of Object.values(resolverPlan.variables).filter(
         isSchemaPlanResolverSelectVariable,
       )) {
-        if (!parentExport) {
-          // TODO: in this case, make another resolver?
-          throw new Error(
-            'Cannot select variables from a parent without export',
-          );
-        }
+        // TODO: disallow pushing same path multiple times
+        // TODO: what happens if the parent cannot resolve this variable selection?
+        //       if the parent cant resolve, insert here the necessary field resolver
+        //       add this resolver to its includes
+
+        const selections = parentExport?.selections || parentResolver.exports;
 
         // make sure parent resolver exports fields that are needed
         // as variables to perform the resolution
@@ -543,34 +544,46 @@ function insertResolversForGatherPlanCompositeField(
         //
         // *parent resolver is the one that {@link GatherPlanCompositeResolver.includes} this resolver
         if (
-          !parentExport.selections.find((e) => {
+          !selections.find((e) => {
             // TODO: support selects of nested paths, like `manufacturer.id`
             // @ts-expect-error support selecting a variable thats on the root but under a fragment
             return e.name === variable.select;
           })
         ) {
-          // TODO: disallow pushing same path multiple times
-          // TODO: what happens if the parent cannot resolve this field?
-          // TODO: if the parent cant resolve, insert here the necessary field resolver
-          //       add this resolver to its includes
-          parentExport.selections.push({
+          selections.push({
             private: true,
-            kind: 'scalar', // TODO: do variables alway select scalars?
+            kind: 'scalar', // TODO: do variables always select scalars?
             name: variable.select,
           });
         }
       }
 
+      let type = parseType(resolverPlan.type);
+      if (type.kind === Kind.NON_NULL_TYPE) {
+        type = type.type;
+      }
+
       resolver = {
         ...resolverPlan,
         variables: inlineToResolverConstantVariables(resolverPlan, sel),
-        pathToExportData: [],
+        pathToExportData:
+          // we're resolving a single type. if the resolver returns a list, use the first result
+          // TODO: handle nested lists (should not happen though)
+          type.kind === Kind.LIST_TYPE ? [0] : [],
         exports: [],
         includes: {},
       };
 
+      // TODO: what if parentResolver.includes already has this key? solution: an include may have multiple resolvers
+
       parentResolver.includes[
-        parent.kind === 'fragment' ? parent.fieldName : parent.name
+        !parentExport
+          ? // if there's no parent exports, we're resolving additional fields for parent's resolver
+            ''
+          : // otherwise we're resolving an actual field inside the resolvers exports
+            parent.kind === 'fragment'
+            ? parent.fieldName
+            : parent.name
       ] = resolver;
     }
 
@@ -608,22 +621,21 @@ function insertResolversForGatherPlanCompositeField(
   }
 }
 
-function buildAndInsertOperationsInResolvers(
-  schemaPlan: SchemaPlan,
-  resolvers: GatherPlanResolver[],
-) {
+function buildAndInsertOperationsInResolvers(resolvers: GatherPlanResolver[]) {
   for (const resolver of resolvers) {
     const { operation, pathToExportData } = buildResolverOperation(
       resolver.operation,
       resolver.kind === 'scalar' ? [] : resolver.exports,
     );
     resolver.operation = operation;
-    resolver.pathToExportData = pathToExportData;
+    resolver.pathToExportData = [
+      ...pathToExportData,
+      // we append the original path because it may contain additional paths
+      // (see creating resolvers in insertResolversForGatherPlanCompositeField)
+      ...resolver.pathToExportData,
+    ];
     if ('includes' in resolver) {
-      buildAndInsertOperationsInResolvers(
-        schemaPlan,
-        Object.values(resolver.includes),
-      );
+      buildAndInsertOperationsInResolvers(Object.values(resolver.includes));
     }
   }
 }

@@ -146,7 +146,7 @@ export function planGather(
           if (!node.typeCondition) {
             throw new Error('Inline fragment must have a type condition');
           }
-          insertOperationFieldAtDepth(operationFields, depth - 1, {
+          getSelectionsAtDepth(operationFields, depth - 1).push({
             kind: 'fragment',
             fieldName: entries[entries.length - 1]!,
             path: entries.join('.'),
@@ -195,7 +195,7 @@ export function planGather(
           }
 
           if (isCompositeType(ofType)) {
-            insertOperationFieldAtDepth(operationFields, depth - 1, {
+            getSelectionsAtDepth(operationFields, depth - 1).push({
               kind: 'object',
               path: entries.join('.'),
               name: node.name.value,
@@ -205,7 +205,7 @@ export function planGather(
               selections: [],
             });
           } else {
-            insertOperationFieldAtDepth(operationFields, depth - 1, {
+            getSelectionsAtDepth(operationFields, depth - 1).push({
               kind: 'scalar',
               path: entries.join('.'),
               name: node.name.value,
@@ -297,23 +297,38 @@ type OperationField = OperationObjectField | OperationScalarField;
 
 type OperationCompositeSelection = OperationObjectField | OperationFragment;
 
-function insertOperationFieldAtDepth(
+function getSelectionsAtDepth(
   selections: OperationSelection[],
   depth: number,
-  field: OperationSelection,
-) {
+): OperationSelection[];
+function getSelectionsAtDepth(
+  selections: OperationExport[],
+  depth: number,
+): OperationExport[];
+function getSelectionsAtDepth(
+  selections: (OperationSelection | OperationExport)[],
+  depth: number,
+): (OperationSelection | OperationExport)[] {
   let curr = { selections };
-  for (let i = 0; i < depth; i++) {
-    // increase depth by going into the last field of the current field
-    const field = curr.selections[curr.selections.length - 1]!;
-    if (field.kind === 'scalar') {
+
+  while (depth) {
+    // increase depth by going into the last field with selections of the current field
+    const field = curr.selections.findLast((s) => 'selections' in s);
+    if (!field) {
       throw new Error(
-        `Cannot add a field at depth ${depth} because its parent is scalar`,
+        `Cannot go deeper in "${JSON.stringify(curr.selections)}"`,
+      );
+    }
+    if (!('selections' in field)) {
+      throw new Error(
+        `Cannot get selections at depth ${depth} because parent is scalar`,
       );
     }
     curr = field;
+    depth--;
   }
-  curr.selections.push(field);
+
+  return curr.selections;
 }
 
 /**
@@ -403,7 +418,7 @@ function planGatherResolversForOperationFields(
         schemaPlan,
         operationField,
         resolver,
-        null,
+        0,
       );
     }
 
@@ -422,7 +437,14 @@ function insertResolversForGatherPlanCompositeField(
   schemaPlan: SchemaPlan,
   parent: OperationCompositeSelection,
   parentResolver: GatherPlanCompositeResolver,
-  parentExport: OperationFragmentExport | OperationObjectExport | null,
+  /**
+   * When resolving nested selections, we want to append further
+   * selections under a specific depth in parent's exports.
+   *
+   * See {@link getSelectionsAtDepth} to understand how
+   * selections at a given depth are found.
+   */
+  depth: number,
 ) {
   for (const sel of parent.selections) {
     if (sel.kind === 'fragment') {
@@ -458,26 +480,23 @@ function insertResolversForGatherPlanCompositeField(
         }
       }
 
-      let exp = parentExport;
       if (sel.typeCondition !== parent.ofType) {
         // insert export for the fragment into the available resolver
         // only if its type condition is different from the parent
-        exp = {
+        getSelectionsAtDepth(parentResolver.exports, depth).push({
           kind: 'fragment',
           typeCondition: sel.typeCondition,
           selections: [],
-        };
-        if (parentExport) {
-          parentExport.selections.push(exp);
-        } else {
-          parentResolver.exports.push(exp);
-        }
+        } satisfies OperationFragmentExport);
+
+        // increase depth because we want the exports in fragment's selections
+        depth++;
       }
       insertResolversForGatherPlanCompositeField(
         schemaPlan,
         sel,
         parentResolver,
-        exp,
+        depth,
       );
       continue;
     }
@@ -533,16 +552,38 @@ function insertResolversForGatherPlanCompositeField(
         // TODO: what happens if the parent cannot resolve this variable selection?
         //       if the parent cant resolve, insert here the necessary field resolver
         //       add this resolver to its includes
+        const parentTypePlan = schemaPlan.types[parentResolver.ofType]!; // must exist at this point
+        const parentTypeCanResolveSelection = !!Object.values(
+          !depth
+            ? parentTypePlan.fields
+            : // nested field in parent's selection, we already know that
+              // the root field can be resolved, so we only need to check whether
+              // this selection is available at parent's resolver subgraph
+              typePlan.fields,
+        ).find(
+          (f) =>
+            f.name === variable.select &&
+            f.subgraphs.includes(parentResolver.subgraph),
+        );
 
-        const selections = parentExport?.selections || parentResolver.exports;
+        let selections = getSelectionsAtDepth(parentResolver.exports, depth);
+        if (!parentTypeCanResolveSelection) {
+          if (
+            parentTypePlan.kind === 'interface' &&
+            typePlan.kind === 'object' &&
+            typePlan.implements.includes(parentTypePlan.name)
+          ) {
+            // selected field is available on the interface at the root
+            selections = getSelectionsAtDepth(parentResolver.exports, 0);
+          } else {
+            throw new Error('TODO: explanatory error message');
+          }
+        }
 
         // make sure parent resolver exports fields that are needed
-        // as variables to perform the resolution
-        //
+        // as variables to perform the resolution.
         // if the parent doesnt export the necessary variable, add it
         // to parents export for resolution during execution
-        //
-        // *parent resolver is the one that {@link GatherPlanCompositeResolver.includes} this resolver
         if (
           !selections.find((e) => {
             // TODO: support selects of nested paths, like `manufacturer.id`
@@ -558,9 +599,9 @@ function insertResolversForGatherPlanCompositeField(
         }
       }
 
-      let type = parseType(resolverPlan.type);
-      if (type.kind === Kind.NON_NULL_TYPE) {
-        type = type.type;
+      let exportDataType = parseType(resolverPlan.type);
+      if (exportDataType.kind === Kind.NON_NULL_TYPE) {
+        exportDataType = exportDataType.type;
       }
 
       resolver = {
@@ -569,7 +610,7 @@ function insertResolversForGatherPlanCompositeField(
         pathToExportData:
           // we're resolving a single type. if the resolver returns a list, use the first result
           // TODO: handle nested lists (should not happen though)
-          type.kind === Kind.LIST_TYPE ? [0] : [],
+          exportDataType.kind === Kind.LIST_TYPE ? [0] : [],
         exports: [],
         includes: {},
       };
@@ -577,10 +618,10 @@ function insertResolversForGatherPlanCompositeField(
       // TODO: what if parentResolver.includes already has this key? solution: an include may have multiple resolvers
 
       parentResolver.includes[
-        !parentExport
-          ? // if there's no parent exports, we're resolving additional fields for parent's resolver
+        !depth
+          ? // we're resolving additional fields for parent's resolver
             ''
-          : // otherwise we're resolving an actual field inside the resolvers exports
+          : // we're resolving a field in parent's resolver
             parent.kind === 'fragment'
             ? parent.fieldName
             : parent.name
@@ -599,23 +640,18 @@ function insertResolversForGatherPlanCompositeField(
             selections: [],
           };
 
-    if (resolver === parentResolver && parentExport) {
-      // push to parents exports only if we're not creating a new resolver
-      parentExport.selections.push(exp);
+    if (resolver === parentResolver) {
+      getSelectionsAtDepth(parentResolver.exports, depth).push(exp);
     } else {
       resolver.exports.push(exp);
     }
 
     if (sel.kind === 'object') {
-      if (sel.kind !== exp.kind) {
-        // should never happen, but let's make TS happy
-        throw new Error('Selection kind must match the export kind');
-      }
       insertResolversForGatherPlanCompositeField(
         schemaPlan,
         sel,
         resolver,
-        exp,
+        resolver === parentResolver ? depth + 1 : depth,
       );
     }
   }

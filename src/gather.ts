@@ -419,6 +419,7 @@ function planGatherResolversForOperationFields(
         operationField,
         resolver,
         0,
+        false,
       );
     }
 
@@ -445,6 +446,11 @@ function insertResolversForGatherPlanCompositeField(
    * selections at a given depth are found.
    */
   depth: number,
+  /**
+   * We're resolving fields inside a fragment spread on the parent.
+   * This indicates that resolved fields are additional fields of the parent.
+   */
+  insideFragment: boolean,
 ) {
   for (const sel of parent.selections) {
     if (sel.kind === 'fragment') {
@@ -496,6 +502,7 @@ function insertResolversForGatherPlanCompositeField(
         sel,
         parentResolver,
         frag ? depth + 1 : depth,
+        !!frag,
       );
       if (frag && !frag.selections.length) {
         // when dealing with interfaces, a including resolver may have
@@ -630,13 +637,13 @@ function insertResolversForGatherPlanCompositeField(
       // TODO: what if parentResolver.includes already has this key? solution: an include may have multiple resolvers
 
       parentResolver.includes[
-        depth
-          ? // we're resolving a field in parent's resolver
+        insideFragment || !depth
+          ? // we're resolving additional fields for parent's resolver
+            ''
+          : // we're resolving within a field in parent's resolver
             parent.kind === 'fragment'
             ? parent.fieldName
             : parent.name
-          : // we're resolving additional fields for parent's resolver
-            ''
       ] = resolver;
     }
 
@@ -664,6 +671,7 @@ function insertResolversForGatherPlanCompositeField(
         sel,
         resolver,
         resolver === parentResolver ? depth + 1 : depth,
+        false,
       );
     }
   }

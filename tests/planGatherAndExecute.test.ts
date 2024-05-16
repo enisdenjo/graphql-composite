@@ -16,7 +16,7 @@ describe.each(await getFixtures())(
         expect(planGather(schema, document)).toMatchSnapshot();
       });
 
-      it.only('should execute and explain', async () => {
+      it('should execute and explain', async () => {
         const { extensions, ...actualResult } = await execute(
           Object.entries(subgraphs).reduce(
             (agg, [name, subgraph]) => ({

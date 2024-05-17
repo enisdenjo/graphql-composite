@@ -1,5 +1,88 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
+exports[`fixture 'federation/simple-interface-object' > query 'AccountsNames' > should execute and explain 1`] = `
+[
+  {
+    "data": {
+      "accounts": [
+        {
+          "name": "Alice",
+        },
+        {
+          "name": "Bob",
+        },
+        {
+          "name": "Charlie",
+        },
+      ],
+    },
+    "exports": [
+      {
+        "kind": "scalar",
+        "name": "name",
+      },
+    ],
+    "includes": [],
+    "kind": "interface",
+    "ofType": "Account",
+    "operation": "{
+  accounts {
+    name
+  }
+}",
+    "pathInData": [
+      "accounts",
+    ],
+    "pathToExportData": [
+      "accounts",
+    ],
+    "subgraph": "b",
+    "type": "[Account]",
+    "variables": {},
+  },
+]
+`;
+
+exports[`fixture 'federation/simple-interface-object' > query 'AccountsNames' > should plan gather 1`] = `
+{
+  "operations": [
+    {
+      "name": "AccountsNames",
+      "resolvers": {
+        "accounts": {
+          "exports": [
+            {
+              "kind": "scalar",
+              "name": "name",
+            },
+          ],
+          "includes": {},
+          "kind": "interface",
+          "ofType": "Account",
+          "operation": "{
+  accounts {
+    name
+  }
+}",
+          "pathToExportData": [
+            "accounts",
+          ],
+          "subgraph": "b",
+          "type": "[Account]",
+          "variables": {},
+        },
+      },
+      "type": "query",
+    },
+  ],
+  "query": "query AccountsNames {
+  accounts {
+    name
+  }
+}",
+}
+`;
+
 exports[`fixture 'federation/simple-interface-object' > query 'AnotherUsers' > should execute and explain 1`] = `
 [
   {

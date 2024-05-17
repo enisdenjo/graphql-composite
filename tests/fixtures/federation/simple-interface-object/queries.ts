@@ -218,4 +218,30 @@ export const queries: FixtureQueries = [
       },
     },
   },
+  {
+    name: 'AccountsNames',
+    document: parse(/* GraphQL */ `
+      query AccountsNames {
+        accounts {
+          name
+        }
+      }
+    `),
+    variables: {},
+    result: {
+      data: {
+        accounts: [
+          {
+            name: 'Alice',
+          },
+          {
+            name: 'Bob',
+          },
+          {
+            name: 'Charlie',
+          },
+        ],
+      },
+    },
+  },
 ];

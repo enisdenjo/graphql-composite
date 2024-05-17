@@ -84,6 +84,25 @@ export const schema: SchemaPlan = {
             },
           },
         },
+        accounts: {
+          name: 'accounts',
+          resolvers: {
+            b: {
+              subgraph: 'b',
+              kind: 'interface',
+              type: '[Account]',
+              ofType: 'Account',
+              operation: /* GraphQL */ `
+                {
+                  accounts {
+                    ...__export
+                  }
+                }
+              `,
+              variables: {},
+            },
+          },
+        },
       },
     },
   },
@@ -189,6 +208,92 @@ export const schema: SchemaPlan = {
             query ($id: ID!) {
               _entities(representations: [{ __typename: "User", id: $id }]) {
                 ... on User {
+                  ...__export
+                }
+              }
+            }
+          `,
+          variables: {
+            id: {
+              kind: 'select',
+              name: 'id',
+              select: 'id',
+            },
+          },
+        },
+      },
+    },
+    Account: {
+      kind: 'interface',
+      name: 'Account',
+      fields: {
+        id: {
+          name: 'id',
+          subgraphs: ['a', 'b', 'c'],
+        },
+        name: {
+          name: 'name',
+          subgraphs: ['b'],
+        },
+        isActive: {
+          name: 'isActive',
+          subgraphs: ['c'],
+        },
+      },
+      resolvers: {
+        a: {
+          subgraph: 'a',
+          kind: 'interface',
+          type: '[Account]!',
+          ofType: 'Account',
+          operation: /* GraphQL */ `
+            query ($id: ID!) {
+              _entities(representations: [{ __typename: "Account", id: $id }]) {
+                ... on Account {
+                  ...__export
+                }
+              }
+            }
+          `,
+          variables: {
+            id: {
+              kind: 'select',
+              name: 'id',
+              select: 'id',
+            },
+          },
+        },
+        b: {
+          subgraph: 'b',
+          kind: 'interface',
+          type: '[Account]!',
+          ofType: 'Account',
+          operation: /* GraphQL */ `
+            query ($id: ID!) {
+              _entities(representations: [{ __typename: "Account", id: $id }]) {
+                ... on Account {
+                  ...__export
+                }
+              }
+            }
+          `,
+          variables: {
+            id: {
+              kind: 'select',
+              name: 'id',
+              select: 'id',
+            },
+          },
+        },
+        c: {
+          subgraph: 'c',
+          kind: 'interface',
+          type: '[Account]!',
+          ofType: 'Account',
+          operation: /* GraphQL */ `
+            query ($id: ID!) {
+              _entities(representations: [{ __typename: "Account", id: $id }]) {
+                ... on Account {
                   ...__export
                 }
               }

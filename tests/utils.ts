@@ -1,9 +1,12 @@
 import fs from 'fs/promises';
 import path from 'path';
+import { fileURLToPath } from 'url';
 import { IExecutableSchemaDefinition } from '@graphql-tools/schema';
 import { DocumentNode, ExecutionResult, GraphQLSchema } from 'graphql';
 import { createSchema, createYoga, YogaServerInstance } from 'graphql-yoga';
 import { SchemaPlan } from '../src/schemaPlan.js';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export type FixtureSources = Record<string, Source>;
 

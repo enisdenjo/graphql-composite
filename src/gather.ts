@@ -19,13 +19,10 @@ import {
   isSchemaPlanResolverSelectVariable,
   SchemaPlan,
   SchemaPlanCompositeResolver,
-  SchemaPlanInterfaceResolver,
-  SchemaPlanObjectResolver,
   SchemaPlanResolver,
   SchemaPlanResolverConstantVariable,
   SchemaPlanScalarResolver,
   SchemaPlanType,
-  SchemaPlanTypeResolver,
 } from './schemaPlan.js';
 import { flattenFragments, isListType as parseIsListType } from './utils.js';
 
@@ -486,11 +483,8 @@ function insertResolversForGatherPlanCompositeField(
         if (
           !Object.keys(objectPlan.resolvers).includes(parentResolver.subgraph)
         ) {
-          // TODO: fix the typings here, avoid casting
-          const resolverPlan:
-            | SchemaPlanObjectResolver
-            // TODO: actually choose the best resolver, not the first one (most of the time the first one is ok)
-            | undefined = Object.values(objectPlan.resolvers)[0];
+          // TODO: actually choose the best resolver, not the first one (most of the time the first one is ok)
+          const resolverPlan = Object.values(objectPlan.resolvers)[0];
           if (!resolverPlan) {
             throw new Error(
               `Schema plan type "${objectPlan.name}" doesn't have any resolvers`,
@@ -588,10 +582,8 @@ function insertResolversForGatherPlanCompositeField(
       // this field cannot be resolved using existing resolvers
       // add an dependant resolver to the parent for the field(s)
 
-      // TODO: fix the typings here, avoid casting
       const resolverPlan:
-        | SchemaPlanInterfaceResolver
-        | SchemaPlanObjectResolver
+        | (typeof selTypePlan)['resolvers'][number]
         | undefined = Object.values(selTypePlan.resolvers).find((r) =>
         selPlan.subgraphs.includes(r.subgraph),
       );
@@ -631,10 +623,12 @@ function insertResolversForGatherPlanCompositeField(
             selections: [],
           };
 
-    if (resolver === parentResolver) {
-      getSelectionsAtDepth(parentResolver.exports, depth).push(exp);
-    } else {
-      resolver.exports.push(exp);
+    const dest =
+      resolver === parentResolver
+        ? getSelectionsAtDepth(parentResolver.exports, depth)
+        : resolver.exports;
+    if (!exportsIncludeField(dest, exp.name, true)) {
+      dest.push(exp);
     }
 
     if (sel.kind === 'object') {
@@ -673,11 +667,8 @@ function prepareCompositeResolverForSelection(
     // export the necessary variable, add it as private to parents
     // exports for resolution during execution but not available to the user
     if (
-      !exps.find((e) => {
-        // TODO: support selects of nested paths, like `manufacturer.id`
-        // @ts-expect-error support selecting a variable thats on the root but under a fragment
-        return e.name === variable.select;
-      })
+      // TODO: support selects of nested paths, like `manufacturer.id`
+      !exportsIncludeField(exps, variable.select, false)
     ) {
       exps.push({
         private: true,
@@ -701,6 +692,30 @@ function prepareCompositeResolverForSelection(
     exports: [],
     includes: {},
   };
+}
+
+/**
+ * Checks whether the exports include the given field.
+ * The check is also performed recursively on fragment spreads.
+ */
+function exportsIncludeField(
+  exps: OperationExport[],
+  name: string,
+  /** Whether to convert private exports to public ones if the field is found. */
+  convertToPublic: boolean,
+) {
+  for (const exp of exps) {
+    if (exp.kind === 'fragment') {
+      return exportsIncludeField(exp.selections, name, convertToPublic);
+    }
+    if (exp.name === name) {
+      if (convertToPublic && exp.private) {
+        delete exp.private;
+      }
+      return true;
+    }
+  }
+  return false;
 }
 
 function buildAndInsertOperationsInResolvers(resolvers: GatherPlanResolver[]) {

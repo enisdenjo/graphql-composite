@@ -954,9 +954,3 @@ function createSelectionsForExports(
   }
   return sels;
 }
-
-function isOperationFragmentExport(
-  ex: OperationExport,
-): ex is OperationFragmentExport {
-  return ex.kind === 'fragment';
-}

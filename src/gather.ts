@@ -670,6 +670,7 @@ function prepareCompositeResolverForSelection(
       // TODO: support selects of nested paths, like `manufacturer.id`
       !exportsIncludeField(exps, variable.select, false)
     ) {
+      // TODO: what if the resolver plan cannot resolve the variable selection?
       exps.push({
         private: true,
         kind: 'scalar', // TODO: do variables always select scalars?

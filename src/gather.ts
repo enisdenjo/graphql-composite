@@ -7,7 +7,6 @@ import {
   Kind,
   OperationTypeNode,
   parse,
-  parseType,
   print,
   SelectionNode,
   SelectionSetNode,
@@ -27,7 +26,7 @@ import {
   SchemaPlanScalarResolver,
   SchemaPlanType,
 } from './schemaPlan.js';
-import { flattenFragments } from './utils.js';
+import { flattenFragments, isListType as parseIsListType } from './utils.js';
 
 export interface GatherPlan {
   query: string;
@@ -457,12 +456,12 @@ function insertResolversForGatherPlanCompositeField(
 ) {
   for (const sel of parent.selections) {
     if (sel.kind === 'fragment') {
-      // validation
       if (parent.kind !== 'object') {
         throw new Error('Only object fields can have fragments');
       }
+
+      // fragment's type is different from the parent, the type should implement parent's interface
       if (sel.typeCondition !== parent.ofType) {
-        // fragment is of an object type that parent's interface should implement
         const interfacePlan = schemaPlan.types[parent.ofType];
         if (!interfacePlan || interfacePlan.kind !== 'interface') {
           throw new Error(
@@ -480,20 +479,84 @@ function insertResolversForGatherPlanCompositeField(
             `Schema plan "${sel.typeCondition}" object doesn't implement the "${interfacePlan.name}" interface`,
           );
         }
-      } else {
-        // fragment is of the same interface/object type as the parent
-        if (!schemaPlan.types[parent.ofType]) {
-          throw new Error(
-            "Fragment's type spread in a field of a doesnt have type in schem plan",
+
+        // the implementing object cannot be resolved in parent resolver's subgraph.
+        // we have to resolve it from another subgraph
+        if (
+          !Object.keys(objectPlan.resolvers).includes(parentResolver.subgraph)
+        ) {
+          // TODO: fix the typings here, avoid casting
+          const resolverPlan:
+            | SchemaPlanInterfaceResolver
+            | SchemaPlanObjectResolver
+            // TODO: actually choose the best resolver, not the first one (most of the time the first one is ok)
+            | undefined = Object.values(objectPlan.resolvers)[0];
+          if (!resolverPlan) {
+            throw new Error(
+              `Schema plan type "${objectPlan.name}" doesn't have any resolvers`,
+            );
+          }
+          if (!Object.keys(resolverPlan.variables).length) {
+            // TODO: object resolver must always have variables, right?
+            throw new Error(
+              `Schema plan type "${objectPlan.name}" resolver doesn't require variables`,
+            );
+          }
+
+          const parentExportSelections = getSelectionsAtDepth(
+            parentResolver.exports,
+            depth,
           );
+          for (const variable of Object.values(resolverPlan.variables).filter(
+            isSchemaPlanResolverSelectVariable,
+          )) {
+            // make sure parent resolver exports fields that are needed
+            // as variables to perform the resolution. if the parent doesnt
+            // export the necessary variable, add it as private to parents
+            // exports for resolution during execution but not available to the user
+            if (
+              !parentExportSelections.find((e) => {
+                // TODO: support selects of nested paths, like `manufacturer.id`
+                // @ts-expect-error support selecting a variable thats on the root but under a fragment
+                return e.name === variable.select;
+              })
+            ) {
+              parentExportSelections.push({
+                private: true,
+                kind: 'scalar', // TODO: do variables always select scalars?
+                name: variable.select,
+              });
+            }
+          }
+
+          const resolver = {
+            ...resolverPlan,
+            pathToExportData: parseIsListType(resolverPlan.type)
+              ? // resolver returns a list, use the first item in the export data
+                [0]
+              : // otherwise use the export data
+                [],
+            exports: [],
+            includes: {},
+          };
+
+          // TODO: what if parentResolver.includes already has this key? solution: an include may have multiple resolvers
+
+          parentResolver.includes[''] = resolver;
+
+          insertResolversForGatherPlanCompositeField(
+            schemaPlan,
+            sel,
+            resolver,
+            depth,
+            false,
+          );
+          continue;
         }
       }
 
       let frag: OperationFragmentExport | null = null;
       if (sel.typeCondition !== parent.ofType) {
-        // if the fragment type cant be resolved by a subgraph, we need to create an
-        // include that does that in the appropriate subgraph
-
         // insert export for the fragment into the available resolver
         // only if its type condition is different from the parent
         frag = {
@@ -509,156 +572,66 @@ function insertResolversForGatherPlanCompositeField(
         parentResolver,
         frag ? depth + 1 : depth,
         !!frag,
+        // depth,
+        // false,
       );
-      if (frag && !frag.selections.length) {
-        // when dealing with interfaces, a including resolver may have
-        // ejected a field from the fragment in cases where the parent
-        // resolver doesnt have the resolver type implementing the interface.
-        // in that case, we're left with an empty fragment that we can just remove
-        // TODO: maybe do this at that location where the eject is done
-        const sels = getSelectionsAtDepth(parentResolver.exports, depth);
-        sels.splice(sels.indexOf(frag), 1);
-      }
+      // if (frag && !frag.selections.length) {
+      //   // when dealing with interfaces, a including resolver may have
+      //   // ejected a field from the fragment in cases where the parent
+      //   // resolver doesnt have the resolver type implementing the interface.
+      //   // in that case, we're left with an empty fragment that we can just remove
+      //   // TODO: maybe do this at that location where the eject is done
+      //   const sels = getSelectionsAtDepth(parentResolver.exports, depth);
+      //   sels.splice(sels.indexOf(frag), 1);
+      // }
       continue;
     }
 
     const parentOfType =
       parent.kind === 'fragment' ? parent.typeCondition : parent.ofType;
-    let interfacePlan: SchemaPlanType | undefined;
-    let typePlan = schemaPlan.types[parentOfType];
-    if (!typePlan) {
+    const parentTypePlan = schemaPlan.types[parentOfType];
+    if (!parentTypePlan) {
       throw new Error(`Schema plan doesn't have a "${parentOfType}" type`);
     }
-    let fieldTypePlan = typePlan;
-
-    let fieldPlan = typePlan.fields[sel.name];
-    if (!fieldPlan) {
-      // a subgraph may not implement the specific type of the selection
-      // but its interface may (if the type implements one)
-      if (typePlan.kind === 'object' && typePlan.implements.length) {
-        const interfaceType = typePlan.implements[0]!; // TODO: for now use first
-        interfacePlan = schemaPlan.types[interfaceType];
-        if (interfacePlan) {
-          if (!interfacePlan.fields[sel.name]) {
-            throw new Error(
-              `Schema plan interface "${interfacePlan?.name}" that type "${typePlan.name}" implements doesn't have a "${sel.name}" field`,
-            );
-          }
-          fieldTypePlan = interfacePlan;
-          fieldPlan = interfacePlan.fields[sel.name];
-        }
-      }
-
-      if (!fieldPlan) {
-        throw new Error(
-          `Schema plan for type "${typePlan.name}" doesn't have a "${sel.name}" field`,
-        );
-      }
-    }
-
-    if (!Object.keys(typePlan.resolvers).includes(parentResolver.subgraph)) {
-      // if the type cannot be resolved in the subgraph, we have to
-      // resolve it from another subgraph making sure to use the proper type
-
-      // TODO: fix the typings here, avoid casting
-      const resolverPlan:
-        | SchemaPlanInterfaceResolver
-        | SchemaPlanObjectResolver
-        | undefined = Object.values(typePlan.resolvers)[0];
-      if (!resolverPlan) {
-        throw new Error(
-          `Schema plan type "${typePlan.name}" doesn't have a resolver`,
-        );
-      }
-      if (!Object.keys(resolverPlan.variables).length) {
-        // TODO: object resolver must always have variables, right?
-        throw new Error(
-          `Schema plan type "${typePlan.name}" resolver doesn't require variables`,
-        );
-      }
-
-      let selections = getSelectionsAtDepth(parentResolver.exports, depth);
-      const parentTypePlan = schemaPlan.types[parentResolver.ofType]!; // must exist at this point
-      if (
-        parentTypePlan.kind === 'interface' &&
-        fieldTypePlan.kind === 'object' &&
-        fieldTypePlan.implements.includes(parentTypePlan.name) &&
-        depth > 0
-      ) {
-        // selected field is available on the interface at parent, no need
-        // to set the field in the fragment. we therefore need to go one up
-        depth--;
-        selections = getSelectionsAtDepth(parentResolver.exports, depth);
-      } else if (parentTypePlan.name === fieldTypePlan.name && depth > 0) {
-        // parents type is the same as the field, we dont need to be inside the fragment
-        depth--;
-        selections = getSelectionsAtDepth(parentResolver.exports, depth);
-      }
-
-      for (const variable of Object.values(resolverPlan.variables).filter(
-        isSchemaPlanResolverSelectVariable,
-      )) {
-        // TODO: disallow pushing same path multiple times
-        // TODO: what happens if the parent cannot resolve this variable selection?
-        //       if the parent cant resolve, insert here the necessary field resolver
-        //       add this resolver to its includes
-
-        // make sure parent resolver exports fields that are needed
-        // as variables to perform the resolution.
-        // if the parent doesnt export the necessary variable, add it
-        // to parents export for resolution during execution
-        if (
-          !selections.find((e) => {
-            // TODO: support selects of nested paths, like `manufacturer.id`
-            // @ts-expect-error support selecting a variable thats on the root but under a fragment
-            return e.name === variable.select;
-          })
-        ) {
-          selections.push({
-            private: true,
-            kind: 'scalar', // TODO: do variables always select scalars?
-            name: variable.select,
-          });
-        }
-      }
-
-      let exportDataType = parseType(resolverPlan.type);
-      if (exportDataType.kind === Kind.NON_NULL_TYPE) {
-        exportDataType = exportDataType.type;
-      }
-
-      const resolver = {
-        ...resolverPlan,
-        variables: inlineToResolverConstantVariables(resolverPlan, sel),
-        pathToExportData:
-          // we're resolving a single type. if the resolver returns a list, use the first result
-          // TODO: handle nested lists (should not happen though)
-          exportDataType.kind === Kind.LIST_TYPE ? [0] : [],
-        exports: [],
-        includes: {},
-      };
-
-      // TODO: what if parentResolver.includes already has this key? solution: an include may have multiple resolvers
-
-      parentResolver.includes[''] = resolver;
-
-      insertResolversForGatherPlanCompositeField(
-        schemaPlan,
-        parent,
-        resolver,
-        depth,
-        insideFragment,
+    let selTypePlan: SchemaPlanType;
+    let selPlan = parentTypePlan.fields[sel.name];
+    if (selPlan) {
+      selTypePlan = parentTypePlan;
+    } else {
+      // the parent type may not implement the specific field, but its interface may.
+      // in that case, we have to resolve the field from the interface instead
+      const interfacePlan = Object.values(schemaPlan.types).find(
+        (t) =>
+          t.kind === 'interface' &&
+          parentTypePlan!.kind === 'object' &&
+          parentTypePlan!.implements.includes(t.name),
       );
+      if (!interfacePlan) {
+        throw new Error(
+          `Schema plan for type "${parentTypePlan.name}" doesn't have a "${sel.name}" field`,
+        );
+      }
 
-      continue;
+      selPlan = interfacePlan.fields[sel.name];
+      if (!selPlan) {
+        throw new Error(
+          `Schema plan interface "${interfacePlan.name}" that type "${parentTypePlan.name}" implements doesn't have a "${sel.name}" field`,
+        );
+      }
+
+      // we change the selection's type plan to the interface which will
+      // have the resolver creation below use the interface instead of the type
+      selTypePlan = interfacePlan;
     }
+
+    // at this point, the parent resolver is of the same type as the selection
 
     // use the parent resolver if the field is available in its subgraph;
     // if not, try finding a resolver in parents includes
-    let resolver = fieldPlan.subgraphs.includes(parentResolver.subgraph)
+    let resolver = selPlan.subgraphs.includes(parentResolver.subgraph)
       ? parentResolver
       : Object.values(parentResolver.includes).find((r) =>
-          fieldPlan.subgraphs.includes(r.subgraph),
+          selPlan.subgraphs.includes(r.subgraph),
         );
     if (!resolver) {
       // this field cannot be resolved using existing resolvers
@@ -668,55 +641,40 @@ function insertResolversForGatherPlanCompositeField(
       const resolverPlan:
         | SchemaPlanInterfaceResolver
         | SchemaPlanObjectResolver
-        | undefined = Object.values(fieldTypePlan.resolvers).find((r) =>
-        fieldPlan.subgraphs.includes(r.subgraph),
+        | undefined = Object.values(selTypePlan.resolvers).find((r) =>
+        selPlan.subgraphs.includes(r.subgraph),
       );
       if (!resolverPlan) {
         throw new Error(
-          `Schema plan type "${fieldTypePlan.name}" doesn't have a resolver for any of the "${fieldPlan.name}" field subgraphs`,
+          `Schema plan type "${selTypePlan.name}" doesn't have a resolver for any of the "${selPlan.name}" field subgraphs`,
         );
       }
       if (!Object.keys(resolverPlan.variables).length) {
         // TODO: object resolver must always have variables, right?
         throw new Error(
-          `Schema plan type "${fieldTypePlan.name}" field "${fieldPlan.name}" resolver doesn't require variables`,
+          `Schema plan type "${selTypePlan.name}" field "${selPlan.name}" resolver doesn't require variables`,
         );
       }
 
-      let selections = getSelectionsAtDepth(parentResolver.exports, depth);
-
-      const parentTypePlan = schemaPlan.types[parentResolver.ofType]!; // must exist at this point
-      if (
-        parentTypePlan.kind === 'interface' &&
-        fieldTypePlan.kind === 'object' &&
-        fieldTypePlan.implements.includes(parentTypePlan.name)
-      ) {
-        // selected field is available on the interface at parent, no need
-        // to set the field in the fragment. we therefore need to go one up
-        depth--;
-        selections = getSelectionsAtDepth(parentResolver.exports, depth);
-      }
-
+      const parentExportSelections = getSelectionsAtDepth(
+        parentResolver.exports,
+        depth,
+      );
       for (const variable of Object.values(resolverPlan.variables).filter(
         isSchemaPlanResolverSelectVariable,
       )) {
-        // TODO: disallow pushing same path multiple times
-        // TODO: what happens if the parent cannot resolve this variable selection?
-        //       if the parent cant resolve, insert here the necessary field resolver
-        //       add this resolver to its includes
-
         // make sure parent resolver exports fields that are needed
-        // as variables to perform the resolution.
-        // if the parent doesnt export the necessary variable, add it
-        // to parents export for resolution during execution
+        // as variables to perform the resolution. if the parent doesnt
+        // export the necessary variable, add it as private to parents
+        // exports for resolution during execution but not available to the user
         if (
-          !selections.find((e) => {
+          !parentExportSelections.find((e) => {
             // TODO: support selects of nested paths, like `manufacturer.id`
             // @ts-expect-error support selecting a variable thats on the root but under a fragment
             return e.name === variable.select;
           })
         ) {
-          selections.push({
+          parentExportSelections.push({
             private: true,
             kind: 'scalar', // TODO: do variables always select scalars?
             name: variable.select,
@@ -724,18 +682,14 @@ function insertResolversForGatherPlanCompositeField(
         }
       }
 
-      let exportDataType = parseType(resolverPlan.type);
-      if (exportDataType.kind === Kind.NON_NULL_TYPE) {
-        exportDataType = exportDataType.type;
-      }
-
       resolver = {
         ...resolverPlan,
         variables: inlineToResolverConstantVariables(resolverPlan, sel),
-        pathToExportData:
-          // we're resolving a single type. if the resolver returns a list, use the first result
-          // TODO: handle nested lists (should not happen though)
-          exportDataType.kind === Kind.LIST_TYPE ? [0] : [],
+        pathToExportData: parseIsListType(resolverPlan.type)
+          ? // resolver returns a list, use the first item in the export data
+            [0]
+          : // otherwise use the export data
+            [],
         exports: [],
         includes: {},
       };
@@ -999,4 +953,10 @@ function createSelectionsForExports(
     }
   }
   return sels;
+}
+
+function isOperationFragmentExport(
+  ex: OperationExport,
+): ex is OperationFragmentExport {
+  return ex.kind === 'fragment';
 }

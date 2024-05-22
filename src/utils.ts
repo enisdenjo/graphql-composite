@@ -5,6 +5,7 @@ import {
   FragmentDefinitionNode,
   Kind,
   OperationDefinitionNode,
+  parseType,
   SelectionNode,
 } from 'graphql';
 
@@ -99,4 +100,13 @@ function isOperationDefinitionNode(
   node: ASTNode,
 ): node is OperationDefinitionNode {
   return node.kind === Kind.OPERATION_DEFINITION;
+}
+
+/** Parses a GraphQL type string (ex. `[Int!]`) and checks whether it's a list. */
+export function isListType(str: string): boolean {
+  let t = parseType(str);
+  while (t.kind === Kind.NON_NULL_TYPE) {
+    t = t.type;
+  }
+  return t.kind === Kind.LIST_TYPE;
 }

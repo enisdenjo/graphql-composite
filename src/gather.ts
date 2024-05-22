@@ -650,22 +650,22 @@ function insertResolversForGatherPlanCompositeField(
 }
 
 function prepareCompositeResolverForSelection(
-  /** The composite resolver to prepare. */
-  resolver: SchemaPlanCompositeResolver,
+  /** The composite resolver plan to prepare. */
+  resolverPlan: SchemaPlanCompositeResolver,
   /** The selection in question. */
   sel: OperationSelection,
   /** Available exports of the parent resolver. */
   exps: OperationExport[],
 ): GatherPlanCompositeResolver {
   // TODO: fix the typings here, avoid casting
-  if (!Object.keys(resolver.variables).length) {
+  if (!Object.keys(resolverPlan.variables).length) {
     // TODO: object resolver must always have variables, right?
     throw new Error(
-      `Schema plan resolver for type "${resolver.ofType}" doesn't require variables`,
+      `Schema plan resolver for type "${resolverPlan.ofType}" doesn't require variables`,
     );
   }
 
-  for (const variable of Object.values(resolver.variables).filter(
+  for (const variable of Object.values(resolverPlan.variables).filter(
     isSchemaPlanResolverSelectVariable,
   )) {
     // make sure parent resolver exports fields that are needed
@@ -688,12 +688,12 @@ function prepareCompositeResolverForSelection(
   }
 
   return {
-    ...resolver,
+    ...resolverPlan,
     variables:
       sel.kind === 'fragment'
-        ? resolver.variables
-        : inlineToResolverConstantVariables(resolver, sel),
-    pathToExportData: parseIsListType(resolver.type)
+        ? resolverPlan.variables
+        : inlineToResolverConstantVariables(resolverPlan, sel),
+    pathToExportData: parseIsListType(resolverPlan.type)
       ? // resolver returns a list, use the first item in the export data
         [0]
       : // otherwise use the export data

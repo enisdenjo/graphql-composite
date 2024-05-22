@@ -7,25 +7,25 @@ import { getFixtures } from './utils.js';
 describe.each(await getFixtures())(
   'fixture $name',
   ({ schema, subgraphs, queries }) => {
-    describe.each(queries)('query $name', ({ document, variables }) => {
+    describe.each(queries)('query $name', ({ document, variables, result }) => {
       it('should plan gather', () => {
         expect(planGather(schema, document)).toMatchSnapshot();
       });
 
       it('should execute', async () => {
-        await expect(
-          execute(
-            Object.entries(subgraphs).reduce(
-              (agg, [name, subgraph]) => ({
-                ...agg,
-                [name]: new TransportHTTP(subgraph.fetch),
-              }),
-              {},
-            ),
-            planGather(schema, document),
-            variables,
+        const { extensions, ...actualResult } = await execute(
+          Object.entries(subgraphs).reduce(
+            (agg, [name, subgraph]) => ({
+              ...agg,
+              [name]: new TransportHTTP(subgraph.fetch),
+            }),
+            {},
           ),
-        ).resolves.toMatchSnapshot();
+          planGather(schema, document),
+          variables,
+        );
+        expect(actualResult).toEqual(result);
+        expect(extensions?.explain).toMatchSnapshot('explain');
       });
     });
   },

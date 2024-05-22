@@ -10,6 +10,11 @@ export const queries: FixtureQueries = [
       }
     `),
     variables: {},
+    result: {
+      data: {
+        manufacturerName: 'Samsung',
+      },
+    },
   },
   {
     name: 'ScalarOperationFieldNested',
@@ -19,11 +24,16 @@ export const queries: FixtureQueries = [
       }
     `),
     variables: {},
+    result: {
+      data: {
+        productName: 'iPad',
+      },
+    },
   },
   {
     name: 'BasicWithInlineFragment',
     document: parse(/* GraphQL */ `
-      query NotBasicWithInlineVariables {
+      query BasicWithInlineFragment {
         storefront(id: "samsung-store") {
           id
           name
@@ -37,6 +47,28 @@ export const queries: FixtureQueries = [
       }
     `),
     variables: {},
+    result: {
+      data: {
+        storefront: {
+          id: 'samsung-store',
+          name: 'Samsung',
+          products: [
+            {
+              name: 'Samsung TV',
+              upc: 'tv',
+            },
+            {
+              name: 'Samsung Fold',
+              upc: 'fold',
+            },
+            {
+              name: 'Samsung Galaxy',
+              upc: 'galaxy',
+            },
+          ],
+        },
+      },
+    },
   },
   {
     name: 'BasicWithFragmentDefinition',
@@ -58,6 +90,28 @@ export const queries: FixtureQueries = [
       }
     `),
     variables: {},
+    result: {
+      data: {
+        storefront: {
+          id: 'apple-store',
+          name: 'Apple Store',
+          products: [
+            {
+              manufacturer: {
+                id: 'apple',
+              },
+              upc: 'iphone',
+            },
+            {
+              manufacturer: {
+                id: 'apple',
+              },
+              upc: 'ipad',
+            },
+          ],
+        },
+      },
+    },
   },
   {
     name: 'NotBasicWithInlineVariables',
@@ -81,6 +135,79 @@ export const queries: FixtureQueries = [
       }
     `),
     variables: {},
+    result: {
+      data: {
+        storefront: {
+          id: 'samsung-store',
+          name: 'Samsung',
+          products: [
+            {
+              manufacturer: {
+                name: 'Samsung',
+                products: [
+                  {
+                    name: 'Samsung TV',
+                    upc: 'tv',
+                  },
+                  {
+                    name: 'Samsung Fold',
+                    upc: 'fold',
+                  },
+                  {
+                    name: 'Samsung Galaxy',
+                    upc: 'galaxy',
+                  },
+                ],
+              },
+              name: 'Samsung TV',
+              upc: 'tv',
+            },
+            {
+              manufacturer: {
+                name: 'Samsung',
+                products: [
+                  {
+                    name: 'Samsung TV',
+                    upc: 'tv',
+                  },
+                  {
+                    name: 'Samsung Fold',
+                    upc: 'fold',
+                  },
+                  {
+                    name: 'Samsung Galaxy',
+                    upc: 'galaxy',
+                  },
+                ],
+              },
+              name: 'Samsung Fold',
+              upc: 'fold',
+            },
+            {
+              manufacturer: {
+                name: 'Samsung',
+                products: [
+                  {
+                    name: 'Samsung TV',
+                    upc: 'tv',
+                  },
+                  {
+                    name: 'Samsung Fold',
+                    upc: 'fold',
+                  },
+                  {
+                    name: 'Samsung Galaxy',
+                    upc: 'galaxy',
+                  },
+                ],
+              },
+              name: 'Samsung Galaxy',
+              upc: 'galaxy',
+            },
+          ],
+        },
+      },
+    },
   },
   {
     name: 'NotBasicWithOperationVariables',
@@ -106,6 +233,50 @@ export const queries: FixtureQueries = [
     variables: {
       id: 'apple-store',
     },
+    result: {
+      data: {
+        storefront: {
+          id: 'apple-store',
+          name: 'Apple Store',
+          products: [
+            {
+              manufacturer: {
+                name: 'Apple',
+                products: [
+                  {
+                    name: 'Apple iPhone',
+                    upc: 'iphone',
+                  },
+                  {
+                    name: 'iPad',
+                    upc: 'ipad',
+                  },
+                ],
+              },
+              name: 'Apple iPhone',
+              upc: 'iphone',
+            },
+            {
+              manufacturer: {
+                name: 'Apple',
+                products: [
+                  {
+                    name: 'Apple iPhone',
+                    upc: 'iphone',
+                  },
+                  {
+                    name: 'iPad',
+                    upc: 'ipad',
+                  },
+                ],
+              },
+              name: 'iPad',
+              upc: 'ipad',
+            },
+          ],
+        },
+      },
+    },
   },
   {
     name: 'ListOperationResolver',
@@ -125,6 +296,50 @@ export const queries: FixtureQueries = [
       }
     `),
     variables: {},
+    result: {
+      data: {
+        productsByUpcs: [
+          {
+            manufacturer: {
+              name: 'Samsung',
+              products: [
+                {
+                  name: 'Samsung TV',
+                  upc: 'tv',
+                },
+                {
+                  name: 'Samsung Fold',
+                  upc: 'fold',
+                },
+                {
+                  name: 'Samsung Galaxy',
+                  upc: 'galaxy',
+                },
+              ],
+            },
+            name: 'Samsung Galaxy',
+            upc: 'galaxy',
+          },
+          {
+            manufacturer: {
+              name: 'Apple',
+              products: [
+                {
+                  name: 'Apple iPhone',
+                  upc: 'iphone',
+                },
+                {
+                  name: 'iPad',
+                  upc: 'ipad',
+                },
+              ],
+            },
+            name: 'Apple iPhone',
+            upc: 'iphone',
+          },
+        ],
+      },
+    },
   },
   {
     name: 'ScalarListInType',
@@ -136,6 +351,13 @@ export const queries: FixtureQueries = [
       }
     `),
     variables: {},
+    result: {
+      data: {
+        storefront: {
+          productNames: ['Apple iPhone', 'iPad'],
+        },
+      },
+    },
   },
   {
     name: 'ScalarListInOperation',
@@ -145,5 +367,16 @@ export const queries: FixtureQueries = [
       }
     `),
     variables: {},
+    result: {
+      data: {
+        productNames: [
+          'Samsung TV',
+          'Samsung Fold',
+          'Samsung Galaxy',
+          'Apple iPhone',
+          'iPad',
+        ],
+      },
+    },
   },
 ];

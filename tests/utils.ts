@@ -1,7 +1,7 @@
 import fs from 'fs/promises';
 import path from 'path';
 import { IExecutableSchemaDefinition } from '@graphql-tools/schema';
-import { DocumentNode } from 'graphql';
+import { DocumentNode, ExecutionResult } from 'graphql';
 import { createSchema, createYoga } from 'graphql-yoga';
 import { SchemaPlan } from '../src/schemaPlan.js';
 
@@ -11,6 +11,7 @@ export type FixtureQueries = {
   name: string;
   document: DocumentNode;
   variables: Record<string, unknown>;
+  result: ExecutionResult;
 }[];
 
 export interface Fixture {

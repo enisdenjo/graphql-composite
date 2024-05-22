@@ -1,6 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`fixture 'store' > query 'BasicWithFragmentDefinition' > should execute > explain 1`] = `
+exports[`fixture 'store' > query 'BasicWithFragmentDefinition' > should execute and explain 1`] = `
 [
   {
     "data": {
@@ -271,7 +271,7 @@ fragment P on Product {
 }
 `;
 
-exports[`fixture 'store' > query 'BasicWithInlineFragment' > should execute > explain 1`] = `
+exports[`fixture 'store' > query 'BasicWithInlineFragment' > should execute and explain 1`] = `
 [
   {
     "data": {
@@ -574,7 +574,7 @@ exports[`fixture 'store' > query 'BasicWithInlineFragment' > should plan gather 
 }
 `;
 
-exports[`fixture 'store' > query 'ListOperationResolver' > should execute > explain 1`] = `
+exports[`fixture 'store' > query 'ListOperationResolver' > should execute and explain 1`] = `
 [
   {
     "data": {
@@ -883,7 +883,7 @@ exports[`fixture 'store' > query 'ListOperationResolver' > should plan gather 1`
 }
 `;
 
-exports[`fixture 'store' > query 'NotBasicWithInlineVariables' > should execute > explain 1`] = `
+exports[`fixture 'store' > query 'NotBasicWithInlineVariables' > should execute and explain 1`] = `
 [
   {
     "data": {
@@ -1459,7 +1459,7 @@ exports[`fixture 'store' > query 'NotBasicWithInlineVariables' > should plan gat
 }
 `;
 
-exports[`fixture 'store' > query 'NotBasicWithOperationVariables' > should execute > explain 1`] = `
+exports[`fixture 'store' > query 'NotBasicWithOperationVariables' > should execute and explain 1`] = `
 [
   {
     "data": {
@@ -1904,7 +1904,7 @@ exports[`fixture 'store' > query 'NotBasicWithOperationVariables' > should plan 
 }
 `;
 
-exports[`fixture 'store' > query 'ScalarListInOperation' > should execute > explain 1`] = `
+exports[`fixture 'store' > query 'ScalarListInOperation' > should execute and explain 1`] = `
 [
   {
     "data": {
@@ -1981,7 +1981,7 @@ exports[`fixture 'store' > query 'ScalarListInOperation' > should plan gather 1`
 }
 `;
 
-exports[`fixture 'store' > query 'ScalarListInType' > should execute > explain 1`] = `
+exports[`fixture 'store' > query 'ScalarListInType' > should execute and explain 1`] = `
 [
   {
     "data": {
@@ -2088,7 +2088,7 @@ exports[`fixture 'store' > query 'ScalarListInType' > should plan gather 1`] = `
 }
 `;
 
-exports[`fixture 'store' > query 'ScalarOperationField' > should execute > explain 1`] = `
+exports[`fixture 'store' > query 'ScalarOperationField' > should execute and explain 1`] = `
 [
   {
     "data": {
@@ -2170,7 +2170,7 @@ exports[`fixture 'store' > query 'ScalarOperationField' > should plan gather 1`]
 }
 `;
 
-exports[`fixture 'store' > query 'ScalarOperationFieldNested' > should execute > explain 1`] = `
+exports[`fixture 'store' > query 'ScalarOperationFieldNested' > should execute and explain 1`] = `
 [
   {
     "data": {

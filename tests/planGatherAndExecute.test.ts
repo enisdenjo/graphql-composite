@@ -12,7 +12,7 @@ describe.each(await getFixtures())(
         expect(planGather(schema, document)).toMatchSnapshot();
       });
 
-      it('should execute', async () => {
+      it('should execute and explain', async () => {
         const { extensions, ...actualResult } = await execute(
           Object.entries(subgraphs).reduce(
             (agg, [name, subgraph]) => ({
@@ -25,7 +25,7 @@ describe.each(await getFixtures())(
           variables,
         );
         expect(actualResult).toEqual(result);
-        expect(extensions?.explain).toMatchSnapshot('explain');
+        expect(extensions?.explain).toMatchSnapshot();
       });
     });
   },

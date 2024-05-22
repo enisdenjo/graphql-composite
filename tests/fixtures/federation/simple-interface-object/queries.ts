@@ -234,4 +234,125 @@ export const queries: FixtureQueries = [
       },
     },
   },
+  {
+    name: 'AccountsWithTypename',
+    document: parse(/* GraphQL */ `
+      query AccountsWithTypename {
+        accounts {
+          name
+          # NOTE
+          # __typename is not available in the interfaceObject, needs to be resolved indirectly
+          __typename
+        }
+      }
+    `),
+    variables: {},
+    result: {
+      data: {
+        accounts: [
+          {
+            name: 'Alice',
+            __typename: 'Admin',
+          },
+          {
+            name: 'Bob',
+            __typename: 'Admin',
+          },
+          {
+            name: 'Charlie',
+            __typename: 'Regular',
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'AccountsWithAdminAndTypename',
+    document: parse(/* GraphQL */ `
+      query AccountsWithAdminAndTypename {
+        accounts {
+          ... on Admin {
+            __typename
+          }
+        }
+      }
+    `),
+    variables: {},
+    result: {
+      data: {
+        accounts: [
+          {
+            __typename: 'Admin',
+          },
+          {
+            __typename: 'Admin',
+          },
+          {},
+        ],
+      },
+    },
+  },
+  {
+    name: 'AccountsIsActive',
+    document: parse(/* GraphQL */ `
+      query AccountsIsActive {
+        accounts {
+          id
+          isActive
+        }
+      }
+    `),
+    variables: {},
+    result: {
+      data: {
+        accounts: [
+          {
+            id: 'u1',
+            isActive: false,
+          },
+          {
+            id: 'u2',
+            isActive: false,
+          },
+          {
+            id: 'u3',
+            isActive: false,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'AccountsIsActiveOnAdmin',
+    document: parse(/* GraphQL */ `
+      query AccountsIsActiveOnAdmin {
+        accounts {
+          # NOTE
+          # id is available in the interfaceObject and can be resolved as there's no type condition involved
+          id
+          ... on Admin {
+            isActive
+          }
+        }
+      }
+    `),
+    variables: {},
+    result: {
+      data: {
+        accounts: [
+          {
+            id: 'u1',
+            isActive: true,
+          },
+          {
+            id: 'u2',
+            isActive: true,
+          },
+          {
+            id: 'u3',
+          },
+        ],
+      },
+    },
+  },
 ];

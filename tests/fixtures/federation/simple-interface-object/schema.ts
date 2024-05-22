@@ -227,6 +227,10 @@ export const schema: SchemaPlan = {
       kind: 'interface',
       name: 'Account',
       fields: {
+        __typename: {
+          name: '__typename',
+          subgraphs: ['a'],
+        },
         id: {
           name: 'id',
           subgraphs: ['a', 'b', 'c'],

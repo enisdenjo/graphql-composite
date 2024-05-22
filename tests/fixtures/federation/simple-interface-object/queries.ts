@@ -244,4 +244,30 @@ export const queries: FixtureQueries = [
       },
     },
   },
+  {
+    name: 'AccountsSpreadAdmin',
+    document: parse(/* GraphQL */ `
+      query AccountsSpreadAdmin {
+        accounts {
+          ... on Admin {
+            name
+          }
+        }
+      }
+    `),
+    variables: {},
+    result: {
+      data: {
+        accounts: [
+          {
+            name: 'Alice',
+          },
+          {
+            name: 'Bob',
+          },
+          {},
+        ],
+      },
+    },
+  },
 ];

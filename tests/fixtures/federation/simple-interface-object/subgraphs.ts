@@ -103,6 +103,10 @@ export const subgraphs: FixtureSubgraphs = {
                 return null;
               }
 
+              if (admin.__typename !== 'Admin') {
+                return null;
+              }
+
               return {
                 __typename: admin.__typename,
                 id: admin.id,

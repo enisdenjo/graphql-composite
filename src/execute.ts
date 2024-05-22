@@ -94,6 +94,37 @@ async function executeResolver(
     {},
   );
 
+  const parentExportDataDoesntProvideAllSelectVariables = Object.values(
+    resolver.variables,
+  ).some(
+    (variable) =>
+      variable.kind === 'select' &&
+      Object(variables)[variable.name] === undefined,
+  );
+  if (parentExportDataDoesntProvideAllSelectVariables) {
+    // if parent's export data dont have all select variables
+    // that means we're resolving a field of a non-existing
+    // parent. this can happen with interfaces (see AccountsSpreadAdmin test in federation/simple-interface-object)
+    // we therefore just set an empty object at the path, if there's
+    // nothing set already
+    if (resultRef.data && getAtPath(resultRef.data, pathInData) === undefined) {
+      // TODO: should throw if resultRef's data is not available?
+      setAtPath(resultRef.data, pathInData, {});
+    }
+    return resolver.kind === 'scalar'
+      ? {
+          ...resolver,
+          pathInData,
+          variables,
+        }
+      : {
+          ...resolver,
+          pathInData,
+          variables,
+          includes: [],
+        };
+  }
+
   const result = await transport.get({ query: resolver.operation, variables });
 
   if (result.errors?.length) {

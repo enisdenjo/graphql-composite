@@ -309,5 +309,48 @@ export const schema: SchemaPlan = {
         },
       },
     },
+    Admin: {
+      kind: 'object',
+      name: 'Admin',
+      implements: ['Account'],
+      fields: {
+        id: {
+          name: 'id',
+          subgraphs: ['a'],
+        },
+        isMain: {
+          name: 'isMain',
+          subgraphs: ['a'],
+        },
+        isActive: {
+          name: 'isActive',
+          subgraphs: ['a'],
+        },
+      },
+      resolvers: {
+        a: {
+          subgraph: 'a',
+          kind: 'object',
+          type: '[Admin]!',
+          ofType: 'Admin',
+          operation: /* GraphQL */ `
+            query ($id: ID!) {
+              _entities(representations: [{ __typename: "Admin", id: $id }]) {
+                ... on Admin {
+                  ...__export
+                }
+              }
+            }
+          `,
+          variables: {
+            id: {
+              kind: 'select',
+              name: 'id',
+              select: 'id',
+            },
+          },
+        },
+      },
+    },
   },
 };

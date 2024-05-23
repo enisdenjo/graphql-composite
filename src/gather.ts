@@ -16,11 +16,11 @@ import {
   visitWithTypeInfo,
 } from 'graphql';
 import {
-  SchemaPlan,
-  SchemaPlanCompositeResolver,
-  SchemaPlanScalarResolver,
-  SchemaPlanSubgraph,
-} from './schemaPlan.js';
+  Blueprint,
+  BlueprintCompositeResolver,
+  BlueprintScalarResolver,
+  BlueprintSubgraph,
+} from './blueprint.js';
 import { createSelectionSetForFields, flattenFragments } from './utils.js';
 
 export interface GatherPlan {
@@ -41,8 +41,8 @@ export type GatherPlanResolver =
   | GatherPlanScalarResolver;
 
 export interface GatherPlanCompositeResolver
-  extends SchemaPlanSubgraph,
-    SchemaPlanCompositeResolver {
+  extends BlueprintSubgraph,
+    BlueprintCompositeResolver {
   /**
    * The field in user's operation this resolver resolves
    * at the location of this resolver in the structure.
@@ -75,8 +75,8 @@ export interface GatherPlanCompositeResolver
 }
 
 export interface GatherPlanScalarResolver
-  extends SchemaPlanSubgraph,
-    SchemaPlanScalarResolver {
+  extends BlueprintSubgraph,
+    BlueprintScalarResolver {
   /**
    * The field in user's operation this resolver resolves
    * at the location of this resolver in the structure.
@@ -136,7 +136,7 @@ export interface GatherPlanResolverField {
 }
 
 export function planGather(
-  schemaPlan: SchemaPlan,
+  blueprint: Blueprint,
   doc: DocumentNode,
 ): GatherPlan {
   const gatherPlan: GatherPlan = {
@@ -146,7 +146,7 @@ export function planGather(
 
   const fields: Field[] = [];
   const entries: string[] = [];
-  const typeInfo = new TypeInfo(buildSchema(schemaPlan.schema));
+  const typeInfo = new TypeInfo(buildSchema(blueprint.schema));
   let currOperation: GatherPlanOperation;
   visit(
     // we want to flatten fragments in the document
@@ -228,7 +228,7 @@ export function planGather(
 
   for (const operation of gatherPlan.operations) {
     operation.resolvers = planGatherResolversForOperationFields(
-      schemaPlan,
+      blueprint,
       operation,
       fields,
     );
@@ -277,11 +277,11 @@ function insertFieldAtDepth(fields: Field[], depth: number, field: Field) {
 }
 
 function planGatherResolversForOperationFields(
-  schemaPlan: SchemaPlan,
+  blueprint: Blueprint,
   operation: GatherPlanOperation,
   fields: Field[],
 ): Record<string, GatherPlanResolver> {
-  const operationPlan = schemaPlan.operations[operation.type];
+  const operationPlan = blueprint.operations[operation.type];
   if (!operationPlan) {
     throw new Error(
       `Schema plan does not have the "${operation.type}" operation`,
@@ -330,7 +330,7 @@ function planGatherResolversForOperationFields(
 
     if (operationField.kind === 'composite' && resolver.kind === 'composite') {
       insertResolversForGatherPlanCompositeField(
-        schemaPlan,
+        blueprint,
         operationField,
         resolver,
         '',
@@ -349,13 +349,13 @@ function planGatherResolversForOperationFields(
 }
 
 function insertResolversForGatherPlanCompositeField(
-  schemaPlan: SchemaPlan,
+  blueprint: Blueprint,
   parent: FieldComposite,
   parentResolver: GatherPlanCompositeResolver,
   pathPrefix: string,
 ) {
   for (const field of parent.fields) {
-    const objectPlan = schemaPlan.objects[parent.ofType];
+    const objectPlan = blueprint.objects[parent.ofType];
     if (!objectPlan) {
       throw new Error(`Schema plan doesn't have the "${parent.ofType}" object`);
     }
@@ -376,7 +376,7 @@ function insertResolversForGatherPlanCompositeField(
       // this field cannot be resolved from the parent's subgraph
       // add an dependant resolver to the parent for the field(s)
 
-      const objectPlan = schemaPlan.objects[parent.ofType];
+      const objectPlan = blueprint.objects[parent.ofType];
       if (!objectPlan) {
         throw new Error(
           `Schema plan doesn't have the "${parent.ofType}" object`,
@@ -455,7 +455,7 @@ function insertResolversForGatherPlanCompositeField(
 
     if (field.kind === 'composite') {
       insertResolversForGatherPlanCompositeField(
-        schemaPlan,
+        blueprint,
         field,
         resolver,
         resolvingParentType

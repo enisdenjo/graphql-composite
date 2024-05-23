@@ -3,7 +3,7 @@ import path from 'path';
 import { IExecutableSchemaDefinition } from '@graphql-tools/schema';
 import { DocumentNode, ExecutionResult } from 'graphql';
 import { createSchema, createYoga } from 'graphql-yoga';
-import { SchemaPlan } from '../src/schemaPlan.js';
+import { Blueprint } from '../src/blueprint.js';
 
 export type FixtureSources = Record<string, Source>;
 
@@ -16,19 +16,19 @@ export type FixtureQueries = {
 
 export interface Fixture {
   name: string;
-  schema: SchemaPlan;
+  blueprint: Blueprint;
   subgraphs: FixtureSources;
   queries: FixtureQueries;
 }
 
 export async function getFixture(name: string): Promise<Fixture> {
   const dir = path.join(__dirname, 'fixtures', name);
-  const { schema } = await import(path.join(dir, 'schema.ts'));
+  const { blueprint } = await import(path.join(dir, 'blueprint.ts'));
   const { subgraphs } = await import(path.join(dir, 'subgraphs.ts'));
   const { queries } = await import(path.join(dir, 'queries.ts'));
   return {
     name,
-    schema,
+    blueprint,
     subgraphs,
     queries,
   };

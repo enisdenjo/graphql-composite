@@ -6,10 +6,10 @@ import { getFixtures } from './utils.js';
 
 describe.each(await getFixtures())(
   'fixture $name',
-  ({ schema, subgraphs, queries }) => {
+  ({ blueprint, subgraphs, queries }) => {
     describe.each(queries)('query $name', ({ document, variables, result }) => {
       it('should plan gather', () => {
-        expect(planGather(schema, document)).toMatchSnapshot();
+        expect(planGather(blueprint, document)).toMatchSnapshot();
       });
 
       it('should execute and explain', async () => {
@@ -21,7 +21,7 @@ describe.each(await getFixtures())(
             }),
             {},
           ),
-          planGather(schema, document),
+          planGather(blueprint, document),
           variables,
         );
         expect(actualResult).toEqual(result);

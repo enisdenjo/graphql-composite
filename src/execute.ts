@@ -1,12 +1,12 @@
 import { ExecutionResult, GraphQLError } from 'graphql';
 import getAtPath from 'lodash.get';
 import setAtPath from 'lodash.set';
+import { BlueprintSubgraph } from './blueprint.js';
 import { GatherPlan, GatherPlanResolver } from './gather.js';
-import { SchemaPlanSubgraph } from './schemaPlan.js';
 import { Transport } from './transport.js';
 
 export type SourceTransports = {
-  [subgraph in SchemaPlanSubgraph['subgraph']]: Transport;
+  [subgraph in BlueprintSubgraph['subgraph']]: Transport;
 };
 
 export async function execute(

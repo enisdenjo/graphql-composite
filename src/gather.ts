@@ -361,7 +361,7 @@ function planGatherResolversForOperationFields(
   const operationPlan = schemaPlan.operations[operation.type];
   if (!operationPlan) {
     throw new Error(
-      `Schema plan does not have the "${operation.type}" operation`,
+      `Blueprint does not have the "${operation.type}" operation`,
     );
   }
 
@@ -469,12 +469,12 @@ function insertResolversForGatherPlanCompositeField(
         const objectPlan = schemaPlan.types[sel.typeCondition];
         if (!objectPlan || objectPlan.kind !== 'object') {
           throw new Error(
-            `Schema plan doesn't have a "${sel.typeCondition}" object`,
+            `Blueprint doesn't have a "${sel.typeCondition}" object`,
           );
         }
         if (!objectPlan.implements.includes(interfacePlan.name)) {
           throw new Error(
-            `Schema plan "${sel.typeCondition}" object doesn't implement the "${interfacePlan.name}" interface`,
+            `Blueprint "${sel.typeCondition}" object doesn't implement the "${interfacePlan.name}" interface`,
           );
         }
 
@@ -487,7 +487,7 @@ function insertResolversForGatherPlanCompositeField(
           const resolverPlan = Object.values(objectPlan.resolvers)[0];
           if (!resolverPlan) {
             throw new Error(
-              `Schema plan type "${objectPlan.name}" doesn't have any resolvers`,
+              `Blueprint type "${objectPlan.name}" doesn't have any resolvers`,
             );
           }
 
@@ -537,7 +537,7 @@ function insertResolversForGatherPlanCompositeField(
       parent.kind === 'fragment' ? parent.typeCondition : parent.ofType;
     const parentTypePlan = schemaPlan.types[parentOfType];
     if (!parentTypePlan) {
-      throw new Error(`Schema plan doesn't have a "${parentOfType}" type`);
+      throw new Error(`Blueprint doesn't have a "${parentOfType}" type`);
     }
     let selTypePlan: BlueprintType;
     let selPlan = parentTypePlan.fields[sel.name];
@@ -562,14 +562,14 @@ function insertResolversForGatherPlanCompositeField(
       );
       if (!interfacePlan) {
         throw new Error(
-          `Schema plan for type "${parentTypePlan.name}" doesn't have a "${sel.name}" field`,
+          `Blueprint for type "${parentTypePlan.name}" doesn't have a "${sel.name}" field`,
         );
       }
 
       selPlan = interfacePlan.fields[sel.name];
       if (!selPlan) {
         throw new Error(
-          `Schema plan interface "${interfacePlan.name}" that type "${parentTypePlan.name}" implements doesn't have a "${sel.name}" field`,
+          `Blueprint interface "${interfacePlan.name}" that type "${parentTypePlan.name}" implements doesn't have a "${sel.name}" field`,
         );
       }
 
@@ -589,7 +589,7 @@ function insertResolversForGatherPlanCompositeField(
       );
       if (!resolverPlan) {
         throw new Error(
-          `Schema plan type "${selTypePlan.name}" doesn't have a resolver for any of the "${selPlan.name}" field subgraphs`,
+          `Blueprint type "${selTypePlan.name}" doesn't have a resolver for any of the "${selPlan.name}" field subgraphs`,
         );
       }
 
@@ -655,7 +655,7 @@ function prepareCompositeResolverForSelection(
   if (!Object.keys(resolverPlan.variables).length) {
     // TODO: object resolver must always have variables, right?
     throw new Error(
-      `Schema plan resolver for type "${resolverPlan.ofType}" doesn't require variables`,
+      `Blueprint resolver for type "${resolverPlan.ofType}" doesn't require variables`,
     );
   }
 

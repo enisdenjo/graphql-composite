@@ -16,14 +16,14 @@ import {
   visitWithTypeInfo,
 } from 'graphql';
 import {
-  isSchemaPlanResolverSelectVariable,
-  SchemaPlan,
-  SchemaPlanCompositeResolver,
-  SchemaPlanResolver,
-  SchemaPlanResolverConstantVariable,
-  SchemaPlanScalarResolver,
-  SchemaPlanType,
-} from './schemaPlan.js';
+  Blueprint,
+  BlueprintCompositeResolver,
+  BlueprintResolver,
+  BlueprintResolverConstantVariable,
+  BlueprintScalarResolver,
+  BlueprintType,
+  isBlueprintResolverSelectVariable,
+} from './blueprint.js';
 import { flattenFragments, isListType as parseIsListType } from './utils.js';
 
 export interface GatherPlan {
@@ -44,7 +44,7 @@ export type GatherPlanResolver =
   | GatherPlanScalarResolver;
 
 export interface GatherPlanCompositeResolver
-  extends SchemaPlanCompositeResolver {
+  extends BlueprintCompositeResolver {
   /** The path to the `__export` fragment in the execution result. */
   pathToExportData: (string | number)[];
   /**
@@ -64,7 +64,7 @@ export interface GatherPlanCompositeResolver
   includes: Record<string, GatherPlanCompositeResolver>;
 }
 
-export interface GatherPlanScalarResolver extends SchemaPlanScalarResolver {
+export interface GatherPlanScalarResolver extends BlueprintScalarResolver {
   /**
    * The path to the scalar in the execution result.
    */
@@ -112,7 +112,7 @@ export interface OperationFragmentExport extends OperationExportAvailability {
 }
 
 export function planGather(
-  schemaPlan: SchemaPlan,
+  schemaPlan: Blueprint,
   doc: DocumentNode,
 ): GatherPlan {
   const gatherPlan: GatherPlan = {
@@ -331,13 +331,13 @@ function getSelectionsAtDepth(
 
 /**
  * Finds inline variables of the field that match by name resolver's required
- * variables and creates {@link SchemaPlanResolverConstantVariable}s them.
+ * variables and creates {@link BlueprintResolverConstantVariable}s them.
  */
 function inlineToResolverConstantVariables(
-  resolver: SchemaPlanResolver,
+  resolver: BlueprintResolver,
   field: OperationField,
 ) {
-  const variables: SchemaPlanResolver['variables'] = {};
+  const variables: BlueprintResolver['variables'] = {};
   for (const [name, variable] of Object.entries(resolver.variables)) {
     const inlineVariable = field.inlineVariables[name];
     if (inlineVariable) {
@@ -354,7 +354,7 @@ function inlineToResolverConstantVariables(
 }
 
 function planGatherResolversForOperationFields(
-  schemaPlan: SchemaPlan,
+  schemaPlan: Blueprint,
   operation: GatherPlanOperation,
   operationFields: OperationField[],
 ): Record<string, GatherPlanResolver> {
@@ -433,7 +433,7 @@ function planGatherResolversForOperationFields(
 }
 
 function insertResolversForGatherPlanCompositeField(
-  schemaPlan: SchemaPlan,
+  schemaPlan: Blueprint,
   parent: OperationCompositeSelection,
   parentResolver: GatherPlanCompositeResolver,
   /**
@@ -539,7 +539,7 @@ function insertResolversForGatherPlanCompositeField(
     if (!parentTypePlan) {
       throw new Error(`Schema plan doesn't have a "${parentOfType}" type`);
     }
-    let selTypePlan: SchemaPlanType;
+    let selTypePlan: BlueprintType;
     let selPlan = parentTypePlan.fields[sel.name];
     if (selPlan) {
       selTypePlan = parentTypePlan;
@@ -645,7 +645,7 @@ function insertResolversForGatherPlanCompositeField(
 
 function prepareCompositeResolverForSelection(
   /** The composite resolver plan to prepare. */
-  resolverPlan: SchemaPlanCompositeResolver,
+  resolverPlan: BlueprintCompositeResolver,
   /** The selection in question. */
   sel: OperationSelection,
   /** Available exports of the parent resolver. */
@@ -660,7 +660,7 @@ function prepareCompositeResolverForSelection(
   }
 
   for (const variable of Object.values(resolverPlan.variables).filter(
-    isSchemaPlanResolverSelectVariable,
+    isBlueprintResolverSelectVariable,
   )) {
     // make sure parent resolver exports fields that are needed
     // as variables to perform the resolution. if the parent doesnt

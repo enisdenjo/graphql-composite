@@ -1,7 +1,7 @@
 import { OperationTypeNode } from 'graphql';
-import { SchemaPlan } from '../../../../src/schemaPlan.js';
+import { Blueprint } from '../../../../src/blueprint.js';
 
-export const schema: SchemaPlan = {
+export const blueprint: Blueprint = {
   schema: /* GraphQL */ `
     interface Account {
       id: ID!

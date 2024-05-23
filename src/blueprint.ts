@@ -1,65 +1,65 @@
 import { OperationTypeNode } from 'graphql';
 import { GatherPlanResolver } from './gather.js';
 
-export interface SchemaPlan {
+export interface Blueprint {
   /** The GraphQL schema SDL without directives. */
   schema: string;
   operations: {
-    [name: string /* graphql.OperationDefinitionNode */]: SchemaPlanOperation;
+    [name: string /* graphql.OperationDefinitionNode */]: BlueprintOperation;
   };
   types: {
-    [name in SchemaPlanType['name']]: SchemaPlanType;
+    [name in BlueprintType['name']]: BlueprintType;
   };
 }
 
-export interface SchemaPlanOperation {
+export interface BlueprintOperation {
   name: OperationTypeNode;
   fields: {
-    [name in SchemaPlanOperationField['name']]: SchemaPlanOperationField;
+    [name in BlueprintOperationField['name']]: BlueprintOperationField;
   };
 }
 
-export interface SchemaPlanOperationField {
+export interface BlueprintOperationField {
   name: string;
   resolvers: {
-    [subgraph in SchemaPlanResolver['subgraph']]: SchemaPlanTypeResolver; // TODO: operation field must always have a resolver?
+    [subgraph in BlueprintResolver['subgraph']]: BlueprintTypeResolver; // TODO: operation field must always have a resolver?
   };
 }
 
-export type SchemaPlanType = SchemaPlanInterface | SchemaPlanObject;
+export type BlueprintType = BlueprintInterface | BlueprintObject;
 
-export interface SchemaPlanInterface {
+export interface BlueprintInterface {
   kind: 'interface';
   name: string;
   resolvers: {
-    [subgraph in SchemaPlanInterfaceResolver['subgraph']]: SchemaPlanInterfaceResolver; // TODO: type can only have one resolver at subgraph?
+    [subgraph in BlueprintInterfaceResolver['subgraph']]: BlueprintInterfaceResolver; // TODO: type can only have one resolver at subgraph?
   };
   fields: {
-    [name in SchemaPlanField['name']]: SchemaPlanField;
+    [name in BlueprintField['name']]: BlueprintField;
   };
 }
 
-export interface SchemaPlanObject {
+export interface BlueprintObject {
   kind: 'object';
   name: string;
-  /** List of {@link SchemaPlanInterface.name interface name}s this type implements, if any. */
-  implements: SchemaPlanInterface['name'][];
+  /** List of {@link BlueprintInterface.name interface name}s this type implements, if any. */
+  implements: BlueprintInterface['name'][];
   resolvers: {
-    [subgraph in SchemaPlanObjectResolver['subgraph']]: SchemaPlanObjectResolver; // TODO: type can only have one resolver at subgraph?
+    [subgraph in BlueprintObjectResolver['subgraph']]: BlueprintObjectResolver; // TODO: type can only have one resolver at subgraph?
   };
   fields: {
-    [name in SchemaPlanField['name']]: SchemaPlanField;
+    [name in BlueprintField['name']]: BlueprintField;
   };
 }
 
-export interface SchemaPlanField {
-  /** Name of the field in a {@link SchemaPlanType}. */
+export interface BlueprintField {
+  /** Name of the field in a {@link BlueprintType}. */
   name: string;
   /** List of subgraphs at which the field is available. */
   subgraphs: string[];
 }
 
-export interface SchemaPlanResolver {
+export interface BlueprintResolver {
   /** Unique identifier of a specific subgraph. */
   subgraph: string;
   /** The type resolved. */
@@ -103,41 +103,41 @@ export interface SchemaPlanResolver {
   operation: string;
   /** Necessary variables for performing the {@link operation}. */
   variables: {
-    [name in SchemaPlanResolverVariable['name']]: SchemaPlanResolverVariable;
+    [name in BlueprintResolverVariable['name']]: BlueprintResolverVariable;
   };
 }
 
-export interface SchemaPlanInterfaceResolver extends SchemaPlanResolver {
+export interface BlueprintInterfaceResolver extends BlueprintResolver {
   kind: 'interface';
 }
 
-export interface SchemaPlanObjectResolver extends SchemaPlanResolver {
+export interface BlueprintObjectResolver extends BlueprintResolver {
   kind: 'object';
 }
 
-export interface SchemaPlanCompositeResolver extends SchemaPlanResolver {
+export interface BlueprintCompositeResolver extends BlueprintResolver {
   kind: 'interface' | 'object';
 }
 
-export interface SchemaPlanScalarResolver extends SchemaPlanResolver {
+export interface BlueprintScalarResolver extends BlueprintResolver {
   kind: 'scalar';
 }
 
-export type SchemaPlanTypeResolver =
-  | SchemaPlanInterfaceResolver
-  | SchemaPlanObjectResolver
-  | SchemaPlanScalarResolver;
+export type BlueprintTypeResolver =
+  | BlueprintInterfaceResolver
+  | BlueprintObjectResolver
+  | BlueprintScalarResolver;
 
-export type SchemaPlanResolverVariable =
-  | SchemaPlanResolverUserVariable
-  | SchemaPlanResolverConstantVariable
-  | SchemaPlanResolverSelectVariable;
+export type BlueprintResolverVariable =
+  | BlueprintResolverUserVariable
+  | BlueprintResolverConstantVariable
+  | BlueprintResolverSelectVariable;
 
 /**
  * Variable that must be provided by the user with the name as the key.
  * Either inline or an operation variable.
  */
-export interface SchemaPlanResolverUserVariable {
+export interface BlueprintResolverUserVariable {
   kind: 'user';
   /** Name of the variable to use in the resolver's operation. */
   name: string;
@@ -148,7 +148,7 @@ export interface SchemaPlanResolverUserVariable {
  * Is also used when a user's query provides inline variables for fields,
  * the inline variables will be converted to a resolver constant variable.
  */
-export interface SchemaPlanResolverConstantVariable {
+export interface BlueprintResolverConstantVariable {
   kind: 'constant';
   /** Name of the variable to use in the resolver's operation. */
   name: string;
@@ -157,7 +157,7 @@ export interface SchemaPlanResolverConstantVariable {
 }
 
 /** Variable that is selected from the resolving type. */
-export interface SchemaPlanResolverSelectVariable {
+export interface BlueprintResolverSelectVariable {
   kind: 'select';
   /** Name of the variable to use in the resolver's operation. */
   name: string;
@@ -165,8 +165,8 @@ export interface SchemaPlanResolverSelectVariable {
   select: string;
 }
 
-export function isSchemaPlanResolverSelectVariable(
-  v: SchemaPlanResolverVariable,
-): v is SchemaPlanResolverSelectVariable {
+export function isBlueprintResolverSelectVariable(
+  v: BlueprintResolverVariable,
+): v is BlueprintResolverSelectVariable {
   return v.kind === 'select';
 }

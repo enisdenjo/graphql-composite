@@ -483,8 +483,8 @@ function insertResolversForGatherPlanCompositeField(
         if (
           !Object.keys(objectPlan.resolvers).includes(parentResolver.subgraph)
         ) {
-          // TODO: actually choose the best resolver, not the first one (most of the time the first one is ok)
-          const resolverPlan = Object.values(objectPlan.resolvers)[0];
+          // TODO: actually choose the best resolver, not the first one
+          const resolverPlan = Object.values(objectPlan.resolvers)[0]?.[0];
           if (!resolverPlan) {
             throw new Error(
               `Blueprint type "${objectPlan.name}" doesn't have any resolvers`,
@@ -582,11 +582,13 @@ function insertResolversForGatherPlanCompositeField(
       // this field cannot be resolved using existing resolvers
       // add an dependant resolver to the parent for the field(s)
 
-      const resolverPlan:
-        | (typeof selTypePlan)['resolvers'][number]
-        | undefined = Object.values(selTypePlan.resolvers).find((r) =>
-        selPlan.subgraphs.includes(r.subgraph),
+      // TODO: actually choose the best resolver, not the first one
+      const commonSubgraph = Object.keys(selTypePlan.resolvers).find(
+        (subgraph) => selPlan.subgraphs.includes(subgraph),
       );
+      const resolverPlan = commonSubgraph
+        ? selTypePlan.resolvers[commonSubgraph]![0]
+        : undefined;
       if (!resolverPlan) {
         throw new Error(
           `Blueprint type "${selTypePlan.name}" doesn't have a resolver for any of the "${selPlan.name}" field subgraphs`,

@@ -96,46 +96,50 @@ export const blueprint: Blueprint = {
         },
       },
       resolvers: {
-        shelter: {
-          subgraph: 'shelter',
-          kind: 'interface',
-          type: 'Animal',
-          ofType: 'Animal',
-          operation: /* GraphQL */ `
-            query AnimalByName($name: ID!) {
-              animal(name: $name) {
-                ...__export
+        shelter: [
+          {
+            subgraph: 'shelter',
+            kind: 'interface',
+            type: 'Animal',
+            ofType: 'Animal',
+            operation: /* GraphQL */ `
+              query AnimalByName($name: ID!) {
+                animal(name: $name) {
+                  ...__export
+                }
               }
-            }
-          `,
-          variables: {
-            name: {
-              kind: 'select',
-              name: 'name',
-              select: 'name',
+            `,
+            variables: {
+              name: {
+                kind: 'select',
+                name: 'name',
+                select: 'name',
+              },
             },
           },
-        },
-        store: {
-          subgraph: 'store',
-          kind: 'interface',
-          type: 'Animal',
-          ofType: 'Animal',
-          operation: /* GraphQL */ `
-            query AnimalByName($name: ID!) {
-              animal(name: $name) {
-                ...__export
+        ],
+        store: [
+          {
+            subgraph: 'store',
+            kind: 'interface',
+            type: 'Animal',
+            ofType: 'Animal',
+            operation: /* GraphQL */ `
+              query AnimalByName($name: ID!) {
+                animal(name: $name) {
+                  ...__export
+                }
               }
-            }
-          `,
-          variables: {
-            name: {
-              kind: 'select',
-              name: 'name',
-              select: 'name',
+            `,
+            variables: {
+              name: {
+                kind: 'select',
+                name: 'name',
+                select: 'name',
+              },
             },
           },
-        },
+        ],
       },
     },
     Cat: {
@@ -161,46 +165,50 @@ export const blueprint: Blueprint = {
         },
       },
       resolvers: {
-        shelter: {
-          subgraph: 'shelter',
-          kind: 'object',
-          type: 'Cat',
-          ofType: 'Cat',
-          operation: /* GraphQL */ `
-            query CatByName($name: ID!) {
-              animal(name: $name) {
-                ...__export
+        shelter: [
+          {
+            subgraph: 'shelter',
+            kind: 'object',
+            type: 'Cat',
+            ofType: 'Cat',
+            operation: /* GraphQL */ `
+              query CatByName($name: ID!) {
+                animal(name: $name) {
+                  ...__export
+                }
               }
-            }
-          `,
-          variables: {
-            name: {
-              kind: 'select',
-              name: 'name',
-              select: 'name',
+            `,
+            variables: {
+              name: {
+                kind: 'select',
+                name: 'name',
+                select: 'name',
+              },
             },
           },
-        },
-        store: {
-          subgraph: 'store',
-          kind: 'object',
-          type: 'Cat',
-          ofType: 'Cat',
-          operation: /* GraphQL */ `
-            query CatByName($name: ID!) {
-              animal(name: $name) {
-                ...__export
+        ],
+        store: [
+          {
+            subgraph: 'store',
+            kind: 'object',
+            type: 'Cat',
+            ofType: 'Cat',
+            operation: /* GraphQL */ `
+              query CatByName($name: ID!) {
+                animal(name: $name) {
+                  ...__export
+                }
               }
-            }
-          `,
-          variables: {
-            name: {
-              kind: 'select',
-              name: 'name',
-              select: 'name',
+            `,
+            variables: {
+              name: {
+                kind: 'select',
+                name: 'name',
+                select: 'name',
+              },
             },
           },
-        },
+        ],
       },
     },
     Dog: {
@@ -226,46 +234,50 @@ export const blueprint: Blueprint = {
         },
       },
       resolvers: {
-        shelter: {
-          subgraph: 'shelter',
-          kind: 'object',
-          type: 'Dog',
-          ofType: 'Dog',
-          operation: /* GraphQL */ `
-            query DogByName($name: ID!) {
-              animal(name: $name) {
-                ...__export
+        shelter: [
+          {
+            subgraph: 'shelter',
+            kind: 'object',
+            type: 'Dog',
+            ofType: 'Dog',
+            operation: /* GraphQL */ `
+              query DogByName($name: ID!) {
+                animal(name: $name) {
+                  ...__export
+                }
               }
-            }
-          `,
-          variables: {
-            name: {
-              kind: 'select',
-              name: 'name',
-              select: 'name',
+            `,
+            variables: {
+              name: {
+                kind: 'select',
+                name: 'name',
+                select: 'name',
+              },
             },
           },
-        },
-        store: {
-          subgraph: 'store',
-          kind: 'object',
-          type: 'Dog',
-          ofType: 'Dog',
-          operation: /* GraphQL */ `
-            query DogByName($name: ID!) {
-              animal(name: $name) {
-                ...__export
+        ],
+        store: [
+          {
+            subgraph: 'store',
+            kind: 'object',
+            type: 'Dog',
+            ofType: 'Dog',
+            operation: /* GraphQL */ `
+              query DogByName($name: ID!) {
+                animal(name: $name) {
+                  ...__export
+                }
               }
-            }
-          `,
-          variables: {
-            name: {
-              kind: 'select',
-              name: 'name',
-              select: 'name',
+            `,
+            variables: {
+              name: {
+                kind: 'select',
+                name: 'name',
+                select: 'name',
+              },
             },
           },
-        },
+        ],
       },
     },
   },

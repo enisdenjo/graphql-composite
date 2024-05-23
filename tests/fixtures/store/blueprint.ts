@@ -219,46 +219,50 @@ export const blueprint: Blueprint = {
         },
       },
       resolvers: {
-        manufacturers: {
-          subgraph: 'manufacturers',
-          kind: 'object',
-          type: 'Manufacturer',
-          ofType: 'Manufacturer',
-          operation: /* GraphQL */ `
-            query ManufacturerById($Manufacturer_id: ID!) {
-              manufacturer(id: $Manufacturer_id) {
-                ...__export
+        manufacturers: [
+          {
+            subgraph: 'manufacturers',
+            kind: 'object',
+            type: 'Manufacturer',
+            ofType: 'Manufacturer',
+            operation: /* GraphQL */ `
+              query ManufacturerById($Manufacturer_id: ID!) {
+                manufacturer(id: $Manufacturer_id) {
+                  ...__export
+                }
               }
-            }
-          `,
-          variables: {
-            Manufacturer_id: {
-              kind: 'select',
-              name: 'Manufacturer_id',
-              select: 'id',
+            `,
+            variables: {
+              Manufacturer_id: {
+                kind: 'select',
+                name: 'Manufacturer_id',
+                select: 'id',
+              },
             },
           },
-        },
-        products: {
-          subgraph: 'products',
-          kind: 'object',
-          type: 'Manufacturer',
-          ofType: 'Manufacturer',
-          operation: /* GraphQL */ `
-            query ManufacturerById($Manufacturer_id: ID!) {
-              _manufacturer(id: $Manufacturer_id) {
-                ...__export
+        ],
+        products: [
+          {
+            subgraph: 'products',
+            kind: 'object',
+            type: 'Manufacturer',
+            ofType: 'Manufacturer',
+            operation: /* GraphQL */ `
+              query ManufacturerById($Manufacturer_id: ID!) {
+                _manufacturer(id: $Manufacturer_id) {
+                  ...__export
+                }
               }
-            }
-          `,
-          variables: {
-            Manufacturer_id: {
-              kind: 'select',
-              name: 'Manufacturer_id',
-              select: 'id',
+            `,
+            variables: {
+              Manufacturer_id: {
+                kind: 'select',
+                name: 'Manufacturer_id',
+                select: 'id',
+              },
             },
           },
-        },
+        ],
       },
     },
     Product: {
@@ -284,46 +288,50 @@ export const blueprint: Blueprint = {
         },
       },
       resolvers: {
-        products: {
-          subgraph: 'products',
-          kind: 'object',
-          type: 'Product',
-          ofType: 'Product',
-          operation: /* GraphQL */ `
-            query ProductByUpc($Product_upc: ID!) {
-              product(upc: $Product_upc) {
-                ...__export
+        products: [
+          {
+            subgraph: 'products',
+            kind: 'object',
+            type: 'Product',
+            ofType: 'Product',
+            operation: /* GraphQL */ `
+              query ProductByUpc($Product_upc: ID!) {
+                product(upc: $Product_upc) {
+                  ...__export
+                }
               }
-            }
-          `,
-          variables: {
-            Product_upc: {
-              kind: 'select',
-              name: 'Product_upc',
-              select: 'upc',
+            `,
+            variables: {
+              Product_upc: {
+                kind: 'select',
+                name: 'Product_upc',
+                select: 'upc',
+              },
             },
           },
-        },
-        storefronts: {
-          subgraph: 'storefronts',
-          kind: 'object',
-          type: 'Product',
-          ofType: 'Product',
-          operation: /* GraphQL */ `
-            query ProductByUpc($Product_upc: ID!) {
-              product(upc: $Product_upc) {
-                ...__export
+        ],
+        storefronts: [
+          {
+            subgraph: 'storefronts',
+            kind: 'object',
+            type: 'Product',
+            ofType: 'Product',
+            operation: /* GraphQL */ `
+              query ProductByUpc($Product_upc: ID!) {
+                product(upc: $Product_upc) {
+                  ...__export
+                }
               }
-            }
-          `,
-          variables: {
-            Product_upc: {
-              kind: 'select',
-              name: 'Product_upc',
-              select: 'upc',
+            `,
+            variables: {
+              Product_upc: {
+                kind: 'select',
+                name: 'Product_upc',
+                select: 'upc',
+              },
             },
           },
-        },
+        ],
       },
     },
     Storefront: {
@@ -349,26 +357,28 @@ export const blueprint: Blueprint = {
         },
       },
       resolvers: {
-        storefronts: {
-          subgraph: 'storefronts',
-          kind: 'object',
-          type: 'Storefront',
-          ofType: 'Storefront',
-          operation: /* GraphQL */ `
-            query StorefrontById($Storefront_id: ID!) {
-              storefront(id: $Storefront_id) {
-                ...__export
+        storefronts: [
+          {
+            subgraph: 'storefronts',
+            kind: 'object',
+            type: 'Storefront',
+            ofType: 'Storefront',
+            operation: /* GraphQL */ `
+              query StorefrontById($Storefront_id: ID!) {
+                storefront(id: $Storefront_id) {
+                  ...__export
+                }
               }
-            }
-          `,
-          variables: {
-            Storefront_id: {
-              kind: 'select',
-              name: 'Storefront_id',
-              select: 'id',
+            `,
+            variables: {
+              Storefront_id: {
+                kind: 'select',
+                name: 'Storefront_id',
+                select: 'id',
+              },
             },
           },
-        },
+        ],
       },
     },
   },

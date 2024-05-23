@@ -125,54 +125,58 @@ export const blueprint: Blueprint = {
         },
       },
       resolvers: {
-        a: {
-          subgraph: 'a',
-          kind: 'interface',
-          type: '[NodeWithName]!',
-          ofType: 'NodeWithName',
-          operation: /* GraphQL */ `
-            query ($id: ID!) {
-              _entities(
-                representations: [{ __typename: "NodeWithName", id: $id }]
-              ) {
-                ... on NodeWithName {
-                  ...__export
+        a: [
+          {
+            subgraph: 'a',
+            kind: 'interface',
+            type: '[NodeWithName]!',
+            ofType: 'NodeWithName',
+            operation: /* GraphQL */ `
+              query ($id: ID!) {
+                _entities(
+                  representations: [{ __typename: "NodeWithName", id: $id }]
+                ) {
+                  ... on NodeWithName {
+                    ...__export
+                  }
                 }
               }
-            }
-          `,
-          variables: {
-            id: {
-              kind: 'select',
-              name: 'id',
-              select: 'id',
+            `,
+            variables: {
+              id: {
+                kind: 'select',
+                name: 'id',
+                select: 'id',
+              },
             },
           },
-        },
-        b: {
-          subgraph: 'b',
-          kind: 'interface',
-          type: '[NodeWithName]!',
-          ofType: 'NodeWithName',
-          operation: /* GraphQL */ `
-            query ($id: ID!) {
-              _entities(
-                representations: [{ __typename: "NodeWithName", id: $id }]
-              ) {
-                ... on NodeWithName {
-                  ...__export
+        ],
+        b: [
+          {
+            subgraph: 'b',
+            kind: 'interface',
+            type: '[NodeWithName]!',
+            ofType: 'NodeWithName',
+            operation: /* GraphQL */ `
+              query ($id: ID!) {
+                _entities(
+                  representations: [{ __typename: "NodeWithName", id: $id }]
+                ) {
+                  ... on NodeWithName {
+                    ...__export
+                  }
                 }
               }
-            }
-          `,
-          variables: {
-            id: {
-              kind: 'select',
-              name: 'id',
-              select: 'id',
+            `,
+            variables: {
+              id: {
+                kind: 'select',
+                name: 'id',
+                select: 'id',
+              },
             },
           },
-        },
+        ],
       },
     },
     User: {
@@ -199,28 +203,30 @@ export const blueprint: Blueprint = {
         // },
       },
       resolvers: {
-        a: {
-          subgraph: 'a',
-          kind: 'object',
-          type: '[User]!',
-          ofType: 'User',
-          operation: /* GraphQL */ `
-            query ($id: ID!) {
-              _entities(representations: [{ __typename: "User", id: $id }]) {
-                ... on User {
-                  ...__export
+        a: [
+          {
+            subgraph: 'a',
+            kind: 'object',
+            type: '[User]!',
+            ofType: 'User',
+            operation: /* GraphQL */ `
+              query ($id: ID!) {
+                _entities(representations: [{ __typename: "User", id: $id }]) {
+                  ... on User {
+                    ...__export
+                  }
                 }
               }
-            }
-          `,
-          variables: {
-            id: {
-              kind: 'select',
-              name: 'id',
-              select: 'id',
+            `,
+            variables: {
+              id: {
+                kind: 'select',
+                name: 'id',
+                select: 'id',
+              },
             },
           },
-        },
+        ],
       },
     },
     Account: {
@@ -245,72 +251,84 @@ export const blueprint: Blueprint = {
         },
       },
       resolvers: {
-        a: {
-          subgraph: 'a',
-          kind: 'interface',
-          type: '[Account]!',
-          ofType: 'Account',
-          operation: /* GraphQL */ `
-            query ($id: ID!) {
-              _entities(representations: [{ __typename: "Account", id: $id }]) {
-                ... on Account {
-                  ...__export
+        a: [
+          {
+            subgraph: 'a',
+            kind: 'interface',
+            type: '[Account]!',
+            ofType: 'Account',
+            operation: /* GraphQL */ `
+              query ($id: ID!) {
+                _entities(
+                  representations: [{ __typename: "Account", id: $id }]
+                ) {
+                  ... on Account {
+                    ...__export
+                  }
                 }
               }
-            }
-          `,
-          variables: {
-            id: {
-              kind: 'select',
-              name: 'id',
-              select: 'id',
+            `,
+            variables: {
+              id: {
+                kind: 'select',
+                name: 'id',
+                select: 'id',
+              },
             },
           },
-        },
-        b: {
-          subgraph: 'b',
-          kind: 'interface',
-          type: '[Account]!',
-          ofType: 'Account',
-          operation: /* GraphQL */ `
-            query ($id: ID!) {
-              _entities(representations: [{ __typename: "Account", id: $id }]) {
-                ... on Account {
-                  ...__export
+        ],
+        b: [
+          {
+            subgraph: 'b',
+            kind: 'interface',
+            type: '[Account]!',
+            ofType: 'Account',
+            operation: /* GraphQL */ `
+              query ($id: ID!) {
+                _entities(
+                  representations: [{ __typename: "Account", id: $id }]
+                ) {
+                  ... on Account {
+                    ...__export
+                  }
                 }
               }
-            }
-          `,
-          variables: {
-            id: {
-              kind: 'select',
-              name: 'id',
-              select: 'id',
+            `,
+            variables: {
+              id: {
+                kind: 'select',
+                name: 'id',
+                select: 'id',
+              },
             },
           },
-        },
-        c: {
-          subgraph: 'c',
-          kind: 'interface',
-          type: '[Account]!',
-          ofType: 'Account',
-          operation: /* GraphQL */ `
-            query ($id: ID!) {
-              _entities(representations: [{ __typename: "Account", id: $id }]) {
-                ... on Account {
-                  ...__export
+        ],
+        c: [
+          {
+            subgraph: 'c',
+            kind: 'interface',
+            type: '[Account]!',
+            ofType: 'Account',
+            operation: /* GraphQL */ `
+              query ($id: ID!) {
+                _entities(
+                  representations: [{ __typename: "Account", id: $id }]
+                ) {
+                  ... on Account {
+                    ...__export
+                  }
                 }
               }
-            }
-          `,
-          variables: {
-            id: {
-              kind: 'select',
-              name: 'id',
-              select: 'id',
+            `,
+            variables: {
+              id: {
+                kind: 'select',
+                name: 'id',
+                select: 'id',
+              },
             },
           },
-        },
+        ],
       },
     },
     Admin: {
@@ -332,28 +350,30 @@ export const blueprint: Blueprint = {
         },
       },
       resolvers: {
-        a: {
-          subgraph: 'a',
-          kind: 'object',
-          type: '[Admin]!',
-          ofType: 'Admin',
-          operation: /* GraphQL */ `
-            query ($id: ID!) {
-              _entities(representations: [{ __typename: "Admin", id: $id }]) {
-                ... on Admin {
-                  ...__export
+        a: [
+          {
+            subgraph: 'a',
+            kind: 'object',
+            type: '[Admin]!',
+            ofType: 'Admin',
+            operation: /* GraphQL */ `
+              query ($id: ID!) {
+                _entities(representations: [{ __typename: "Admin", id: $id }]) {
+                  ... on Admin {
+                    ...__export
+                  }
                 }
               }
-            }
-          `,
-          variables: {
-            id: {
-              kind: 'select',
-              name: 'id',
-              select: 'id',
+            `,
+            variables: {
+              id: {
+                kind: 'select',
+                name: 'id',
+                select: 'id',
+              },
             },
           },
-        },
+        ],
       },
     },
   },

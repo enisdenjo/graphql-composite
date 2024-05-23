@@ -22,7 +22,7 @@ export interface BlueprintOperation {
 export interface BlueprintOperationField {
   name: string;
   resolvers: {
-    [subgraph in BlueprintResolver['subgraph']]: BlueprintTypeResolver; // TODO: operation field must always have a resolver?
+    [subgraph in BlueprintResolver['subgraph']]: BlueprintTypeResolver; // TODO: operation field always has one resolver per subgraph?
   };
 }
 
@@ -32,7 +32,7 @@ export interface BlueprintInterface {
   kind: 'interface';
   name: string;
   resolvers: {
-    [subgraph in BlueprintInterfaceResolver['subgraph']]: BlueprintInterfaceResolver; // TODO: type can only have one resolver at subgraph?
+    [subgraph in BlueprintInterfaceResolver['subgraph']]: BlueprintInterfaceResolver[];
   };
   fields: {
     [name in BlueprintField['name']]: BlueprintField;
@@ -45,7 +45,7 @@ export interface BlueprintObject {
   /** List of {@link BlueprintInterface.name interface name}s this type implements, if any. */
   implements: BlueprintInterface['name'][];
   resolvers: {
-    [subgraph in BlueprintObjectResolver['subgraph']]: BlueprintObjectResolver; // TODO: type can only have one resolver at subgraph?
+    [subgraph in BlueprintObjectResolver['subgraph']]: BlueprintObjectResolver[];
   };
   fields: {
     [name in BlueprintField['name']]: BlueprintField;

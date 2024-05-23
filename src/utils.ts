@@ -5,46 +5,12 @@ import {
   FragmentDefinitionNode,
   Kind,
   OperationDefinitionNode,
+  parseType,
   SelectionNode,
-  SelectionSetNode,
 } from 'graphql';
 
 export function isRecord(val: unknown): val is Record<string, unknown> {
   return val != null && typeof val === 'object' && !Array.isArray(val);
-}
-
-/**
- * Creates a GraphQL selection set for dot-notation list of fields.
- * It will expand the fields' dots to nested paths.
- */
-export function createSelectionSetForFields(
-  fields: string[],
-): SelectionSetNode {
-  const sel: SelectionSetNode = {
-    kind: Kind.SELECTION_SET,
-    selections: [],
-  };
-  for (const paths of fields.map((f) => f.split('.'))) {
-    let target: SelectionSetNode = sel;
-    for (const field of paths) {
-      let loc = (target.selections as FieldNode[]).find(
-        (s) => s.name.value === field,
-      );
-      if (!loc) {
-        loc = {
-          kind: Kind.FIELD,
-          name: { kind: Kind.NAME, value: field! },
-          selectionSet: {
-            kind: Kind.SELECTION_SET,
-            selections: [],
-          },
-        };
-        target.selections = [...target.selections, loc];
-      }
-      target = loc.selectionSet!;
-    }
-  }
-  return sel;
 }
 
 /**
@@ -126,8 +92,21 @@ export function flattenFragments(doc: DocumentNode): DocumentNode {
   };
 }
 
+export function isField(node: ASTNode): node is FieldNode {
+  return node.kind === Kind.FIELD;
+}
+
 function isOperationDefinitionNode(
   node: ASTNode,
 ): node is OperationDefinitionNode {
   return node.kind === Kind.OPERATION_DEFINITION;
+}
+
+/** Parses a GraphQL type string (ex. `[Int!]`) and checks whether it's a list. */
+export function isListType(str: string): boolean {
+  let t = parseType(str);
+  while (t.kind === Kind.NON_NULL_TYPE) {
+    t = t.type;
+  }
+  return t.kind === Kind.LIST_TYPE;
 }

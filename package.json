@@ -26,6 +26,7 @@
     "lodash.set": "^4.3.2"
   },
   "devDependencies": {
+    "@apollo/subgraph": "^2.7.7",
     "@graphql-tools/schema": "^10.0.3",
     "@ianvs/prettier-plugin-sort-imports": "^4.2.1",
     "@tsconfig/node21": "^21.0.3",
@@ -38,6 +39,7 @@
     "prettier": "^3.2.5",
     "prettier-plugin-pkg": "^0.18.1",
     "prettier-plugin-sh": "^0.14.0",
+    "tsx": "^4.10.5",
     "typescript": "^5.4.5",
     "vitest": "^1.6.0"
   }

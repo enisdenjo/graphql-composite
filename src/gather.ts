@@ -18,10 +18,13 @@ import {
 import {
   Blueprint,
   BlueprintCompositeResolver,
+  BlueprintResolver,
+  BlueprintResolverConstantVariable,
   BlueprintScalarResolver,
-  BlueprintSubgraph,
+  BlueprintType,
+  isBlueprintResolverSelectVariable,
 } from './blueprint.js';
-import { createSelectionSetForFields, flattenFragments } from './utils.js';
+import { flattenFragments, isListType as parseIsListType } from './utils.js';
 
 export interface GatherPlan {
   query: string;
@@ -41,102 +44,75 @@ export type GatherPlanResolver =
   | GatherPlanScalarResolver;
 
 export interface GatherPlanCompositeResolver
-  extends BlueprintSubgraph,
-    BlueprintCompositeResolver {
-  /**
-   * The field in user's operation this resolver resolves
-   * at the location of this resolver in the structure.
-   */
-  field: GatherPlanResolverField;
+  extends BlueprintCompositeResolver {
   /** The path to the `__export` fragment in the execution result. */
-  pathToExportData: string[];
+  pathToExportData: (string | number)[];
   /**
-   * Dot-notation flat list of field paths to add to the `__export`
-   * fragment on the query that are NOT available in the final result,
-   * but only to the included resolvers.
-   *
-   * Often used when parent has to resolve additional fields for the includes.
+   * The exports of the resolver that are to be available for the
+   * {@link includes}; and, when public (not {@link OperationExport.private private}),
+   * also in the final result for the user.
    */
-  private: string[];
+  exports: OperationExport[];
   /**
-   * Dot-notation flat list of field paths to add to the `__export`
-   * fragment on the query that are also available in the final result.
-   */
-  public: string[];
-  /**
-   * Other resolvers that depend on fields from this resolver.
-   * These are often resolvers of fields that don't exist in the resolver.
+   * Other resolvers that are necessary to fulfill the data. They depend
+   * on fields from this resolver. These resolvers of fields that don't
+   * exist in this resolver.
    *
-   * A map of field paths to the necessary resolver.
-   *
-   * Only composite resolvers can include composite resolvers.
+   * A map of field paths to the necessary resolver. If the field path is an empty string,
+   * the include is resolving additional fields for the current resolver.
    */
   includes: Record<string, GatherPlanCompositeResolver>;
 }
 
-export interface GatherPlanScalarResolver
-  extends BlueprintSubgraph,
-    BlueprintScalarResolver {
-  /**
-   * The field in user's operation this resolver resolves
-   * at the location of this resolver in the structure.
-   */
-  field: GatherPlanResolverField;
+export interface GatherPlanScalarResolver extends BlueprintScalarResolver {
   /**
    * The path to the scalar in the execution result.
    */
-  pathToExportData: string[];
+  pathToExportData: (string | number)[];
 }
 
-export interface GatherPlanResolverField {
-  kind: 'scalar' | 'composite';
-  /** Dot-notation path to the field in user's operation. */
-  path: string;
+export type OperationExport =
+  | OperationScalarExport
+  | OperationObjectExport
+  | OperationFragmentExport;
+
+export interface OperationExportAvailability {
   /**
-   * The name of the field in user's operation.
-   * It matches the last part of {@link path field's path}.
+   * Whether the export is public or private.
+   *
+   * Public (not private) exports are are also available in the final result for the user,
+   * while private exports are not available to the user. Private exports are often used
+   * when parent has to resolve additional fields for its includes.
+   *
+   * This flag only changes the behaviour of resolver execution, it does not alter the operation.
    */
+  private?: true;
+}
+
+export interface OperationScalarExport extends OperationExportAvailability {
+  kind: 'scalar';
+  /** Name of the scalar field. */
   name: string;
-  /**
-   * The type of this field's parent. Useful for fragments spread
-   * within interfaces.
-   *
-   * If you have a query:
-   * ```gql
-   * {
-   *   animal(name: "Cathew") {
-   *     name
-   *     ... on Cat {
-   *       meows
-   *     }
-   *   }
-   * }
-   * ```
-   * the parent type of the `animal.meows` path will be `Cat` (and not `Animal`),
-   * while the type of the `animal.name` path will remain `Animal`.
-   */
-  parentType: string;
-  /** The type this field resolves. */
-  type: string;
-  /**
-   * Concrete/unwrapped type of the {@link type field type}.
-   *
-   * For example, it's `Product` if the {@link type field type} is:
-   *   - `Product`
-   *   - `Product!`
-   *   - `[Product]!`
-   *   - `[Product!]`
-   *   - `[Product!]!`
-   *
-   * *_Same example applies for scalar {@link type field type}._
-   */
-  ofType: string;
-  /** The inline variables of the field. */
-  inlineVariables: Record<string, unknown>;
+}
+
+export interface OperationObjectExport extends OperationExportAvailability {
+  kind: 'object';
+  /** Name of the composite field. */
+  name: string;
+  /** Nested selections of the field. */
+  selections: OperationExport[];
+}
+
+export interface OperationFragmentExport extends OperationExportAvailability {
+  kind: 'fragment';
+  /** The type condition of the fragment. */
+  typeCondition: string;
+  /** Selections of the fragment. */
+  selections: OperationExport[];
 }
 
 export function planGather(
-  blueprint: Blueprint,
+  schemaPlan: Blueprint,
   doc: DocumentNode,
 ): GatherPlan {
   const gatherPlan: GatherPlan = {
@@ -144,9 +120,10 @@ export function planGather(
     operations: [],
   };
 
-  const fields: Field[] = [];
+  const operationFields: OperationOperationField[] = [];
   const entries: string[] = [];
-  const typeInfo = new TypeInfo(buildSchema(blueprint.schema));
+  let depth = 0;
+  const typeInfo = new TypeInfo(buildSchema(schemaPlan.schema));
   let currOperation: GatherPlanOperation;
   visit(
     // we want to flatten fragments in the document
@@ -161,8 +138,27 @@ export function planGather(
         };
         gatherPlan.operations.push(currOperation);
       },
+      InlineFragment: {
+        enter(node) {
+          depth++;
+          if (!node.typeCondition) {
+            throw new Error('Inline fragment must have a type condition');
+          }
+          getSelectionsAtDepth(operationFields, depth - 1).push({
+            kind: 'fragment',
+            fieldName: entries[entries.length - 1]!,
+            path: entries.join('.'),
+            typeCondition: node.typeCondition.name.value,
+            selections: [],
+          });
+        },
+        leave() {
+          depth--;
+        },
+      },
       Field: {
         enter(node) {
+          depth++;
           entries.push(node.name.value);
 
           const fieldDef = typeInfo.getFieldDef();
@@ -197,21 +193,19 @@ export function planGather(
           }
 
           if (isCompositeType(ofType)) {
-            insertFieldAtDepth(fields, entries.length - 1, {
-              kind: 'composite',
+            getSelectionsAtDepth(operationFields, depth - 1).push({
+              kind: 'object',
               path: entries.join('.'),
               name: node.name.value,
-              parentType: parentType.name,
               type: String(type),
               ofType: ofType.name,
               inlineVariables,
-              fields: [],
+              selections: [],
             });
           } else {
-            insertFieldAtDepth(fields, entries.length - 1, {
+            getSelectionsAtDepth(operationFields, depth - 1).push({
               kind: 'scalar',
               path: entries.join('.'),
-              parentType: parentType.name,
               name: node.name.value,
               type: String(type),
               ofType: ofType.name,
@@ -220,6 +214,7 @@ export function planGather(
           }
         },
         leave() {
+          depth--;
           entries.pop();
         },
       },
@@ -228,60 +223,142 @@ export function planGather(
 
   for (const operation of gatherPlan.operations) {
     operation.resolvers = planGatherResolversForOperationFields(
-      blueprint,
+      schemaPlan,
       operation,
-      fields,
+      operationFields,
     );
   }
 
   return gatherPlan;
 }
 
-type Field = FieldComposite | FieldScalar;
-
-interface FieldComposite extends GatherPlanResolverField {
-  kind: 'composite';
-  fields: Field[];
+interface OperationScalarField extends OperationScalarExport {
+  /** Dot-notation path to the field in the operation. */
+  path: string;
+  /** The type this field resolves. */
+  type: string;
+  /**
+   * Concrete/unwrapped type of the {@link type field type}.
+   *
+   * For example, it's `String` if the {@link type field type} is:
+   *   - `String`
+   *   - `String!`
+   *   - `[String]!`
+   *   - `[String!]`
+   *   - `[String!]!`
+   */
+  ofType: string;
+  /** The inline variables on the field. */
+  inlineVariables: Record<string, unknown>;
 }
 
-interface FieldScalar extends GatherPlanResolverField {
-  kind: 'scalar';
+interface OperationObjectField extends OperationObjectExport {
+  /** Dot-notation path to the field in the operation. */
+  path: string;
+  /** The type this field resolves. */
+  type: string;
+  /**
+   * Concrete/unwrapped type of the {@link type field type}.
+   *
+   * For example, it's `Product` if the {@link type field type} is:
+   *   - `Product`
+   *   - `Product!`
+   *   - `[Product]!`
+   *   - `[Product!]`
+   *   - `[Product!]!`
+   */
+  ofType: string;
+  /** We override the {@link OperationObjectField.selections} because we need other {@link OperationSelection}s. */
+  selections: OperationSelection[];
+  /** The inline variables on the field. */
+  inlineVariables: Record<string, unknown>;
 }
 
-function fieldToResolverField(field: Field): GatherPlanResolverField {
-  return {
-    // we write out the props to avoid any extra ones (like the `fields` property)
-    kind: field.kind,
-    path: field.path,
-    name: field.name,
-    parentType: field.parentType,
-    type: field.type,
-    ofType: field.ofType,
-    inlineVariables: field.inlineVariables,
-  };
+interface OperationFragment extends OperationFragmentExport {
+  /** The parent's field name where this fragment is spread. */
+  fieldName: string;
+  /** Dot-notation path to the fragment in the operation. */
+  path: string;
+  /** We override the {@link OperationFragment.selections} because we need other {@link OperationSelection}s. */
+  selections: OperationSelection[];
 }
 
-function insertFieldAtDepth(fields: Field[], depth: number, field: Field) {
-  let curr = { fields };
-  for (let i = 0; i < depth; i++) {
-    // increase depth by going into the last field of the current field
-    const field = curr.fields[curr.fields.length - 1]!;
-    if (field.kind !== 'composite') {
+type OperationSelection =
+  | OperationScalarField
+  | OperationObjectField
+  | OperationFragment;
+
+/** TODO: can an operation field be a fragment? */
+type OperationOperationField = OperationScalarField | OperationObjectField;
+
+type OperationField = OperationObjectField | OperationScalarField;
+
+type OperationCompositeSelection = OperationObjectField | OperationFragment;
+
+function getSelectionsAtDepth(
+  selections: OperationSelection[],
+  depth: number,
+): OperationSelection[];
+function getSelectionsAtDepth(
+  selections: OperationExport[],
+  depth: number,
+): OperationExport[];
+function getSelectionsAtDepth(
+  selections: (OperationSelection | OperationExport)[],
+  depth: number,
+): (OperationSelection | OperationExport)[] {
+  let curr = { selections };
+
+  while (depth) {
+    // increase depth by going into the last field with selections of the current field
+    const field = curr.selections.findLast((s) => 'selections' in s);
+    if (!field) {
       throw new Error(
-        `Cannot add a field at depth ${depth} because it's not composite`,
+        `Cannot go deeper in "${JSON.stringify(curr.selections)}"`,
+      );
+    }
+    if (!('selections' in field)) {
+      throw new Error(
+        `Cannot get selections at depth ${depth} because parent is scalar`,
       );
     }
     curr = field;
+    depth--;
   }
-  curr.fields.push(field);
+
+  return curr.selections;
+}
+
+/**
+ * Finds inline variables of the field that match by name resolver's required
+ * variables and creates {@link BlueprintResolverConstantVariable}s them.
+ */
+function inlineToResolverConstantVariables(
+  resolver: BlueprintResolver,
+  field: OperationField,
+) {
+  const variables: BlueprintResolver['variables'] = {};
+  for (const [name, variable] of Object.entries(resolver.variables)) {
+    const inlineVariable = field.inlineVariables[name];
+    if (inlineVariable) {
+      variables[name] = {
+        kind: 'constant',
+        name,
+        value: inlineVariable,
+      };
+    } else {
+      variables[name] = variable;
+    }
+  }
+  return variables;
 }
 
 function planGatherResolversForOperationFields(
-  blueprint: Blueprint,
+  schemaPlan: Blueprint,
   operation: GatherPlanOperation,
-  fields: Field[],
+  operationFields: OperationField[],
 ): Record<string, GatherPlanResolver> {
-  const operationPlan = blueprint.operations[operation.type];
+  const operationPlan = schemaPlan.operations[operation.type];
   if (!operationPlan) {
     throw new Error(
       `Blueprint does not have the "${operation.type}" operation`,
@@ -290,7 +367,7 @@ function planGatherResolversForOperationFields(
 
   const resolvers: Record<string, GatherPlanResolver> = {};
 
-  for (const operationField of fields) {
+  for (const operationField of operationFields) {
     const operationFieldPlan = operationPlan.fields[operationField.name];
     if (!operationFieldPlan) {
       throw new Error(
@@ -308,32 +385,39 @@ function planGatherResolversForOperationFields(
       operationFieldPlan.resolvers,
     )[0]!;
 
-    const resolver =
+    const resolver: GatherPlanResolver =
       operationFieldResolver.kind === 'scalar'
-        ? ({
+        ? {
             ...operationFieldResolver,
-            field: fieldToResolverField(operationField),
+            variables: inlineToResolverConstantVariables(
+              operationFieldResolver,
+              operationField,
+            ),
             pathToExportData: [],
-          } satisfies GatherPlanScalarResolver)
-        : ({
+          }
+        : {
             ...operationFieldResolver,
-            field: fieldToResolverField(operationField),
+            variables: inlineToResolverConstantVariables(
+              operationFieldResolver,
+              operationField,
+            ),
             pathToExportData: [],
-            private: [],
-            public: [],
+            exports: [],
             includes: {},
-          } satisfies GatherPlanCompositeResolver);
+          };
 
-    if (operationField.kind !== resolver.kind) {
-      throw new Error('Operation field kind and the resolver kind must match');
-    }
-
-    if (operationField.kind === 'composite' && resolver.kind === 'composite') {
+    if (operationField.kind !== 'scalar') {
+      if (resolver.kind === 'scalar') {
+        throw new Error(
+          'Composite operation field must not have a scalar resolver',
+        );
+      }
       insertResolversForGatherPlanCompositeField(
-        blueprint,
+        schemaPlan,
         operationField,
         resolver,
-        '',
+        0,
+        false,
       );
     }
 
@@ -349,135 +433,306 @@ function planGatherResolversForOperationFields(
 }
 
 function insertResolversForGatherPlanCompositeField(
-  blueprint: Blueprint,
-  parent: FieldComposite,
+  schemaPlan: Blueprint,
+  parent: OperationCompositeSelection,
   parentResolver: GatherPlanCompositeResolver,
-  pathPrefix: string,
+  /**
+   * When resolving nested selections, we want to append further
+   * selections under a specific depth in parent's exports.
+   *
+   * See {@link getSelectionsAtDepth} to understand how
+   * selections at a given depth are found.
+   */
+  depth: number,
+  /**
+   * We're resolving fields inside a fragment spread on the parent.
+   * This indicates that resolved fields are additional fields of the parent.
+   *
+   * TODO: when inside a fragment, the positions of exports may be off
+   */
+  insideFragment: boolean,
 ) {
-  for (const field of parent.fields) {
-    const objectPlan = blueprint.objects[parent.ofType];
-    if (!objectPlan) {
-      throw new Error(`Blueprint doesn't have the "${parent.ofType}" object`);
-    }
-
-    const fieldPlan = objectPlan.fields[field.name];
-    if (!fieldPlan) {
-      throw new Error(
-        `Blueprint "${objectPlan.name}" object doesn't have a "${field.name}" field`,
-      );
-    }
-
-    let resolver = fieldPlan.subgraphs.includes(parentResolver.subgraph)
-      ? parentResolver
-      : Object.values(parentResolver.includes).find((r) =>
-          fieldPlan.subgraphs.includes(r.subgraph),
-        );
-    if (!resolver) {
-      // this field cannot be resolved from the parent's subgraph
-      // add an dependant resolver to the parent for the field(s)
-
-      const objectPlan = blueprint.objects[parent.ofType];
-      if (!objectPlan) {
-        throw new Error(`Blueprint doesn't have the "${parent.ofType}" object`);
+  for (const sel of parent.selections) {
+    if (sel.kind === 'fragment') {
+      if (parent.kind !== 'object') {
+        throw new Error('Only object fields can have fragments');
       }
 
-      const resolverPlan = Object.values(objectPlan.resolvers).find((r) =>
-        fieldPlan.subgraphs.includes(r.subgraph),
+      // fragment's type is different from the parent, the type should implement parent's interface
+      if (sel.typeCondition !== parent.ofType) {
+        const interfacePlan = schemaPlan.types[parent.ofType];
+        if (!interfacePlan || interfacePlan.kind !== 'interface') {
+          throw new Error(
+            "Cannot have a fragment of different type spread in a field that's not an interface",
+          );
+        }
+        const objectPlan = schemaPlan.types[sel.typeCondition];
+        if (!objectPlan || objectPlan.kind !== 'object') {
+          throw new Error(
+            `Blueprint doesn't have a "${sel.typeCondition}" object`,
+          );
+        }
+        if (!objectPlan.implements.includes(interfacePlan.name)) {
+          throw new Error(
+            `Blueprint "${sel.typeCondition}" object doesn't implement the "${interfacePlan.name}" interface`,
+          );
+        }
+
+        // the implementing object cannot be resolved in parent resolver's subgraph.
+        // we have to resolve it from another subgraph
+        if (
+          !Object.keys(objectPlan.resolvers).includes(parentResolver.subgraph)
+        ) {
+          // TODO: actually choose the best resolver, not the first one (most of the time the first one is ok)
+          const resolverPlan = Object.values(objectPlan.resolvers)[0];
+          if (!resolverPlan) {
+            throw new Error(
+              `Blueprint type "${objectPlan.name}" doesn't have any resolvers`,
+            );
+          }
+
+          const resolver = prepareCompositeResolverForSelection(
+            resolverPlan,
+            sel,
+            getSelectionsAtDepth(parentResolver.exports, depth),
+          );
+
+          // TODO: what if parentResolver.includes already has this key? solution: an include may have multiple resolvers
+          parentResolver.includes[''] = resolver;
+
+          insertResolversForGatherPlanCompositeField(
+            schemaPlan,
+            sel,
+            resolver,
+            depth,
+            false,
+          );
+          continue;
+        }
+      }
+
+      let frag: OperationFragmentExport | null = null;
+      if (sel.typeCondition !== parent.ofType) {
+        // insert export for the fragment into the available resolver
+        // only if its type condition is different from the parent
+        frag = {
+          kind: 'fragment',
+          typeCondition: sel.typeCondition,
+          selections: [],
+        };
+        getSelectionsAtDepth(parentResolver.exports, depth).push(frag);
+      }
+      insertResolversForGatherPlanCompositeField(
+        schemaPlan,
+        sel,
+        parentResolver,
+        frag ? depth + 1 : depth,
+        !!frag,
+      );
+      continue;
+    }
+
+    let resolver: GatherPlanCompositeResolver | undefined;
+    const parentOfType =
+      parent.kind === 'fragment' ? parent.typeCondition : parent.ofType;
+    const parentTypePlan = schemaPlan.types[parentOfType];
+    if (!parentTypePlan) {
+      throw new Error(`Blueprint doesn't have a "${parentOfType}" type`);
+    }
+    let selTypePlan: BlueprintType;
+    let selPlan = parentTypePlan.fields[sel.name];
+    if (selPlan) {
+      selTypePlan = parentTypePlan;
+
+      // use the parent resolver if the field is available in its subgraph;
+      // if not, try finding a resolver in parents includes
+      resolver = selPlan.subgraphs.includes(parentResolver.subgraph)
+        ? parentResolver
+        : Object.values(parentResolver.includes).find((r) =>
+            selPlan!.subgraphs.includes(r.subgraph),
+          );
+    } else {
+      // the parent type may not implement the specific field, but its interface may.
+      // in that case, we have to resolve the field from the interface instead
+      const interfacePlan = Object.values(schemaPlan.types).find(
+        (t) =>
+          t.kind === 'interface' &&
+          parentTypePlan!.kind === 'object' &&
+          parentTypePlan!.implements.includes(t.name),
+      );
+      if (!interfacePlan) {
+        throw new Error(
+          `Blueprint for type "${parentTypePlan.name}" doesn't have a "${sel.name}" field`,
+        );
+      }
+
+      selPlan = interfacePlan.fields[sel.name];
+      if (!selPlan) {
+        throw new Error(
+          `Blueprint interface "${interfacePlan.name}" that type "${parentTypePlan.name}" implements doesn't have a "${sel.name}" field`,
+        );
+      }
+
+      // we change the selection's type plan to the interface which will
+      // have the resolver creation below use the interface instead of the type
+      selTypePlan = interfacePlan;
+    }
+
+    if (!resolver) {
+      // this field cannot be resolved using existing resolvers
+      // add an dependant resolver to the parent for the field(s)
+
+      const resolverPlan:
+        | (typeof selTypePlan)['resolvers'][number]
+        | undefined = Object.values(selTypePlan.resolvers).find((r) =>
+        selPlan.subgraphs.includes(r.subgraph),
       );
       if (!resolverPlan) {
         throw new Error(
-          `Blueprint object "${objectPlan.name}" doesn't have a resolver for any of the "${fieldPlan.name}" field subgraphs`,
-        );
-      }
-      if (!Object.keys(resolverPlan.variables).length) {
-        // TODO: object resolver must always have variables, right?
-        throw new Error(
-          `Blueprint object "${objectPlan.name}" field "${fieldPlan.name}" resolver doesn't require variables`,
+          `Blueprint type "${selTypePlan.name}" doesn't have a resolver for any of the "${selPlan.name}" field subgraphs`,
         );
       }
 
-      for (const variable of Object.values(resolverPlan.variables)) {
-        if (!('select' in variable)) {
-          continue;
-        }
-        // make sure parent resolver exports fields that are needed
-        // as variables to perform the resolution
-        //
-        // if the parent doesnt export the necessary variable, add it
-        // to parents export for resolution during execution
-        //
-        // *parent resolver is the one that {@link GatherPlanCompositeResolver.includes} this resolver
-        const path = `${pathPrefix}${parent.name}.${variable.select}`;
-        const parentExport = parentResolver.public.find((e) => e === path);
-        if (!parentExport) {
-          // TODO: disallow pushing same path multiple times
-          // TODO: what happens if the parent cannot resolve this field?
+      resolver = prepareCompositeResolverForSelection(
+        resolverPlan,
+        sel,
+        getSelectionsAtDepth(parentResolver.exports, depth),
+      );
 
-          // TODO: if the parent cant resolve, insert here the necessary field resolver
-          //       add this resolver to its includes
-          parentResolver.private.push(path);
-        }
-      }
-
-      resolver = {
-        ...resolverPlan,
-        field: fieldToResolverField(field),
-        pathToExportData: [],
-        private: [],
-        public: [],
-        includes: {},
-      };
-
-      parentResolver.includes[`${pathPrefix}${parent.name}`] = resolver;
+      // TODO: what if parentResolver.includes already has this key? solution: an include may have multiple resolvers
+      parentResolver.includes[
+        insideFragment || !depth
+          ? // we're resolving additional fields for parent's resolver
+            ''
+          : // we're resolving within a field in parent's resolver
+            parent.kind === 'fragment'
+            ? parent.fieldName
+            : parent.name
+      ] = resolver;
     }
 
-    const resolvingParentType = resolver.ofType === parent.ofType;
+    const exp: OperationObjectExport | OperationScalarExport =
+      sel.kind === 'scalar'
+        ? {
+            kind: 'scalar',
+            name: sel.name,
+          }
+        : {
+            kind: 'object',
+            name: sel.name,
+            selections: [],
+          };
 
-    const path = `${pathPrefix}${
-      resolvingParentType
-        ? ''
-        : // include the parent field only if we're NOT directly resolving
-          // the parent; meaning, this field is a nested field of the parent
-          `${parent.name}.`
-    }${field.name}`;
-
-    if (field.kind === 'composite') {
-      // dont include the root of the composite type as an export path
-      //   1. operation `{ products { name } }` should have the following exports:
-      //      ['products.name'] and not ['products', 'products.name']
-      //   2. operation `{ products { manifacturer { name } } }` should have the following exports:
-      //      ['products.manifacturer.name'] and not ['products', 'products.manifacturer', 'products.manifacturer.name']
-    } else {
-      resolver.public.push(path);
+    const dest =
+      resolver === parentResolver
+        ? getSelectionsAtDepth(parentResolver.exports, depth)
+        : resolver.exports;
+    if (!exportsIncludeField(dest, exp.name, true)) {
+      dest.push(exp);
     }
 
-    if (field.kind === 'composite') {
+    if (sel.kind === 'object') {
       insertResolversForGatherPlanCompositeField(
-        blueprint,
-        field,
+        schemaPlan,
+        sel,
         resolver,
-        resolvingParentType
-          ? pathPrefix
-          : // same reasoning as above, this field is a nested field of the parent
-            path + '.',
+        resolver === parentResolver ? depth + 1 : depth,
+        false,
       );
     }
   }
 }
 
-export function buildAndInsertOperationsInResolvers(
-  resolvers: GatherPlanResolver[],
+function prepareCompositeResolverForSelection(
+  /** The composite resolver plan to prepare. */
+  resolverPlan: BlueprintCompositeResolver,
+  /** The selection in question. */
+  sel: OperationSelection,
+  /** Available exports of the parent resolver. */
+  exps: OperationExport[],
+): GatherPlanCompositeResolver {
+  // TODO: fix the typings here, avoid casting
+  if (!Object.keys(resolverPlan.variables).length) {
+    // TODO: object resolver must always have variables, right?
+    throw new Error(
+      `Blueprint resolver for type "${resolverPlan.ofType}" doesn't require variables`,
+    );
+  }
+
+  for (const variable of Object.values(resolverPlan.variables).filter(
+    isBlueprintResolverSelectVariable,
+  )) {
+    // make sure parent resolver exports fields that are needed
+    // as variables to perform the resolution. if the parent doesnt
+    // export the necessary variable, add it as private to parents
+    // exports for resolution during execution but not available to the user
+    if (
+      // TODO: support selects of nested paths, like `manufacturer.id`
+      !exportsIncludeField(exps, variable.select, false)
+    ) {
+      // TODO: what if the resolver plan cannot resolve the variable selection?
+      exps.push({
+        private: true,
+        kind: 'scalar', // TODO: do variables always select scalars?
+        name: variable.select,
+      });
+    }
+  }
+
+  return {
+    ...resolverPlan,
+    variables:
+      sel.kind === 'fragment'
+        ? resolverPlan.variables
+        : inlineToResolverConstantVariables(resolverPlan, sel),
+    pathToExportData: parseIsListType(resolverPlan.type)
+      ? // resolver returns a list, use the first item in the export data
+        [0]
+      : // otherwise use the export data
+        [],
+    exports: [],
+    includes: {},
+  };
+}
+
+/**
+ * Checks whether the exports include the given field.
+ * The check is also performed recursively on fragment spreads.
+ */
+function exportsIncludeField(
+  exps: OperationExport[],
+  name: string,
+  /** Whether to convert private exports to public ones if the field is found. */
+  convertToPublic: boolean,
 ) {
+  for (const exp of exps) {
+    if (exp.kind === 'fragment') {
+      return exportsIncludeField(exp.selections, name, convertToPublic);
+    }
+    if (exp.name === name) {
+      if (convertToPublic && exp.private) {
+        delete exp.private;
+      }
+      return true;
+    }
+  }
+  return false;
+}
+
+function buildAndInsertOperationsInResolvers(resolvers: GatherPlanResolver[]) {
   for (const resolver of resolvers) {
     const { operation, pathToExportData } = buildResolverOperation(
       resolver.operation,
-      resolver.kind === 'scalar'
-        ? {}
-        : { [resolver.ofType]: [...resolver.public, ...resolver.private] },
+      resolver.kind === 'scalar' ? [] : resolver.exports,
     );
     resolver.operation = operation;
-    resolver.pathToExportData = pathToExportData;
-    if (resolver.kind === 'composite') {
+    resolver.pathToExportData = [
+      ...pathToExportData,
+      // we append the original path because it may contain additional paths
+      // (see creating resolvers in insertResolversForGatherPlanCompositeField)
+      ...resolver.pathToExportData,
+    ];
+    if ('includes' in resolver) {
       buildAndInsertOperationsInResolvers(Object.values(resolver.includes));
     }
   }
@@ -485,30 +740,7 @@ export function buildAndInsertOperationsInResolvers(
 
 export function buildResolverOperation(
   operation: string,
-  /**
-   * Map of composite types to dot-notation paths of fields for
-   * that type to replace at the location of the __export fragment.
-   *
-   * For example, exports like this:
-   * ```json
-   * {
-   *   "Animal": ["id", "name"],
-   *   "Dog": ["barks"]
-   * }
-   * ```
-   * will create an operation like this:
-   * ```gql
-   * {
-   *   animal(id: ID!) {
-   *     ... on Animal { id name }
-   *     ... on Dog { barks }
-   *   }
-   * }
-   * ```
-   */
-  exports: {
-    [type: string]: /* fields: */ string[];
-  },
+  exports: OperationExport[],
 ): { operation: string; pathToExportData: string[] } {
   const doc = parse(operation);
   const def = doc.definitions.find((d) => d.kind === Kind.OPERATION_DEFINITION);
@@ -516,8 +748,8 @@ export function buildResolverOperation(
     throw new Error(`No operation definition found in\n${operation}`);
   }
 
-  if (!Object.values(exports).length) {
-    // no fields to select means we're resolving a scalar at the deepest field
+  if (!exports.length) {
+    // no exports means we're resolving a scalar at the deepest field
     const pathToExportData = findDeepestFieldPath(def, []);
     if (!pathToExportData.length) {
       throw new Error(`Path to the deepest field not found in\n${operation}`);
@@ -533,23 +765,9 @@ export function buildResolverOperation(
     throw new Error(`__export fragment not found in\n${operation}`);
   }
   const [selectionSet, pathToExportData] = path;
-  const selections: SelectionNode[] = [];
-  for (const [type, fields] of Object.entries(exports)) {
-    selections.push({
-      kind: Kind.INLINE_FRAGMENT,
-      typeCondition: {
-        kind: Kind.NAMED_TYPE,
-        name: {
-          kind: Kind.NAME,
-          value: type,
-        },
-      },
-      selectionSet: createSelectionSetForFields(fields),
-    });
-  }
 
-  // yes, we intentionally mutate the original doc. this is safe to do because we never share the DocumentNode reference
-  selectionSet.selections = selections;
+  // we intentionally mutate the original doc, this is safe to do because we never share it
+  selectionSet.selections = createSelectionsForExports(exports);
 
   return {
     operation: print(doc), // pretty print operation
@@ -591,4 +809,130 @@ function findDeepestFieldPath(node: ASTNode, path: string[]): string[] {
     }
   }
   return path;
+}
+
+/**
+ * If {@link exports} is:
+ * ```json
+ * [
+ *   {
+ *     "type":"Product",
+ *     "selections":[
+ *       {
+ *         "name":"name"
+ *       },
+ *       {
+ *         "name":"manufacturer",
+ *         "selections":[
+ *           {
+ *             "name":"products",
+ *             "selections":[
+ *               {
+ *                 "name":"upc"
+ *               },
+ *               {
+ *                 "name":"name"
+ *               }
+ *             ]
+ *           },
+ *           {
+ *             "type":"Manufacturer",
+ *             "selections":[
+ *               {
+ *                 "name":"id"
+ *               },
+ *               {
+ *                 "name":"name"
+ *               },
+ *               {
+ *                 "name":"products",
+ *                 "selections":[
+ *                   {
+ *                     "name":"manufacturer",
+ *                     "selections":[
+ *                       {
+ *                         "kind":"private",
+ *                         "name":"location"
+ *                       }
+ *                     ]
+ *                   },
+ *                   {
+ *                     "name":"name"
+ *                   }
+ *                 ]
+ *               }
+ *             ]
+ *           }
+ *         ]
+ *       }
+ *     ]
+ *   }
+ * ]
+ * ```
+ * the printed result will be:
+ * ```graphql
+ * ... on Product {
+ *   name
+ *   manufacturer {
+ *     products {
+ *       upc
+ *       name
+ *     }
+ *     ... on Manufacturer {
+ *       id
+ *       name
+ *       products {
+ *         manufacturer {
+ *           location
+ *         }
+ *         name
+ *       }
+ *     }
+ *   }
+ * }
+ * ```
+ */
+function createSelectionsForExports(
+  exports: OperationExport[],
+): readonly SelectionNode[] {
+  const sels: SelectionNode[] = [];
+  for (const exp of exports) {
+    if (exp.kind === 'fragment') {
+      sels.push({
+        kind: Kind.INLINE_FRAGMENT,
+        typeCondition: {
+          kind: Kind.NAMED_TYPE,
+          name: {
+            kind: Kind.NAME,
+            value: exp.typeCondition,
+          },
+        },
+        selectionSet: {
+          kind: Kind.SELECTION_SET,
+          selections: createSelectionsForExports(exp.selections),
+        },
+      });
+    } else if (exp.kind === 'object') {
+      sels.push({
+        kind: Kind.FIELD,
+        name: {
+          kind: Kind.NAME,
+          value: exp.name,
+        },
+        selectionSet: {
+          kind: Kind.SELECTION_SET,
+          selections: createSelectionsForExports(exp.selections),
+        },
+      });
+    } /* exp.kind === 'scalar' */ else {
+      sels.push({
+        kind: Kind.FIELD,
+        name: {
+          kind: Kind.NAME,
+          value: exp.name,
+        },
+      });
+    }
+  }
+  return sels;
 }

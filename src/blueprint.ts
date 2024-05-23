@@ -7,8 +7,8 @@ export interface Blueprint {
   operations: {
     [name: string /* graphql.OperationDefinitionNode */]: BlueprintOperation;
   };
-  objects: {
-    [name in BlueprintObject['name']]: BlueprintObject;
+  types: {
+    [name in BlueprintType['name']]: BlueprintType;
   };
 }
 
@@ -22,45 +22,52 @@ export interface BlueprintOperation {
 export interface BlueprintOperationField {
   name: string;
   resolvers: {
-    [subgraph in BlueprintSubgraph['subgraph']]: BlueprintSubgraph &
-      BlueprintResolver; // TODO: operation field must always have a resolver?
+    [subgraph in BlueprintResolver['subgraph']]: BlueprintTypeResolver; // TODO: operation field must always have a resolver?
+  };
+}
+
+export type BlueprintType = BlueprintInterface | BlueprintObject;
+
+export interface BlueprintInterface {
+  kind: 'interface';
+  name: string;
+  resolvers: {
+    [subgraph in BlueprintInterfaceResolver['subgraph']]: BlueprintInterfaceResolver; // TODO: type can only have one resolver at subgraph?
+  };
+  fields: {
+    [name in BlueprintField['name']]: BlueprintField;
   };
 }
 
 export interface BlueprintObject {
+  kind: 'object';
   name: string;
+  /** List of {@link BlueprintInterface.name interface name}s this type implements, if any. */
+  implements: BlueprintInterface['name'][];
   resolvers: {
-    [subgraph in BlueprintSubgraph['subgraph']]: BlueprintSubgraph &
-      BlueprintCompositeResolver; // TODO: type can only have one resolver at subgraph?
+    [subgraph in BlueprintObjectResolver['subgraph']]: BlueprintObjectResolver; // TODO: type can only have one resolver at subgraph?
   };
   fields: {
-    [name in BlueprintObjectField['name']]: BlueprintObjectField;
+    [name in BlueprintField['name']]: BlueprintField;
   };
 }
 
-export interface BlueprintObjectField {
+export interface BlueprintField {
+  /** Name of the field in a {@link BlueprintType}. */
   name: string;
+  /** List of subgraphs at which the field is available. */
   subgraphs: string[];
 }
 
-export interface BlueprintSubgraph {
-  /** Unique identifier of the subgraph source. Usually the name. */
+export interface BlueprintResolver {
+  /** Unique identifier of a specific subgraph. */
   subgraph: string;
-}
-
-export type BlueprintResolver =
-  | BlueprintCompositeResolver
-  | BlueprintScalarResolver;
-
-export interface BlueprintCompositeResolver {
-  kind: 'composite';
   /** The type resolved. */
   type: string;
   /**
-   * Concrete/unwrapped composite type of the {@link type resolved type}.
-   * Is actually the type of the `__export` fragment.
+   * Unwrapped type of the {@link type resolved type}.
    *
-   * For example, the type is `Product` if the {@link type resolved type} is:
+   * For example, it'll be `Product` if the {@link type resolved type} is:
    *   - `Product`
    *   - `Product!`
    *   - `[Product]!`
@@ -69,11 +76,15 @@ export interface BlueprintCompositeResolver {
    */
   ofType: string;
   /**
-   * Operation to execute on the subgraph. The operation **must** include
-   * a spread of the `__export` fragment which will have the fields populated
-   * during the gather phase.
+   * Operation to execute on the subgraph.
    *
-   * A well-formatted operation like this in the {@link BlueprintFetchResolver}:
+   * The operation **must** include a spread of the `__export` fragment if the
+   * {@link kind} is either `interface` or `object`. Otherwise, the operation's deepest
+   * field is where the `scalar` is located.
+   *
+   * ---
+   *
+   * A well-formatted operation for `interface` and `object` {@link kind} is:
    * ```graphql
    * query ProductByUPC($upc: ID!) { product(upc: $upc) { ...__export } }
    * ```
@@ -81,46 +92,45 @@ export interface BlueprintCompositeResolver {
    * ```graphql
    * query ProductByUPC($upc: ID!) { product(upc: $upc) { ... on Product { upc name manufacturer { id } } } }
    * ```
+   *
+   * ---
+   *
+   * A well-formatted operation for `scalar` {@link kind} is:
+   * ```graphql
+   * query ProductNameByUPC($upc: ID!) { product(upc: $upc) { name } }
+   * ```
    */
   operation: string;
+  /** Necessary variables for performing the {@link operation}. */
   variables: {
     [name in BlueprintResolverVariable['name']]: BlueprintResolverVariable;
   };
 }
 
-export interface BlueprintScalarResolver {
-  kind: 'scalar';
-  /** The type resolved. */
-  type: string;
-  /**
-   * Concrete/unwrapped type of the {@link type resolved type}.
-   *
-   * For example, the type is `String` if the {@link type resolved type} is:
-   *   - `String`
-   *   - `String!`
-   *   - `[String]!`
-   *   - `[String!]`
-   *   - `[String!]!`
-   */
-  ofType: string;
-  /**
-   * Operation to execute on the subgraph. The operation's deepest
-   * field is where the scalar is located.
-   *
-   * A well-formatted operation looks like this:
-   * ```graphql
-   * query ProductNameUPC($upc: ID!) { product(upc: $upc) { name } }
-   * ```
-   *
-   */
-  operation: string;
-  variables: {
-    [name in BlueprintResolverVariable['name']]: BlueprintResolverVariable;
-  };
+export interface BlueprintInterfaceResolver extends BlueprintResolver {
+  kind: 'interface';
 }
+
+export interface BlueprintObjectResolver extends BlueprintResolver {
+  kind: 'object';
+}
+
+export interface BlueprintCompositeResolver extends BlueprintResolver {
+  kind: 'interface' | 'object';
+}
+
+export interface BlueprintScalarResolver extends BlueprintResolver {
+  kind: 'scalar';
+}
+
+export type BlueprintTypeResolver =
+  | BlueprintInterfaceResolver
+  | BlueprintObjectResolver
+  | BlueprintScalarResolver;
 
 export type BlueprintResolverVariable =
   | BlueprintResolverUserVariable
+  | BlueprintResolverConstantVariable
   | BlueprintResolverSelectVariable;
 
 /**
@@ -133,6 +143,19 @@ export interface BlueprintResolverUserVariable {
   name: string;
 }
 
+/**
+ * Variable that is constant.
+ * Is also used when a user's query provides inline variables for fields,
+ * the inline variables will be converted to a resolver constant variable.
+ */
+export interface BlueprintResolverConstantVariable {
+  kind: 'constant';
+  /** Name of the variable to use in the resolver's operation. */
+  name: string;
+  /** The value of the constant. */
+  value: unknown;
+}
+
 /** Variable that is selected from the resolving type. */
 export interface BlueprintResolverSelectVariable {
   kind: 'select';
@@ -140,4 +163,10 @@ export interface BlueprintResolverSelectVariable {
   name: string;
   /** Which field in the type to use (select) as this variable. */
   select: string;
+}
+
+export function isBlueprintResolverSelectVariable(
+  v: BlueprintResolverVariable,
+): v is BlueprintResolverSelectVariable {
+  return v.kind === 'select';
 }

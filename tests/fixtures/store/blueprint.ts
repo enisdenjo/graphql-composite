@@ -42,7 +42,7 @@ export const blueprint: Blueprint = {
           resolvers: {
             manufacturers: {
               subgraph: 'manufacturers',
-              kind: 'composite',
+              kind: 'object',
               type: 'Manufacturer',
               ofType: 'Manufacturer',
               operation: /* GraphQL */ `
@@ -88,7 +88,7 @@ export const blueprint: Blueprint = {
           resolvers: {
             products: {
               subgraph: 'products',
-              kind: 'composite',
+              kind: 'object',
               type: 'Product',
               ofType: 'Product',
               operation: /* GraphQL */ `
@@ -112,7 +112,7 @@ export const blueprint: Blueprint = {
           resolvers: {
             products: {
               subgraph: 'products',
-              kind: 'composite',
+              kind: 'object',
               type: '[Product]!',
               ofType: 'Product',
               operation: /* GraphQL */ `
@@ -177,7 +177,7 @@ export const blueprint: Blueprint = {
           resolvers: {
             storefronts: {
               subgraph: 'storefronts',
-              kind: 'composite',
+              kind: 'object',
               type: 'Storefront',
               ofType: 'Storefront',
               operation: /* GraphQL */ `
@@ -199,9 +199,11 @@ export const blueprint: Blueprint = {
       },
     },
   },
-  objects: {
+  types: {
     Manufacturer: {
+      kind: 'object',
       name: 'Manufacturer',
+      implements: [],
       fields: {
         id: {
           name: 'id',
@@ -219,7 +221,7 @@ export const blueprint: Blueprint = {
       resolvers: {
         manufacturers: {
           subgraph: 'manufacturers',
-          kind: 'composite',
+          kind: 'object',
           type: 'Manufacturer',
           ofType: 'Manufacturer',
           operation: /* GraphQL */ `
@@ -239,7 +241,7 @@ export const blueprint: Blueprint = {
         },
         products: {
           subgraph: 'products',
-          kind: 'composite',
+          kind: 'object',
           type: 'Manufacturer',
           ofType: 'Manufacturer',
           operation: /* GraphQL */ `
@@ -260,7 +262,9 @@ export const blueprint: Blueprint = {
       },
     },
     Product: {
+      kind: 'object',
       name: 'Product',
+      implements: [],
       fields: {
         manufacturer: {
           name: 'manufacturer',
@@ -282,7 +286,7 @@ export const blueprint: Blueprint = {
       resolvers: {
         products: {
           subgraph: 'products',
-          kind: 'composite',
+          kind: 'object',
           type: 'Product',
           ofType: 'Product',
           operation: /* GraphQL */ `
@@ -302,7 +306,7 @@ export const blueprint: Blueprint = {
         },
         storefronts: {
           subgraph: 'storefronts',
-          kind: 'composite',
+          kind: 'object',
           type: 'Product',
           ofType: 'Product',
           operation: /* GraphQL */ `
@@ -323,7 +327,9 @@ export const blueprint: Blueprint = {
       },
     },
     Storefront: {
+      kind: 'object',
       name: 'Storefront',
+      implements: [],
       fields: {
         id: {
           name: 'id',
@@ -345,7 +351,7 @@ export const blueprint: Blueprint = {
       resolvers: {
         storefronts: {
           subgraph: 'storefronts',
-          kind: 'composite',
+          kind: 'object',
           type: 'Storefront',
           ofType: 'Storefront',
           operation: /* GraphQL */ `

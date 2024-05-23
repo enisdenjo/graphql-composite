@@ -1,12 +1,11 @@
 import { ExecutionResult, GraphQLError } from 'graphql';
 import getAtPath from 'lodash.get';
 import setAtPath from 'lodash.set';
-import { BlueprintSubgraph } from './blueprint.js';
-import { GatherPlan, GatherPlanResolver } from './gather.js';
+import { GatherPlan, GatherPlanResolver, OperationExport } from './gather.js';
 import { Transport } from './transport.js';
 
 export type SourceTransports = {
-  [subgraph in BlueprintSubgraph['subgraph']]: Transport;
+  [subgraph: string]: Transport;
 };
 
 export async function execute(
@@ -63,7 +62,7 @@ async function executeResolver(
    */
   resolver: GatherPlanResolver,
   /**
-   * Data of the `__export` fragment in the parent resolver.
+   * Data of the export in the parent resolver.
    */
   parentExportData: Record<string, unknown> | null,
   /**
@@ -87,15 +86,44 @@ async function executeResolver(
       [variable.name]:
         variable.kind === 'select'
           ? getAtPath(parentExportData, variable.select)
-          : // variable.kind === 'user'
-            {
-              ...operationVariables,
-              // TODO: should the inline variables override?
-              ...resolver.field.inlineVariables,
-            }[variable.name],
+          : variable.kind === 'constant'
+            ? variable.value
+            : // variable.kind === 'user'
+              operationVariables[variable.name],
     }),
     {},
   );
+
+  const parentExportDataDoesntProvideAllSelectVariables = Object.values(
+    resolver.variables,
+  ).some(
+    (variable) =>
+      variable.kind === 'select' &&
+      Object(variables)[variable.name] === undefined,
+  );
+  if (parentExportDataDoesntProvideAllSelectVariables) {
+    // if parent's export data dont have all select variables
+    // that means we're resolving a field of a non-existing
+    // parent. this can happen with interfaces (see AccountsSpreadAdmin test in federation/simple-interface-object)
+    // we therefore just set an empty object at the path, if there's
+    // nothing set already
+    if (resultRef.data && getAtPath(resultRef.data, pathInData) === undefined) {
+      // TODO: should throw if resultRef's data is not available?
+      setAtPath(resultRef.data, pathInData, {});
+    }
+    return resolver.kind === 'scalar'
+      ? {
+          ...resolver,
+          pathInData,
+          variables,
+        }
+      : {
+          ...resolver,
+          pathInData,
+          variables,
+          includes: [],
+        };
+  }
 
   const result = await transport.get({ query: resolver.operation, variables });
 
@@ -156,10 +184,15 @@ async function executeResolver(
         // TODO: batch resolvers going to the same subgraph
         includes: await Promise.all(
           Object.entries(resolver.includes).flatMap(([field, resolver]) => {
+            // if there's no field specified, we're resolving additional fields for the current one
+            const resolvingAdditionalFields = !field;
+
             if (Array.isArray(exportData)) {
               // if the export data is an array, we need to gather resolve each item
               return exportData.flatMap((exportData, i) => {
-                const fieldData = getAtPath(exportData, field);
+                const fieldData = resolvingAdditionalFields
+                  ? exportData
+                  : getAtPath(exportData, field);
                 if (Array.isArray(fieldData)) {
                   // if the include points to an array, we need to gather resolve each item
                   return fieldData.map((fieldDataItem, j) =>
@@ -168,7 +201,9 @@ async function executeResolver(
                       operationVariables,
                       resolver,
                       fieldDataItem,
-                      [...pathInData, i, field, j],
+                      resolvingAdditionalFields
+                        ? [...pathInData, i, j]
+                        : [...pathInData, i, field, j],
                       resultRef,
                     ),
                   );
@@ -178,13 +213,17 @@ async function executeResolver(
                   operationVariables,
                   resolver,
                   fieldData,
-                  [...pathInData, i, field],
+                  resolvingAdditionalFields
+                    ? [...pathInData, i]
+                    : [...pathInData, i, field],
                   resultRef,
                 );
               });
             }
 
-            const fieldData = getAtPath(exportData, field);
+            const fieldData = resolvingAdditionalFields
+              ? exportData
+              : getAtPath(exportData, field);
             if (Array.isArray(fieldData)) {
               // if the include points to an array, we need to gather resolve each item
               return fieldData.map((fieldDataItem, i) =>
@@ -193,7 +232,9 @@ async function executeResolver(
                   operationVariables,
                   resolver,
                   fieldDataItem,
-                  [...pathInData, field, i],
+                  resolvingAdditionalFields
+                    ? [...pathInData, i]
+                    : [...pathInData, field, i],
                   resultRef,
                 ),
               );
@@ -203,7 +244,7 @@ async function executeResolver(
               operationVariables,
               resolver,
               fieldData,
-              [...pathInData, field],
+              resolvingAdditionalFields ? pathInData : [...pathInData, field],
               resultRef,
             );
           }),
@@ -240,7 +281,7 @@ function populateResultWithExportData(
     return;
   }
 
-  for (const exportPath of resolver.public.map((e) => e.split('.'))) {
+  for (const exportPath of resolver.exports.flatMap(getPublicPathsOfExport)) {
     const lastKey = exportPath[exportPath.length - 1];
     const valBeforeLast =
       exportPath.length > 1
@@ -270,4 +311,69 @@ function populateResultWithExportData(
       );
     }
   }
+}
+
+/**
+ * TODO: write tests
+ *
+ * Creates a list of paths to all public exports considering nested selections.
+ *
+ * For example, if {@link exp} is:
+ * ```json
+ * {
+ *   "kind": "public",
+ *   "name": "products",
+ *   "selections": [
+ *     {
+ *       "kind": "public",
+ *       "name": "upc"
+ *     },
+ *     {
+ *       "kind": "public",
+ *       "name": "manufacturer",
+ *       "selections": [
+ *         {
+ *           "kind": "public",
+ *           "name": "name"
+ *         }
+ *       ]
+ *     },
+ *     {
+ *       "kind": "public",
+ *       "name": "price"
+ *     }
+ *   ]
+ * }
+ * ```
+ * the result will be:
+ * ```json
+ * [
+ *   ["products", "upc"],
+ *   ["products", "manufacturer", "name"],
+ *   ["products", "price"]
+ * ]
+ * ```
+ */
+function getPublicPathsOfExport(exp: OperationExport): string[][] {
+  if (exp.private) {
+    // we care about public exports only
+    return [];
+  }
+
+  if (exp.kind === 'scalar') {
+    return [[exp.name]];
+  }
+
+  const paths: string[][] = [];
+  for (const sel of exp.selections || []) {
+    const selPaths = getPublicPathsOfExport(sel);
+    for (const path of selPaths) {
+      if ('name' in exp) {
+        paths.push([exp.name, ...path]);
+      } else {
+        paths.push(path);
+      }
+    }
+  }
+  return paths;
 }

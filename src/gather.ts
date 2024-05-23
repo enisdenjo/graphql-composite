@@ -284,7 +284,7 @@ function planGatherResolversForOperationFields(
   const operationPlan = blueprint.operations[operation.type];
   if (!operationPlan) {
     throw new Error(
-      `Schema plan does not have the "${operation.type}" operation`,
+      `Blueprint does not have the "${operation.type}" operation`,
     );
   }
 
@@ -357,13 +357,13 @@ function insertResolversForGatherPlanCompositeField(
   for (const field of parent.fields) {
     const objectPlan = blueprint.objects[parent.ofType];
     if (!objectPlan) {
-      throw new Error(`Schema plan doesn't have the "${parent.ofType}" object`);
+      throw new Error(`Blueprint doesn't have the "${parent.ofType}" object`);
     }
 
     const fieldPlan = objectPlan.fields[field.name];
     if (!fieldPlan) {
       throw new Error(
-        `Schema plan "${objectPlan.name}" object doesn't have a "${field.name}" field`,
+        `Blueprint "${objectPlan.name}" object doesn't have a "${field.name}" field`,
       );
     }
 
@@ -378,9 +378,7 @@ function insertResolversForGatherPlanCompositeField(
 
       const objectPlan = blueprint.objects[parent.ofType];
       if (!objectPlan) {
-        throw new Error(
-          `Schema plan doesn't have the "${parent.ofType}" object`,
-        );
+        throw new Error(`Blueprint doesn't have the "${parent.ofType}" object`);
       }
 
       const resolverPlan = Object.values(objectPlan.resolvers).find((r) =>
@@ -388,13 +386,13 @@ function insertResolversForGatherPlanCompositeField(
       );
       if (!resolverPlan) {
         throw new Error(
-          `Schema plan object "${objectPlan.name}" doesn't have a resolver for any of the "${fieldPlan.name}" field subgraphs`,
+          `Blueprint object "${objectPlan.name}" doesn't have a resolver for any of the "${fieldPlan.name}" field subgraphs`,
         );
       }
       if (!Object.keys(resolverPlan.variables).length) {
         // TODO: object resolver must always have variables, right?
         throw new Error(
-          `Schema plan object "${objectPlan.name}" field "${fieldPlan.name}" resolver doesn't require variables`,
+          `Blueprint object "${objectPlan.name}" field "${fieldPlan.name}" resolver doesn't require variables`,
         );
       }
 

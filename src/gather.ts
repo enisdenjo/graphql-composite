@@ -486,9 +486,19 @@ function insertResolversForGatherPlanCompositeField(
           // TODO: actually choose the best resolver, not the first one
           const resolverPlan = Object.values(objectPlan.resolvers)[0]?.[0];
           if (!resolverPlan) {
-            throw new Error(
-              `Blueprint type "${objectPlan.name}" doesn't have any resolvers`,
-            );
+            // [NOTE 1]
+            // here we mimic apollo's behaviour. if there are no resolvers for the object,
+            // but it's implementing parent's interface - we want to execute parent's resolver
+            // without needing anything from it. one reason to perform the operation anyway
+            // is if the subgraph performs some sort of authentication
+            if (!parentResolver.exports.length) {
+              parentResolver.exports.push({
+                kind: 'scalar',
+                name: '__typename',
+                private: true,
+              });
+            }
+            continue;
           }
 
           const resolver = prepareCompositeResolverForSelection(

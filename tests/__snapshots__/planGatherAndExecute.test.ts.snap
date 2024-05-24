@@ -2913,6 +2913,85 @@ exports[`fixture 'federation/union-intersection' > query 'MediaBook' > should pl
 }
 `;
 
+exports[`fixture 'federation/union-intersection' > query 'MediaMovie' > should execute and explain 1`] = `
+[
+  {
+    "data": {
+      "media": {
+        "__typename": "Book",
+      },
+    },
+    "exports": [
+      {
+        "kind": "scalar",
+        "name": "__typename",
+        "private": true,
+      },
+    ],
+    "includes": [],
+    "kind": "interface",
+    "ofType": "Media",
+    "operation": "{
+  media {
+    __typename
+  }
+}",
+    "pathInData": [
+      "media",
+    ],
+    "pathToExportData": [
+      "media",
+    ],
+    "subgraph": "a",
+    "type": "Media",
+    "variables": {},
+  },
+]
+`;
+
+exports[`fixture 'federation/union-intersection' > query 'MediaMovie' > should plan gather 1`] = `
+{
+  "operations": [
+    {
+      "name": "MediaMovie",
+      "resolvers": {
+        "media": {
+          "exports": [
+            {
+              "kind": "scalar",
+              "name": "__typename",
+              "private": true,
+            },
+          ],
+          "includes": {},
+          "kind": "interface",
+          "ofType": "Media",
+          "operation": "{
+  media {
+    __typename
+  }
+}",
+          "pathToExportData": [
+            "media",
+          ],
+          "subgraph": "a",
+          "type": "Media",
+          "variables": {},
+        },
+      },
+      "type": "query",
+    },
+  ],
+  "query": "query MediaMovie {
+  media {
+    ... on Movie {
+      title
+    }
+  }
+}",
+}
+`;
+
 exports[`fixture 'federation/union-intersection' > query 'MediaTypename' > should execute and explain 1`] = `
 [
   {

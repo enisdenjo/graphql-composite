@@ -91,5 +91,21 @@ export const blueprint: Blueprint = {
         },
       },
     },
+    Movie: {
+      kind: 'object',
+      name: 'Movie',
+      implements: ['Media'],
+      fields: {
+        title: {
+          name: 'title',
+          subgraphs: ['b'],
+        },
+      },
+      resolvers: {
+        b: {
+          // no resolver, but we're indicating that Movie can be resolved from "b"
+        },
+      },
+    },
   },
 };

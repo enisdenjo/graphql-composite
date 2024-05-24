@@ -75,5 +75,21 @@ export const blueprint: Blueprint = {
       },
       resolvers: {},
     },
+    Book: {
+      kind: 'object',
+      name: 'Book',
+      implements: ['Media'],
+      fields: {
+        title: {
+          name: 'title',
+          subgraphs: ['a', 'b'],
+        },
+      },
+      resolvers: {
+        a: {
+          // no resolver, but we're indicating that Book can be resolved from "a"
+        },
+      },
+    },
   },
 };

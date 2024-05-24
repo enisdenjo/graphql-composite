@@ -20,4 +20,24 @@ export const queries: FixtureQueries = [
       },
     },
   },
+  {
+    name: 'MediaBook',
+    document: parse(/* GraphQL */ `
+      query MediaBook {
+        media {
+          ... on Book {
+            title
+          }
+        }
+      }
+    `),
+    variables: {},
+    result: {
+      data: {
+        media: {
+          title: 'The Lord of the Rings',
+        },
+      },
+    },
+  },
 ];

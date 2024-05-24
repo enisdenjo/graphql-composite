@@ -2820,6 +2820,99 @@ exports[`fixture 'federation/simple-interface-object' > query 'UsersWithUsername
 }
 `;
 
+exports[`fixture 'federation/union-intersection' > query 'MediaBook' > should execute and explain 1`] = `
+[
+  {
+    "data": {
+      "media": {
+        "title": "The Lord of the Rings",
+      },
+    },
+    "exports": [
+      {
+        "kind": "fragment",
+        "selections": [
+          {
+            "kind": "scalar",
+            "name": "title",
+          },
+        ],
+        "typeCondition": "Book",
+      },
+    ],
+    "includes": [],
+    "kind": "interface",
+    "ofType": "Media",
+    "operation": "{
+  media {
+    ... on Book {
+      title
+    }
+  }
+}",
+    "pathInData": [
+      "media",
+    ],
+    "pathToExportData": [
+      "media",
+    ],
+    "subgraph": "a",
+    "type": "Media",
+    "variables": {},
+  },
+]
+`;
+
+exports[`fixture 'federation/union-intersection' > query 'MediaBook' > should plan gather 1`] = `
+{
+  "operations": [
+    {
+      "name": "MediaBook",
+      "resolvers": {
+        "media": {
+          "exports": [
+            {
+              "kind": "fragment",
+              "selections": [
+                {
+                  "kind": "scalar",
+                  "name": "title",
+                },
+              ],
+              "typeCondition": "Book",
+            },
+          ],
+          "includes": {},
+          "kind": "interface",
+          "ofType": "Media",
+          "operation": "{
+  media {
+    ... on Book {
+      title
+    }
+  }
+}",
+          "pathToExportData": [
+            "media",
+          ],
+          "subgraph": "a",
+          "type": "Media",
+          "variables": {},
+        },
+      },
+      "type": "query",
+    },
+  ],
+  "query": "query MediaBook {
+  media {
+    ... on Book {
+      title
+    }
+  }
+}",
+}
+`;
+
 exports[`fixture 'federation/union-intersection' > query 'MediaTypename' > should execute and explain 1`] = `
 [
   {

@@ -2820,6 +2820,81 @@ exports[`fixture 'federation/simple-interface-object' > query 'UsersWithUsername
 }
 `;
 
+exports[`fixture 'federation/union-intersection' > query 'MediaTypename' > should execute and explain 1`] = `
+[
+  {
+    "data": {
+      "media": {
+        "__typename": "Book",
+      },
+    },
+    "exports": [
+      {
+        "kind": "scalar",
+        "name": "__typename",
+      },
+    ],
+    "includes": [],
+    "kind": "interface",
+    "ofType": "Media",
+    "operation": "{
+  media {
+    __typename
+  }
+}",
+    "pathInData": [
+      "media",
+    ],
+    "pathToExportData": [
+      "media",
+    ],
+    "subgraph": "a",
+    "type": "Media",
+    "variables": {},
+  },
+]
+`;
+
+exports[`fixture 'federation/union-intersection' > query 'MediaTypename' > should plan gather 1`] = `
+{
+  "operations": [
+    {
+      "name": "MediaTypename",
+      "resolvers": {
+        "media": {
+          "exports": [
+            {
+              "kind": "scalar",
+              "name": "__typename",
+            },
+          ],
+          "includes": {},
+          "kind": "interface",
+          "ofType": "Media",
+          "operation": "{
+  media {
+    __typename
+  }
+}",
+          "pathToExportData": [
+            "media",
+          ],
+          "subgraph": "a",
+          "type": "Media",
+          "variables": {},
+        },
+      },
+      "type": "query",
+    },
+  ],
+  "query": "query MediaTypename {
+  media {
+    __typename
+  }
+}",
+}
+`;
+
 exports[`fixture 'interfaces' > query 'BasicCat' > should execute and explain 1`] = `
 [
   {

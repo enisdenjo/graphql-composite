@@ -653,7 +653,6 @@ function prepareCompositeResolverForSelection(
   /** Available exports of the parent resolver. */
   exps: OperationExport[],
 ): GatherPlanCompositeResolver {
-  // TODO: fix the typings here, avoid casting
   if (!Object.keys(resolverPlan.variables).length) {
     // TODO: object resolver must always have variables, right?
     throw new Error(
@@ -750,8 +749,9 @@ export function buildResolverOperation(
     throw new Error(`No operation definition found in\n${operation}`);
   }
 
-  if (!exports.length) {
-    // no exports means we're resolving a scalar at the deepest field
+  const path = findExportFragment(def, []);
+  if (!exports.length && !path) {
+    // no exports and no __export fragment means we're resolving a scalar at the deepest field
     const pathToExportData = findDeepestFieldPath(def, []);
     if (!pathToExportData.length) {
       throw new Error(`Path to the deepest field not found in\n${operation}`);
@@ -761,8 +761,6 @@ export function buildResolverOperation(
       pathToExportData,
     };
   }
-
-  const path = findExportFragment(def, []);
   if (!path) {
     throw new Error(`__export fragment not found in\n${operation}`);
   }

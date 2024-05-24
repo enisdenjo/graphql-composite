@@ -1421,6 +1421,1466 @@ exports[`fixture 'federation/child-type-mismatch' > query 'NestedInternalAlias' 
 }
 `;
 
+exports[`fixture 'federation/fed1-external-extends' > query 'All' > should execute and explain 1`] = `
+[
+  {
+    "data": {
+      "randomUser": {
+        "id": "u1",
+      },
+    },
+    "exports": [
+      {
+        "kind": "scalar",
+        "name": "id",
+      },
+    ],
+    "includes": [
+      {
+        "data": {
+          "_entities": [
+            {
+              "name": "u1-name",
+            },
+          ],
+        },
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "name",
+          },
+        ],
+        "includes": [],
+        "kind": "object",
+        "ofType": "User",
+        "operation": "query ($id: ID!) {
+  _entities(representations: [{__typename: "User", id: $id}]) {
+    ... on User {
+      name
+    }
+  }
+}",
+        "pathInData": [
+          "randomUser",
+        ],
+        "pathToExportData": [
+          "_entities",
+          0,
+        ],
+        "subgraph": "b",
+        "type": "[User]!",
+        "variables": {
+          "id": "u1",
+        },
+      },
+    ],
+    "kind": "object",
+    "ofType": "User",
+    "operation": "{
+  randomUser {
+    id
+  }
+}",
+    "pathInData": [
+      "randomUser",
+    ],
+    "pathToExportData": [
+      "randomUser",
+    ],
+    "subgraph": "a",
+    "type": "User",
+    "variables": {},
+  },
+  {
+    "data": {
+      "userById": {
+        "id": "u2",
+        "name": "u2-name",
+        "nickname": "u2-nickname",
+      },
+    },
+    "exports": [
+      {
+        "kind": "scalar",
+        "name": "id",
+      },
+      {
+        "kind": "scalar",
+        "name": "name",
+      },
+      {
+        "kind": "scalar",
+        "name": "nickname",
+      },
+    ],
+    "includes": [],
+    "kind": "object",
+    "ofType": "User",
+    "operation": "query ($id: ID) {
+  userById(id: $id) {
+    id
+    name
+    nickname
+  }
+}",
+    "pathInData": [
+      "userById",
+    ],
+    "pathToExportData": [
+      "userById",
+    ],
+    "subgraph": "b",
+    "type": "User",
+    "variables": {
+      "id": "u2",
+    },
+  },
+]
+`;
+
+exports[`fixture 'federation/fed1-external-extends' > query 'All' > should plan gather 1`] = `
+{
+  "operation": {
+    "name": "All",
+    "resolvers": {
+      "randomUser": {
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "id",
+          },
+        ],
+        "includes": {
+          "": [
+            {
+              "exports": [
+                {
+                  "kind": "scalar",
+                  "name": "name",
+                },
+              ],
+              "includes": {},
+              "kind": "object",
+              "ofType": "User",
+              "operation": "query ($id: ID!) {
+  _entities(representations: [{__typename: "User", id: $id}]) {
+    ... on User {
+      name
+    }
+  }
+}",
+              "pathToExportData": [
+                "_entities",
+                0,
+              ],
+              "subgraph": "b",
+              "type": "[User]!",
+              "variables": {
+                "id": {
+                  "kind": "select",
+                  "name": "id",
+                  "select": "id",
+                },
+              },
+            },
+          ],
+        },
+        "kind": "object",
+        "ofType": "User",
+        "operation": "{
+  randomUser {
+    id
+  }
+}",
+        "pathToExportData": [
+          "randomUser",
+        ],
+        "subgraph": "a",
+        "type": "User",
+        "variables": {},
+      },
+      "userById": {
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "id",
+          },
+          {
+            "kind": "scalar",
+            "name": "name",
+          },
+          {
+            "kind": "scalar",
+            "name": "nickname",
+          },
+        ],
+        "includes": {},
+        "kind": "object",
+        "ofType": "User",
+        "operation": "query ($id: ID) {
+  userById(id: $id) {
+    id
+    name
+    nickname
+  }
+}",
+        "pathToExportData": [
+          "userById",
+        ],
+        "subgraph": "b",
+        "type": "User",
+        "variables": {
+          "id": {
+            "kind": "constant",
+            "name": "id",
+            "value": "u2",
+          },
+        },
+      },
+    },
+    "type": "Query",
+  },
+  "query": "query All {
+  randomUser {
+    id
+    name
+  }
+  userById(id: "u2") {
+    id
+    name
+    nickname
+  }
+}",
+}
+`;
+
+exports[`fixture 'federation/fed1-external-extends' > query 'Random' > should execute and explain 1`] = `
+[
+  {
+    "data": {
+      "randomUser": {
+        "id": "u1",
+        "rid": "u1-rid",
+      },
+    },
+    "exports": [
+      {
+        "kind": "scalar",
+        "name": "id",
+      },
+      {
+        "kind": "scalar",
+        "name": "rid",
+      },
+    ],
+    "includes": [],
+    "kind": "object",
+    "ofType": "User",
+    "operation": "{
+  randomUser {
+    id
+    rid
+  }
+}",
+    "pathInData": [
+      "randomUser",
+    ],
+    "pathToExportData": [
+      "randomUser",
+    ],
+    "subgraph": "a",
+    "type": "User",
+    "variables": {},
+  },
+]
+`;
+
+exports[`fixture 'federation/fed1-external-extends' > query 'Random' > should plan gather 1`] = `
+{
+  "operation": {
+    "name": "Random",
+    "resolvers": {
+      "randomUser": {
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "id",
+          },
+          {
+            "kind": "scalar",
+            "name": "rid",
+          },
+        ],
+        "includes": {},
+        "kind": "object",
+        "ofType": "User",
+        "operation": "{
+  randomUser {
+    id
+    rid
+  }
+}",
+        "pathToExportData": [
+          "randomUser",
+        ],
+        "subgraph": "a",
+        "type": "User",
+        "variables": {},
+      },
+    },
+    "type": "Query",
+  },
+  "query": "query Random {
+  randomUser {
+    id
+    rid
+  }
+}",
+}
+`;
+
+exports[`fixture 'federation/fed1-external-extends-reso…' > query 'test' > should execute and explain 1`] = `
+[
+  {
+    "data": {
+      "productInA": {
+        "id": "p1",
+        "name": "p1-name",
+        "pid": "p1-pid",
+      },
+    },
+    "exports": [
+      {
+        "kind": "scalar",
+        "name": "id",
+      },
+      {
+        "kind": "scalar",
+        "name": "pid",
+      },
+      {
+        "kind": "scalar",
+        "name": "name",
+      },
+    ],
+    "includes": [
+      {
+        "data": {
+          "_entities": [
+            {
+              "price": 12.3,
+              "upc": "upc1",
+            },
+          ],
+        },
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "price",
+          },
+          {
+            "kind": "scalar",
+            "name": "upc",
+          },
+        ],
+        "includes": [],
+        "kind": "object",
+        "ofType": "Product",
+        "operation": "query ($id: ID, $name: String) {
+  _entities(representations: [{__typename: "Product", id: $id, name: $name}]) {
+    ... on Product {
+      price
+      upc
+    }
+  }
+}",
+        "pathInData": [
+          "productInA",
+        ],
+        "pathToExportData": [
+          "_entities",
+          0,
+        ],
+        "subgraph": "b",
+        "type": "[Product]!",
+        "variables": {
+          "id": "p1",
+          "name": "p1-name",
+        },
+      },
+    ],
+    "kind": "object",
+    "ofType": "Product",
+    "operation": "{
+  productInA {
+    id
+    pid
+    name
+  }
+}",
+    "pathInData": [
+      "productInA",
+    ],
+    "pathToExportData": [
+      "productInA",
+    ],
+    "subgraph": "a",
+    "type": "Product",
+    "variables": {},
+  },
+]
+`;
+
+exports[`fixture 'federation/fed1-external-extends-reso…' > query 'test' > should plan gather 1`] = `
+{
+  "operation": {
+    "name": "test",
+    "resolvers": {
+      "productInA": {
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "id",
+          },
+          {
+            "kind": "scalar",
+            "name": "pid",
+          },
+          {
+            "kind": "scalar",
+            "name": "name",
+          },
+        ],
+        "includes": {
+          "": [
+            {
+              "exports": [
+                {
+                  "kind": "scalar",
+                  "name": "price",
+                },
+                {
+                  "kind": "scalar",
+                  "name": "upc",
+                },
+              ],
+              "includes": {},
+              "kind": "object",
+              "ofType": "Product",
+              "operation": "query ($id: ID, $name: String) {
+  _entities(representations: [{__typename: "Product", id: $id, name: $name}]) {
+    ... on Product {
+      price
+      upc
+    }
+  }
+}",
+              "pathToExportData": [
+                "_entities",
+                0,
+              ],
+              "subgraph": "b",
+              "type": "[Product]!",
+              "variables": {
+                "id": {
+                  "kind": "select",
+                  "name": "id",
+                  "select": "id",
+                },
+                "name": {
+                  "kind": "select",
+                  "name": "name",
+                  "select": "name",
+                },
+              },
+            },
+          ],
+        },
+        "kind": "object",
+        "ofType": "Product",
+        "operation": "{
+  productInA {
+    id
+    pid
+    name
+  }
+}",
+        "pathToExportData": [
+          "productInA",
+        ],
+        "subgraph": "a",
+        "type": "Product",
+        "variables": {},
+      },
+    },
+    "type": "Query",
+  },
+  "query": "query test {
+  productInA {
+    id
+    pid
+    price
+    upc
+    name
+  }
+}",
+}
+`;
+
+exports[`fixture 'federation/fed1-external-extension' > query 'All' > should execute and explain 1`] = `
+[
+  {
+    "data": {
+      "randomUser": {
+        "id": "u1",
+      },
+    },
+    "exports": [
+      {
+        "kind": "scalar",
+        "name": "id",
+      },
+    ],
+    "includes": [
+      {
+        "data": {
+          "_entities": [
+            {
+              "name": "u1-name",
+            },
+          ],
+        },
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "name",
+          },
+        ],
+        "includes": [],
+        "kind": "object",
+        "ofType": "User",
+        "operation": "query ($id: ID!) {
+  _entities(representations: [{__typename: "User", id: $id}]) {
+    ... on User {
+      name
+    }
+  }
+}",
+        "pathInData": [
+          "randomUser",
+        ],
+        "pathToExportData": [
+          "_entities",
+          0,
+        ],
+        "subgraph": "b",
+        "type": "[User]!",
+        "variables": {
+          "id": "u1",
+        },
+      },
+    ],
+    "kind": "object",
+    "ofType": "User",
+    "operation": "{
+  randomUser {
+    id
+  }
+}",
+    "pathInData": [
+      "randomUser",
+    ],
+    "pathToExportData": [
+      "randomUser",
+    ],
+    "subgraph": "a",
+    "type": "User",
+    "variables": {},
+  },
+  {
+    "data": {
+      "userById": {
+        "id": "u2",
+        "name": "u2-name",
+        "nickname": "u2-nickname",
+      },
+    },
+    "exports": [
+      {
+        "kind": "scalar",
+        "name": "id",
+      },
+      {
+        "kind": "scalar",
+        "name": "name",
+      },
+      {
+        "kind": "scalar",
+        "name": "nickname",
+      },
+    ],
+    "includes": [],
+    "kind": "object",
+    "ofType": "User",
+    "operation": "query ($id: ID) {
+  userById(id: $id) {
+    id
+    name
+    nickname
+  }
+}",
+    "pathInData": [
+      "userById",
+    ],
+    "pathToExportData": [
+      "userById",
+    ],
+    "subgraph": "b",
+    "type": "User",
+    "variables": {
+      "id": "u2",
+    },
+  },
+]
+`;
+
+exports[`fixture 'federation/fed1-external-extension' > query 'All' > should plan gather 1`] = `
+{
+  "operation": {
+    "name": "All",
+    "resolvers": {
+      "randomUser": {
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "id",
+          },
+        ],
+        "includes": {
+          "": [
+            {
+              "exports": [
+                {
+                  "kind": "scalar",
+                  "name": "name",
+                },
+              ],
+              "includes": {},
+              "kind": "object",
+              "ofType": "User",
+              "operation": "query ($id: ID!) {
+  _entities(representations: [{__typename: "User", id: $id}]) {
+    ... on User {
+      name
+    }
+  }
+}",
+              "pathToExportData": [
+                "_entities",
+                0,
+              ],
+              "subgraph": "b",
+              "type": "[User]!",
+              "variables": {
+                "id": {
+                  "kind": "select",
+                  "name": "id",
+                  "select": "id",
+                },
+              },
+            },
+          ],
+        },
+        "kind": "object",
+        "ofType": "User",
+        "operation": "{
+  randomUser {
+    id
+  }
+}",
+        "pathToExportData": [
+          "randomUser",
+        ],
+        "subgraph": "a",
+        "type": "User",
+        "variables": {},
+      },
+      "userById": {
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "id",
+          },
+          {
+            "kind": "scalar",
+            "name": "name",
+          },
+          {
+            "kind": "scalar",
+            "name": "nickname",
+          },
+        ],
+        "includes": {},
+        "kind": "object",
+        "ofType": "User",
+        "operation": "query ($id: ID) {
+  userById(id: $id) {
+    id
+    name
+    nickname
+  }
+}",
+        "pathToExportData": [
+          "userById",
+        ],
+        "subgraph": "b",
+        "type": "User",
+        "variables": {
+          "id": {
+            "kind": "constant",
+            "name": "id",
+            "value": "u2",
+          },
+        },
+      },
+    },
+    "type": "Query",
+  },
+  "query": "query All {
+  randomUser {
+    id
+    name
+  }
+  userById(id: "u2") {
+    id
+    name
+    nickname
+  }
+}",
+}
+`;
+
+exports[`fixture 'federation/fed1-external-extension' > query 'Random' > should execute and explain 1`] = `
+[
+  {
+    "data": {
+      "randomUser": {
+        "id": "u1",
+        "rid": "u1-rid",
+      },
+    },
+    "exports": [
+      {
+        "kind": "scalar",
+        "name": "id",
+      },
+      {
+        "kind": "scalar",
+        "name": "rid",
+      },
+    ],
+    "includes": [],
+    "kind": "object",
+    "ofType": "User",
+    "operation": "{
+  randomUser {
+    id
+    rid
+  }
+}",
+    "pathInData": [
+      "randomUser",
+    ],
+    "pathToExportData": [
+      "randomUser",
+    ],
+    "subgraph": "a",
+    "type": "User",
+    "variables": {},
+  },
+]
+`;
+
+exports[`fixture 'federation/fed1-external-extension' > query 'Random' > should plan gather 1`] = `
+{
+  "operation": {
+    "name": "Random",
+    "resolvers": {
+      "randomUser": {
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "id",
+          },
+          {
+            "kind": "scalar",
+            "name": "rid",
+          },
+        ],
+        "includes": {},
+        "kind": "object",
+        "ofType": "User",
+        "operation": "{
+  randomUser {
+    id
+    rid
+  }
+}",
+        "pathToExportData": [
+          "randomUser",
+        ],
+        "subgraph": "a",
+        "type": "User",
+        "variables": {},
+      },
+    },
+    "type": "Query",
+  },
+  "query": "query Random {
+  randomUser {
+    id
+    rid
+  }
+}",
+}
+`;
+
+exports[`fixture 'federation/fed2-external-extends' > query 'All' > should execute and explain 1`] = `
+[
+  {
+    "data": {
+      "randomUser": {
+        "id": "u1",
+      },
+    },
+    "exports": [
+      {
+        "kind": "scalar",
+        "name": "id",
+      },
+    ],
+    "includes": [
+      {
+        "data": {
+          "_entities": [
+            {
+              "name": "u1-name",
+            },
+          ],
+        },
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "name",
+          },
+        ],
+        "includes": [],
+        "kind": "object",
+        "ofType": "User",
+        "operation": "query ($id: ID!) {
+  _entities(representations: [{__typename: "User", id: $id}]) {
+    ... on User {
+      name
+    }
+  }
+}",
+        "pathInData": [
+          "randomUser",
+        ],
+        "pathToExportData": [
+          "_entities",
+          0,
+        ],
+        "subgraph": "b",
+        "type": "[User]!",
+        "variables": {
+          "id": "u1",
+        },
+      },
+    ],
+    "kind": "object",
+    "ofType": "User",
+    "operation": "{
+  randomUser {
+    id
+  }
+}",
+    "pathInData": [
+      "randomUser",
+    ],
+    "pathToExportData": [
+      "randomUser",
+    ],
+    "subgraph": "a",
+    "type": "User",
+    "variables": {},
+  },
+  {
+    "data": {
+      "userById": {
+        "id": "u2",
+        "name": "u2-name",
+        "nickname": "u2-nickname",
+      },
+    },
+    "exports": [
+      {
+        "kind": "scalar",
+        "name": "id",
+      },
+      {
+        "kind": "scalar",
+        "name": "name",
+      },
+      {
+        "kind": "scalar",
+        "name": "nickname",
+      },
+    ],
+    "includes": [],
+    "kind": "object",
+    "ofType": "User",
+    "operation": "query ($id: ID) {
+  userById(id: $id) {
+    id
+    name
+    nickname
+  }
+}",
+    "pathInData": [
+      "userById",
+    ],
+    "pathToExportData": [
+      "userById",
+    ],
+    "subgraph": "b",
+    "type": "User",
+    "variables": {
+      "id": "u2",
+    },
+  },
+]
+`;
+
+exports[`fixture 'federation/fed2-external-extends' > query 'All' > should plan gather 1`] = `
+{
+  "operation": {
+    "name": "All",
+    "resolvers": {
+      "randomUser": {
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "id",
+          },
+        ],
+        "includes": {
+          "": [
+            {
+              "exports": [
+                {
+                  "kind": "scalar",
+                  "name": "name",
+                },
+              ],
+              "includes": {},
+              "kind": "object",
+              "ofType": "User",
+              "operation": "query ($id: ID!) {
+  _entities(representations: [{__typename: "User", id: $id}]) {
+    ... on User {
+      name
+    }
+  }
+}",
+              "pathToExportData": [
+                "_entities",
+                0,
+              ],
+              "subgraph": "b",
+              "type": "[User]!",
+              "variables": {
+                "id": {
+                  "kind": "select",
+                  "name": "id",
+                  "select": "id",
+                },
+              },
+            },
+          ],
+        },
+        "kind": "object",
+        "ofType": "User",
+        "operation": "{
+  randomUser {
+    id
+  }
+}",
+        "pathToExportData": [
+          "randomUser",
+        ],
+        "subgraph": "a",
+        "type": "User",
+        "variables": {},
+      },
+      "userById": {
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "id",
+          },
+          {
+            "kind": "scalar",
+            "name": "name",
+          },
+          {
+            "kind": "scalar",
+            "name": "nickname",
+          },
+        ],
+        "includes": {},
+        "kind": "object",
+        "ofType": "User",
+        "operation": "query ($id: ID) {
+  userById(id: $id) {
+    id
+    name
+    nickname
+  }
+}",
+        "pathToExportData": [
+          "userById",
+        ],
+        "subgraph": "b",
+        "type": "User",
+        "variables": {
+          "id": {
+            "kind": "constant",
+            "name": "id",
+            "value": "u2",
+          },
+        },
+      },
+    },
+    "type": "Query",
+  },
+  "query": "query All {
+  randomUser {
+    id
+    name
+  }
+  userById(id: "u2") {
+    id
+    name
+    nickname
+  }
+}",
+}
+`;
+
+exports[`fixture 'federation/fed2-external-extends' > query 'Random' > should execute and explain 1`] = `
+[
+  {
+    "data": {
+      "randomUser": {
+        "id": "u1",
+        "rid": "u1-rid",
+      },
+    },
+    "exports": [
+      {
+        "kind": "scalar",
+        "name": "id",
+      },
+      {
+        "kind": "scalar",
+        "name": "rid",
+      },
+    ],
+    "includes": [],
+    "kind": "object",
+    "ofType": "User",
+    "operation": "{
+  randomUser {
+    id
+    rid
+  }
+}",
+    "pathInData": [
+      "randomUser",
+    ],
+    "pathToExportData": [
+      "randomUser",
+    ],
+    "subgraph": "a",
+    "type": "User",
+    "variables": {},
+  },
+]
+`;
+
+exports[`fixture 'federation/fed2-external-extends' > query 'Random' > should plan gather 1`] = `
+{
+  "operation": {
+    "name": "Random",
+    "resolvers": {
+      "randomUser": {
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "id",
+          },
+          {
+            "kind": "scalar",
+            "name": "rid",
+          },
+        ],
+        "includes": {},
+        "kind": "object",
+        "ofType": "User",
+        "operation": "{
+  randomUser {
+    id
+    rid
+  }
+}",
+        "pathToExportData": [
+          "randomUser",
+        ],
+        "subgraph": "a",
+        "type": "User",
+        "variables": {},
+      },
+    },
+    "type": "Query",
+  },
+  "query": "query Random {
+  randomUser {
+    id
+    rid
+  }
+}",
+}
+`;
+
+exports[`fixture 'federation/fed2-external-extension' > query 'All' > should execute and explain 1`] = `
+[
+  {
+    "data": {
+      "randomUser": {
+        "id": "u1",
+      },
+    },
+    "exports": [
+      {
+        "kind": "scalar",
+        "name": "id",
+      },
+    ],
+    "includes": [
+      {
+        "data": {
+          "_entities": [
+            {
+              "name": "u1-name",
+            },
+          ],
+        },
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "name",
+          },
+        ],
+        "includes": [],
+        "kind": "object",
+        "ofType": "User",
+        "operation": "query ($id: ID!) {
+  _entities(representations: [{__typename: "User", id: $id}]) {
+    ... on User {
+      name
+    }
+  }
+}",
+        "pathInData": [
+          "randomUser",
+        ],
+        "pathToExportData": [
+          "_entities",
+          0,
+        ],
+        "subgraph": "b",
+        "type": "[User]!",
+        "variables": {
+          "id": "u1",
+        },
+      },
+    ],
+    "kind": "object",
+    "ofType": "User",
+    "operation": "{
+  randomUser {
+    id
+  }
+}",
+    "pathInData": [
+      "randomUser",
+    ],
+    "pathToExportData": [
+      "randomUser",
+    ],
+    "subgraph": "a",
+    "type": "User",
+    "variables": {},
+  },
+  {
+    "data": {
+      "userById": {
+        "id": "u2",
+        "name": "u2-name",
+        "nickname": "u2-nickname",
+      },
+    },
+    "exports": [
+      {
+        "kind": "scalar",
+        "name": "id",
+      },
+      {
+        "kind": "scalar",
+        "name": "name",
+      },
+      {
+        "kind": "scalar",
+        "name": "nickname",
+      },
+    ],
+    "includes": [],
+    "kind": "object",
+    "ofType": "User",
+    "operation": "query ($id: ID) {
+  userById(id: $id) {
+    id
+    name
+    nickname
+  }
+}",
+    "pathInData": [
+      "userById",
+    ],
+    "pathToExportData": [
+      "userById",
+    ],
+    "subgraph": "b",
+    "type": "User",
+    "variables": {
+      "id": "u2",
+    },
+  },
+]
+`;
+
+exports[`fixture 'federation/fed2-external-extension' > query 'All' > should plan gather 1`] = `
+{
+  "operation": {
+    "name": "All",
+    "resolvers": {
+      "randomUser": {
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "id",
+          },
+        ],
+        "includes": {
+          "": [
+            {
+              "exports": [
+                {
+                  "kind": "scalar",
+                  "name": "name",
+                },
+              ],
+              "includes": {},
+              "kind": "object",
+              "ofType": "User",
+              "operation": "query ($id: ID!) {
+  _entities(representations: [{__typename: "User", id: $id}]) {
+    ... on User {
+      name
+    }
+  }
+}",
+              "pathToExportData": [
+                "_entities",
+                0,
+              ],
+              "subgraph": "b",
+              "type": "[User]!",
+              "variables": {
+                "id": {
+                  "kind": "select",
+                  "name": "id",
+                  "select": "id",
+                },
+              },
+            },
+          ],
+        },
+        "kind": "object",
+        "ofType": "User",
+        "operation": "{
+  randomUser {
+    id
+  }
+}",
+        "pathToExportData": [
+          "randomUser",
+        ],
+        "subgraph": "a",
+        "type": "User",
+        "variables": {},
+      },
+      "userById": {
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "id",
+          },
+          {
+            "kind": "scalar",
+            "name": "name",
+          },
+          {
+            "kind": "scalar",
+            "name": "nickname",
+          },
+        ],
+        "includes": {},
+        "kind": "object",
+        "ofType": "User",
+        "operation": "query ($id: ID) {
+  userById(id: $id) {
+    id
+    name
+    nickname
+  }
+}",
+        "pathToExportData": [
+          "userById",
+        ],
+        "subgraph": "b",
+        "type": "User",
+        "variables": {
+          "id": {
+            "kind": "constant",
+            "name": "id",
+            "value": "u2",
+          },
+        },
+      },
+    },
+    "type": "Query",
+  },
+  "query": "query All {
+  randomUser {
+    id
+    name
+  }
+  userById(id: "u2") {
+    id
+    name
+    nickname
+  }
+}",
+}
+`;
+
+exports[`fixture 'federation/fed2-external-extension' > query 'Random' > should execute and explain 1`] = `
+[
+  {
+    "data": {
+      "randomUser": {
+        "id": "u1",
+        "rid": "u1-rid",
+      },
+    },
+    "exports": [
+      {
+        "kind": "scalar",
+        "name": "id",
+      },
+      {
+        "kind": "scalar",
+        "name": "rid",
+      },
+    ],
+    "includes": [],
+    "kind": "object",
+    "ofType": "User",
+    "operation": "{
+  randomUser {
+    id
+    rid
+  }
+}",
+    "pathInData": [
+      "randomUser",
+    ],
+    "pathToExportData": [
+      "randomUser",
+    ],
+    "subgraph": "a",
+    "type": "User",
+    "variables": {},
+  },
+]
+`;
+
+exports[`fixture 'federation/fed2-external-extension' > query 'Random' > should plan gather 1`] = `
+{
+  "operation": {
+    "name": "Random",
+    "resolvers": {
+      "randomUser": {
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "id",
+          },
+          {
+            "kind": "scalar",
+            "name": "rid",
+          },
+        ],
+        "includes": {},
+        "kind": "object",
+        "ofType": "User",
+        "operation": "{
+  randomUser {
+    id
+    rid
+  }
+}",
+        "pathToExportData": [
+          "randomUser",
+        ],
+        "subgraph": "a",
+        "type": "User",
+        "variables": {},
+      },
+    },
+    "type": "Query",
+  },
+  "query": "query Random {
+  randomUser {
+    id
+    rid
+  }
+}",
+}
+`;
+
 exports[`fixture 'federation/override-type-interface' > query 'AnotherFeed' > should execute and explain 1`] = `
 [
   {
@@ -3331,63 +4791,23 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsWithAdmin
         "data": {
           "_entities": [
             {
-              "id": "u1",
+              "__typename": "Admin",
             },
           ],
         },
         "exports": [
           {
             "kind": "scalar",
-            "name": "id",
-            "private": true,
+            "name": "__typename",
           },
         ],
-        "includes": [
-          {
-            "data": {
-              "_entities": [
-                {
-                  "__typename": "Admin",
-                },
-              ],
-            },
-            "exports": [
-              {
-                "kind": "scalar",
-                "name": "__typename",
-              },
-            ],
-            "includes": [],
-            "kind": "interface",
-            "ofType": "Account",
-            "operation": "query ($id: ID!) {
-  _entities(representations: [{__typename: "Account", id: $id}]) {
-    ... on Account {
-      __typename
-    }
-  }
-}",
-            "pathInData": [
-              "accounts",
-              0,
-            ],
-            "pathToExportData": [
-              "_entities",
-              0,
-            ],
-            "subgraph": "a",
-            "type": "[Account]!",
-            "variables": {
-              "id": "u1",
-            },
-          },
-        ],
+        "includes": [],
         "kind": "object",
         "ofType": "Admin",
         "operation": "query ($id: ID!) {
   _entities(representations: [{__typename: "Admin", id: $id}]) {
     ... on Admin {
-      id
+      __typename
     }
   }
 }",
@@ -3409,63 +4829,23 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsWithAdmin
         "data": {
           "_entities": [
             {
-              "id": "u2",
+              "__typename": "Admin",
             },
           ],
         },
         "exports": [
           {
             "kind": "scalar",
-            "name": "id",
-            "private": true,
+            "name": "__typename",
           },
         ],
-        "includes": [
-          {
-            "data": {
-              "_entities": [
-                {
-                  "__typename": "Admin",
-                },
-              ],
-            },
-            "exports": [
-              {
-                "kind": "scalar",
-                "name": "__typename",
-              },
-            ],
-            "includes": [],
-            "kind": "interface",
-            "ofType": "Account",
-            "operation": "query ($id: ID!) {
-  _entities(representations: [{__typename: "Account", id: $id}]) {
-    ... on Account {
-      __typename
-    }
-  }
-}",
-            "pathInData": [
-              "accounts",
-              1,
-            ],
-            "pathToExportData": [
-              "_entities",
-              0,
-            ],
-            "subgraph": "a",
-            "type": "[Account]!",
-            "variables": {
-              "id": "u2",
-            },
-          },
-        ],
+        "includes": [],
         "kind": "object",
         "ofType": "Admin",
         "operation": "query ($id: ID!) {
   _entities(representations: [{__typename: "Admin", id: $id}]) {
     ... on Admin {
-      id
+      __typename
     }
   }
 }",
@@ -3492,49 +4872,16 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsWithAdmin
         "exports": [
           {
             "kind": "scalar",
-            "name": "id",
-            "private": true,
+            "name": "__typename",
           },
         ],
-        "includes": [
-          {
-            "exports": [
-              {
-                "kind": "scalar",
-                "name": "__typename",
-              },
-            ],
-            "includes": [],
-            "kind": "interface",
-            "ofType": "Account",
-            "operation": "query ($id: ID!) {
-  _entities(representations: [{__typename: "Account", id: $id}]) {
-    ... on Account {
-      __typename
-    }
-  }
-}",
-            "pathInData": [
-              "accounts",
-              2,
-            ],
-            "pathToExportData": [
-              "_entities",
-              0,
-            ],
-            "subgraph": "a",
-            "type": "[Account]!",
-            "variables": {
-              "id": undefined,
-            },
-          },
-        ],
+        "includes": [],
         "kind": "object",
         "ofType": "Admin",
         "operation": "query ($id: ID!) {
   _entities(representations: [{__typename: "Admin", id: $id}]) {
     ... on Admin {
-      id
+      __typename
     }
   }
 }",
@@ -3592,51 +4939,16 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsWithAdmin
               "exports": [
                 {
                   "kind": "scalar",
-                  "name": "id",
-                  "private": true,
+                  "name": "__typename",
                 },
               ],
-              "includes": {
-                "": [
-                  {
-                    "exports": [
-                      {
-                        "kind": "scalar",
-                        "name": "__typename",
-                      },
-                    ],
-                    "includes": {},
-                    "kind": "interface",
-                    "ofType": "Account",
-                    "operation": "query ($id: ID!) {
-  _entities(representations: [{__typename: "Account", id: $id}]) {
-    ... on Account {
-      __typename
-    }
-  }
-}",
-                    "pathToExportData": [
-                      "_entities",
-                      0,
-                    ],
-                    "subgraph": "a",
-                    "type": "[Account]!",
-                    "variables": {
-                      "id": {
-                        "kind": "select",
-                        "name": "id",
-                        "select": "id",
-                      },
-                    },
-                  },
-                ],
-              },
+              "includes": {},
               "kind": "object",
               "ofType": "Admin",
               "operation": "query ($id: ID!) {
   _entities(representations: [{__typename: "Admin", id: $id}]) {
     ... on Admin {
-      id
+      __typename
     }
   }
 }",
@@ -4047,7 +5359,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'AnotherUsers' > s
       "anotherUsers",
     ],
     "subgraph": "b",
-    "type": "[NodeWithName!]!",
+    "type": "[NodeWithName]",
     "variables": {},
   },
 ]
@@ -4116,7 +5428,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'AnotherUsers' > s
           "anotherUsers",
         ],
         "subgraph": "b",
-        "type": "[NodeWithName!]!",
+        "type": "[NodeWithName]",
         "variables": {},
       },
     },
@@ -4345,7 +5657,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'AnotherUsersWithA
       "anotherUsers",
     ],
     "subgraph": "b",
-    "type": "[NodeWithName!]!",
+    "type": "[NodeWithName]",
     "variables": {},
   },
 ]
@@ -4453,7 +5765,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'AnotherUsersWithA
           "anotherUsers",
         ],
         "subgraph": "b",
-        "type": "[NodeWithName!]!",
+        "type": "[NodeWithName]",
         "variables": {},
       },
     },
@@ -4586,7 +5898,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'AnotherUsersWithU
       "anotherUsers",
     ],
     "subgraph": "b",
-    "type": "[NodeWithName!]!",
+    "type": "[NodeWithName]",
     "variables": {},
   },
 ]
@@ -4651,7 +5963,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'AnotherUsersWithU
           "anotherUsers",
         ],
         "subgraph": "b",
-        "type": "[NodeWithName!]!",
+        "type": "[NodeWithName]",
         "variables": {},
       },
     },
@@ -5197,6 +6509,404 @@ exports[`fixture 'federation/simple-interface-object' > query 'UsersWithUsername
     id
     name
     username
+  }
+}",
+}
+`;
+
+exports[`fixture 'federation/simple-override' > query 'FeedAB' > should execute and explain 1`] = `
+[
+  {
+    "data": {
+      "aFeed": [
+        {
+          "id": "p2",
+        },
+      ],
+    },
+    "exports": [
+      {
+        "kind": "scalar",
+        "name": "id",
+        "private": true,
+      },
+    ],
+    "includes": [
+      {
+        "data": {
+          "_entities": [
+            {
+              "createdAt": "p2-createdAt",
+            },
+          ],
+        },
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "createdAt",
+          },
+        ],
+        "includes": [],
+        "kind": "object",
+        "ofType": "Post",
+        "operation": "query ($id: ID!) {
+  _entities(representations: [{__typename: "Post", id: $id}]) {
+    ... on Post {
+      createdAt
+    }
+  }
+}",
+        "pathInData": [
+          "aFeed",
+          0,
+        ],
+        "pathToExportData": [
+          "_entities",
+          0,
+        ],
+        "subgraph": "b",
+        "type": "[Post]!",
+        "variables": {
+          "id": "p2",
+        },
+      },
+    ],
+    "kind": "object",
+    "ofType": "Post",
+    "operation": "{
+  aFeed {
+    id
+  }
+}",
+    "pathInData": [
+      "aFeed",
+    ],
+    "pathToExportData": [
+      "aFeed",
+    ],
+    "subgraph": "a",
+    "type": "[Post]",
+    "variables": {},
+  },
+  {
+    "data": {
+      "bFeed": [
+        {
+          "createdAt": "p1-createdAt",
+        },
+      ],
+    },
+    "exports": [
+      {
+        "kind": "scalar",
+        "name": "createdAt",
+      },
+    ],
+    "includes": [],
+    "kind": "object",
+    "ofType": "Post",
+    "operation": "{
+  bFeed {
+    createdAt
+  }
+}",
+    "pathInData": [
+      "bFeed",
+    ],
+    "pathToExportData": [
+      "bFeed",
+    ],
+    "subgraph": "b",
+    "type": "[Post]",
+    "variables": {},
+  },
+]
+`;
+
+exports[`fixture 'federation/simple-override' > query 'FeedAB' > should plan gather 1`] = `
+{
+  "operation": {
+    "name": "FeedAB",
+    "resolvers": {
+      "aFeed": {
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "id",
+            "private": true,
+          },
+        ],
+        "includes": {
+          "": [
+            {
+              "exports": [
+                {
+                  "kind": "scalar",
+                  "name": "createdAt",
+                },
+              ],
+              "includes": {},
+              "kind": "object",
+              "ofType": "Post",
+              "operation": "query ($id: ID!) {
+  _entities(representations: [{__typename: "Post", id: $id}]) {
+    ... on Post {
+      createdAt
+    }
+  }
+}",
+              "pathToExportData": [
+                "_entities",
+                0,
+              ],
+              "subgraph": "b",
+              "type": "[Post]!",
+              "variables": {
+                "id": {
+                  "kind": "select",
+                  "name": "id",
+                  "select": "id",
+                },
+              },
+            },
+          ],
+        },
+        "kind": "object",
+        "ofType": "Post",
+        "operation": "{
+  aFeed {
+    id
+  }
+}",
+        "pathToExportData": [
+          "aFeed",
+        ],
+        "subgraph": "a",
+        "type": "[Post]",
+        "variables": {},
+      },
+      "bFeed": {
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "createdAt",
+          },
+        ],
+        "includes": {},
+        "kind": "object",
+        "ofType": "Post",
+        "operation": "{
+  bFeed {
+    createdAt
+  }
+}",
+        "pathToExportData": [
+          "bFeed",
+        ],
+        "subgraph": "b",
+        "type": "[Post]",
+        "variables": {},
+      },
+    },
+    "type": "Query",
+  },
+  "query": "query FeedAB {
+  aFeed {
+    createdAt
+  }
+  bFeed {
+    createdAt
+  }
+}",
+}
+`;
+
+exports[`fixture 'federation/simple-override' > query 'SharedFeed' > should execute and explain 1`] = `
+[
+  {
+    "data": {
+      "feed": [
+        {
+          "id": "p1",
+        },
+        {
+          "id": "p2",
+        },
+      ],
+    },
+    "exports": [
+      {
+        "kind": "scalar",
+        "name": "id",
+        "private": true,
+      },
+    ],
+    "includes": [
+      {
+        "data": {
+          "_entities": [
+            {
+              "createdAt": "p1-createdAt",
+            },
+          ],
+        },
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "createdAt",
+          },
+        ],
+        "includes": [],
+        "kind": "object",
+        "ofType": "Post",
+        "operation": "query ($id: ID!) {
+  _entities(representations: [{__typename: "Post", id: $id}]) {
+    ... on Post {
+      createdAt
+    }
+  }
+}",
+        "pathInData": [
+          "feed",
+          0,
+        ],
+        "pathToExportData": [
+          "_entities",
+          0,
+        ],
+        "subgraph": "b",
+        "type": "[Post]!",
+        "variables": {
+          "id": "p1",
+        },
+      },
+      {
+        "data": {
+          "_entities": [
+            {
+              "createdAt": "p2-createdAt",
+            },
+          ],
+        },
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "createdAt",
+          },
+        ],
+        "includes": [],
+        "kind": "object",
+        "ofType": "Post",
+        "operation": "query ($id: ID!) {
+  _entities(representations: [{__typename: "Post", id: $id}]) {
+    ... on Post {
+      createdAt
+    }
+  }
+}",
+        "pathInData": [
+          "feed",
+          1,
+        ],
+        "pathToExportData": [
+          "_entities",
+          0,
+        ],
+        "subgraph": "b",
+        "type": "[Post]!",
+        "variables": {
+          "id": "p2",
+        },
+      },
+    ],
+    "kind": "object",
+    "ofType": "Post",
+    "operation": "{
+  feed {
+    id
+  }
+}",
+    "pathInData": [
+      "feed",
+    ],
+    "pathToExportData": [
+      "feed",
+    ],
+    "subgraph": "a",
+    "type": "[Post]",
+    "variables": {},
+  },
+]
+`;
+
+exports[`fixture 'federation/simple-override' > query 'SharedFeed' > should plan gather 1`] = `
+{
+  "operation": {
+    "name": "SharedFeed",
+    "resolvers": {
+      "feed": {
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "id",
+            "private": true,
+          },
+        ],
+        "includes": {
+          "": [
+            {
+              "exports": [
+                {
+                  "kind": "scalar",
+                  "name": "createdAt",
+                },
+              ],
+              "includes": {},
+              "kind": "object",
+              "ofType": "Post",
+              "operation": "query ($id: ID!) {
+  _entities(representations: [{__typename: "Post", id: $id}]) {
+    ... on Post {
+      createdAt
+    }
+  }
+}",
+              "pathToExportData": [
+                "_entities",
+                0,
+              ],
+              "subgraph": "b",
+              "type": "[Post]!",
+              "variables": {
+                "id": {
+                  "kind": "select",
+                  "name": "id",
+                  "select": "id",
+                },
+              },
+            },
+          ],
+        },
+        "kind": "object",
+        "ofType": "Post",
+        "operation": "{
+  feed {
+    id
+  }
+}",
+        "pathToExportData": [
+          "feed",
+        ],
+        "subgraph": "a",
+        "type": "[Post]",
+        "variables": {},
+      },
+    },
+    "type": "Query",
+  },
+  "query": "query SharedFeed {
+  feed {
+    createdAt
   }
 }",
 }

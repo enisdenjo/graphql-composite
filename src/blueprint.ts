@@ -24,7 +24,7 @@ export interface BlueprintInterface {
 export interface BlueprintObject {
   kind: 'object';
   name: string;
-  /** Map of {@link BlueprintInterface.name interface name}s this type implements, if any. */
+  /** Map of {@link BlueprintInterface['name'] interface name}s this type implements, if any. */
   implements: {
     [name in BlueprintInterface['name']]: BlueprintImplements;
   };

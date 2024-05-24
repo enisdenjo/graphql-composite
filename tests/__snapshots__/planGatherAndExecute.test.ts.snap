@@ -2913,6 +2913,102 @@ exports[`fixture 'federation/union-intersection' > query 'MediaBook' > should pl
 }
 `;
 
+exports[`fixture 'federation/union-intersection' > query 'MediaBookMovie' > should execute and explain 1`] = `
+[
+  {
+    "data": {
+      "media": {
+        "title": "The Lord of the Rings",
+      },
+    },
+    "exports": [
+      {
+        "kind": "fragment",
+        "selections": [
+          {
+            "kind": "scalar",
+            "name": "title",
+          },
+        ],
+        "typeCondition": "Book",
+      },
+    ],
+    "includes": [],
+    "kind": "interface",
+    "ofType": "Media",
+    "operation": "{
+  media {
+    ... on Book {
+      title
+    }
+  }
+}",
+    "pathInData": [
+      "media",
+    ],
+    "pathToExportData": [
+      "media",
+    ],
+    "subgraph": "a",
+    "type": "Media",
+    "variables": {},
+  },
+]
+`;
+
+exports[`fixture 'federation/union-intersection' > query 'MediaBookMovie' > should plan gather 1`] = `
+{
+  "operations": [
+    {
+      "name": "MediaBookMovie",
+      "resolvers": {
+        "media": {
+          "exports": [
+            {
+              "kind": "fragment",
+              "selections": [
+                {
+                  "kind": "scalar",
+                  "name": "title",
+                },
+              ],
+              "typeCondition": "Book",
+            },
+          ],
+          "includes": {},
+          "kind": "interface",
+          "ofType": "Media",
+          "operation": "{
+  media {
+    ... on Book {
+      title
+    }
+  }
+}",
+          "pathToExportData": [
+            "media",
+          ],
+          "subgraph": "a",
+          "type": "Media",
+          "variables": {},
+        },
+      },
+      "type": "query",
+    },
+  ],
+  "query": "query MediaBookMovie {
+  media {
+    ... on Book {
+      title
+    }
+    ... on Movie {
+      title
+    }
+  }
+}",
+}
+`;
+
 exports[`fixture 'federation/union-intersection' > query 'MediaMovie' > should execute and explain 1`] = `
 [
   {

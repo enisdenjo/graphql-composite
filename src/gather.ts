@@ -491,6 +491,10 @@ function insertResolversForGatherPlanCompositeField(
             // but it's implementing parent's interface - we want to execute parent's resolver
             // without needing anything from it. one reason to perform the operation anyway
             // is if the subgraph performs some sort of authentication
+            //
+            // TODO: if there are selections that will be exported in the next loop iteration,
+            //       this private export will stay - but should be removed because the request
+            //       is not empty anymore
             if (!parentResolver.exports.length) {
               parentResolver.exports.push({
                 kind: 'scalar',

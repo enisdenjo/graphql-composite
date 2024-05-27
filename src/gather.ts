@@ -487,11 +487,16 @@ function insertResolversForGatherPlanCompositeField(
           );
         }
 
-        // the implementing object cannot be resolved in parent resolver's
-        // subgraph, we have to resolve it from another subgraph
+        // we check for availability using object's fields (instead of its resolvers)
+        // because maybe the object doesnt have a resolver in the subgraph but is available
+        // in the subgraph through the parent resolver
         if (
-          !Object.keys(objectPlan.resolvers).includes(parentResolver.subgraph)
+          !Object.values(objectPlan.fields).some((f) =>
+            f.subgraphs.includes(parentResolver.subgraph),
+          )
         ) {
+          // the implementing object is not available in parent resolver's
+          // subgraph, we have to resolve it from another subgraph
           // TODO: actually choose the best resolver, not the first one
           const resolverPlan = Object.values(objectPlan.resolvers)[0]?.[0];
           if (!resolverPlan) {

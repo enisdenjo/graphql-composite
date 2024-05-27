@@ -137,14 +137,7 @@ export const blueprint: Blueprint = {
           subgraphs: ['a', 'b'],
         },
       },
-      resolvers: {
-        a: {
-          // no resolver, but we're indicating that Book can be resolved from "a"
-        },
-        b: {
-          // no resolver, but we're indicating that Book can be resolved from "b"
-        },
-      },
+      resolvers: {},
     },
     Movie: {
       kind: 'object',
@@ -156,11 +149,7 @@ export const blueprint: Blueprint = {
           subgraphs: ['b'],
         },
       },
-      resolvers: {
-        b: {
-          // no resolver, but we're indicating that Movie can be resolved from "b"
-        },
-      },
+      resolvers: {},
     },
     Song: {
       kind: 'object',
@@ -172,11 +161,7 @@ export const blueprint: Blueprint = {
           subgraphs: ['a'],
         },
       },
-      resolvers: {
-        a: {
-          // no resolver, but we're indicating that Song can be resolved from "a"
-        },
-      },
+      resolvers: {},
     },
   },
 };

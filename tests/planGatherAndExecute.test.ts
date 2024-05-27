@@ -13,7 +13,9 @@ describe.each(await getFixtures())(
   ({ blueprint, subgraphs, queries }) => {
     describe.each(queries)('query $name', ({ document, variables, result }) => {
       it('should plan gather', () => {
-        expect(planGather(blueprint, document)).toMatchSnapshot();
+        const p = planGather(blueprint, document);
+        // console.dir(p, { depth: 300 });
+        expect(p).toMatchSnapshot();
       });
 
       it('should execute and explain', async () => {

@@ -110,6 +110,34 @@ export const queries: FixtureQueries = [
     },
   },
   {
+    name: 'MediaAll',
+    document: parse(/* GraphQL */ `
+      query MediaAll {
+        media {
+          __typename
+          ... on Song {
+            title
+          }
+          ... on Movie {
+            title
+          }
+          ... on Book {
+            title
+          }
+        }
+      }
+    `),
+    variables: {},
+    result: {
+      data: {
+        media: {
+          __typename: 'Book',
+          title: 'The Lord of the Rings',
+        },
+      },
+    },
+  },
+  {
     name: 'AllMedia',
     document: parse(/* GraphQL */ `
       query AllMedia {

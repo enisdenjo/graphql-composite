@@ -458,13 +458,22 @@ function insertResolversForGatherPlanCompositeField(
         throw new Error('Only object fields can have fragments');
       }
 
+      // we may place a child (including) resolver inside a fragment, continue reading to see when
+      let insideFragment = false;
+
+      // [NOTE 2] an interface can have a resolver that resolves an object implementing that interface, and not
+      // the interface itself. because of this, we want to use the parent resolver's ofType when at the root
+      const parentOfType = depth ? parent.ofType : parentResolver.ofType;
+
       // fragment's type is different from the parent, the type should implement parent's interface
-      if (sel.typeCondition !== parent.ofType) {
-        const interfacePlan = schemaPlan.types[parent.ofType];
+      if (sel.typeCondition !== parentOfType) {
+        const interfacePlan = schemaPlan.types[parentOfType];
         if (!interfacePlan || interfacePlan.kind !== 'interface') {
-          throw new Error(
-            "Cannot have a fragment of different type spread in a field that's not an interface",
-          );
+          // because of [NOTE 2], we want to focus only on fragments whose type condition matches the parent resolver
+          // and skip others.
+          // see BookAll test case in tests/fixtures/federation/union-intersection/blueprint.ts
+          // TODO: what if all fragments are skipped?
+          continue;
         }
         const objectPlan = schemaPlan.types[sel.typeCondition];
         if (!objectPlan || objectPlan.kind !== 'object') {
@@ -478,8 +487,8 @@ function insertResolversForGatherPlanCompositeField(
           );
         }
 
-        // the implementing object cannot be resolved in parent resolver's subgraph.
-        // we have to resolve it from another subgraph
+        // the implementing object cannot be resolved in parent resolver's
+        // subgraph, we have to resolve it from another subgraph
         if (
           !Object.keys(objectPlan.resolvers).includes(parentResolver.subgraph)
         ) {
@@ -523,25 +532,23 @@ function insertResolversForGatherPlanCompositeField(
           );
           continue;
         }
-      }
 
-      let frag: OperationFragmentExport | null = null;
-      if (sel.typeCondition !== parent.ofType) {
-        // insert export for the fragment into the available resolver
-        // only if its type condition is different from the parent
-        frag = {
+        // the implementing object can be resolved in parent resolver's
+        // subgraph, we just need to wrap the export in a fragment
+        insideFragment = true;
+        getSelectionsAtDepth(parentResolver.exports, depth).push({
           kind: 'fragment',
           typeCondition: sel.typeCondition,
           selections: [],
-        };
-        getSelectionsAtDepth(parentResolver.exports, depth).push(frag);
+        });
       }
+
       insertResolversForGatherPlanCompositeField(
         schemaPlan,
         sel,
         parentResolver,
-        frag ? depth + 1 : depth,
-        !!frag,
+        insideFragment ? depth + 1 : depth,
+        insideFragment,
       );
       continue;
     }

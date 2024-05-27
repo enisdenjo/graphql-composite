@@ -60,6 +60,58 @@ export const blueprint: Blueprint = {
             },
           },
         },
+        book: {
+          name: 'book',
+          resolvers: {
+            a: {
+              subgraph: 'a',
+              kind: 'object',
+              type: 'Book',
+              ofType: 'Book',
+              operation: /* GraphQL */ `
+                {
+                  book {
+                    ...__export
+                  }
+                }
+              `,
+              variables: {},
+            },
+            b: {
+              subgraph: 'b',
+              kind: 'interface',
+              type: 'Media',
+              ofType: 'Media',
+              operation: /* GraphQL */ `
+                {
+                  book {
+                    ...__export
+                  }
+                }
+              `,
+              variables: {},
+            },
+          },
+        },
+        song: {
+          name: 'song',
+          resolvers: {
+            a: {
+              subgraph: 'a',
+              kind: 'interface',
+              type: 'Media',
+              ofType: 'Media',
+              operation: /* GraphQL */ `
+                {
+                  song {
+                    ...__export
+                  }
+                }
+              `,
+              variables: {},
+            },
+          },
+        },
       },
     },
   },
@@ -89,6 +141,9 @@ export const blueprint: Blueprint = {
         a: {
           // no resolver, but we're indicating that Book can be resolved from "a"
         },
+        b: {
+          // no resolver, but we're indicating that Book can be resolved from "b"
+        },
       },
     },
     Movie: {
@@ -104,6 +159,22 @@ export const blueprint: Blueprint = {
       resolvers: {
         b: {
           // no resolver, but we're indicating that Movie can be resolved from "b"
+        },
+      },
+    },
+    Song: {
+      kind: 'object',
+      name: 'Song',
+      implements: ['Media'],
+      fields: {
+        title: {
+          name: 'title',
+          subgraphs: ['a'],
+        },
+      },
+      resolvers: {
+        a: {
+          // no resolver, but we're indicating that Song can be resolved from "a"
         },
       },
     },

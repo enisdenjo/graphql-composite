@@ -81,4 +81,92 @@ export const queries: FixtureQueries = [
       },
     },
   },
+  {
+    name: 'BookAll',
+    document: parse(/* GraphQL */ `
+      query BookAll {
+        book {
+          __typename
+          ... on Song {
+            title
+          }
+          ... on Movie {
+            title
+          }
+          ... on Book {
+            title
+          }
+        }
+      }
+    `),
+    variables: {},
+    result: {
+      data: {
+        book: {
+          __typename: 'Book',
+          title: 'The Lord of the Rings',
+        },
+      },
+    },
+  },
+  {
+    name: 'AllMedia',
+    document: parse(/* GraphQL */ `
+      query AllMedia {
+        media {
+          __typename
+          ... on Song {
+            title
+          }
+          ... on Movie {
+            title
+          }
+          ... on Book {
+            title
+          }
+        }
+        book {
+          __typename
+          ... on Song {
+            title
+          }
+          ... on Movie {
+            title
+          }
+          ... on Book {
+            title
+          }
+        }
+        song {
+          __typename
+          ... on Song {
+            title
+          }
+          ... on Movie {
+            title
+          }
+          ... on Book {
+            title
+          }
+        }
+      }
+    `),
+    variables: {},
+    result: {
+      data: {
+        media: {
+          __typename: 'Book',
+          title: 'The Lord of the Rings',
+        },
+        book: {
+          __typename: 'Book',
+          title: 'The Lord of the Rings',
+        },
+        song: {
+          __typename: 'Song',
+          title: 'Song Title',
+        },
+      },
+    },
+  },
 ];

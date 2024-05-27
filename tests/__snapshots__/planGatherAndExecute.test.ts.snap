@@ -2820,6 +2820,430 @@ exports[`fixture 'federation/simple-interface-object' > query 'UsersWithUsername
 }
 `;
 
+exports[`fixture 'federation/union-intersection' > query 'AllMedia' > should execute and explain 1`] = `
+[
+  {
+    "data": {
+      "media": {
+        "__typename": "Book",
+        "title": "The Lord of the Rings",
+      },
+    },
+    "exports": [
+      {
+        "kind": "scalar",
+        "name": "__typename",
+      },
+      {
+        "kind": "fragment",
+        "selections": [
+          {
+            "kind": "scalar",
+            "name": "title",
+          },
+        ],
+        "typeCondition": "Song",
+      },
+      {
+        "kind": "fragment",
+        "selections": [
+          {
+            "kind": "scalar",
+            "name": "title",
+          },
+        ],
+        "typeCondition": "Book",
+      },
+    ],
+    "includes": [],
+    "kind": "interface",
+    "ofType": "Media",
+    "operation": "{
+  media {
+    __typename
+    ... on Song {
+      title
+    }
+    ... on Book {
+      title
+    }
+  }
+}",
+    "pathInData": [
+      "media",
+    ],
+    "pathToExportData": [
+      "media",
+    ],
+    "subgraph": "a",
+    "type": "Media",
+    "variables": {},
+  },
+  {
+    "data": {
+      "book": {
+        "__typename": "Book",
+        "title": "The Lord of the Rings",
+      },
+    },
+    "exports": [
+      {
+        "kind": "scalar",
+        "name": "__typename",
+      },
+      {
+        "kind": "scalar",
+        "name": "title",
+      },
+    ],
+    "includes": [],
+    "kind": "object",
+    "ofType": "Book",
+    "operation": "{
+  book {
+    __typename
+    title
+  }
+}",
+    "pathInData": [
+      "book",
+    ],
+    "pathToExportData": [
+      "book",
+    ],
+    "subgraph": "a",
+    "type": "Book",
+    "variables": {},
+  },
+  {
+    "data": {
+      "song": {
+        "__typename": "Song",
+        "title": "Song Title",
+      },
+    },
+    "exports": [
+      {
+        "kind": "scalar",
+        "name": "__typename",
+      },
+      {
+        "kind": "fragment",
+        "selections": [
+          {
+            "kind": "scalar",
+            "name": "title",
+          },
+        ],
+        "typeCondition": "Song",
+      },
+      {
+        "kind": "fragment",
+        "selections": [
+          {
+            "kind": "scalar",
+            "name": "title",
+          },
+        ],
+        "typeCondition": "Book",
+      },
+    ],
+    "includes": [],
+    "kind": "interface",
+    "ofType": "Media",
+    "operation": "{
+  song {
+    __typename
+    ... on Song {
+      title
+    }
+    ... on Book {
+      title
+    }
+  }
+}",
+    "pathInData": [
+      "song",
+    ],
+    "pathToExportData": [
+      "song",
+    ],
+    "subgraph": "a",
+    "type": "Media",
+    "variables": {},
+  },
+]
+`;
+
+exports[`fixture 'federation/union-intersection' > query 'AllMedia' > should plan gather 1`] = `
+{
+  "operations": [
+    {
+      "name": "AllMedia",
+      "resolvers": {
+        "book": {
+          "exports": [
+            {
+              "kind": "scalar",
+              "name": "__typename",
+            },
+            {
+              "kind": "scalar",
+              "name": "title",
+            },
+          ],
+          "includes": {},
+          "kind": "object",
+          "ofType": "Book",
+          "operation": "{
+  book {
+    __typename
+    title
+  }
+}",
+          "pathToExportData": [
+            "book",
+          ],
+          "subgraph": "a",
+          "type": "Book",
+          "variables": {},
+        },
+        "media": {
+          "exports": [
+            {
+              "kind": "scalar",
+              "name": "__typename",
+            },
+            {
+              "kind": "fragment",
+              "selections": [
+                {
+                  "kind": "scalar",
+                  "name": "title",
+                },
+              ],
+              "typeCondition": "Song",
+            },
+            {
+              "kind": "fragment",
+              "selections": [
+                {
+                  "kind": "scalar",
+                  "name": "title",
+                },
+              ],
+              "typeCondition": "Book",
+            },
+          ],
+          "includes": {},
+          "kind": "interface",
+          "ofType": "Media",
+          "operation": "{
+  media {
+    __typename
+    ... on Song {
+      title
+    }
+    ... on Book {
+      title
+    }
+  }
+}",
+          "pathToExportData": [
+            "media",
+          ],
+          "subgraph": "a",
+          "type": "Media",
+          "variables": {},
+        },
+        "song": {
+          "exports": [
+            {
+              "kind": "scalar",
+              "name": "__typename",
+            },
+            {
+              "kind": "fragment",
+              "selections": [
+                {
+                  "kind": "scalar",
+                  "name": "title",
+                },
+              ],
+              "typeCondition": "Song",
+            },
+            {
+              "kind": "fragment",
+              "selections": [
+                {
+                  "kind": "scalar",
+                  "name": "title",
+                },
+              ],
+              "typeCondition": "Book",
+            },
+          ],
+          "includes": {},
+          "kind": "interface",
+          "ofType": "Media",
+          "operation": "{
+  song {
+    __typename
+    ... on Song {
+      title
+    }
+    ... on Book {
+      title
+    }
+  }
+}",
+          "pathToExportData": [
+            "song",
+          ],
+          "subgraph": "a",
+          "type": "Media",
+          "variables": {},
+        },
+      },
+      "type": "query",
+    },
+  ],
+  "query": "query AllMedia {
+  media {
+    __typename
+    ... on Song {
+      title
+    }
+    ... on Movie {
+      title
+    }
+    ... on Book {
+      title
+    }
+  }
+  book {
+    __typename
+    ... on Song {
+      title
+    }
+    ... on Movie {
+      title
+    }
+    ... on Book {
+      title
+    }
+  }
+  song {
+    __typename
+    ... on Song {
+      title
+    }
+    ... on Movie {
+      title
+    }
+    ... on Book {
+      title
+    }
+  }
+}",
+}
+`;
+
+exports[`fixture 'federation/union-intersection' > query 'BookAll' > should execute and explain 1`] = `
+[
+  {
+    "data": {
+      "book": {
+        "__typename": "Book",
+        "title": "The Lord of the Rings",
+      },
+    },
+    "exports": [
+      {
+        "kind": "scalar",
+        "name": "__typename",
+      },
+      {
+        "kind": "scalar",
+        "name": "title",
+      },
+    ],
+    "includes": [],
+    "kind": "object",
+    "ofType": "Book",
+    "operation": "{
+  book {
+    __typename
+    title
+  }
+}",
+    "pathInData": [
+      "book",
+    ],
+    "pathToExportData": [
+      "book",
+    ],
+    "subgraph": "a",
+    "type": "Book",
+    "variables": {},
+  },
+]
+`;
+
+exports[`fixture 'federation/union-intersection' > query 'BookAll' > should plan gather 1`] = `
+{
+  "operations": [
+    {
+      "name": "BookAll",
+      "resolvers": {
+        "book": {
+          "exports": [
+            {
+              "kind": "scalar",
+              "name": "__typename",
+            },
+            {
+              "kind": "scalar",
+              "name": "title",
+            },
+          ],
+          "includes": {},
+          "kind": "object",
+          "ofType": "Book",
+          "operation": "{
+  book {
+    __typename
+    title
+  }
+}",
+          "pathToExportData": [
+            "book",
+          ],
+          "subgraph": "a",
+          "type": "Book",
+          "variables": {},
+        },
+      },
+      "type": "query",
+    },
+  ],
+  "query": "query BookAll {
+  book {
+    __typename
+    ... on Song {
+      title
+    }
+    ... on Movie {
+      title
+    }
+    ... on Book {
+      title
+    }
+  }
+}",
+}
+`;
+
 exports[`fixture 'federation/union-intersection' > query 'MediaBook' > should execute and explain 1`] = `
 [
   {

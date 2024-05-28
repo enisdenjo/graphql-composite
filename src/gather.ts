@@ -111,7 +111,7 @@ export interface OperationFragmentExport extends OperationExportAvailability {
 }
 
 export function planGather(
-  schemaPlan: Blueprint,
+  blueprint: Blueprint,
   doc: DocumentNode,
 ): GatherPlan {
   const gatherPlan: GatherPlan = {
@@ -122,7 +122,7 @@ export function planGather(
   const operationFields: OperationOperationField[] = [];
   const entries: string[] = [];
   let depth = 0;
-  const typeInfo = new TypeInfo(buildSchema(schemaPlan.schema));
+  const typeInfo = new TypeInfo(buildSchema(blueprint.schema));
   let currOperation: GatherPlanOperation;
   visit(
     // we want to flatten fragments in the document
@@ -222,7 +222,7 @@ export function planGather(
 
   for (const operation of gatherPlan.operations) {
     operation.resolvers = planGatherResolversForOperationFields(
-      schemaPlan,
+      blueprint,
       operation,
       operationFields,
     );
@@ -353,11 +353,11 @@ function inlineToResolverConstantVariables(
 }
 
 function planGatherResolversForOperationFields(
-  schemaPlan: Blueprint,
+  blueprint: Blueprint,
   operation: GatherPlanOperation,
   operationFields: OperationField[],
 ): Record<string, GatherPlanResolver> {
-  const operationPlan = schemaPlan.operations[operation.type];
+  const operationPlan = blueprint.operations[operation.type];
   if (!operationPlan) {
     throw new Error(
       `Blueprint does not have the "${operation.type}" operation`,
@@ -412,7 +412,7 @@ function planGatherResolversForOperationFields(
         );
       }
       insertResolversForGatherPlanCompositeField(
-        schemaPlan,
+        blueprint,
         operationField,
         resolver,
         0,
@@ -432,7 +432,7 @@ function planGatherResolversForOperationFields(
 }
 
 function insertResolversForGatherPlanCompositeField(
-  schemaPlan: Blueprint,
+  blueprint: Blueprint,
   parent: OperationCompositeSelection,
   parentResolver: GatherPlanCompositeResolver,
   /**
@@ -466,7 +466,7 @@ function insertResolversForGatherPlanCompositeField(
 
       // fragment's type is different from the parent, the type should implement parent's interface
       if (sel.typeCondition !== parentOfType) {
-        const interfacePlan = schemaPlan.types[parentOfType];
+        const interfacePlan = blueprint.types[parentOfType];
         if (!interfacePlan || interfacePlan.kind !== 'interface') {
           // because of [NOTE 2], we want to focus only on fragments whose type condition matches the parent resolver
           // and skip others.
@@ -474,7 +474,7 @@ function insertResolversForGatherPlanCompositeField(
           // TODO: what if all fragments are skipped?
           continue;
         }
-        const objectPlan = schemaPlan.types[sel.typeCondition];
+        const objectPlan = blueprint.types[sel.typeCondition];
         if (!objectPlan || objectPlan.kind !== 'object') {
           throw new Error(
             `Blueprint doesn't have a "${sel.typeCondition}" object`,
@@ -539,7 +539,7 @@ function insertResolversForGatherPlanCompositeField(
           parentResolver.includes[''] = resolver;
 
           insertResolversForGatherPlanCompositeField(
-            schemaPlan,
+            blueprint,
             sel,
             resolver,
             depth,
@@ -559,7 +559,7 @@ function insertResolversForGatherPlanCompositeField(
       }
 
       insertResolversForGatherPlanCompositeField(
-        schemaPlan,
+        blueprint,
         sel,
         parentResolver,
         insideFragment ? depth + 1 : depth,
@@ -571,7 +571,7 @@ function insertResolversForGatherPlanCompositeField(
     let resolver: GatherPlanCompositeResolver | undefined;
     const parentOfType =
       parent.kind === 'fragment' ? parent.typeCondition : parent.ofType;
-    const parentTypePlan = schemaPlan.types[parentOfType];
+    const parentTypePlan = blueprint.types[parentOfType];
     if (!parentTypePlan) {
       throw new Error(`Blueprint doesn't have a "${parentOfType}" type`);
     }
@@ -590,7 +590,7 @@ function insertResolversForGatherPlanCompositeField(
     } else {
       // the parent type may not implement the specific field, but its interface may.
       // in that case, we have to resolve the field from the interface instead
-      const interfacePlan = Object.values(schemaPlan.types).find(
+      const interfacePlan = Object.values(blueprint.types).find(
         (t) =>
           t.kind === 'interface' &&
           parentTypePlan!.kind === 'object' &&
@@ -671,7 +671,7 @@ function insertResolversForGatherPlanCompositeField(
 
     if (sel.kind === 'object') {
       insertResolversForGatherPlanCompositeField(
-        schemaPlan,
+        blueprint,
         sel,
         resolver,
         resolver === parentResolver ? depth + 1 : depth,

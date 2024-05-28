@@ -470,7 +470,7 @@ function insertResolversForGatherPlanCompositeField(
         if (!interfacePlan || interfacePlan.kind !== 'interface') {
           // because of [NOTE 2], we want to focus only on fragments whose type condition matches the parent resolver
           // and skip others.
-          // see BookAll test case in tests/fixtures/federation/union-intersection/blueprint.ts
+          // see BookAll test case in tests/fixtures/federation/union-intersection/queries.ts
           // TODO: what if all fragments are skipped?
           continue;
         }

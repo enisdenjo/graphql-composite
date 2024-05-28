@@ -43,8 +43,7 @@ export type GatherPlanResolver =
   | GatherPlanCompositeResolver
   | GatherPlanScalarResolver;
 
-export interface GatherPlanCompositeResolver
-  extends BlueprintCompositeResolver {
+export type GatherPlanCompositeResolver = BlueprintCompositeResolver & {
   /** The path to the `__export` fragment in the execution result. */
   pathToExportData: (string | number)[];
   /**
@@ -62,7 +61,7 @@ export interface GatherPlanCompositeResolver
    * the include is resolving additional fields for the current resolver.
    */
   includes: Record<string, GatherPlanCompositeResolver>;
-}
+};
 
 export interface GatherPlanScalarResolver extends BlueprintScalarResolver {
   /**
@@ -487,6 +486,30 @@ function insertResolversForGatherPlanCompositeField(
           );
         }
 
+        if (
+          parentResolver.kind === 'interface' &&
+          !parentResolver.resolvableTypes.includes(objectPlan.name) &&
+          !Object.keys(objectPlan.resolvers).length
+        ) {
+          // [NOTE 1]
+          // here we mimic apollo's behaviour. if the object cannot be resolved,
+          // but it's implementing parent's interface - we want to execute parent's resolver
+          // without needing anything from it. one reason to perform the operation anyway
+          // is if the subgraph performs some sort of authentication
+          //
+          // TODO: if there are selections that will be exported in the next loop iteration,
+          //       this private export will stay - but should be removed because the request
+          //       is not empty anymore
+          if (!parentResolver.exports.length) {
+            parentResolver.exports.push({
+              kind: 'scalar',
+              name: '__typename',
+              private: true,
+            });
+          }
+          continue;
+        }
+
         // we check for availability using object's fields (instead of its resolvers)
         // because maybe the object doesnt have a resolver in the subgraph but is available
         // in the subgraph through the parent resolver
@@ -497,26 +520,13 @@ function insertResolversForGatherPlanCompositeField(
         ) {
           // the implementing object is not available in parent resolver's
           // subgraph, we have to resolve it from another subgraph
+
           // TODO: actually choose the best resolver, not the first one
           const resolverPlan = Object.values(objectPlan.resolvers)[0]?.[0];
           if (!resolverPlan) {
-            // [NOTE 1]
-            // here we mimic apollo's behaviour. if there are no resolvers for the object,
-            // but it's implementing parent's interface - we want to execute parent's resolver
-            // without needing anything from it. one reason to perform the operation anyway
-            // is if the subgraph performs some sort of authentication
-            //
-            // TODO: if there are selections that will be exported in the next loop iteration,
-            //       this private export will stay - but should be removed because the request
-            //       is not empty anymore
-            if (!parentResolver.exports.length) {
-              parentResolver.exports.push({
-                kind: 'scalar',
-                name: '__typename',
-                private: true,
-              });
-            }
-            continue;
+            throw new Error(
+              `Blueprint type "${objectPlan.name}" doesn't have any resolvers`,
+            );
           }
 
           const resolver = prepareCompositeResolverForSelection(

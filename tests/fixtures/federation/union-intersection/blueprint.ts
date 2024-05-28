@@ -35,6 +35,7 @@ export const blueprint: Blueprint = {
               kind: 'interface',
               type: 'Media',
               ofType: 'Media',
+              resolvableTypes: ['Book'],
               operation: /* GraphQL */ `
                 {
                   media {
@@ -49,6 +50,7 @@ export const blueprint: Blueprint = {
               kind: 'interface',
               type: 'Media',
               ofType: 'Media',
+              resolvableTypes: ['Book'],
               operation: /* GraphQL */ `
                 {
                   media {
@@ -82,6 +84,7 @@ export const blueprint: Blueprint = {
               kind: 'interface',
               type: 'Media',
               ofType: 'Media',
+              resolvableTypes: ['Book'],
               operation: /* GraphQL */ `
                 {
                   book {
@@ -101,6 +104,7 @@ export const blueprint: Blueprint = {
               kind: 'interface',
               type: 'Media',
               ofType: 'Media',
+              resolvableTypes: ['Book', 'Song'],
               operation: /* GraphQL */ `
                 {
                   song {

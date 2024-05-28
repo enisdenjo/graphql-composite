@@ -618,12 +618,12 @@ function insertResolversForGatherPlanCompositeField(
       // this field cannot be resolved using existing resolvers
       // add an dependant resolver to the parent for the field(s)
 
-      // TODO: actually choose the best resolver, not the first one
       const commonSubgraph = Object.keys(selTypePlan.resolvers).find(
         (subgraph) => selPlan.subgraphs.includes(subgraph),
       );
       const resolverPlan = commonSubgraph
-        ? selTypePlan.resolvers[commonSubgraph]![0]
+        ? // TODO: actually choose the best resolver, not the first one
+          selTypePlan.resolvers[commonSubgraph]![0]
         : undefined;
       if (!resolverPlan) {
         throw new Error(

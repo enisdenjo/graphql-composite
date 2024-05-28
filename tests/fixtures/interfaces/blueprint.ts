@@ -39,6 +39,7 @@ export const blueprint: Blueprint = {
               kind: 'interface',
               type: 'Animal',
               ofType: 'Animal',
+              resolvableTypes: ['Dog', 'Cat'],
               operation: /* GraphQL */ `
                 query animal($name: ID!) {
                   animal(name: $name) {
@@ -58,6 +59,7 @@ export const blueprint: Blueprint = {
               kind: 'interface',
               type: 'Animal',
               ofType: 'Animal',
+              resolvableTypes: ['Dog', 'Cat'],
               operation: /* GraphQL */ `
                 query animal($name: ID!) {
                   animal(name: $name) {
@@ -102,6 +104,7 @@ export const blueprint: Blueprint = {
             kind: 'interface',
             type: 'Animal',
             ofType: 'Animal',
+            resolvableTypes: ['Dog', 'Cat'],
             operation: /* GraphQL */ `
               query AnimalByName($name: ID!) {
                 animal(name: $name) {
@@ -124,6 +127,7 @@ export const blueprint: Blueprint = {
             kind: 'interface',
             type: 'Animal',
             ofType: 'Animal',
+            resolvableTypes: ['Dog', 'Cat'],
             operation: /* GraphQL */ `
               query AnimalByName($name: ID!) {
                 animal(name: $name) {

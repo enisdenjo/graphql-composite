@@ -281,34 +281,42 @@ function populateResultWithExportData(
     return;
   }
 
-  for (const exportPath of resolver.exports.flatMap(getPublicPathsOfExport)) {
-    const lastKey = exportPath[exportPath.length - 1];
-    const valBeforeLast =
-      exportPath.length > 1
-        ? getAtPath(exportData, exportPath.slice(0, exportPath.length - 1))
-        : null;
+  const publicExportPaths = resolver.exports.flatMap(getPublicPathsOfExport);
+  if (!publicExportPaths.length) {
+    // if there are no public export paths defined, we just want
+    // to make the pathInData an object (because it's a composite resolver)
+    // see [NOTE 1] in gather.ts for more info on why we perform no-export operations
+    setAtPath(resultRef.data, pathInData, {});
+  } else {
+    for (const exportPath of publicExportPaths) {
+      const lastKey = exportPath[exportPath.length - 1];
+      const valBeforeLast =
+        exportPath.length > 1
+          ? getAtPath(exportData, exportPath.slice(0, exportPath.length - 1))
+          : null;
 
-    if (Array.isArray(valBeforeLast)) {
-      // if we're exporting fields in an array, set for each item of the array
-      for (let i = 0; i < valBeforeLast.length; i++) {
+      if (Array.isArray(valBeforeLast)) {
+        // if we're exporting fields in an array, set for each item of the array
+        for (let i = 0; i < valBeforeLast.length; i++) {
+          setAtPath(
+            resultRef.data,
+            [
+              ...pathInData,
+              ...exportPath.slice(0, exportPath.length - 1)!,
+              i,
+              lastKey!,
+            ],
+            getAtPath(valBeforeLast[i], [lastKey!]),
+          );
+        }
+      } else {
+        // otherwise, just set in object
         setAtPath(
           resultRef.data,
-          [
-            ...pathInData,
-            ...exportPath.slice(0, exportPath.length - 1)!,
-            i,
-            lastKey!,
-          ],
-          getAtPath(valBeforeLast[i], [lastKey!]),
+          [...pathInData, ...exportPath],
+          getAtPath(exportData, exportPath),
         );
       }
-    } else {
-      // otherwise, just set in object
-      setAtPath(
-        resultRef.data,
-        [...pathInData, ...exportPath],
-        getAtPath(exportData, exportPath),
-      );
     }
   }
 }

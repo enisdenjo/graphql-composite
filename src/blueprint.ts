@@ -109,15 +109,23 @@ export interface BlueprintResolver {
 
 export interface BlueprintInterfaceResolver extends BlueprintResolver {
   kind: 'interface';
+  /**
+   * Contains the list of {@link BlueprintType.name type names} which implement
+   * this interface that can be resolved by this resolver.
+   *
+   * If the list is empty, it means that only the interface can be resolved and none
+   * of the implementing types.
+   */
+  resolvableTypes: string[];
 }
 
 export interface BlueprintObjectResolver extends BlueprintResolver {
   kind: 'object';
 }
 
-export interface BlueprintCompositeResolver extends BlueprintResolver {
-  kind: 'interface' | 'object';
-}
+export type BlueprintCompositeResolver =
+  | BlueprintInterfaceResolver
+  | BlueprintObjectResolver;
 
 export interface BlueprintScalarResolver extends BlueprintResolver {
   kind: 'scalar';

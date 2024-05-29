@@ -121,7 +121,7 @@ export function planGather(
 ): GatherPlan {
   let gatherPlan!: GatherPlan;
 
-  const operationFields: OperationOperationField[] = [];
+  const fields: OperationField[] = [];
   const entries: string[] = [];
   let depth = 0;
   const typeInfo = new TypeInfo(buildSchema(blueprint.schema));
@@ -160,7 +160,7 @@ export function planGather(
           if (!node.typeCondition) {
             throw new Error('Inline fragment must have a type condition');
           }
-          getSelectionsAtDepth(operationFields, depth - 1).push({
+          getSelectionsAtDepth(fields, depth - 1).push({
             kind: 'fragment',
             fieldName: entries[entries.length - 1]!,
             path: entries.join('.'),
@@ -209,7 +209,7 @@ export function planGather(
           }
 
           if (isCompositeType(ofType)) {
-            getSelectionsAtDepth(operationFields, depth - 1).push({
+            getSelectionsAtDepth(fields, depth - 1).push({
               kind: 'object',
               path: entries.join('.'),
               name: node.name.value,
@@ -219,7 +219,7 @@ export function planGather(
               selections: [],
             });
           } else {
-            getSelectionsAtDepth(operationFields, depth - 1).push({
+            getSelectionsAtDepth(fields, depth - 1).push({
               kind: 'scalar',
               path: entries.join('.'),
               name: node.name.value,
@@ -237,10 +237,80 @@ export function planGather(
     }),
   );
 
-  gatherPlan.operation.resolvers = planGatherResolversForOperationFields(
-    blueprint,
-    gatherPlan.operation,
-    operationFields,
+  const operationPlan = blueprint.types[gatherPlan.operation.type];
+  if (!operationPlan) {
+    throw new Error(
+      `Blueprint does not have the "${gatherPlan.operation.type}" operation`,
+    );
+  }
+
+  for (const field of fields) {
+    const operationFieldPlan = operationPlan.fields[field.name];
+    if (!operationFieldPlan) {
+      throw new Error(
+        `Schema operation plan "${operationPlan.name}" doesn't have a "${field.name}" field`,
+      );
+    }
+    if (!Object.keys(operationFieldPlan.resolvers).length) {
+      throw new Error(
+        `Schema operation plan "${operationPlan.name}" field "${field.name}" doesn't have resolvers`,
+      );
+    }
+
+    // TODO: choose the right resolver when multiple
+    const operationFieldResolver = Object.values(
+      operationFieldPlan.resolvers,
+    )[0];
+    if (!operationFieldResolver) {
+      throw new Error(
+        `Blueprint field "${field.name}" on type "${operationPlan.name}" doesn't have resolvers`,
+      );
+    }
+
+    const resolver: GatherPlanResolver =
+      operationFieldResolver.kind === 'scalar'
+        ? {
+            ...operationFieldResolver,
+            variables: inlineToResolverConstantVariables(
+              operationFieldResolver,
+              field,
+            ),
+            pathToExportData: [],
+          }
+        : {
+            ...operationFieldResolver,
+            variables: inlineToResolverConstantVariables(
+              operationFieldResolver,
+              field,
+            ),
+            pathToExportData: [],
+            exports: [],
+            includes: {},
+          };
+
+    if (field.kind !== 'scalar') {
+      if (resolver.kind === 'scalar') {
+        throw new Error(
+          'Composite operation field must not have a scalar resolver',
+        );
+      }
+      insertResolversForGatherPlanCompositeSelection(
+        blueprint,
+        field,
+        resolver,
+        0,
+        false,
+      );
+    }
+
+    gatherPlan.operation.resolvers[field.name] = resolver;
+  }
+
+  // we build resolvers operations only after gather.
+  // this way we ensure that all fields are available
+  // in both the private and public lists
+  buildAndInsertOperationsInResolvers(
+    Object.values(gatherPlan.operation.resolvers),
   );
 
   return gatherPlan;
@@ -303,8 +373,6 @@ type OperationSelection =
   | OperationFragment;
 
 /** TODO: can an operation field be a fragment? */
-type OperationOperationField = OperationScalarField | OperationObjectField;
-
 type OperationField = OperationObjectField | OperationScalarField;
 
 type OperationCompositeSelection = OperationObjectField | OperationFragment;
@@ -367,86 +435,7 @@ function inlineToResolverConstantVariables(
   return variables;
 }
 
-function planGatherResolversForOperationFields(
-  blueprint: Blueprint,
-  operation: GatherPlanOperation,
-  operationFields: OperationField[],
-): Record<string, GatherPlanResolver> {
-  const operationPlan = blueprint.types[operation.type];
-  if (!operationPlan) {
-    throw new Error(
-      `Blueprint does not have the "${operation.type}" operation`,
-    );
-  }
-
-  const resolvers: Record<string, GatherPlanResolver> = {};
-
-  for (const operationField of operationFields) {
-    const operationFieldPlan = operationPlan.fields[operationField.name];
-    if (!operationFieldPlan) {
-      throw new Error(
-        `Schema operation plan "${operationPlan.name}" doesn't have a "${operationField.name}" field`,
-      );
-    }
-    if (!Object.keys(operationFieldPlan.resolvers).length) {
-      throw new Error(
-        `Schema operation plan "${operationPlan.name}" field "${operationField.name}" doesn't have resolvers`,
-      );
-    }
-
-    // TODO: choose the right resolver when multiple
-    const operationFieldResolver = Object.values(
-      operationFieldPlan.resolvers,
-    )[0]!;
-
-    const resolver: GatherPlanResolver =
-      operationFieldResolver.kind === 'scalar'
-        ? {
-            ...operationFieldResolver,
-            variables: inlineToResolverConstantVariables(
-              operationFieldResolver,
-              operationField,
-            ),
-            pathToExportData: [],
-          }
-        : {
-            ...operationFieldResolver,
-            variables: inlineToResolverConstantVariables(
-              operationFieldResolver,
-              operationField,
-            ),
-            pathToExportData: [],
-            exports: [],
-            includes: {},
-          };
-
-    if (operationField.kind !== 'scalar') {
-      if (resolver.kind === 'scalar') {
-        throw new Error(
-          'Composite operation field must not have a scalar resolver',
-        );
-      }
-      insertResolversForGatherPlanCompositeField(
-        blueprint,
-        operationField,
-        resolver,
-        0,
-        false,
-      );
-    }
-
-    resolvers[operationField.name] = resolver;
-  }
-
-  // we build resolvers operations only after gather.
-  // this way we ensure that all fields are available
-  // in both the private and public lists
-  buildAndInsertOperationsInResolvers(Object.values(resolvers));
-
-  return resolvers;
-}
-
-function insertResolversForGatherPlanCompositeField(
+function insertResolversForGatherPlanCompositeSelection(
   blueprint: Blueprint,
   parent: OperationCompositeSelection,
   parentResolver: GatherPlanCompositeResolver,
@@ -570,7 +559,7 @@ function insertResolversForGatherPlanCompositeField(
           // TODO: what if parentResolver.includes already has this key? solution: an include may have multiple resolvers
           parentResolver.includes[''] = resolver;
 
-          insertResolversForGatherPlanCompositeField(
+          insertResolversForGatherPlanCompositeSelection(
             blueprint,
             sel,
             resolver,
@@ -590,7 +579,7 @@ function insertResolversForGatherPlanCompositeField(
         });
       }
 
-      insertResolversForGatherPlanCompositeField(
+      insertResolversForGatherPlanCompositeSelection(
         blueprint,
         sel,
         parentResolver,
@@ -702,7 +691,7 @@ function insertResolversForGatherPlanCompositeField(
     }
 
     if (sel.kind === 'object') {
-      insertResolversForGatherPlanCompositeField(
+      insertResolversForGatherPlanCompositeSelection(
         blueprint,
         sel,
         resolver,

@@ -248,12 +248,12 @@ export function planGather(
     const operationFieldPlan = operationPlan.fields[field.name];
     if (!operationFieldPlan) {
       throw new Error(
-        `Schema operation plan "${operationPlan.name}" doesn't have a "${field.name}" field`,
+        `Blueprint operation type "${operationPlan.name}" doesn't have a "${field.name}" field`,
       );
     }
     if (!Object.keys(operationFieldPlan.resolvers).length) {
       throw new Error(
-        `Schema operation plan "${operationPlan.name}" field "${field.name}" doesn't have resolvers`,
+        `Blueprint operation type "${operationPlan.name}" field "${field.name}" doesn't have resolvers`,
       );
     }
 
@@ -294,13 +294,17 @@ export function planGather(
           'Composite operation field must not have a scalar resolver',
         );
       }
-      insertResolversForGatherPlanCompositeSelection(
-        blueprint,
-        field,
-        resolver,
-        0,
-        false,
-      );
+      for (const sel of field.selections) {
+        insertResolversForSelection(
+          blueprint,
+          operationPlan,
+          field,
+          sel,
+          resolver,
+          0,
+          false,
+        );
+      }
     }
 
     gatherPlan.operation.resolvers[field.name] = resolver;
@@ -435,10 +439,20 @@ function inlineToResolverConstantVariables(
   return variables;
 }
 
-function insertResolversForGatherPlanCompositeSelection(
+function insertResolversForSelection(
   blueprint: Blueprint,
+  /** Type in which the {@link parent parent selection} is located. */
+  parentType: BlueprintType,
+  /** Parent selection of the {@link sel selection}. */
   parent: OperationCompositeSelection,
-  parentResolver: GatherPlanCompositeResolver,
+  /** Selection for which we're building resolvers. */
+  sel: OperationSelection,
+  /**
+   * The current resolver.
+   * Exports will be added to it unless they cant be resolved,
+   * in which case a new nested `includes` resolver will be made.
+   */
+  currentResolver: GatherPlanCompositeResolver,
   /**
    * When resolving nested selections, we want to append further
    * selections under a specific depth in parent's exports.
@@ -455,247 +469,239 @@ function insertResolversForGatherPlanCompositeSelection(
    */
   insideFragment: boolean,
 ) {
-  for (const sel of parent.selections) {
-    if (sel.kind === 'fragment') {
-      if (parent.kind !== 'object') {
-        throw new Error('Only object fields can have fragments');
+  if (sel.kind === 'fragment') {
+    if (parent.kind !== 'object') {
+      throw new Error('Only object fields can have fragments');
+    }
+
+    // we may place a child (including) resolver inside a fragment, continue reading to see when
+    let insideFragment = false;
+
+    // [NOTE 2] an interface can have a resolver that resolves an object implementing that interface, and not
+    // the interface itself. because of this, we want to use the parent resolver's ofType when at the root
+    const parentOfType = depth ? parent.ofType : currentResolver.ofType;
+
+    // fragment's type is different from the parent, the type should implement parent's interface
+    if (sel.typeCondition !== parentOfType) {
+      const interfacePlan = blueprint.types[parentOfType];
+      if (!interfacePlan || interfacePlan.kind !== 'interface') {
+        // because of [NOTE 2], we want to focus only on fragments whose type condition matches the parent resolver
+        // and skip others.
+        // see BookAll test case in tests/fixtures/federation/union-intersection/queries.ts
+        // TODO: what if all fragments are skipped?
+        return;
+      }
+      const objectPlan = blueprint.types[sel.typeCondition];
+      if (!objectPlan || objectPlan.kind !== 'object') {
+        throw new Error(
+          `Blueprint doesn't have a "${sel.typeCondition}" object`,
+        );
+      }
+      if (!objectPlan.implements.includes(interfacePlan.name)) {
+        throw new Error(
+          `Blueprint "${sel.typeCondition}" object doesn't implement the "${interfacePlan.name}" interface`,
+        );
       }
 
-      // we may place a child (including) resolver inside a fragment, continue reading to see when
-      let insideFragment = false;
+      const objectPlanSubgraphs = allSubgraphsForType(objectPlan);
+      if (
+        !Object.keys(objectPlan.resolvers).length &&
+        !parentType.fields[parent.name]!.subgraphs.every((s) =>
+          objectPlanSubgraphs.includes(s),
+        )
+      ) {
+        // the selection's object doesnt have any other resolvers and its available subgraphs
+        // dont intersect with the parent field's subgraphs. this means that the field is
+        // available in more subgraphs than the selection's object.
+        // we therefore skip the fragment spread altogether
 
-      // [NOTE 2] an interface can have a resolver that resolves an object implementing that interface, and not
-      // the interface itself. because of this, we want to use the parent resolver's ofType when at the root
-      const parentOfType = depth ? parent.ofType : parentResolver.ofType;
-
-      // fragment's type is different from the parent, the type should implement parent's interface
-      if (sel.typeCondition !== parentOfType) {
-        const interfacePlan = blueprint.types[parentOfType];
-        if (!interfacePlan || interfacePlan.kind !== 'interface') {
-          // because of [NOTE 2], we want to focus only on fragments whose type condition matches the parent resolver
-          // and skip others.
-          // see BookAll test case in tests/fixtures/federation/union-intersection/queries.ts
-          // TODO: what if all fragments are skipped?
-          continue;
-        }
-        const objectPlan = blueprint.types[sel.typeCondition];
-        if (!objectPlan || objectPlan.kind !== 'object') {
-          throw new Error(
-            `Blueprint doesn't have a "${sel.typeCondition}" object`,
-          );
-        }
-        if (!objectPlan.implements.includes(interfacePlan.name)) {
-          throw new Error(
-            `Blueprint "${sel.typeCondition}" object doesn't implement the "${interfacePlan.name}" interface`,
-          );
-        }
-
-        // we figure out which subgraphs have the the parent's field available
-        // and use it to intersect the implementing type
-        // TODO: this will change
-        if (depth) {
-          const objectPlanSubgraphs = allSubgraphsForType(objectPlan);
-          const parentFieldAvailableInSubgraphs =
-            blueprint.types[depth > 1 ? parent.type : parentResolver.ofType]!
-              .fields[parent.name]!.subgraphs;
-          if (
-            !parentFieldAvailableInSubgraphs.every((s) =>
-              objectPlanSubgraphs.includes(s),
-            )
-          ) {
-            continue;
-          }
-        }
-
-        if (
-          parentResolver.kind === 'interface' &&
-          !parentResolver.resolvableTypes.includes(objectPlan.name) &&
-          !Object.keys(objectPlan.resolvers).length
-        ) {
+        if (!currentResolver.exports.length) {
           // [NOTE 1]
-          // here we mimic apollo's behaviour. if the object cannot be resolved and it has no other resolvers,
-          // but it is implementing parent's interface - we want to execute parent's resolver without needing
-          // anything from it. one reason to perform the operation anyway is if the subgraph performs some sort
-          // of authentication
+          // here we mimic apollo's behaviour. we want to execute parent's resolver without needing
+          // anything from it. one reason to perform the operation anyway is if the subgraph performs
+          // some sort of authentication
           //
           // TODO: if there are selections that will be exported in the next loop iteration,
           //       this private export will stay - but should be removed because the request
           //       is not empty anymore
-          if (!parentResolver.exports.length) {
-            parentResolver.exports.push({
-              kind: 'scalar',
-              name: '__typename',
-              private: true,
-            });
-          }
-          continue;
+          currentResolver.exports.push({
+            kind: 'scalar',
+            name: '__typename',
+            private: true,
+          });
+        }
+        return;
+      }
+
+      if (!objectPlanSubgraphs.some((s) => s === currentResolver.subgraph)) {
+        // the implementing object is not available in parent resolver's
+        // subgraph, we have to resolve it from another subgraph
+
+        // TODO: actually choose the best resolver, not the first one
+        const resolverPlan = Object.values(objectPlan.resolvers)[0]?.[0];
+        if (!resolverPlan) {
+          throw new Error(
+            `Blueprint type "${objectPlan.name}" doesn't have any resolvers`,
+          );
         }
 
-        // we check for availability using object's fields (instead of its resolvers)
-        // because maybe the object doesnt have a resolver in the subgraph but is available
-        // in the subgraph through the parent resolver
-        if (
-          !Object.values(objectPlan.fields).some((f) =>
-            f.subgraphs.includes(parentResolver.subgraph),
-          )
-        ) {
-          // the implementing object is not available in parent resolver's
-          // subgraph, we have to resolve it from another subgraph
+        const resolver = prepareCompositeResolverForSelection(
+          resolverPlan,
+          sel,
+          getSelectionsAtDepth(currentResolver.exports, depth),
+        );
 
-          // TODO: actually choose the best resolver, not the first one
-          const resolverPlan = Object.values(objectPlan.resolvers)[0]?.[0];
-          if (!resolverPlan) {
-            throw new Error(
-              `Blueprint type "${objectPlan.name}" doesn't have any resolvers`,
-            );
-          }
+        // TODO: what if parentResolver.includes already has this key? solution: an include may have multiple resolvers
+        currentResolver.includes[''] = resolver;
 
-          const resolver = prepareCompositeResolverForSelection(
-            resolverPlan,
-            sel,
-            getSelectionsAtDepth(parentResolver.exports, depth),
-          );
-
-          // TODO: what if parentResolver.includes already has this key? solution: an include may have multiple resolvers
-          parentResolver.includes[''] = resolver;
-
-          insertResolversForGatherPlanCompositeSelection(
+        for (const subSel of sel.selections) {
+          insertResolversForSelection(
             blueprint,
+            objectPlan,
             sel,
+            subSel,
             resolver,
             depth,
             false,
           );
-          continue;
         }
-
-        // the implementing object can be resolved in parent resolver's
-        // subgraph, we just need to wrap the export in a fragment
-        insideFragment = true;
-        getSelectionsAtDepth(parentResolver.exports, depth).push({
-          kind: 'fragment',
-          typeCondition: sel.typeCondition,
-          selections: [],
-        });
+        return;
       }
 
-      insertResolversForGatherPlanCompositeSelection(
+      // the implementing object can be resolved in parent resolver's
+      // subgraph, we just need to wrap the export in a fragment
+      insideFragment = true;
+      getSelectionsAtDepth(currentResolver.exports, depth).push({
+        kind: 'fragment',
+        typeCondition: sel.typeCondition,
+        selections: [],
+      });
+    }
+
+    for (const subSel of sel.selections) {
+      insertResolversForSelection(
         blueprint,
+        parentType,
         sel,
-        parentResolver,
+        subSel,
+        currentResolver,
         insideFragment ? depth + 1 : depth,
         insideFragment,
       );
-      continue;
     }
+    return;
+  }
 
-    let resolver: GatherPlanCompositeResolver | undefined;
-    const parentOfType =
-      parent.kind === 'fragment' ? parent.typeCondition : parent.ofType;
-    const parentTypePlan = blueprint.types[parentOfType];
-    if (!parentTypePlan) {
-      throw new Error(`Blueprint doesn't have a "${parentOfType}" type`);
-    }
-    let selTypePlan: BlueprintType;
-    let selPlan = parentTypePlan.fields[sel.name];
-    if (selPlan) {
-      selTypePlan = parentTypePlan;
+  let resolver: GatherPlanCompositeResolver | undefined;
+  const parentOfType =
+    parent.kind === 'fragment' ? parent.typeCondition : parent.ofType;
+  const parentTypePlan = blueprint.types[parentOfType];
+  if (!parentTypePlan) {
+    throw new Error(`Blueprint doesn't have a "${parentOfType}" type`);
+  }
+  let selTypePlan: BlueprintType;
+  let selPlan = parentTypePlan.fields[sel.name];
+  if (selPlan) {
+    selTypePlan = parentTypePlan;
 
-      // use the parent resolver if the field is available in its subgraph;
-      // if not, try finding a resolver in parents includes
-      resolver = selPlan.subgraphs.includes(parentResolver.subgraph)
-        ? parentResolver
-        : Object.values(parentResolver.includes).find((r) =>
-            selPlan!.subgraphs.includes(r.subgraph),
-          );
-    } else {
-      // the parent type may not implement the specific field, but its interface may.
-      // in that case, we have to resolve the field from the interface instead
-      const interfacePlan = Object.values(blueprint.types).find(
-        (t) =>
-          t.kind === 'interface' &&
-          parentTypePlan!.kind === 'object' &&
-          parentTypePlan!.implements.includes(t.name),
-      );
-      if (!interfacePlan) {
-        throw new Error(
-          `Blueprint for type "${parentTypePlan.name}" doesn't have a "${sel.name}" field`,
+    // use the parent resolver if the field is available in its subgraph;
+    // if not, try finding a resolver in parents includes
+    resolver = selPlan.subgraphs.includes(currentResolver.subgraph)
+      ? currentResolver
+      : Object.values(currentResolver.includes).find((r) =>
+          selPlan!.subgraphs.includes(r.subgraph),
         );
-      }
-
-      selPlan = interfacePlan.fields[sel.name];
-      if (!selPlan) {
-        throw new Error(
-          `Blueprint interface "${interfacePlan.name}" that type "${parentTypePlan.name}" implements doesn't have a "${sel.name}" field`,
-        );
-      }
-
-      // we change the selection's type plan to the interface which will
-      // have the resolver creation below use the interface instead of the type
-      selTypePlan = interfacePlan;
-    }
-
-    if (!resolver) {
-      // this field cannot be resolved using existing resolvers
-      // add an dependant resolver to the parent for the field(s)
-
-      const commonSubgraph = Object.keys(selTypePlan.resolvers).find(
-        (subgraph) => selPlan.subgraphs.includes(subgraph),
+  } else {
+    // the parent type may not implement the specific field, but its interface may.
+    // in that case, we have to resolve the field from the interface instead
+    const interfacePlan = Object.values(blueprint.types).find(
+      (t) =>
+        t.kind === 'interface' &&
+        parentTypePlan!.kind === 'object' &&
+        parentTypePlan!.implements.includes(t.name),
+    );
+    if (!interfacePlan) {
+      throw new Error(
+        `Blueprint for type "${parentTypePlan.name}" doesn't have a "${sel.name}" field`,
       );
-      const resolverPlan = commonSubgraph
-        ? // TODO: actually choose the best resolver, not the first one
-          selTypePlan.resolvers[commonSubgraph]![0]
-        : undefined;
-      if (!resolverPlan) {
-        throw new Error(
-          `Blueprint type "${selTypePlan.name}" doesn't have a resolver for any of the "${selPlan.name}" field subgraphs`,
-        );
-      }
+    }
 
-      resolver = prepareCompositeResolverForSelection(
-        resolverPlan,
-        sel,
-        getSelectionsAtDepth(parentResolver.exports, depth),
+    selPlan = interfacePlan.fields[sel.name];
+    if (!selPlan) {
+      throw new Error(
+        `Blueprint interface "${interfacePlan.name}" that type "${parentTypePlan.name}" implements doesn't have a "${sel.name}" field`,
       );
-
-      // TODO: what if parentResolver.includes already has this key? solution: an include may have multiple resolvers
-      parentResolver.includes[
-        insideFragment || !depth
-          ? // we're resolving additional fields for parent's resolver
-            ''
-          : // we're resolving within a field in parent's resolver
-            parent.kind === 'fragment'
-            ? parent.fieldName
-            : parent.name
-      ] = resolver;
     }
 
-    const exp: OperationObjectExport | OperationScalarExport =
-      sel.kind === 'scalar'
-        ? {
-            kind: 'scalar',
-            name: sel.name,
-          }
-        : {
-            kind: 'object',
-            name: sel.name,
-            selections: [],
-          };
+    // we change the selection's type plan to the interface which will
+    // have the resolver creation below use the interface instead of the type
+    selTypePlan = interfacePlan;
+  }
 
-    const dest =
-      resolver === parentResolver
-        ? getSelectionsAtDepth(parentResolver.exports, depth)
-        : resolver.exports;
-    if (!exportsIncludeField(dest, exp.name, true)) {
-      dest.push(exp);
+  if (!resolver) {
+    // this field cannot be resolved using existing resolvers
+    // add an dependant resolver to the parent for the field(s)
+
+    const commonSubgraph = Object.keys(selTypePlan.resolvers).find((subgraph) =>
+      selPlan.subgraphs.includes(subgraph),
+    );
+    const resolverPlan = commonSubgraph
+      ? // TODO: actually choose the best resolver, not the first one
+        selTypePlan.resolvers[commonSubgraph]![0]
+      : undefined;
+    if (!resolverPlan) {
+      throw new Error(
+        `Blueprint type "${selTypePlan.name}" doesn't have a resolver for any of the "${selPlan.name}" field subgraphs`,
+      );
     }
 
-    if (sel.kind === 'object') {
-      insertResolversForGatherPlanCompositeSelection(
+    resolver = prepareCompositeResolverForSelection(
+      resolverPlan,
+      sel,
+      getSelectionsAtDepth(currentResolver.exports, depth),
+    );
+
+    // TODO: what if parentResolver.includes already has this key? solution: an include may have multiple resolvers
+    currentResolver.includes[
+      insideFragment || !depth
+        ? // we're resolving additional fields for parent's resolver
+          ''
+        : // we're resolving within a field in parent's resolver
+          parent.kind === 'fragment'
+          ? parent.fieldName
+          : parent.name
+    ] = resolver;
+  }
+
+  const exp: OperationObjectExport | OperationScalarExport =
+    sel.kind === 'scalar'
+      ? {
+          kind: 'scalar',
+          name: sel.name,
+        }
+      : {
+          kind: 'object',
+          name: sel.name,
+          selections: [],
+        };
+
+  const dest =
+    resolver === currentResolver
+      ? getSelectionsAtDepth(currentResolver.exports, depth)
+      : resolver.exports;
+  if (!exportsIncludeField(dest, exp.name, true)) {
+    dest.push(exp);
+  }
+
+  if (sel.kind === 'object') {
+    for (const subSel of sel.selections) {
+      insertResolversForSelection(
         blueprint,
+        selTypePlan,
         sel,
+        subSel,
         resolver,
-        resolver === parentResolver ? depth + 1 : depth,
+        resolver === currentResolver ? depth + 1 : depth,
         false,
       );
     }

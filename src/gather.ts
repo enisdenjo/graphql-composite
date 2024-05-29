@@ -245,69 +245,15 @@ export function planGather(
   }
 
   for (const field of fields) {
-    const operationFieldPlan = operationPlan.fields[field.name];
-    if (!operationFieldPlan) {
-      throw new Error(
-        `Blueprint operation type "${operationPlan.name}" doesn't have a "${field.name}" field`,
-      );
-    }
-    if (!Object.keys(operationFieldPlan.resolvers).length) {
-      throw new Error(
-        `Blueprint operation type "${operationPlan.name}" field "${field.name}" doesn't have resolvers`,
-      );
-    }
-
-    // TODO: choose the right resolver when multiple
-    const operationFieldResolver = Object.values(
-      operationFieldPlan.resolvers,
-    )[0];
-    if (!operationFieldResolver) {
-      throw new Error(
-        `Blueprint field "${field.name}" on type "${operationPlan.name}" doesn't have resolvers`,
-      );
-    }
-
-    const resolver: GatherPlanResolver =
-      operationFieldResolver.kind === 'scalar'
-        ? {
-            ...operationFieldResolver,
-            variables: inlineToResolverConstantVariables(
-              operationFieldResolver,
-              field,
-            ),
-            pathToExportData: [],
-          }
-        : {
-            ...operationFieldResolver,
-            variables: inlineToResolverConstantVariables(
-              operationFieldResolver,
-              field,
-            ),
-            pathToExportData: [],
-            exports: [],
-            includes: {},
-          };
-
-    if (field.kind !== 'scalar') {
-      if (resolver.kind === 'scalar') {
-        throw new Error(
-          'Composite operation field must not have a scalar resolver',
-        );
-      }
-      for (const sel of field.selections) {
-        insertResolversForSelection(
-          blueprint,
-          operationPlan,
-          field,
-          sel,
-          resolver,
-          0,
-          true,
-        );
-      }
-    }
-
-    gatherPlan.operation.resolvers[field.name] = resolver;
+    insertResolversForSelection(
+      blueprint,
+      operationPlan,
+      null,
+      field,
+      gatherPlan.operation.resolvers,
+      0,
+      true,
+    );
   }
 
   // we build resolvers operations only after gather.
@@ -441,10 +387,10 @@ function inlineToResolverConstantVariables(
 
 function insertResolversForSelection(
   blueprint: Blueprint,
-  /** Type in which the {@link parentSel parent selection} is located. */
-  parentSelInType: BlueprintType,
+  /** Type in which the {@link sel selection} is located. */
+  selInType: BlueprintType,
   /** Parent selection of the {@link sel selection}. */
-  parentSel: OperationCompositeSelection,
+  parentSel: OperationCompositeSelection | null,
   /** Selection for which we're building resolvers. */
   sel: OperationSelection,
   /**
@@ -452,7 +398,7 @@ function insertResolversForSelection(
    * Exports will be added to it unless they cant be resolved,
    * in which case a new nested `includes` resolver will be made.
    */
-  currentResolver: GatherPlanCompositeResolver,
+  resolvers: Record<string, GatherPlanResolver>,
   /**
    * When resolving nested selections, we want to append further
    * selections under a specific depth in parent's exports.
@@ -468,7 +414,18 @@ function insertResolversForSelection(
    */
   resolvingAdditionalFields: boolean,
 ) {
+  let latestResolver =
+    resolvers[sel.kind === 'fragment' ? sel.fieldName : sel.name];
+  if (!latestResolver) {
+    throw '';
+  }
+
   if (sel.kind === 'fragment') {
+    if (!parentSel) {
+      throw new Error(
+        'Cannot insert resolvers for fragment selection without parent',
+      );
+    }
     if (parentSel.kind !== 'object') {
       throw new Error('Only object fields can have fragments');
     }
@@ -478,7 +435,7 @@ function insertResolversForSelection(
 
     // [NOTE 2] an interface can have a resolver that resolves an object implementing that interface, and not
     // the interface itself. because of this, we want to use the current resolver's ofType when at the root
-    const parentOfType = depth ? parentSel.ofType : currentResolver.ofType;
+    const parentOfType = depth ? parentSel.ofType : latestResolver.ofType;
 
     // fragment's type is different from the parent, the type should implement parent's interface
     if (sel.typeCondition !== parentOfType) {
@@ -505,7 +462,7 @@ function insertResolversForSelection(
       const objectTypeAvailableInSubgraphs = allSubgraphsForType(objectType);
       if (
         !Object.keys(objectType.resolvers).length &&
-        !parentSelInType.fields[parentSel.name]!.subgraphs.every((s) =>
+        !selInType.fields[sel.fieldName]!.subgraphs.every((s) =>
           objectTypeAvailableInSubgraphs.includes(s),
         )
       ) {
@@ -514,7 +471,7 @@ function insertResolversForSelection(
         // available in more subgraphs than the selection's object.
         // we therefore skip the fragment spread altogether
 
-        if (!currentResolver.exports.length) {
+        if (!latestResolver.exports.length) {
           // [NOTE 1]
           // here we mimic apollo's behaviour. we want to execute parent's resolver without needing
           // anything from it. one reason to perform the operation anyway is if the subgraph performs
@@ -523,7 +480,7 @@ function insertResolversForSelection(
           // TODO: if there are selections that will be exported in the next loop iteration,
           //       this private export will stay - but should be removed because the request
           //       is not empty anymore
-          currentResolver.exports.push({
+          latestResolver.exports.push({
             kind: 'scalar',
             name: '__typename',
             private: true,
@@ -534,7 +491,7 @@ function insertResolversForSelection(
 
       if (
         !objectTypeAvailableInSubgraphs.some(
-          (s) => s === currentResolver.subgraph,
+          (s) => s === latestResolver.subgraph,
         )
       ) {
         // the implementing object is not available in parent resolver's
@@ -551,11 +508,11 @@ function insertResolversForSelection(
         const resolver = prepareCompositeResolverForSelection(
           resolverPlan,
           sel,
-          getSelectionsAtDepth(currentResolver.exports, depth),
+          getSelectionsAtDepth(latestResolver.exports, depth),
         );
 
         // TODO: what if currentResolver.includes already has this key? solution: an include may have multiple resolvers
-        currentResolver.includes[''] = resolver;
+        latestResolver.includes[''] = resolver;
 
         for (const subSel of sel.selections) {
           insertResolversForSelection(
@@ -574,7 +531,7 @@ function insertResolversForSelection(
       // the implementing object can be resolved in parent resolver's
       // subgraph, we just need to wrap the export in a fragment
       insideFragment = true;
-      getSelectionsAtDepth(currentResolver.exports, depth).push({
+      getSelectionsAtDepth(latestResolver.exports, depth).push({
         kind: 'fragment',
         typeCondition: sel.typeCondition,
         selections: [],
@@ -584,10 +541,10 @@ function insertResolversForSelection(
     for (const subSel of sel.selections) {
       insertResolversForSelection(
         blueprint,
-        parentSelInType,
+        selInType,
         sel,
         subSel,
-        currentResolver,
+        latestResolver,
         insideFragment ? depth + 1 : depth,
         insideFragment,
       );
@@ -609,9 +566,9 @@ function insertResolversForSelection(
 
     // use the parent resolver if the field is available in its subgraph;
     // if not, try finding a resolver in parents includes
-    resolver = selField.subgraphs.includes(currentResolver.subgraph)
-      ? currentResolver
-      : Object.values(currentResolver.includes).find((r) =>
+    resolver = selField.subgraphs.includes(latestResolver.subgraph)
+      ? latestResolver
+      : Object.values(latestResolver.includes).find((r) =>
           selField!.subgraphs.includes(r.subgraph),
         );
   } else {
@@ -661,11 +618,11 @@ function insertResolversForSelection(
     resolver = prepareCompositeResolverForSelection(
       resolverPlan,
       sel,
-      getSelectionsAtDepth(currentResolver.exports, depth),
+      getSelectionsAtDepth(latestResolver.exports, depth),
     );
 
     // TODO: what if currentResolver.includes already has this key? solution: an include may have multiple resolvers
-    currentResolver.includes[
+    latestResolver.includes[
       resolvingAdditionalFields
         ? ''
         : parentSel.kind === 'fragment'
@@ -687,8 +644,8 @@ function insertResolversForSelection(
         };
 
   const dest =
-    resolver === currentResolver
-      ? getSelectionsAtDepth(currentResolver.exports, depth)
+    resolver === latestResolver
+      ? getSelectionsAtDepth(latestResolver.exports, depth)
       : resolver.exports;
   if (!exportsIncludeField(dest, exp.name, true)) {
     dest.push(exp);
@@ -702,7 +659,7 @@ function insertResolversForSelection(
         sel,
         subSel,
         resolver,
-        resolver === currentResolver ? depth + 1 : depth,
+        resolver === latestResolver ? depth + 1 : depth,
         false,
       );
     }

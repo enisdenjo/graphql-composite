@@ -18,16 +18,14 @@ export async function execute(
   const resultRef: ExecutionResult = {};
   // TODO: batch resolvers going to the same subgraph
   const explain = await Promise.all(
-    plan.operations.flatMap((o) =>
-      Object.entries(o.resolvers).map(([field, r]) =>
-        executeResolver(
-          transports,
-          operationVariables,
-          r,
-          null,
-          [field],
-          resultRef,
-        ),
+    Object.entries(plan.operation.resolvers).map(([field, r]) =>
+      executeResolver(
+        transports,
+        operationVariables,
+        r,
+        null,
+        [field],
+        resultRef,
       ),
     ),
   );

@@ -28,7 +28,11 @@ import { flattenFragments, isListType as parseIsListType } from './utils.js';
 
 export interface GatherPlan {
   query: string;
-  operations: GatherPlanOperation[];
+  /**
+   * Operation from the query to execute. If the query has multiple operations,
+   * the one defined in `operationName` is the one to be executed.
+   */
+  operation: GatherPlanOperation;
 }
 
 export interface GatherPlanOperation {
@@ -114,28 +118,30 @@ export function planGather(
   blueprint: Blueprint,
   doc: DocumentNode,
 ): GatherPlan {
-  const gatherPlan: GatherPlan = {
-    query: print(doc),
-    operations: [],
-  };
+  let gatherPlan!: GatherPlan;
 
   const operationFields: OperationOperationField[] = [];
   const entries: string[] = [];
   let depth = 0;
   const typeInfo = new TypeInfo(buildSchema(blueprint.schema));
-  let currOperation: GatherPlanOperation;
   visit(
     // we want to flatten fragments in the document
     // to just use the field visitor to build the gather
     flattenFragments(doc),
     visitWithTypeInfo(typeInfo, {
       OperationDefinition(node) {
-        currOperation = {
-          name: node.name?.value || null,
-          type: node.operation,
-          resolvers: {},
+        if (gatherPlan) {
+          // TODO: if the query has more operations, choose the one from `operationName`
+          throw new Error('Gather plan operation has already been defined');
+        }
+        gatherPlan = {
+          query: print(doc),
+          operation: {
+            name: node.name?.value || null,
+            type: node.operation,
+            resolvers: {},
+          },
         };
-        gatherPlan.operations.push(currOperation);
       },
       InlineFragment: {
         enter(node) {
@@ -220,13 +226,11 @@ export function planGather(
     }),
   );
 
-  for (const operation of gatherPlan.operations) {
-    operation.resolvers = planGatherResolversForOperationFields(
-      blueprint,
-      operation,
-      operationFields,
-    );
-  }
+  gatherPlan.operation.resolvers = planGatherResolversForOperationFields(
+    blueprint,
+    gatherPlan.operation,
+    operationFields,
+  );
 
   return gatherPlan;
 }

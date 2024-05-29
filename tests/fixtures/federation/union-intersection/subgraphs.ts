@@ -18,6 +18,7 @@ export const subgraphs: FixtureSubgraphs = {
             )
 
           union Media = Book | Song
+          union ViewerMedia = Book | Song
 
           type Book {
             title: String! @shareable
@@ -31,6 +32,13 @@ export const subgraphs: FixtureSubgraphs = {
             media: Media @shareable
             book: Book @shareable
             song: Media @shareable
+            viewer: Viewer @shareable
+          }
+
+          type Viewer {
+            media: ViewerMedia @shareable
+            book: Book @shareable
+            song: ViewerMedia @shareable
           }
         `),
         resolvers: {
@@ -41,6 +49,16 @@ export const subgraphs: FixtureSubgraphs = {
               return {
                 __typename: 'Song',
                 title: 'Song Title',
+              };
+            },
+            viewer: () => {
+              return {
+                media: media,
+                book: media,
+                song: {
+                  __typename: 'Song',
+                  title: 'Song Title',
+                },
               };
             },
           },
@@ -61,9 +79,11 @@ export const subgraphs: FixtureSubgraphs = {
           type Query {
             media: Media @shareable
             book: Media @shareable
+            viewer: Viewer @shareable
           }
 
           union Media = Book | Movie
+          union ViewerMedia = Book | Movie
 
           type Movie {
             title: String! @shareable
@@ -72,11 +92,22 @@ export const subgraphs: FixtureSubgraphs = {
           type Book {
             title: String! @shareable
           }
+
+          type Viewer {
+            media: ViewerMedia @shareable
+            book: ViewerMedia @shareable
+          }
         `),
         resolvers: {
           Query: {
             media: () => media,
             book: () => media,
+            viewer: () => {
+              return {
+                media,
+                book: media,
+              };
+            },
           },
         },
       },

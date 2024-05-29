@@ -56,7 +56,6 @@ export const blueprint: Blueprint = {
               kind: 'interface',
               type: '[NodeWithName!]!',
               ofType: 'NodeWithName',
-              resolvableTypes: ['User'],
               operation: /* GraphQL */ `
                 {
                   users {
@@ -77,7 +76,6 @@ export const blueprint: Blueprint = {
               kind: 'interface',
               type: '[NodeWithName!]!',
               ofType: 'NodeWithName',
-              resolvableTypes: ['User'],
               operation: /* GraphQL */ `
                 {
                   anotherUsers {
@@ -98,7 +96,6 @@ export const blueprint: Blueprint = {
               kind: 'interface',
               type: '[Account]',
               ofType: 'Account',
-              resolvableTypes: ['Admin', 'Regular'],
               operation: /* GraphQL */ `
                 {
                   accounts {
@@ -140,7 +137,6 @@ export const blueprint: Blueprint = {
             kind: 'interface',
             type: '[NodeWithName]!',
             ofType: 'NodeWithName',
-            resolvableTypes: ['User'],
             operation: /* GraphQL */ `
               query ($id: ID!) {
                 _entities(
@@ -167,7 +163,6 @@ export const blueprint: Blueprint = {
             kind: 'interface',
             type: '[NodeWithName]!',
             ofType: 'NodeWithName',
-            resolvableTypes: ['User'],
             operation: /* GraphQL */ `
               query ($id: ID!) {
                 _entities(
@@ -275,7 +270,6 @@ export const blueprint: Blueprint = {
             kind: 'interface',
             type: '[Account]!',
             ofType: 'Account',
-            resolvableTypes: ['Admin', 'Regular'],
             operation: /* GraphQL */ `
               query ($id: ID!) {
                 _entities(
@@ -302,7 +296,6 @@ export const blueprint: Blueprint = {
             kind: 'interface',
             type: '[Account]!',
             ofType: 'Account',
-            resolvableTypes: ['Admin', 'Regular'],
             operation: /* GraphQL */ `
               query ($id: ID!) {
                 _entities(
@@ -329,7 +322,6 @@ export const blueprint: Blueprint = {
             kind: 'interface',
             type: '[Account]!',
             ofType: 'Account',
-            resolvableTypes: ['Admin', 'Regular'],
             operation: /* GraphQL */ `
               query ($id: ID!) {
                 _entities(

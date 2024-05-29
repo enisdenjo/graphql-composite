@@ -441,10 +441,10 @@ function inlineToResolverConstantVariables(
 
 function insertResolversForSelection(
   blueprint: Blueprint,
-  /** Type in which the {@link parent parent selection} is located. */
-  parentType: BlueprintType,
+  /** Type in which the {@link parentSel parent selection} is located. */
+  parentSelInType: BlueprintType,
   /** Parent selection of the {@link sel selection}. */
-  parent: OperationCompositeSelection,
+  parentSel: OperationCompositeSelection,
   /** Selection for which we're building resolvers. */
   sel: OperationSelection,
   /**
@@ -469,7 +469,7 @@ function insertResolversForSelection(
   resolvingAdditionalFields: boolean,
 ) {
   if (sel.kind === 'fragment') {
-    if (parent.kind !== 'object') {
+    if (parentSel.kind !== 'object') {
       throw new Error('Only object fields can have fragments');
     }
 
@@ -477,36 +477,36 @@ function insertResolversForSelection(
     let insideFragment = false;
 
     // [NOTE 2] an interface can have a resolver that resolves an object implementing that interface, and not
-    // the interface itself. because of this, we want to use the parent resolver's ofType when at the root
-    const parentOfType = depth ? parent.ofType : currentResolver.ofType;
+    // the interface itself. because of this, we want to use the current resolver's ofType when at the root
+    const parentOfType = depth ? parentSel.ofType : currentResolver.ofType;
 
     // fragment's type is different from the parent, the type should implement parent's interface
     if (sel.typeCondition !== parentOfType) {
-      const interfacePlan = blueprint.types[parentOfType];
-      if (!interfacePlan || interfacePlan.kind !== 'interface') {
+      const interfaceType = blueprint.types[parentOfType];
+      if (!interfaceType || interfaceType.kind !== 'interface') {
         // because of [NOTE 2], we want to focus only on fragments whose type condition matches the parent resolver
         // and skip others.
         // see BookAll test case in tests/fixtures/federation/union-intersection/queries.ts
         // TODO: what if all fragments are skipped?
         return;
       }
-      const objectPlan = blueprint.types[sel.typeCondition];
-      if (!objectPlan || objectPlan.kind !== 'object') {
+      const objectType = blueprint.types[sel.typeCondition];
+      if (!objectType || objectType.kind !== 'object') {
         throw new Error(
           `Blueprint doesn't have a "${sel.typeCondition}" object`,
         );
       }
-      if (!objectPlan.implements.includes(interfacePlan.name)) {
+      if (!objectType.implements.includes(interfaceType.name)) {
         throw new Error(
-          `Blueprint "${sel.typeCondition}" object doesn't implement the "${interfacePlan.name}" interface`,
+          `Blueprint "${sel.typeCondition}" object doesn't implement the "${interfaceType.name}" interface`,
         );
       }
 
-      const objectPlanSubgraphs = allSubgraphsForType(objectPlan);
+      const objectTypeAvailableInSubgraphs = allSubgraphsForType(objectType);
       if (
-        !Object.keys(objectPlan.resolvers).length &&
-        !parentType.fields[parent.name]!.subgraphs.every((s) =>
-          objectPlanSubgraphs.includes(s),
+        !Object.keys(objectType.resolvers).length &&
+        !parentSelInType.fields[parentSel.name]!.subgraphs.every((s) =>
+          objectTypeAvailableInSubgraphs.includes(s),
         )
       ) {
         // the selection's object doesnt have any other resolvers and its available subgraphs
@@ -532,15 +532,19 @@ function insertResolversForSelection(
         return;
       }
 
-      if (!objectPlanSubgraphs.some((s) => s === currentResolver.subgraph)) {
+      if (
+        !objectTypeAvailableInSubgraphs.some(
+          (s) => s === currentResolver.subgraph,
+        )
+      ) {
         // the implementing object is not available in parent resolver's
         // subgraph, we have to resolve it from another subgraph
 
         // TODO: actually choose the best resolver, not the first one
-        const resolverPlan = Object.values(objectPlan.resolvers)[0]?.[0];
+        const resolverPlan = Object.values(objectType.resolvers)[0]?.[0];
         if (!resolverPlan) {
           throw new Error(
-            `Blueprint type "${objectPlan.name}" doesn't have any resolvers`,
+            `Blueprint type "${objectType.name}" doesn't have any resolvers`,
           );
         }
 
@@ -556,7 +560,7 @@ function insertResolversForSelection(
         for (const subSel of sel.selections) {
           insertResolversForSelection(
             blueprint,
-            objectPlan,
+            objectType,
             sel,
             subSel,
             resolver,
@@ -580,7 +584,7 @@ function insertResolversForSelection(
     for (const subSel of sel.selections) {
       insertResolversForSelection(
         blueprint,
-        parentType,
+        parentSelInType,
         sel,
         subSel,
         currentResolver,
@@ -593,64 +597,64 @@ function insertResolversForSelection(
 
   let resolver: GatherPlanCompositeResolver | undefined;
   const parentOfType =
-    parent.kind === 'fragment' ? parent.typeCondition : parent.ofType;
+    parentSel.kind === 'fragment' ? parentSel.typeCondition : parentSel.ofType;
   const parentTypePlan = blueprint.types[parentOfType];
   if (!parentTypePlan) {
     throw new Error(`Blueprint doesn't have a "${parentOfType}" type`);
   }
-  let selTypePlan: BlueprintType;
-  let selPlan = parentTypePlan.fields[sel.name];
-  if (selPlan) {
-    selTypePlan = parentTypePlan;
+  let selType: BlueprintType;
+  let selField = parentTypePlan.fields[sel.name];
+  if (selField) {
+    selType = parentTypePlan;
 
     // use the parent resolver if the field is available in its subgraph;
     // if not, try finding a resolver in parents includes
-    resolver = selPlan.subgraphs.includes(currentResolver.subgraph)
+    resolver = selField.subgraphs.includes(currentResolver.subgraph)
       ? currentResolver
       : Object.values(currentResolver.includes).find((r) =>
-          selPlan!.subgraphs.includes(r.subgraph),
+          selField!.subgraphs.includes(r.subgraph),
         );
   } else {
     // the parent type may not implement the specific field, but its interface may.
     // in that case, we have to resolve the field from the interface instead
-    const interfacePlan = Object.values(blueprint.types).find(
+    const interfaceType = Object.values(blueprint.types).find(
       (t) =>
         t.kind === 'interface' &&
         parentTypePlan!.kind === 'object' &&
         parentTypePlan!.implements.includes(t.name),
     );
-    if (!interfacePlan) {
+    if (!interfaceType) {
       throw new Error(
         `Blueprint for type "${parentTypePlan.name}" doesn't have a "${sel.name}" field`,
       );
     }
 
-    selPlan = interfacePlan.fields[sel.name];
-    if (!selPlan) {
+    selField = interfaceType.fields[sel.name];
+    if (!selField) {
       throw new Error(
-        `Blueprint interface "${interfacePlan.name}" that type "${parentTypePlan.name}" implements doesn't have a "${sel.name}" field`,
+        `Blueprint interface "${interfaceType.name}" that type "${parentTypePlan.name}" implements doesn't have a "${sel.name}" field`,
       );
     }
 
     // we change the selection's type plan to the interface which will
     // have the resolver creation below use the interface instead of the type
-    selTypePlan = interfacePlan;
+    selType = interfaceType;
   }
 
   if (!resolver) {
     // this field cannot be resolved using existing resolvers
     // add an dependant resolver to the parent for the field(s)
 
-    const commonSubgraph = Object.keys(selTypePlan.resolvers).find((subgraph) =>
-      selPlan.subgraphs.includes(subgraph),
+    const commonSubgraph = Object.keys(selType.resolvers).find((subgraph) =>
+      selField.subgraphs.includes(subgraph),
     );
     const resolverPlan = commonSubgraph
       ? // TODO: actually choose the best resolver, not the first one
-        selTypePlan.resolvers[commonSubgraph]![0]
+        selType.resolvers[commonSubgraph]![0]
       : undefined;
     if (!resolverPlan) {
       throw new Error(
-        `Blueprint type "${selTypePlan.name}" doesn't have a resolver for any of the "${selPlan.name}" field subgraphs`,
+        `Blueprint type "${selType.name}" doesn't have a resolver for any of the "${selField.name}" field subgraphs`,
       );
     }
 
@@ -664,9 +668,9 @@ function insertResolversForSelection(
     currentResolver.includes[
       resolvingAdditionalFields
         ? ''
-        : parent.kind === 'fragment'
-          ? parent.fieldName
-          : parent.name
+        : parentSel.kind === 'fragment'
+          ? parentSel.fieldName
+          : parentSel.name
     ] = resolver;
   }
 
@@ -694,7 +698,7 @@ function insertResolversForSelection(
     for (const subSel of sel.selections) {
       insertResolversForSelection(
         blueprint,
-        selTypePlan,
+        selType,
         sel,
         subSel,
         resolver,

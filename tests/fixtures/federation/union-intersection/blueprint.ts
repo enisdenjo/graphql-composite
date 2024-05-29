@@ -17,11 +17,20 @@ export const blueprint: Blueprint = {
       media: Media
       book: Media
       song: Media
+      viewer: Viewer
     }
 
     type Song {
       title: String!
     }
+
+    type Viewer {
+      media: ViewerMedia
+      book: ViewerMedia
+      song: ViewerMedia
+    }
+
+    union ViewerMedia = Book | Song | Movie
   `,
   operations: {
     query: {
@@ -116,6 +125,25 @@ export const blueprint: Blueprint = {
             },
           },
         },
+        viewer: {
+          name: 'viewer',
+          resolvers: {
+            a: {
+              subgraph: 'a',
+              kind: 'object',
+              type: 'Viewer',
+              ofType: 'Viewer',
+              operation: /* GraphQL */ `
+                {
+                  viewer {
+                    ...__export
+                  }
+                }
+              `,
+              variables: {},
+            },
+          },
+        },
       },
     },
   },
@@ -131,10 +159,21 @@ export const blueprint: Blueprint = {
       },
       resolvers: {},
     },
+    ViewerMedia: {
+      kind: 'interface',
+      name: 'ViewerMedia',
+      fields: {
+        __typename: {
+          name: '__typename',
+          subgraphs: ['a', 'b'],
+        },
+      },
+      resolvers: {},
+    },
     Book: {
       kind: 'object',
       name: 'Book',
-      implements: ['Media'],
+      implements: ['Media', 'ViewerMedia'],
       fields: {
         title: {
           name: 'title',
@@ -146,7 +185,7 @@ export const blueprint: Blueprint = {
     Movie: {
       kind: 'object',
       name: 'Movie',
-      implements: ['Media'],
+      implements: ['Media', 'ViewerMedia'],
       fields: {
         title: {
           name: 'title',
@@ -158,10 +197,31 @@ export const blueprint: Blueprint = {
     Song: {
       kind: 'object',
       name: 'Song',
-      implements: ['Media'],
+      implements: ['Media', 'ViewerMedia'],
       fields: {
         title: {
           name: 'title',
+          subgraphs: ['a'],
+        },
+      },
+      resolvers: {},
+    },
+    Viewer: {
+      kind: 'object',
+      name: 'Viewer',
+      implements: [],
+      fields: {
+        media: {
+          name: 'media',
+          subgraphs: ['a', 'b'],
+        },
+        book: {
+          name: 'book',
+          // TODO: book field in "b" resolves to Book
+          subgraphs: ['a', 'b'],
+        },
+        song: {
+          name: 'song',
           subgraphs: ['a'],
         },
       },

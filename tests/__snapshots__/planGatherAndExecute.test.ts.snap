@@ -3862,6 +3862,426 @@ exports[`fixture 'federation/union-intersection' > query 'MediaTypename' > shoul
 }
 `;
 
+exports[`fixture 'federation/union-intersection' > query 'ViewerAllAll' > should execute and explain 1`] = `
+[
+  {
+    "data": {
+      "viewer": {
+        "book": {
+          "__typename": "Book",
+          "title": "The Lord of the Rings",
+        },
+        "media": {
+          "__typename": "Book",
+          "title": "The Lord of the Rings",
+        },
+        "song": {
+          "__typename": "Song",
+          "title": "Song Title",
+        },
+      },
+    },
+    "exports": [
+      {
+        "kind": "object",
+        "name": "media",
+        "selections": [
+          {
+            "kind": "scalar",
+            "name": "__typename",
+          },
+          {
+            "kind": "fragment",
+            "selections": [
+              {
+                "kind": "scalar",
+                "name": "title",
+              },
+            ],
+            "typeCondition": "Book",
+          },
+        ],
+      },
+      {
+        "kind": "object",
+        "name": "book",
+        "selections": [
+          {
+            "kind": "scalar",
+            "name": "__typename",
+          },
+          {
+            "kind": "fragment",
+            "selections": [
+              {
+                "kind": "scalar",
+                "name": "title",
+              },
+            ],
+            "typeCondition": "Book",
+          },
+        ],
+      },
+      {
+        "kind": "object",
+        "name": "song",
+        "selections": [
+          {
+            "kind": "scalar",
+            "name": "__typename",
+          },
+          {
+            "kind": "fragment",
+            "selections": [
+              {
+                "kind": "scalar",
+                "name": "title",
+              },
+            ],
+            "typeCondition": "Song",
+          },
+          {
+            "kind": "fragment",
+            "selections": [
+              {
+                "kind": "scalar",
+                "name": "title",
+              },
+            ],
+            "typeCondition": "Book",
+          },
+        ],
+      },
+    ],
+    "includes": [],
+    "kind": "object",
+    "ofType": "Viewer",
+    "operation": "{
+  viewer {
+    media {
+      __typename
+      ... on Book {
+        title
+      }
+    }
+    book {
+      __typename
+      ... on Book {
+        title
+      }
+    }
+    song {
+      __typename
+      ... on Song {
+        title
+      }
+      ... on Book {
+        title
+      }
+    }
+  }
+}",
+    "pathInData": [
+      "viewer",
+    ],
+    "pathToExportData": [
+      "viewer",
+    ],
+    "subgraph": "a",
+    "type": "Viewer",
+    "variables": {},
+  },
+]
+`;
+
+exports[`fixture 'federation/union-intersection' > query 'ViewerAllAll' > should plan gather 1`] = `
+{
+  "operation": {
+    "name": "ViewerMediaAll",
+    "resolvers": {
+      "viewer": {
+        "exports": [
+          {
+            "kind": "object",
+            "name": "media",
+            "selections": [
+              {
+                "kind": "scalar",
+                "name": "__typename",
+              },
+              {
+                "kind": "fragment",
+                "selections": [
+                  {
+                    "kind": "scalar",
+                    "name": "title",
+                  },
+                ],
+                "typeCondition": "Book",
+              },
+            ],
+          },
+          {
+            "kind": "object",
+            "name": "book",
+            "selections": [
+              {
+                "kind": "scalar",
+                "name": "__typename",
+              },
+              {
+                "kind": "fragment",
+                "selections": [
+                  {
+                    "kind": "scalar",
+                    "name": "title",
+                  },
+                ],
+                "typeCondition": "Book",
+              },
+            ],
+          },
+          {
+            "kind": "object",
+            "name": "song",
+            "selections": [
+              {
+                "kind": "scalar",
+                "name": "__typename",
+              },
+              {
+                "kind": "fragment",
+                "selections": [
+                  {
+                    "kind": "scalar",
+                    "name": "title",
+                  },
+                ],
+                "typeCondition": "Song",
+              },
+              {
+                "kind": "fragment",
+                "selections": [
+                  {
+                    "kind": "scalar",
+                    "name": "title",
+                  },
+                ],
+                "typeCondition": "Book",
+              },
+            ],
+          },
+        ],
+        "includes": {},
+        "kind": "object",
+        "ofType": "Viewer",
+        "operation": "{
+  viewer {
+    media {
+      __typename
+      ... on Book {
+        title
+      }
+    }
+    book {
+      __typename
+      ... on Book {
+        title
+      }
+    }
+    song {
+      __typename
+      ... on Song {
+        title
+      }
+      ... on Book {
+        title
+      }
+    }
+  }
+}",
+        "pathToExportData": [
+          "viewer",
+        ],
+        "subgraph": "a",
+        "type": "Viewer",
+        "variables": {},
+      },
+    },
+    "type": "query",
+  },
+  "query": "query ViewerMediaAll {
+  viewer {
+    media {
+      __typename
+      ... on Song {
+        title
+      }
+      ... on Movie {
+        title
+      }
+      ... on Book {
+        title
+      }
+    }
+    book {
+      __typename
+      ... on Song {
+        title
+      }
+      ... on Movie {
+        title
+      }
+      ... on Book {
+        title
+      }
+    }
+    song {
+      __typename
+      ... on Song {
+        title
+      }
+      ... on Movie {
+        title
+      }
+      ... on Book {
+        title
+      }
+    }
+  }
+}",
+}
+`;
+
+exports[`fixture 'federation/union-intersection' > query 'ViewerMediaAll' > should execute and explain 1`] = `
+[
+  {
+    "data": {
+      "viewer": {
+        "media": {
+          "__typename": "Book",
+          "title": "The Lord of the Rings",
+        },
+      },
+    },
+    "exports": [
+      {
+        "kind": "object",
+        "name": "media",
+        "selections": [
+          {
+            "kind": "scalar",
+            "name": "__typename",
+          },
+          {
+            "kind": "fragment",
+            "selections": [
+              {
+                "kind": "scalar",
+                "name": "title",
+              },
+            ],
+            "typeCondition": "Book",
+          },
+        ],
+      },
+    ],
+    "includes": [],
+    "kind": "object",
+    "ofType": "Viewer",
+    "operation": "{
+  viewer {
+    media {
+      __typename
+      ... on Book {
+        title
+      }
+    }
+  }
+}",
+    "pathInData": [
+      "viewer",
+    ],
+    "pathToExportData": [
+      "viewer",
+    ],
+    "subgraph": "a",
+    "type": "Viewer",
+    "variables": {},
+  },
+]
+`;
+
+exports[`fixture 'federation/union-intersection' > query 'ViewerMediaAll' > should plan gather 1`] = `
+{
+  "operation": {
+    "name": "ViewerMediaAll",
+    "resolvers": {
+      "viewer": {
+        "exports": [
+          {
+            "kind": "object",
+            "name": "media",
+            "selections": [
+              {
+                "kind": "scalar",
+                "name": "__typename",
+              },
+              {
+                "kind": "fragment",
+                "selections": [
+                  {
+                    "kind": "scalar",
+                    "name": "title",
+                  },
+                ],
+                "typeCondition": "Book",
+              },
+            ],
+          },
+        ],
+        "includes": {},
+        "kind": "object",
+        "ofType": "Viewer",
+        "operation": "{
+  viewer {
+    media {
+      __typename
+      ... on Book {
+        title
+      }
+    }
+  }
+}",
+        "pathToExportData": [
+          "viewer",
+        ],
+        "subgraph": "a",
+        "type": "Viewer",
+        "variables": {},
+      },
+    },
+    "type": "query",
+  },
+  "query": "query ViewerMediaAll {
+  viewer {
+    media {
+      __typename
+      ... on Book {
+        title
+      }
+      ... on Song {
+        title
+      }
+      ... on Movie {
+        title
+      }
+    }
+  }
+}",
+}
+`;
+
 exports[`fixture 'interfaces' > query 'BasicCat' > should execute and explain 1`] = `
 [
   {

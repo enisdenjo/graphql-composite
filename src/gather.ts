@@ -16,6 +16,7 @@ import {
   visitWithTypeInfo,
 } from 'graphql';
 import {
+  allSubgraphsForType,
   Blueprint,
   BlueprintCompositeResolver,
   BlueprintResolver,
@@ -488,6 +489,23 @@ function insertResolversForGatherPlanCompositeField(
           throw new Error(
             `Blueprint "${sel.typeCondition}" object doesn't implement the "${interfacePlan.name}" interface`,
           );
+        }
+
+        // we figure out which subgraphs have the the parent's field available
+        // and use it to intersect the implementing type
+        // TODO: this will change
+        if (depth) {
+          const objectPlanSubgraphs = allSubgraphsForType(objectPlan);
+          const parentFieldAvailableInSubgraphs =
+            blueprint.types[depth > 1 ? parent.type : parentResolver.ofType]!
+              .fields[parent.name]!.subgraphs;
+          if (
+            !parentFieldAvailableInSubgraphs.every((s) =>
+              objectPlanSubgraphs.includes(s),
+            )
+          ) {
+            continue;
+          }
         }
 
         if (

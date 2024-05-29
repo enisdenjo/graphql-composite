@@ -302,7 +302,7 @@ export function planGather(
           sel,
           resolver,
           0,
-          false,
+          true,
         );
       }
     }
@@ -462,12 +462,11 @@ function insertResolversForSelection(
    */
   depth: number,
   /**
-   * We're resolving fields inside a fragment spread on the parent.
-   * This indicates that resolved fields are additional fields of the parent.
+   * We're resolving additional fields of the parent.
    *
    * TODO: when inside a fragment, the positions of exports may be off
    */
-  insideFragment: boolean,
+  resolvingAdditionalFields: boolean,
 ) {
   if (sel.kind === 'fragment') {
     if (parent.kind !== 'object') {
@@ -562,7 +561,7 @@ function insertResolversForSelection(
             subSel,
             resolver,
             depth,
-            false,
+            sel.kind === 'fragment',
           );
         }
         return;
@@ -663,11 +662,9 @@ function insertResolversForSelection(
 
     // TODO: what if parentResolver.includes already has this key? solution: an include may have multiple resolvers
     currentResolver.includes[
-      insideFragment || !depth
-        ? // we're resolving additional fields for parent's resolver
-          ''
-        : // we're resolving within a field in parent's resolver
-          parent.kind === 'fragment'
+      resolvingAdditionalFields
+        ? ''
+        : parent.kind === 'fragment'
           ? parent.fieldName
           : parent.name
     ] = resolver;

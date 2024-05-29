@@ -550,7 +550,7 @@ function insertResolversForSelection(
           getSelectionsAtDepth(currentResolver.exports, depth),
         );
 
-        // TODO: what if parentResolver.includes already has this key? solution: an include may have multiple resolvers
+        // TODO: what if currentResolver.includes already has this key? solution: an include may have multiple resolvers
         currentResolver.includes[''] = resolver;
 
         for (const subSel of sel.selections) {
@@ -660,7 +660,7 @@ function insertResolversForSelection(
       getSelectionsAtDepth(currentResolver.exports, depth),
     );
 
-    // TODO: what if parentResolver.includes already has this key? solution: an include may have multiple resolvers
+    // TODO: what if currentResolver.includes already has this key? solution: an include may have multiple resolvers
     currentResolver.includes[
       resolvingAdditionalFields
         ? ''

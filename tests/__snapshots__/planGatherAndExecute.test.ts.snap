@@ -55,10 +55,6 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsIsActive'
           "_entities",
           0,
         ],
-        "resolvableTypes": [
-          "Admin",
-          "Regular",
-        ],
         "subgraph": "c",
         "type": "[Account]!",
         "variables": {
@@ -96,10 +92,6 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsIsActive'
         "pathToExportData": [
           "_entities",
           0,
-        ],
-        "resolvableTypes": [
-          "Admin",
-          "Regular",
         ],
         "subgraph": "c",
         "type": "[Account]!",
@@ -139,10 +131,6 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsIsActive'
           "_entities",
           0,
         ],
-        "resolvableTypes": [
-          "Admin",
-          "Regular",
-        ],
         "subgraph": "c",
         "type": "[Account]!",
         "variables": {
@@ -162,10 +150,6 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsIsActive'
     ],
     "pathToExportData": [
       "accounts",
-    ],
-    "resolvableTypes": [
-      "Admin",
-      "Regular",
     ],
     "subgraph": "b",
     "type": "[Account]",
@@ -208,10 +192,6 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsIsActive'
               "_entities",
               0,
             ],
-            "resolvableTypes": [
-              "Admin",
-              "Regular",
-            ],
             "subgraph": "c",
             "type": "[Account]!",
             "variables": {
@@ -232,10 +212,6 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsIsActive'
 }",
         "pathToExportData": [
           "accounts",
-        ],
-        "resolvableTypes": [
-          "Admin",
-          "Regular",
         ],
         "subgraph": "b",
         "type": "[Account]",
@@ -402,10 +378,6 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsIsActiveO
     "pathToExportData": [
       "accounts",
     ],
-    "resolvableTypes": [
-      "Admin",
-      "Regular",
-    ],
     "subgraph": "b",
     "type": "[Account]",
     "variables": {},
@@ -468,10 +440,6 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsIsActiveO
         "pathToExportData": [
           "accounts",
         ],
-        "resolvableTypes": [
-          "Admin",
-          "Regular",
-        ],
         "subgraph": "b",
         "type": "[Account]",
         "variables": {},
@@ -526,10 +494,6 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsNames' > 
     "pathToExportData": [
       "accounts",
     ],
-    "resolvableTypes": [
-      "Admin",
-      "Regular",
-    ],
     "subgraph": "b",
     "type": "[Account]",
     "variables": {},
@@ -559,10 +523,6 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsNames' > 
 }",
         "pathToExportData": [
           "accounts",
-        ],
-        "resolvableTypes": [
-          "Admin",
-          "Regular",
         ],
         "subgraph": "b",
         "type": "[Account]",
@@ -651,10 +611,6 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsSpreadAdm
               "_entities",
               0,
             ],
-            "resolvableTypes": [
-              "Admin",
-              "Regular",
-            ],
             "subgraph": "b",
             "type": "[Account]!",
             "variables": {
@@ -733,10 +689,6 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsSpreadAdm
               "_entities",
               0,
             ],
-            "resolvableTypes": [
-              "Admin",
-              "Regular",
-            ],
             "subgraph": "b",
             "type": "[Account]!",
             "variables": {
@@ -806,10 +758,6 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsSpreadAdm
               "_entities",
               0,
             ],
-            "resolvableTypes": [
-              "Admin",
-              "Regular",
-            ],
             "subgraph": "b",
             "type": "[Account]!",
             "variables": {
@@ -853,10 +801,6 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsSpreadAdm
     ],
     "pathToExportData": [
       "accounts",
-    ],
-    "resolvableTypes": [
-      "Admin",
-      "Regular",
     ],
     "subgraph": "b",
     "type": "[Account]",
@@ -909,10 +853,6 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsSpreadAdm
                   "_entities",
                   0,
                 ],
-                "resolvableTypes": [
-                  "Admin",
-                  "Regular",
-                ],
                 "subgraph": "b",
                 "type": "[Account]!",
                 "variables": {
@@ -957,10 +897,6 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsSpreadAdm
 }",
         "pathToExportData": [
           "accounts",
-        ],
-        "resolvableTypes": [
-          "Admin",
-          "Regular",
         ],
         "subgraph": "b",
         "type": "[Account]",
@@ -1051,10 +987,6 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsWithAdmin
               "_entities",
               0,
             ],
-            "resolvableTypes": [
-              "Admin",
-              "Regular",
-            ],
             "subgraph": "a",
             "type": "[Account]!",
             "variables": {
@@ -1133,10 +1065,6 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsWithAdmin
               "_entities",
               0,
             ],
-            "resolvableTypes": [
-              "Admin",
-              "Regular",
-            ],
             "subgraph": "a",
             "type": "[Account]!",
             "variables": {
@@ -1206,10 +1134,6 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsWithAdmin
               "_entities",
               0,
             ],
-            "resolvableTypes": [
-              "Admin",
-              "Regular",
-            ],
             "subgraph": "a",
             "type": "[Account]!",
             "variables": {
@@ -1253,10 +1177,6 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsWithAdmin
     ],
     "pathToExportData": [
       "accounts",
-    ],
-    "resolvableTypes": [
-      "Admin",
-      "Regular",
     ],
     "subgraph": "b",
     "type": "[Account]",
@@ -1309,10 +1229,6 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsWithAdmin
                   "_entities",
                   0,
                 ],
-                "resolvableTypes": [
-                  "Admin",
-                  "Regular",
-                ],
                 "subgraph": "a",
                 "type": "[Account]!",
                 "variables": {
@@ -1357,10 +1273,6 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsWithAdmin
 }",
         "pathToExportData": [
           "accounts",
-        ],
-        "resolvableTypes": [
-          "Admin",
-          "Regular",
         ],
         "subgraph": "b",
         "type": "[Account]",
@@ -1442,10 +1354,6 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsWithTypen
           "_entities",
           0,
         ],
-        "resolvableTypes": [
-          "Admin",
-          "Regular",
-        ],
         "subgraph": "a",
         "type": "[Account]!",
         "variables": {
@@ -1483,10 +1391,6 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsWithTypen
         "pathToExportData": [
           "_entities",
           0,
-        ],
-        "resolvableTypes": [
-          "Admin",
-          "Regular",
         ],
         "subgraph": "a",
         "type": "[Account]!",
@@ -1526,10 +1430,6 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsWithTypen
           "_entities",
           0,
         ],
-        "resolvableTypes": [
-          "Admin",
-          "Regular",
-        ],
         "subgraph": "a",
         "type": "[Account]!",
         "variables": {
@@ -1550,10 +1450,6 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsWithTypen
     ],
     "pathToExportData": [
       "accounts",
-    ],
-    "resolvableTypes": [
-      "Admin",
-      "Regular",
     ],
     "subgraph": "b",
     "type": "[Account]",
@@ -1601,10 +1497,6 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsWithTypen
               "_entities",
               0,
             ],
-            "resolvableTypes": [
-              "Admin",
-              "Regular",
-            ],
             "subgraph": "a",
             "type": "[Account]!",
             "variables": {
@@ -1626,10 +1518,6 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsWithTypen
 }",
         "pathToExportData": [
           "accounts",
-        ],
-        "resolvableTypes": [
-          "Admin",
-          "Regular",
         ],
         "subgraph": "b",
         "type": "[Account]",
@@ -1705,9 +1593,6 @@ exports[`fixture 'federation/simple-interface-object' > query 'AnotherUsers' > s
           "_entities",
           0,
         ],
-        "resolvableTypes": [
-          "User",
-        ],
         "subgraph": "a",
         "type": "[NodeWithName]!",
         "variables": {
@@ -1746,9 +1631,6 @@ exports[`fixture 'federation/simple-interface-object' > query 'AnotherUsers' > s
           "_entities",
           0,
         ],
-        "resolvableTypes": [
-          "User",
-        ],
         "subgraph": "a",
         "type": "[NodeWithName]!",
         "variables": {
@@ -1769,9 +1651,6 @@ exports[`fixture 'federation/simple-interface-object' > query 'AnotherUsers' > s
     ],
     "pathToExportData": [
       "anotherUsers",
-    ],
-    "resolvableTypes": [
-      "User",
     ],
     "subgraph": "b",
     "type": "[NodeWithName!]!",
@@ -1818,9 +1697,6 @@ exports[`fixture 'federation/simple-interface-object' > query 'AnotherUsers' > s
               "_entities",
               0,
             ],
-            "resolvableTypes": [
-              "User",
-            ],
             "subgraph": "a",
             "type": "[NodeWithName]!",
             "variables": {
@@ -1842,9 +1718,6 @@ exports[`fixture 'federation/simple-interface-object' > query 'AnotherUsers' > s
 }",
         "pathToExportData": [
           "anotherUsers",
-        ],
-        "resolvableTypes": [
-          "User",
         ],
         "subgraph": "b",
         "type": "[NodeWithName!]!",
@@ -1940,9 +1813,6 @@ exports[`fixture 'federation/simple-interface-object' > query 'AnotherUsersWithA
               "_entities",
               0,
             ],
-            "resolvableTypes": [
-              "User",
-            ],
             "subgraph": "b",
             "type": "[NodeWithName]!",
             "variables": {
@@ -2032,9 +1902,6 @@ exports[`fixture 'federation/simple-interface-object' > query 'AnotherUsersWithA
               "_entities",
               0,
             ],
-            "resolvableTypes": [
-              "User",
-            ],
             "subgraph": "b",
             "type": "[NodeWithName]!",
             "variables": {
@@ -2080,9 +1947,6 @@ exports[`fixture 'federation/simple-interface-object' > query 'AnotherUsersWithA
     ],
     "pathToExportData": [
       "anotherUsers",
-    ],
-    "resolvableTypes": [
-      "User",
     ],
     "subgraph": "b",
     "type": "[NodeWithName!]!",
@@ -2141,9 +2005,6 @@ exports[`fixture 'federation/simple-interface-object' > query 'AnotherUsersWithA
                   "_entities",
                   0,
                 ],
-                "resolvableTypes": [
-                  "User",
-                ],
                 "subgraph": "b",
                 "type": "[NodeWithName]!",
                 "variables": {
@@ -2190,9 +2051,6 @@ exports[`fixture 'federation/simple-interface-object' > query 'AnotherUsersWithA
 }",
         "pathToExportData": [
           "anotherUsers",
-        ],
-        "resolvableTypes": [
-          "User",
         ],
         "subgraph": "b",
         "type": "[NodeWithName!]!",
@@ -2327,9 +2185,6 @@ exports[`fixture 'federation/simple-interface-object' > query 'AnotherUsersWithU
     "pathToExportData": [
       "anotherUsers",
     ],
-    "resolvableTypes": [
-      "User",
-    ],
     "subgraph": "b",
     "type": "[NodeWithName!]!",
     "variables": {},
@@ -2392,9 +2247,6 @@ exports[`fixture 'federation/simple-interface-object' > query 'AnotherUsersWithU
 }",
         "pathToExportData": [
           "anotherUsers",
-        ],
-        "resolvableTypes": [
-          "User",
         ],
         "subgraph": "b",
         "type": "[NodeWithName!]!",
@@ -2483,9 +2335,6 @@ exports[`fixture 'federation/simple-interface-object' > query 'UsersWithAdvanced
           "_entities",
           0,
         ],
-        "resolvableTypes": [
-          "User",
-        ],
         "subgraph": "b",
         "type": "[NodeWithName]!",
         "variables": {
@@ -2524,9 +2373,6 @@ exports[`fixture 'federation/simple-interface-object' > query 'UsersWithAdvanced
           "_entities",
           0,
         ],
-        "resolvableTypes": [
-          "User",
-        ],
         "subgraph": "b",
         "type": "[NodeWithName]!",
         "variables": {
@@ -2550,9 +2396,6 @@ exports[`fixture 'federation/simple-interface-object' > query 'UsersWithAdvanced
     ],
     "pathToExportData": [
       "users",
-    ],
-    "resolvableTypes": [
-      "User",
     ],
     "subgraph": "a",
     "type": "[NodeWithName!]!",
@@ -2609,9 +2452,6 @@ exports[`fixture 'federation/simple-interface-object' > query 'UsersWithAdvanced
               "_entities",
               0,
             ],
-            "resolvableTypes": [
-              "User",
-            ],
             "subgraph": "b",
             "type": "[NodeWithName]!",
             "variables": {
@@ -2636,9 +2476,6 @@ exports[`fixture 'federation/simple-interface-object' > query 'UsersWithAdvanced
 }",
         "pathToExportData": [
           "users",
-        ],
-        "resolvableTypes": [
-          "User",
         ],
         "subgraph": "a",
         "type": "[NodeWithName!]!",
@@ -2703,9 +2540,6 @@ exports[`fixture 'federation/simple-interface-object' > query 'UsersWithUserSpre
     "pathToExportData": [
       "users",
     ],
-    "resolvableTypes": [
-      "User",
-    ],
     "subgraph": "a",
     "type": "[NodeWithName!]!",
     "variables": {},
@@ -2743,9 +2577,6 @@ exports[`fixture 'federation/simple-interface-object' > query 'UsersWithUserSpre
 }",
         "pathToExportData": [
           "users",
-        ],
-        "resolvableTypes": [
-          "User",
         ],
         "subgraph": "a",
         "type": "[NodeWithName!]!",
@@ -2822,9 +2653,6 @@ exports[`fixture 'federation/simple-interface-object' > query 'UsersWithUsername
           "_entities",
           0,
         ],
-        "resolvableTypes": [
-          "User",
-        ],
         "subgraph": "b",
         "type": "[NodeWithName]!",
         "variables": {
@@ -2863,9 +2691,6 @@ exports[`fixture 'federation/simple-interface-object' > query 'UsersWithUsername
           "_entities",
           0,
         ],
-        "resolvableTypes": [
-          "User",
-        ],
         "subgraph": "b",
         "type": "[NodeWithName]!",
         "variables": {
@@ -2886,9 +2711,6 @@ exports[`fixture 'federation/simple-interface-object' > query 'UsersWithUsername
     ],
     "pathToExportData": [
       "users",
-    ],
-    "resolvableTypes": [
-      "User",
     ],
     "subgraph": "a",
     "type": "[NodeWithName!]!",
@@ -2935,9 +2757,6 @@ exports[`fixture 'federation/simple-interface-object' > query 'UsersWithUsername
               "_entities",
               0,
             ],
-            "resolvableTypes": [
-              "User",
-            ],
             "subgraph": "b",
             "type": "[NodeWithName]!",
             "variables": {
@@ -2959,9 +2778,6 @@ exports[`fixture 'federation/simple-interface-object' > query 'UsersWithUsername
 }",
         "pathToExportData": [
           "users",
-        ],
-        "resolvableTypes": [
-          "User",
         ],
         "subgraph": "a",
         "type": "[NodeWithName!]!",
@@ -3021,9 +2837,6 @@ exports[`fixture 'federation/union-intersection' > query 'AllMedia' > should exe
     ],
     "pathToExportData": [
       "media",
-    ],
-    "resolvableTypes": [
-      "Book",
     ],
     "subgraph": "a",
     "type": "Media",
@@ -3118,10 +2931,6 @@ exports[`fixture 'federation/union-intersection' > query 'AllMedia' > should exe
     "pathToExportData": [
       "song",
     ],
-    "resolvableTypes": [
-      "Book",
-      "Song",
-    ],
     "subgraph": "a",
     "type": "Media",
     "variables": {},
@@ -3192,9 +3001,6 @@ exports[`fixture 'federation/union-intersection' > query 'AllMedia' > should pla
         "pathToExportData": [
           "media",
         ],
-        "resolvableTypes": [
-          "Book",
-        ],
         "subgraph": "a",
         "type": "Media",
         "variables": {},
@@ -3242,10 +3048,6 @@ exports[`fixture 'federation/union-intersection' > query 'AllMedia' > should pla
 }",
         "pathToExportData": [
           "song",
-        ],
-        "resolvableTypes": [
-          "Book",
-          "Song",
         ],
         "subgraph": "a",
         "type": "Media",
@@ -3430,9 +3232,6 @@ exports[`fixture 'federation/union-intersection' > query 'MediaAll' > should exe
     "pathToExportData": [
       "media",
     ],
-    "resolvableTypes": [
-      "Book",
-    ],
     "subgraph": "a",
     "type": "Media",
     "variables": {},
@@ -3475,9 +3274,6 @@ exports[`fixture 'federation/union-intersection' > query 'MediaAll' > should pla
 }",
         "pathToExportData": [
           "media",
-        ],
-        "resolvableTypes": [
-          "Book",
         ],
         "subgraph": "a",
         "type": "Media",
@@ -3539,9 +3335,6 @@ exports[`fixture 'federation/union-intersection' > query 'MediaBook' > should ex
     "pathToExportData": [
       "media",
     ],
-    "resolvableTypes": [
-      "Book",
-    ],
     "subgraph": "a",
     "type": "Media",
     "variables": {},
@@ -3579,9 +3372,6 @@ exports[`fixture 'federation/union-intersection' > query 'MediaBook' > should pl
 }",
         "pathToExportData": [
           "media",
-        ],
-        "resolvableTypes": [
-          "Book",
         ],
         "subgraph": "a",
         "type": "Media",
@@ -3636,9 +3426,6 @@ exports[`fixture 'federation/union-intersection' > query 'MediaBookMovie' > shou
     "pathToExportData": [
       "media",
     ],
-    "resolvableTypes": [
-      "Book",
-    ],
     "subgraph": "a",
     "type": "Media",
     "variables": {},
@@ -3676,9 +3463,6 @@ exports[`fixture 'federation/union-intersection' > query 'MediaBookMovie' > shou
 }",
         "pathToExportData": [
           "media",
-        ],
-        "resolvableTypes": [
-          "Book",
         ],
         "subgraph": "a",
         "type": "Media",
@@ -3729,9 +3513,6 @@ exports[`fixture 'federation/union-intersection' > query 'MediaMovie' > should e
     "pathToExportData": [
       "media",
     ],
-    "resolvableTypes": [
-      "Book",
-    ],
     "subgraph": "a",
     "type": "Media",
     "variables": {},
@@ -3762,9 +3543,6 @@ exports[`fixture 'federation/union-intersection' > query 'MediaMovie' > should p
 }",
         "pathToExportData": [
           "media",
-        ],
-        "resolvableTypes": [
-          "Book",
         ],
         "subgraph": "a",
         "type": "Media",
@@ -3811,9 +3589,6 @@ exports[`fixture 'federation/union-intersection' > query 'MediaTypename' > shoul
     "pathToExportData": [
       "media",
     ],
-    "resolvableTypes": [
-      "Book",
-    ],
     "subgraph": "a",
     "type": "Media",
     "variables": {},
@@ -3843,9 +3618,6 @@ exports[`fixture 'federation/union-intersection' > query 'MediaTypename' > shoul
 }",
         "pathToExportData": [
           "media",
-        ],
-        "resolvableTypes": [
-          "Book",
         ],
         "subgraph": "a",
         "type": "Media",
@@ -4330,10 +4102,6 @@ exports[`fixture 'interfaces' > query 'BasicCat' > should execute and explain 1`
     "pathToExportData": [
       "animal",
     ],
-    "resolvableTypes": [
-      "Dog",
-      "Cat",
-    ],
     "subgraph": "shelter",
     "type": "Animal",
     "variables": {
@@ -4383,10 +4151,6 @@ exports[`fixture 'interfaces' > query 'BasicCat' > should plan gather 1`] = `
 }",
         "pathToExportData": [
           "animal",
-        ],
-        "resolvableTypes": [
-          "Dog",
-          "Cat",
         ],
         "subgraph": "shelter",
         "type": "Animal",
@@ -4491,10 +4255,6 @@ exports[`fixture 'interfaces' > query 'BasicNestedAnimal' > should execute and e
     "pathToExportData": [
       "animal",
     ],
-    "resolvableTypes": [
-      "Dog",
-      "Cat",
-    ],
     "subgraph": "shelter",
     "type": "Animal",
     "variables": {
@@ -4570,10 +4330,6 @@ exports[`fixture 'interfaces' > query 'BasicNestedAnimal' > should plan gather 1
 }",
         "pathToExportData": [
           "animal",
-        ],
-        "resolvableTypes": [
-          "Dog",
-          "Cat",
         ],
         "subgraph": "shelter",
         "type": "Animal",

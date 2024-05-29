@@ -1,28 +1,10 @@
-import { OperationTypeNode } from 'graphql';
 import { GatherPlanResolver } from './gather.js';
 
 export interface Blueprint {
   /** The GraphQL schema SDL without directives. */
   schema: string;
-  operations: {
-    [name: string /* graphql.OperationDefinitionNode */]: BlueprintOperation;
-  };
   types: {
     [name in BlueprintType['name']]: BlueprintType;
-  };
-}
-
-export interface BlueprintOperation {
-  name: OperationTypeNode;
-  fields: {
-    [name in BlueprintOperationField['name']]: BlueprintOperationField;
-  };
-}
-
-export interface BlueprintOperationField {
-  name: string;
-  resolvers: {
-    [subgraph in BlueprintResolver['subgraph']]: BlueprintTypeResolver; // TODO: operation field always has one resolver per subgraph?
   };
 }
 
@@ -57,6 +39,15 @@ export interface BlueprintField {
   name: string;
   /** List of subgraphs at which the field is available. */
   subgraphs: string[];
+  /**
+   * The resolver for this specific field.
+   * Required in `Query` and `Mutation` {@link BlueprintType types}.
+   *
+   * TODO: field always has one resolver per subgraph?
+   */
+  resolvers: {
+    [subgraph in BlueprintResolver['subgraph']]: BlueprintTypeResolver;
+  };
 }
 
 export interface BlueprintResolver {

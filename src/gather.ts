@@ -5,7 +5,6 @@ import {
   getNamedType,
   isCompositeType,
   Kind,
-  OperationTypeNode,
   parse,
   print,
   SelectionNode,
@@ -39,7 +38,8 @@ export interface GatherPlan {
 export interface GatherPlanOperation {
   /** The name of the operation to execute. */
   name: string | null;
-  type: OperationTypeNode;
+  /** Name of the type in {@link Blueprint.types blueprint's types} for this operation. */
+  type: 'Query' | 'Mutation';
   /** A map of operation field paths to the necessary operation resolver. */
   resolvers: Record<string, GatherPlanResolver>;
 }
@@ -135,11 +135,21 @@ export function planGather(
           // TODO: if the query has more operations, choose the one from `operationName`
           throw new Error('Gather plan operation has already been defined');
         }
+        let type = typeInfo.getType();
+        if (!type) {
+          throw new Error(`No type found for operation "${node.operation}"`);
+        }
+        type = getNamedType(type);
+        if (type.name !== 'Query' && type.name !== 'Mutation') {
+          throw new Error(
+            `Type for operation "${node.operation}" must be "Query" or "Mutation", but got "${type.name}"`,
+          );
+        }
         gatherPlan = {
           query: print(doc),
           operation: {
             name: node.name?.value || null,
-            type: node.operation,
+            type: type.name,
             resolvers: {},
           },
         };
@@ -362,7 +372,7 @@ function planGatherResolversForOperationFields(
   operation: GatherPlanOperation,
   operationFields: OperationField[],
 ): Record<string, GatherPlanResolver> {
-  const operationPlan = blueprint.operations[operation.type];
+  const operationPlan = blueprint.types[operation.type];
   if (!operationPlan) {
     throw new Error(
       `Blueprint does not have the "${operation.type}" operation`,

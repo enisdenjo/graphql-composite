@@ -178,3 +178,17 @@ export function isBlueprintResolverSelectVariable(
 ): v is BlueprintResolverSelectVariable {
   return v.kind === 'select';
 }
+
+/**
+ * Gets all subgraphs at which the given type is available.
+ *
+ * The availability is derived by distinctly finding all subgraphs of
+ * {@link BlueprintType.fields fields} in {@link type}.
+ */
+export function allSubgraphsForType(type: BlueprintType): string[] {
+  const availableIn: Record<string, null> = {}; // we use a map to avoid duplicates
+  for (const f of Object.values(type.fields)) {
+    f.subgraphs.forEach((s) => (availableIn[s] = null));
+  }
+  return Object.keys(availableIn);
+}

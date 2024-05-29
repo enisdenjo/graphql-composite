@@ -197,4 +197,100 @@ export const queries: FixtureQueries = [
       },
     },
   },
+  {
+    name: 'ViewerMediaAll',
+    document: parse(/* GraphQL */ `
+      query ViewerMediaAll {
+        viewer {
+          media {
+            __typename
+            ... on Book {
+              title
+            }
+            ... on Song {
+              title
+            }
+            ... on Movie {
+              title
+            }
+          }
+        }
+      }
+    `),
+    variables: {},
+    result: {
+      data: {
+        viewer: {
+          media: {
+            __typename: 'Book',
+            title: 'The Lord of the Rings',
+          },
+        },
+      },
+    },
+  },
+  {
+    name: 'ViewerAllAll',
+    document: parse(/* GraphQL */ `
+      query ViewerMediaAll {
+        viewer {
+          media {
+            __typename
+            ... on Song {
+              title
+            }
+            ... on Movie {
+              title
+            }
+            ... on Book {
+              title
+            }
+          }
+          book {
+            __typename
+            ... on Song {
+              title
+            }
+            ... on Movie {
+              title
+            }
+            ... on Book {
+              title
+            }
+          }
+          song {
+            __typename
+            ... on Song {
+              title
+            }
+            ... on Movie {
+              title
+            }
+            ... on Book {
+              title
+            }
+          }
+        }
+      }
+    `),
+    variables: {},
+    result: {
+      data: {
+        viewer: {
+          media: {
+            __typename: 'Book',
+            title: 'The Lord of the Rings',
+          },
+          book: {
+            __typename: 'Book',
+            title: 'The Lord of the Rings',
+          },
+          song: {
+            __typename: 'Song',
+            title: 'Song Title',
+          },
+        },
+      },
+    },
+  },
 ];

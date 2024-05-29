@@ -1,4 +1,3 @@
-import { OperationTypeNode } from 'graphql';
 import { Blueprint } from '../../../../src/blueprint.js';
 
 export const blueprint: Blueprint = {
@@ -32,12 +31,15 @@ export const blueprint: Blueprint = {
 
     union ViewerMedia = Book | Song | Movie
   `,
-  operations: {
-    query: {
-      name: OperationTypeNode.QUERY,
+  types: {
+    Query: {
+      kind: 'object',
+      name: 'Query',
+      implements: [],
       fields: {
         media: {
           name: 'media',
+          subgraphs: ['a', 'b'],
           resolvers: {
             a: {
               subgraph: 'a',
@@ -73,6 +75,7 @@ export const blueprint: Blueprint = {
         },
         book: {
           name: 'book',
+          subgraphs: ['a', 'b'],
           resolvers: {
             a: {
               subgraph: 'a',
@@ -107,6 +110,7 @@ export const blueprint: Blueprint = {
         },
         song: {
           name: 'song',
+          subgraphs: ['a'],
           resolvers: {
             a: {
               subgraph: 'a',
@@ -127,6 +131,7 @@ export const blueprint: Blueprint = {
         },
         viewer: {
           name: 'viewer',
+          subgraphs: ['a'],
           resolvers: {
             a: {
               subgraph: 'a',
@@ -145,9 +150,8 @@ export const blueprint: Blueprint = {
           },
         },
       },
+      resolvers: {},
     },
-  },
-  types: {
     Media: {
       kind: 'interface',
       name: 'Media',
@@ -155,6 +159,7 @@ export const blueprint: Blueprint = {
         __typename: {
           name: '__typename',
           subgraphs: ['a', 'b'],
+          resolvers: {},
         },
       },
       resolvers: {},
@@ -166,6 +171,7 @@ export const blueprint: Blueprint = {
         __typename: {
           name: '__typename',
           subgraphs: ['a', 'b'],
+          resolvers: {},
         },
       },
       resolvers: {},
@@ -178,6 +184,7 @@ export const blueprint: Blueprint = {
         title: {
           name: 'title',
           subgraphs: ['a', 'b'],
+          resolvers: {},
         },
       },
       resolvers: {},
@@ -190,6 +197,7 @@ export const blueprint: Blueprint = {
         title: {
           name: 'title',
           subgraphs: ['b'],
+          resolvers: {},
         },
       },
       resolvers: {},
@@ -202,6 +210,7 @@ export const blueprint: Blueprint = {
         title: {
           name: 'title',
           subgraphs: ['a'],
+          resolvers: {},
         },
       },
       resolvers: {},
@@ -214,15 +223,18 @@ export const blueprint: Blueprint = {
         media: {
           name: 'media',
           subgraphs: ['a', 'b'],
+          resolvers: {},
         },
         book: {
           name: 'book',
           // TODO: book field in "b" resolves to Book
           subgraphs: ['a', 'b'],
+          resolvers: {},
         },
         song: {
           name: 'song',
           subgraphs: ['a'],
+          resolvers: {},
         },
       },
       resolvers: {},

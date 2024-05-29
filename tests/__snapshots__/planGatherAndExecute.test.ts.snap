@@ -242,7 +242,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsIsActive'
         "variables": {},
       },
     },
-    "type": "query",
+    "type": "Query",
   },
   "query": "query AccountsIsActive {
   accounts {
@@ -477,7 +477,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsIsActiveO
         "variables": {},
       },
     },
-    "type": "query",
+    "type": "Query",
   },
   "query": "query AccountsIsActiveOnAdmin {
   accounts {
@@ -569,7 +569,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsNames' > 
         "variables": {},
       },
     },
-    "type": "query",
+    "type": "Query",
   },
   "query": "query AccountsNames {
   accounts {
@@ -967,7 +967,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsSpreadAdm
         "variables": {},
       },
     },
-    "type": "query",
+    "type": "Query",
   },
   "query": "query AccountsSpreadAdmin {
   accounts {
@@ -1367,7 +1367,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsWithAdmin
         "variables": {},
       },
     },
-    "type": "query",
+    "type": "Query",
   },
   "query": "query AccountsWithAdminAndTypename {
   accounts {
@@ -1636,7 +1636,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsWithTypen
         "variables": {},
       },
     },
-    "type": "query",
+    "type": "Query",
   },
   "query": "query AccountsWithTypename {
   accounts {
@@ -1851,7 +1851,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'AnotherUsers' > s
         "variables": {},
       },
     },
-    "type": "query",
+    "type": "Query",
   },
   "query": "query AnotherUsers {
   anotherUsers {
@@ -2199,7 +2199,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'AnotherUsersWithA
         "variables": {},
       },
     },
-    "type": "query",
+    "type": "Query",
   },
   "query": "query AnotherUsersWithAdvancedUserSpread {
   anotherUsers {
@@ -2401,7 +2401,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'AnotherUsersWithU
         "variables": {},
       },
     },
-    "type": "query",
+    "type": "Query",
   },
   "query": "query AnotherUsersWithUserSpread {
   anotherUsers {
@@ -2645,7 +2645,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'UsersWithAdvanced
         "variables": {},
       },
     },
-    "type": "query",
+    "type": "Query",
   },
   "query": "query UsersWithAdvancedUserSpread {
   users {
@@ -2752,7 +2752,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'UsersWithUserSpre
         "variables": {},
       },
     },
-    "type": "query",
+    "type": "Query",
   },
   "query": "query UsersWithUserSpread {
   users {
@@ -2968,7 +2968,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'UsersWithUsername
         "variables": {},
       },
     },
-    "type": "query",
+    "type": "Query",
   },
   "query": "query UsersWithUsername {
   users {
@@ -3252,7 +3252,7 @@ exports[`fixture 'federation/union-intersection' > query 'AllMedia' > should pla
         "variables": {},
       },
     },
-    "type": "query",
+    "type": "Query",
   },
   "query": "query AllMedia {
   media {
@@ -3369,7 +3369,7 @@ exports[`fixture 'federation/union-intersection' > query 'BookAll' > should plan
         "variables": {},
       },
     },
-    "type": "query",
+    "type": "Query",
   },
   "query": "query BookAll {
   book {
@@ -3484,7 +3484,7 @@ exports[`fixture 'federation/union-intersection' > query 'MediaAll' > should pla
         "variables": {},
       },
     },
-    "type": "query",
+    "type": "Query",
   },
   "query": "query MediaAll {
   media {
@@ -3588,7 +3588,7 @@ exports[`fixture 'federation/union-intersection' > query 'MediaBook' > should pl
         "variables": {},
       },
     },
-    "type": "query",
+    "type": "Query",
   },
   "query": "query MediaBook {
   media {
@@ -3685,7 +3685,7 @@ exports[`fixture 'federation/union-intersection' > query 'MediaBookMovie' > shou
         "variables": {},
       },
     },
-    "type": "query",
+    "type": "Query",
   },
   "query": "query MediaBookMovie {
   media {
@@ -3771,7 +3771,7 @@ exports[`fixture 'federation/union-intersection' > query 'MediaMovie' > should p
         "variables": {},
       },
     },
-    "type": "query",
+    "type": "Query",
   },
   "query": "query MediaMovie {
   media {
@@ -3852,7 +3852,7 @@ exports[`fixture 'federation/union-intersection' > query 'MediaTypename' > shoul
         "variables": {},
       },
     },
-    "type": "query",
+    "type": "Query",
   },
   "query": "query MediaTypename {
   media {
@@ -4108,7 +4108,7 @@ exports[`fixture 'federation/union-intersection' > query 'ViewerAllAll' > should
         "variables": {},
       },
     },
-    "type": "query",
+    "type": "Query",
   },
   "query": "query ViewerMediaAll {
   viewer {
@@ -4261,7 +4261,7 @@ exports[`fixture 'federation/union-intersection' > query 'ViewerMediaAll' > shou
         "variables": {},
       },
     },
-    "type": "query",
+    "type": "Query",
   },
   "query": "query ViewerMediaAll {
   viewer {
@@ -4399,7 +4399,7 @@ exports[`fixture 'interfaces' > query 'BasicCat' > should plan gather 1`] = `
         },
       },
     },
-    "type": "query",
+    "type": "Query",
   },
   "query": "query BasicCat {
   animal(name: "Cathew") {
@@ -4586,7 +4586,7 @@ exports[`fixture 'interfaces' > query 'BasicNestedAnimal' > should plan gather 1
         },
       },
     },
-    "type": "query",
+    "type": "Query",
   },
   "query": "query BasicNestedAnimal {
   animal(name: "Dogeth") {
@@ -4848,7 +4848,7 @@ exports[`fixture 'store' > query 'BasicWithFragmentDefinition' > should plan gat
         },
       },
     },
-    "type": "query",
+    "type": "Query",
   },
   "query": "query BasicWithFragmentDefinition {
   storefront(id: "apple-store") {
@@ -5120,7 +5120,7 @@ exports[`fixture 'store' > query 'BasicWithInlineFragment' > should plan gather 
         },
       },
     },
-    "type": "query",
+    "type": "Query",
   },
   "query": "query BasicWithInlineFragment {
   storefront(id: "samsung-store") {
@@ -5423,7 +5423,7 @@ exports[`fixture 'store' > query 'ListOperationResolver' > should plan gather 1`
         },
       },
     },
-    "type": "query",
+    "type": "Query",
   },
   "query": "query ListOperationResolver {
   productsByUpcs(upcs: ["galaxy", "iphone"]) {
@@ -6008,7 +6008,7 @@ exports[`fixture 'store' > query 'NotBasicWithInlineVariables' > should plan gat
         },
       },
     },
-    "type": "query",
+    "type": "Query",
   },
   "query": "query NotBasicWithInlineVariables {
   storefront(id: "samsung-store") {
@@ -6466,7 +6466,7 @@ exports[`fixture 'store' > query 'NotBasicWithOperationVariables' > should plan 
         },
       },
     },
-    "type": "query",
+    "type": "Query",
   },
   "query": "query NotBasicWithOperationVariables($id: ID!) {
   storefront(id: $id) {
@@ -6537,7 +6537,7 @@ exports[`fixture 'store' > query 'ScalarListInOperation' > should plan gather 1`
         "variables": {},
       },
     },
-    "type": "query",
+    "type": "Query",
   },
   "query": "query ScalarListInOperation {
   productNames
@@ -6619,7 +6619,7 @@ exports[`fixture 'store' > query 'ScalarListInType' > should plan gather 1`] = `
         },
       },
     },
-    "type": "query",
+    "type": "Query",
   },
   "query": "query ScalarListInType {
   storefront(id: "apple-store") {
@@ -6680,7 +6680,7 @@ exports[`fixture 'store' > query 'ScalarOperationField' > should plan gather 1`]
         },
       },
     },
-    "type": "query",
+    "type": "Query",
   },
   "query": "query ScalarOperationField {
   manufacturerName(id: "samsung")
@@ -6747,7 +6747,7 @@ exports[`fixture 'store' > query 'ScalarOperationFieldNested' > should plan gath
         },
       },
     },
-    "type": "query",
+    "type": "Query",
   },
   "query": "query ScalarOperationFieldNested {
   productName(upc: "ipad")

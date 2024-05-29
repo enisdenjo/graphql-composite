@@ -1,4 +1,3 @@
-import { OperationTypeNode } from 'graphql';
 import { Blueprint } from '../../../../src/blueprint.js';
 
 export const blueprint: Blueprint = {
@@ -42,12 +41,15 @@ export const blueprint: Blueprint = {
       username: String
     }
   `,
-  operations: {
-    query: {
-      name: OperationTypeNode.QUERY,
+  types: {
+    Query: {
+      kind: 'object',
+      name: 'Query',
+      implements: [],
       fields: {
         users: {
           name: 'users',
+          subgraphs: ['a'],
           resolvers: {
             a: {
               subgraph: 'a',
@@ -68,6 +70,7 @@ export const blueprint: Blueprint = {
         },
         anotherUsers: {
           name: 'anotherUsers',
+          subgraphs: ['b'],
           resolvers: {
             b: {
               subgraph: 'b',
@@ -88,6 +91,7 @@ export const blueprint: Blueprint = {
         },
         accounts: {
           name: 'accounts',
+          subgraphs: ['b'],
           resolvers: {
             b: {
               subgraph: 'b',
@@ -107,9 +111,8 @@ export const blueprint: Blueprint = {
           },
         },
       },
+      resolvers: {},
     },
-  },
-  types: {
     NodeWithName: {
       kind: 'interface',
       name: 'NodeWithName',
@@ -117,14 +120,17 @@ export const blueprint: Blueprint = {
         id: {
           name: 'id',
           subgraphs: ['a', 'b', 'c'],
+          resolvers: {},
         },
         name: {
           name: 'name',
           subgraphs: ['a'],
+          resolvers: {},
         },
         username: {
           name: 'username',
           subgraphs: ['b'],
+          resolvers: {},
         },
       },
       resolvers: {
@@ -192,14 +198,17 @@ export const blueprint: Blueprint = {
         id: {
           name: 'id',
           subgraphs: ['a'],
+          resolvers: {},
         },
         name: {
           name: 'name',
           subgraphs: ['a'],
+          resolvers: {},
         },
         age: {
           name: 'age',
           subgraphs: ['a'],
+          resolvers: {},
         },
         // there is no username field on "b", but the NodeWithName implements it
         // username: {
@@ -241,18 +250,22 @@ export const blueprint: Blueprint = {
         __typename: {
           name: '__typename',
           subgraphs: ['a'],
+          resolvers: {},
         },
         id: {
           name: 'id',
           subgraphs: ['a', 'b', 'c'],
+          resolvers: {},
         },
         name: {
           name: 'name',
           subgraphs: ['b'],
+          resolvers: {},
         },
         isActive: {
           name: 'isActive',
           subgraphs: ['c'],
+          resolvers: {},
         },
       },
       resolvers: {
@@ -347,14 +360,17 @@ export const blueprint: Blueprint = {
         id: {
           name: 'id',
           subgraphs: ['a'],
+          resolvers: {},
         },
         isMain: {
           name: 'isMain',
           subgraphs: ['a'],
+          resolvers: {},
         },
         isActive: {
           name: 'isActive',
           subgraphs: ['a'],
+          resolvers: {},
         },
       },
       resolvers: {

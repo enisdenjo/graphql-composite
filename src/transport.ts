@@ -25,7 +25,7 @@ export class TransportHTTP implements Transport {
     });
     if (!res.ok) {
       const err = new Error(
-        `${res.status} ${res.statusText}\n${await res.text()}`,
+        `${res.status} ${res.statusText}\n${await res.text()}\nQuery:${query}\nVariables:${JSON.stringify(variables)}`,
       );
       err.name = 'ResponseError';
       throw err;

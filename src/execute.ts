@@ -390,7 +390,6 @@ function getPublicPathsOfExport(exp: OperationExport): string[][] {
 
 /**
  * TODO: write tests
- * TODO: what happens
  *
  * Creates a list of paths to all deepest public exports objects without the object properties.
  * The resulting paths are sorted by array length, making sure no path overrides a previous one.

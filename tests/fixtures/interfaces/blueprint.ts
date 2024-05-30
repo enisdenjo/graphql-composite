@@ -1,4 +1,3 @@
-import { OperationTypeNode } from 'graphql';
 import { Blueprint } from '../../../src/blueprint.js';
 
 export const blueprint: Blueprint = {
@@ -27,19 +26,21 @@ export const blueprint: Blueprint = {
       animal(name: ID!): Animal
     }
   `,
-  operations: {
-    query: {
-      name: OperationTypeNode.QUERY,
+  types: {
+    Query: {
+      kind: 'object',
+      name: 'Query',
+      implements: [],
       fields: {
         animal: {
           name: 'animal',
+          subgraphs: ['shelter', 'store'],
           resolvers: {
             shelter: {
               subgraph: 'shelter',
               kind: 'interface',
               type: 'Animal',
               ofType: 'Animal',
-              resolvableTypes: ['Dog', 'Cat'],
               operation: /* GraphQL */ `
                 query animal($name: ID!) {
                   animal(name: $name) {
@@ -59,7 +60,6 @@ export const blueprint: Blueprint = {
               kind: 'interface',
               type: 'Animal',
               ofType: 'Animal',
-              resolvableTypes: ['Dog', 'Cat'],
               operation: /* GraphQL */ `
                 query animal($name: ID!) {
                   animal(name: $name) {
@@ -77,9 +77,8 @@ export const blueprint: Blueprint = {
           },
         },
       },
+      resolvers: {},
     },
-  },
-  types: {
     Animal: {
       kind: 'interface',
       name: 'Animal',
@@ -87,14 +86,17 @@ export const blueprint: Blueprint = {
         name: {
           name: 'name',
           subgraphs: ['shelter', 'store'],
+          resolvers: {},
         },
         type: {
           name: 'type',
           subgraphs: ['shelter', 'store'],
+          resolvers: {},
         },
         bestFriend: {
           name: 'bestFriend',
           subgraphs: ['shelter', 'store'],
+          resolvers: {},
         },
       },
       resolvers: {
@@ -104,7 +106,6 @@ export const blueprint: Blueprint = {
             kind: 'interface',
             type: 'Animal',
             ofType: 'Animal',
-            resolvableTypes: ['Dog', 'Cat'],
             operation: /* GraphQL */ `
               query AnimalByName($name: ID!) {
                 animal(name: $name) {
@@ -127,7 +128,6 @@ export const blueprint: Blueprint = {
             kind: 'interface',
             type: 'Animal',
             ofType: 'Animal',
-            resolvableTypes: ['Dog', 'Cat'],
             operation: /* GraphQL */ `
               query AnimalByName($name: ID!) {
                 animal(name: $name) {
@@ -154,18 +154,22 @@ export const blueprint: Blueprint = {
         name: {
           name: 'name',
           subgraphs: ['shelter', 'store'],
+          resolvers: {},
         },
         type: {
           name: 'type',
           subgraphs: ['shelter', 'store'],
+          resolvers: {},
         },
         meows: {
           name: 'meows',
           subgraphs: ['shelter', 'store'],
+          resolvers: {},
         },
         bestFriend: {
           name: 'bestFriend',
           subgraphs: ['shelter', 'store'],
+          resolvers: {},
         },
       },
       resolvers: {
@@ -223,18 +227,22 @@ export const blueprint: Blueprint = {
         name: {
           name: 'name',
           subgraphs: ['shelter', 'store'],
+          resolvers: {},
         },
         type: {
           name: 'type',
           subgraphs: ['shelter', 'store'],
+          resolvers: {},
         },
         barks: {
           name: 'barks',
           subgraphs: ['shelter', 'store'],
+          resolvers: {},
         },
         bestFriend: {
           name: 'bestFriend',
           subgraphs: ['shelter', 'store'],
+          resolvers: {},
         },
       },
       resolvers: {

@@ -1,4 +1,3 @@
-import { OperationTypeNode } from 'graphql';
 import { Blueprint } from '../../../src/blueprint.js';
 
 export const blueprint: Blueprint = {
@@ -33,12 +32,15 @@ export const blueprint: Blueprint = {
       productNames: [String!]!
     }
   `,
-  operations: {
-    query: {
-      name: OperationTypeNode.QUERY,
+  types: {
+    Query: {
+      kind: 'object',
+      name: 'Query',
+      implements: [],
       fields: {
         manufacturer: {
           name: 'manufacturer',
+          subgraphs: ['manufacturers'],
           resolvers: {
             manufacturers: {
               subgraph: 'manufacturers',
@@ -63,6 +65,7 @@ export const blueprint: Blueprint = {
         },
         manufacturerName: {
           name: 'manufacturerName',
+          subgraphs: ['manufacturers'],
           resolvers: {
             manufacturers: {
               subgraph: 'manufacturers',
@@ -85,6 +88,7 @@ export const blueprint: Blueprint = {
         },
         product: {
           name: 'product',
+          subgraphs: ['products'],
           resolvers: {
             products: {
               subgraph: 'products',
@@ -109,6 +113,7 @@ export const blueprint: Blueprint = {
         },
         productsByUpcs: {
           name: 'productsByUpcs',
+          subgraphs: ['products'],
           resolvers: {
             products: {
               subgraph: 'products',
@@ -133,6 +138,7 @@ export const blueprint: Blueprint = {
         },
         productName: {
           name: 'productName',
+          subgraphs: ['products'],
           resolvers: {
             products: {
               subgraph: 'products',
@@ -157,6 +163,7 @@ export const blueprint: Blueprint = {
         },
         productNames: {
           name: 'productNames',
+          subgraphs: ['products'],
           resolvers: {
             products: {
               subgraph: 'products',
@@ -174,6 +181,7 @@ export const blueprint: Blueprint = {
         },
         storefront: {
           name: 'storefront',
+          subgraphs: ['storefronts'],
           resolvers: {
             storefronts: {
               subgraph: 'storefronts',
@@ -197,9 +205,8 @@ export const blueprint: Blueprint = {
           },
         },
       },
+      resolvers: {},
     },
-  },
-  types: {
     Manufacturer: {
       kind: 'object',
       name: 'Manufacturer',
@@ -208,14 +215,17 @@ export const blueprint: Blueprint = {
         id: {
           name: 'id',
           subgraphs: ['manufacturers', 'products'],
+          resolvers: {},
         },
         name: {
           name: 'name',
           subgraphs: ['manufacturers'],
+          resolvers: {},
         },
         products: {
           name: 'products',
           subgraphs: ['products'],
+          resolvers: {},
         },
       },
       resolvers: {
@@ -273,18 +283,22 @@ export const blueprint: Blueprint = {
         manufacturer: {
           name: 'manufacturer',
           subgraphs: ['products'],
+          resolvers: {},
         },
         name: {
           name: 'name',
           subgraphs: ['products'],
+          resolvers: {},
         },
         price: {
           name: 'price',
           subgraphs: ['products'],
+          resolvers: {},
         },
         upc: {
           name: 'upc',
           subgraphs: ['products', 'storefronts'],
+          resolvers: {},
         },
       },
       resolvers: {
@@ -342,18 +356,22 @@ export const blueprint: Blueprint = {
         id: {
           name: 'id',
           subgraphs: ['storefronts'],
+          resolvers: {},
         },
         name: {
           name: 'name',
           subgraphs: ['storefronts'],
+          resolvers: {},
         },
         products: {
           name: 'products',
           subgraphs: ['storefronts'],
+          resolvers: {},
         },
         productNames: {
           name: 'productNames',
           subgraphs: ['storefronts'],
+          resolvers: {},
         },
       },
       resolvers: {

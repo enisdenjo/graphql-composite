@@ -4054,6 +4054,103 @@ exports[`fixture 'federation/union-intersection' > query 'ViewerMediaAll' > shou
 }
 `;
 
+exports[`fixture 'federation/union-intersection' > query 'ViewerMediaMovie' > should execute and explain 1`] = `
+[
+  {
+    "data": {
+      "viewer": {
+        "media": {
+          "__typename": "Book",
+        },
+      },
+    },
+    "exports": [
+      {
+        "kind": "object",
+        "name": "media",
+        "selections": [
+          {
+            "kind": "scalar",
+            "name": "__typename",
+            "private": true,
+          },
+        ],
+      },
+    ],
+    "includes": [],
+    "kind": "object",
+    "ofType": "Viewer",
+    "operation": "{
+  viewer {
+    media {
+      __typename
+    }
+  }
+}",
+    "pathInData": [
+      "viewer",
+    ],
+    "pathToExportData": [
+      "viewer",
+    ],
+    "subgraph": "a",
+    "type": "Viewer",
+    "variables": {},
+  },
+]
+`;
+
+exports[`fixture 'federation/union-intersection' > query 'ViewerMediaMovie' > should plan gather 1`] = `
+{
+  "operation": {
+    "name": "ViewerMediaMovie",
+    "resolvers": {
+      "viewer": {
+        "exports": [
+          {
+            "kind": "object",
+            "name": "media",
+            "selections": [
+              {
+                "kind": "scalar",
+                "name": "__typename",
+                "private": true,
+              },
+            ],
+          },
+        ],
+        "includes": {},
+        "kind": "object",
+        "ofType": "Viewer",
+        "operation": "{
+  viewer {
+    media {
+      __typename
+    }
+  }
+}",
+        "pathToExportData": [
+          "viewer",
+        ],
+        "subgraph": "a",
+        "type": "Viewer",
+        "variables": {},
+      },
+    },
+    "type": "Query",
+  },
+  "query": "query ViewerMediaMovie {
+  viewer {
+    media {
+      ... on Movie {
+        title
+      }
+    }
+  }
+}",
+}
+`;
+
 exports[`fixture 'interfaces' > query 'BasicCat' > should execute and explain 1`] = `
 [
   {

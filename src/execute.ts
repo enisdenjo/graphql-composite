@@ -281,10 +281,14 @@ function populateResultWithExportData(
 
   const publicExportPaths = resolver.exports.flatMap(getPublicPathsOfExport);
   if (!publicExportPaths.length) {
-    // if there are no public export paths defined, we just want
-    // to make the pathInData an object (because it's a composite resolver)
-    // see [NOTE 1] in gather.ts for more info on why we perform no-export operations
-    setAtPath(resultRef.data, pathInData, {});
+    for (const deepestObjectPath of resolver.exports.flatMap(
+      getDeepestObjectPublicPathsOfExport,
+    )) {
+      // if there are no public export paths defined, we just want
+      // to make the pathInData an object (because it's a composite resolver)
+      // see [NOTE 1] in gather.ts for more info on why we perform no-export operations
+      setAtPath(resultRef.data, [...pathInData, ...deepestObjectPath], {});
+    }
   } else {
     for (const exportPath of publicExportPaths) {
       const lastKey = exportPath[exportPath.length - 1];
@@ -381,5 +385,72 @@ function getPublicPathsOfExport(exp: OperationExport): string[][] {
       }
     }
   }
+  return paths;
+}
+
+/**
+ * TODO: write tests
+ * TODO: what happens
+ *
+ * Creates a list of paths to all deepest public exports objects without the object properties.
+ * The resulting paths are sorted by array length, making sure no path overrides a previous one.
+ *
+ * For example, if {@link exp} is:
+ * ```json
+ * {
+ *   "kind": "public",
+ *   "name": "products",
+ *   "selections": [
+ *     {
+ *       "kind": "public",
+ *       "name": "upc"
+ *     },
+ *     {
+ *       "kind": "public",
+ *       "name": "manufacturer",
+ *       "selections": [
+ *         {
+ *           "kind": "public",
+ *           "name": "name"
+ *         }
+ *       ]
+ *     },
+ *     {
+ *       "kind": "public",
+ *       "name": "price"
+ *     }
+ *   ]
+ * }
+ * ```
+ * the result will be:
+ * ```json
+ * [
+ *   ["products"],
+ *   ["products"],
+ *   ["products", "manufacturer"]
+ * ]
+ * ```
+ */
+function getDeepestObjectPublicPathsOfExport(exp: OperationExport): string[][] {
+  if (exp.private || exp.kind === 'scalar') {
+    return [[]];
+  }
+
+  const paths: string[][] = [];
+  for (const sel of exp.selections || []) {
+    const selPaths = getDeepestObjectPublicPathsOfExport(sel);
+    for (const path of selPaths) {
+      path.pop();
+      if ('name' in exp) {
+        paths.push([exp.name, ...path]);
+      } else {
+        paths.push(path);
+      }
+    }
+  }
+
+  // sort the paths by array length in ascending order making sure no nested object path is overriden
+  paths.sort();
+
   return paths;
 }

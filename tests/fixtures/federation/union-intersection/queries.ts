@@ -293,4 +293,26 @@ export const queries: FixtureQueries = [
       },
     },
   },
+  {
+    name: 'ViewerMediaMovie',
+    document: parse(/* GraphQL */ `
+      query ViewerMediaMovie {
+        viewer {
+          media {
+            ... on Movie {
+              title
+            }
+          }
+        }
+      }
+    `),
+    variables: {},
+    result: {
+      data: {
+        viewer: {
+          media: {},
+        },
+      },
+    },
+  },
 ];

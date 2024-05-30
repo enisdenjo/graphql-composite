@@ -514,7 +514,7 @@ function insertResolversForSelection(
         // available in more subgraphs than the selection's object.
         // we therefore skip the fragment spread altogether
 
-        if (!currentResolver.exports.length) {
+        if (!getSelectionsAtDepth(currentResolver.exports, depth).length) {
           // [NOTE 1]
           // here we mimic apollo's behaviour. we want to execute parent's resolver without needing
           // anything from it. one reason to perform the operation anyway is if the subgraph performs
@@ -523,7 +523,7 @@ function insertResolversForSelection(
           // TODO: if there are selections that will be exported in the next loop iteration,
           //       this private export will stay - but should be removed because the request
           //       is not empty anymore
-          currentResolver.exports.push({
+          getSelectionsAtDepth(currentResolver.exports, depth).push({
             kind: 'scalar',
             name: '__typename',
             private: true,

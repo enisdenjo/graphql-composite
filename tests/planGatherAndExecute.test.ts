@@ -49,18 +49,22 @@ it.each([
       {
         kind: 'scalar',
         name: 'id',
+        property: 'id',
       },
       {
         kind: 'scalar',
         name: 'name',
+        property: 'name',
       },
       {
         kind: 'object',
         name: 'products',
+        property: 'products',
         selections: [
           {
             kind: 'scalar',
             name: 'upc',
+            property: 'upc',
           },
         ],
       },
@@ -79,28 +83,34 @@ it.each([
       {
         kind: 'scalar',
         name: 'name',
+        property: 'name',
       },
       {
         kind: 'object',
         name: 'manufacturer',
+        property: 'manufacturer',
         selections: [
           {
             kind: 'object',
             name: 'products',
+            property: 'products',
             selections: [
               {
                 kind: 'scalar',
                 name: 'upc',
+                property: 'upc',
               },
               {
                 kind: 'scalar',
                 name: 'name',
+                property: 'name',
               },
             ],
           },
           {
             kind: 'scalar',
             name: 'id',
+            property: 'id',
           },
         ],
       },
@@ -119,10 +129,12 @@ it.each([
       {
         kind: 'scalar',
         name: 'id',
+        property: 'id',
       },
       {
         kind: 'scalar',
         name: 'name',
+        property: 'name',
       },
     ],
   },
@@ -143,28 +155,34 @@ it.each([
       {
         kind: 'scalar',
         name: 'id',
+        property: 'id',
       },
       {
         kind: 'scalar',
         name: 'name',
+        property: 'name',
       },
       {
         kind: 'object',
         name: 'products',
+        property: 'products',
         selections: [
           {
             kind: 'object',
             name: 'manufacturer',
+            property: 'manufacturer',
             selections: [
               {
                 kind: 'scalar',
                 name: 'location',
+                property: 'location',
               },
             ],
           },
           {
             kind: 'scalar',
             name: 'name',
+            property: 'name',
           },
         ],
       },
@@ -200,28 +218,34 @@ it.each([
           {
             kind: 'scalar',
             name: 'name',
+            property: 'name',
           },
           {
             kind: 'object',
             name: 'manufacturer',
+            property: 'manufacturer',
             selections: [
               {
                 kind: 'object',
                 name: 'products',
+                property: 'products',
                 selections: [
                   {
                     kind: 'scalar',
                     name: 'upc',
+                    property: 'upc',
                   },
                   {
                     kind: 'scalar',
                     name: 'name',
+                    property: 'name',
                   },
                 ],
               },
               {
                 kind: 'scalar',
                 name: 'id',
+                property: 'id',
               },
             ],
           },
@@ -234,28 +258,34 @@ it.each([
           {
             kind: 'scalar',
             name: 'id',
+            property: 'id',
           },
           {
             kind: 'scalar',
             name: 'name',
+            property: 'name',
           },
           {
             kind: 'object',
             name: 'products',
+            property: 'products',
             selections: [
               {
                 kind: 'object',
                 name: 'manufacturer',
+                property: 'manufacturer',
                 selections: [
                   {
                     kind: 'scalar',
                     name: 'location',
+                    property: 'location',
                   },
                 ],
               },
               {
                 kind: 'scalar',
                 name: 'name',
+                property: 'name',
               },
             ],
           },
@@ -280,22 +310,27 @@ it.each([
           {
             kind: 'scalar',
             name: 'name',
+            property: 'name',
           },
           {
             kind: 'object',
             name: 'manufacturer',
+            property: 'manufacturer',
             selections: [
               {
                 kind: 'object',
                 name: 'products',
+                property: 'products',
                 selections: [
                   {
                     kind: 'scalar',
                     name: 'upc',
+                    property: 'upc',
                   },
                   {
                     kind: 'scalar',
                     name: 'name',
+                    property: 'name',
                   },
                 ],
               },
@@ -306,28 +341,34 @@ it.each([
                   {
                     kind: 'scalar',
                     name: 'id',
+                    property: 'id',
                   },
                   {
                     kind: 'scalar',
                     name: 'name',
+                    property: 'name',
                   },
                   {
                     kind: 'object',
                     name: 'products',
+                    property: 'products',
                     selections: [
                       {
                         kind: 'object',
                         name: 'manufacturer',
+                        property: 'manufacturer',
                         selections: [
                           {
                             kind: 'scalar',
                             name: 'location',
+                            property: 'location',
                           },
                         ],
                       },
                       {
                         kind: 'scalar',
                         name: 'name',
+                        property: 'name',
                       },
                     ],
                   },

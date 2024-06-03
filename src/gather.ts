@@ -105,12 +105,22 @@ export interface OperationScalarExport extends OperationExportAvailability {
   kind: 'scalar';
   /** Name of the scalar field. */
   name: string;
+  /**
+   * The property name to pluck from the execution result.
+   * It's the same as {@link name} unless an alias is used.
+   **/
+  property: string;
 }
 
 export interface OperationObjectExport extends OperationExportAvailability {
   kind: 'object';
   /** Name of the composite field. */
   name: string;
+  /**
+   * The property name to pluck from the execution result.
+   * It's the same as {@link name} unless an alias is used.
+   **/
+  property: string;
   /** Nested selections of the field. */
   selections: OperationExport[];
 }
@@ -133,6 +143,7 @@ export function planGather(
   const entries: string[] = [];
   let depth = 0;
   const typeInfo = new TypeInfo(buildSchema(blueprint.schema));
+
   visit(
     // we want to flatten fragments in the document
     // to just use the field visitor to build the gather
@@ -183,7 +194,7 @@ export function planGather(
       Field: {
         enter(node) {
           depth++;
-          entries.push(node.name.value);
+          entries.push(node.alias?.value ?? node.name.value);
 
           const fieldDef = typeInfo.getFieldDef();
           if (!fieldDef) {
@@ -221,6 +232,7 @@ export function planGather(
               kind: 'object',
               path: entries.join('.'),
               name: node.name.value,
+              property: node.alias?.value ?? node.name.value,
               type: String(type),
               ofType: ofType.name,
               inlineVariables,
@@ -231,6 +243,7 @@ export function planGather(
               kind: 'scalar',
               path: entries.join('.'),
               name: node.name.value,
+              property: node.alias?.value ?? node.name.value,
               type: String(type),
               ofType: ofType.name,
               inlineVariables,
@@ -245,33 +258,31 @@ export function planGather(
     }),
   );
 
-  const operationPlan = blueprint.types[gatherPlan.operation.type];
-  if (!operationPlan) {
+  const blueprintType = blueprint.types[gatherPlan.operation.type];
+  if (!blueprintType) {
     throw new Error(
       `Blueprint does not have the "${gatherPlan.operation.type}" operation`,
     );
   }
 
   for (const field of fields) {
-    const operationFieldPlan = operationPlan.fields[field.name];
-    if (!operationFieldPlan) {
+    const blueprintField = blueprintType.fields[field.name];
+    if (!blueprintField) {
       throw new Error(
-        `Blueprint operation type "${operationPlan.name}" doesn't have a "${field.name}" field`,
+        `Blueprint operation type "${blueprintType.name}" doesn't have a "${field.name}" field`,
       );
     }
-    if (!Object.keys(operationFieldPlan.resolvers).length) {
+    if (!Object.keys(blueprintField.resolvers).length) {
       throw new Error(
-        `Blueprint operation type "${operationPlan.name}" field "${field.name}" doesn't have resolvers`,
+        `Blueprint operation type "${blueprintType.name}" field "${field.name}" doesn't have resolvers`,
       );
     }
 
     // TODO: choose the right resolver when multiple
-    const operationFieldResolver = Object.values(
-      operationFieldPlan.resolvers,
-    )[0];
+    const operationFieldResolver = Object.values(blueprintField.resolvers)[0];
     if (!operationFieldResolver) {
       throw new Error(
-        `Blueprint field "${field.name}" on type "${operationPlan.name}" doesn't have resolvers`,
+        `Blueprint field "${field.name}" on type "${blueprintType.name}" doesn't have resolvers`,
       );
     }
 
@@ -305,7 +316,7 @@ export function planGather(
       for (const sel of field.selections) {
         insertResolversForSelection(
           blueprint,
-          operationPlan,
+          blueprintType,
           field,
           sel,
           resolver,
@@ -315,7 +326,7 @@ export function planGather(
       }
     }
 
-    gatherPlan.operation.resolvers[field.name] = resolver;
+    gatherPlan.operation.resolvers[field.property] = resolver;
   }
 
   // we build resolvers operations only after gather.
@@ -616,6 +627,7 @@ function insertResolversForSelection(
           getSelectionsAtDepth(currentResolver.exports, depth).push({
             kind: 'scalar',
             name: '__typename',
+            property: '__typename',
             private: true,
           });
         }
@@ -793,10 +805,12 @@ function insertResolversForSelection(
       ? {
           kind: 'scalar',
           name: sel.name,
+          property: sel.property,
         }
       : {
           kind: 'object',
           name: sel.name,
+          property: sel.property,
           selections: [],
         };
 
@@ -804,7 +818,8 @@ function insertResolversForSelection(
     resolver === currentResolver
       ? getSelectionsAtDepth(currentResolver.exports, depth)
       : resolver.exports;
-  if (!exportsIncludeField(dest, exp.name, true)) {
+
+  if (!exportsIncludeField(dest, exp.property, true)) {
     dest.push(exp);
   }
 
@@ -847,6 +862,7 @@ function prepareCompositeResolverForSelection(
         private: true,
         kind: 'scalar', // TODO: do variables always select scalars?
         name: variable.select,
+        property: variable.select,
       });
     }
   }
@@ -873,15 +889,15 @@ function prepareCompositeResolverForSelection(
  */
 function exportsIncludeField(
   exps: OperationExport[],
-  name: string,
+  property: string,
   /** Whether to convert private exports to public ones if the field is found. */
   convertToPublic: boolean,
 ) {
   for (const exp of exps) {
     if (exp.kind === 'fragment') {
-      return exportsIncludeField(exp.selections, name, convertToPublic);
+      return exportsIncludeField(exp.selections, property, convertToPublic);
     }
-    if (exp.name === name) {
+    if (exp.property === property) {
       if (convertToPublic && exp.private) {
         delete exp.private;
       }
@@ -1092,6 +1108,14 @@ function createSelectionsForExports(
           kind: Kind.NAME,
           value: exp.name,
         },
+        ...(exp.property !== exp.name
+          ? {
+              alias: {
+                kind: Kind.NAME,
+                value: exp.property,
+              },
+            }
+          : {}),
         selectionSet: {
           kind: Kind.SELECTION_SET,
           selections: createSelectionsForExports(exp.selections),
@@ -1104,6 +1128,14 @@ function createSelectionsForExports(
           kind: Kind.NAME,
           value: exp.name,
         },
+        ...(exp.property !== exp.name
+          ? {
+              alias: {
+                kind: Kind.NAME,
+                value: exp.property,
+              },
+            }
+          : {}),
       });
     }
   }

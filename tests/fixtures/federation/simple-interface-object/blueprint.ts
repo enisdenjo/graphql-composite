@@ -45,7 +45,7 @@ export const blueprint: Blueprint = {
     Query: {
       kind: 'object',
       name: 'Query',
-      implements: [],
+      implements: {},
       fields: {
         users: {
           name: 'users',
@@ -188,7 +188,12 @@ export const blueprint: Blueprint = {
     User: {
       kind: 'object',
       name: 'User',
-      implements: ['NodeWithName'],
+      implements: {
+        NodeWithName: {
+          name: 'NodeWithName',
+          subgraphs: ['a', 'b'], // it's not implementing it really in B, we "fake" it as it's @interfaceObject
+        },
+      },
       fields: {
         id: {
           name: 'id',
@@ -347,7 +352,12 @@ export const blueprint: Blueprint = {
     Admin: {
       kind: 'object',
       name: 'Admin',
-      implements: ['Account'],
+      implements: {
+        Account: {
+          name: 'Account',
+          subgraphs: ['a', 'b', 'c'], // it's not implementing it really in B and C, we "fake" it as it's @interfaceObject
+        },
+      },
       fields: {
         id: {
           name: 'id',

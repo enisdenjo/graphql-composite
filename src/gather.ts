@@ -496,18 +496,25 @@ function insertResolversForSelection(
           `Blueprint doesn't have a "${sel.typeCondition}" object`,
         );
       }
-      if (!objectType.implements.includes(interfaceType.name)) {
+
+      const implementingInterface = objectType.implements[interfaceType.name];
+
+      if (!implementingInterface?.name) {
         throw new Error(
           `Blueprint "${sel.typeCondition}" object doesn't implement the "${interfaceType.name}" interface`,
         );
       }
 
+      const implementsInterfaceInCurrentSubgraph =
+        implementingInterface.subgraphs.includes(currentResolver.subgraph);
+
       const objectTypeAvailableInSubgraphs = allSubgraphsForType(objectType);
       if (
-        !Object.keys(objectType.resolvers).length &&
-        !parentSelInType.fields[parentSel.name]!.subgraphs.every((s) =>
-          objectTypeAvailableInSubgraphs.includes(s),
-        )
+        !implementsInterfaceInCurrentSubgraph ||
+        (!Object.keys(objectType.resolvers).length &&
+          !parentSelInType.fields[parentSel.name]!.subgraphs.every((s) =>
+            objectTypeAvailableInSubgraphs.includes(s),
+          ))
       ) {
         // the selection's object doesnt have any other resolvers and its available subgraphs
         // dont intersect with the parent field's subgraphs. this means that the field is
@@ -621,7 +628,7 @@ function insertResolversForSelection(
       (t) =>
         t.kind === 'interface' &&
         parentTypePlan!.kind === 'object' &&
-        parentTypePlan!.implements.includes(t.name),
+        parentTypePlan!.implements[t.name]?.name === t.name,
     );
     if (!interfaceType) {
       throw new Error(

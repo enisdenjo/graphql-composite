@@ -18,6 +18,7 @@ import {
   allSubgraphsForType,
   Blueprint,
   BlueprintCompositeResolver,
+  BlueprintObject,
   BlueprintResolver,
   BlueprintResolverConstantVariable,
   BlueprintScalarResolver,
@@ -497,16 +498,15 @@ function insertResolversForSelection(
         );
       }
 
-      const implementingInterface = objectType.implements[interfaceType.name];
-
-      if (!implementingInterface?.name) {
+      if (!implementsInterface(objectType, interfaceType.name)) {
         throw new Error(
           `Blueprint "${sel.typeCondition}" object doesn't implement the "${interfaceType.name}" interface`,
         );
       }
 
-      const implementsInterfaceInCurrentSubgraph =
-        implementingInterface.subgraphs.includes(currentResolver.subgraph);
+      const implementsInterfaceInCurrentSubgraph = objectType.implements[
+        interfaceType.name
+      ]?.subgraphs.includes(currentResolver.subgraph);
 
       const objectTypeAvailableInSubgraphs = allSubgraphsForType(objectType);
       if (
@@ -628,7 +628,7 @@ function insertResolversForSelection(
       (t) =>
         t.kind === 'interface' &&
         parentTypePlan!.kind === 'object' &&
-        parentTypePlan!.implements[t.name]?.name === t.name,
+        implementsInterface(parentTypePlan!, t.name),
     );
     if (!interfaceType) {
       throw new Error(
@@ -1006,4 +1006,11 @@ function createSelectionsForExports(
     }
   }
   return sels;
+}
+
+function implementsInterface(
+  objectType: BlueprintObject,
+  interfaceTypeName: string,
+) {
+  return objectType.implements[interfaceTypeName]?.name === interfaceTypeName;
 }

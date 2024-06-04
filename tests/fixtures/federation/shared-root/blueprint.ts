@@ -4,6 +4,7 @@ export const blueprint: Blueprint = {
   schema: /* GraphQL */ `
     type Query {
       product: Product
+      products: [Product]
     }
 
     type Product {
@@ -26,8 +27,8 @@ export const blueprint: Blueprint = {
             category: {
               subgraph: 'category',
               kind: 'object',
-              type: 'String',
-              ofType: 'String',
+              type: 'Product',
+              ofType: 'Product',
               operation: /* GraphQL */ `
                 {
                   product {
@@ -40,8 +41,8 @@ export const blueprint: Blueprint = {
             name: {
               subgraph: 'name',
               kind: 'object',
-              type: 'String',
-              ofType: 'String',
+              type: 'Product',
+              ofType: 'Product',
               operation: /* GraphQL */ `
                 {
                   product {
@@ -54,11 +55,59 @@ export const blueprint: Blueprint = {
             price: {
               subgraph: 'price',
               kind: 'object',
-              type: 'String',
-              ofType: 'String',
+              type: 'Product',
+              ofType: 'Product',
               operation: /* GraphQL */ `
                 {
                   product {
+                    ...__export
+                  }
+                }
+              `,
+              variables: {},
+            },
+          },
+        },
+        products: {
+          name: 'products',
+          subgraphs: ['category', 'name', 'price'],
+          resolvers: {
+            category: {
+              subgraph: 'category',
+              kind: 'object',
+              type: '[Product]',
+              ofType: 'Product',
+              operation: /* GraphQL */ `
+                {
+                  products {
+                    ...__export
+                  }
+                }
+              `,
+              variables: {},
+            },
+            name: {
+              subgraph: 'name',
+              kind: 'object',
+              type: '[Product]',
+              ofType: 'Product',
+              operation: /* GraphQL */ `
+                {
+                  products {
+                    ...__export
+                  }
+                }
+              `,
+              variables: {},
+            },
+            price: {
+              subgraph: 'price',
+              kind: 'object',
+              type: '[Product]',
+              ofType: 'Product',
+              operation: /* GraphQL */ `
+                {
+                  products {
                     ...__export
                   }
                 }

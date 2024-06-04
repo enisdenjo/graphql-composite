@@ -19,6 +19,7 @@ export const subgraphs: FixtureSubgraphs = {
 
           type Query {
             product: Product @shareable
+            products: [Product] @shareable
           }
 
           type Product { # @key(fields: "id") {
@@ -33,6 +34,14 @@ export const subgraphs: FixtureSubgraphs = {
                 id: product.id,
                 category: product.category,
               };
+            },
+            products() {
+              return [
+                {
+                  id: product.id,
+                  category: product.category,
+                },
+              ];
             },
           },
           // Product: {
@@ -56,6 +65,7 @@ export const subgraphs: FixtureSubgraphs = {
 
           type Query {
             product: Product @shareable
+            products: [Product] @shareable
           }
 
           type Product { # @key(fields: "id") {
@@ -70,6 +80,14 @@ export const subgraphs: FixtureSubgraphs = {
                 id: product.id,
                 name: product.name,
               };
+            },
+            products() {
+              return [
+                {
+                  id: product.id,
+                  name: product.name,
+                },
+              ];
             },
           },
           // Product: {
@@ -93,6 +111,7 @@ export const subgraphs: FixtureSubgraphs = {
 
           type Query {
             product: Product @shareable
+            products: [Product] @shareable
           }
 
           type Product { # @key(fields: "id") {
@@ -107,6 +126,14 @@ export const subgraphs: FixtureSubgraphs = {
                 id: product.id,
                 price: product.price,
               };
+            },
+            products() {
+              return [
+                {
+                  id: product.id,
+                  price: product.price,
+                },
+              ];
             },
           },
           // Product: {

@@ -2973,6 +2973,202 @@ exports[`fixture 'federation/union-interface-distributed' > query 'NodesId' > sh
 }
 `;
 
+exports[`fixture 'federation/union-interface-distributed' > query 'ProductsNodeFragmentId' > should execute and explain 1`] = `
+[
+  {
+    "data": {
+      "products": [
+        {
+          "id": "oven1",
+        },
+        {
+          "id": "oven2",
+        },
+        {
+          "id": "toaster1",
+        },
+        {
+          "id": "toaster2",
+        },
+      ],
+    },
+    "exports": [
+      {
+        "kind": "fragment",
+        "selections": [
+          {
+            "inlineVariables": {},
+            "kind": "scalar",
+            "name": "id",
+            "ofType": "ID",
+            "path": "products.id",
+            "type": "ID!",
+          },
+        ],
+        "typeCondition": "Toaster",
+      },
+      {
+        "kind": "fragment",
+        "selections": [
+          {
+            "kind": "scalar",
+            "name": "id",
+          },
+        ],
+        "typeCondition": "Toaster",
+      },
+      {
+        "kind": "fragment",
+        "selections": [
+          {
+            "inlineVariables": {},
+            "kind": "scalar",
+            "name": "id",
+            "ofType": "ID",
+            "path": "products.id",
+            "type": "ID!",
+          },
+        ],
+        "typeCondition": "Oven",
+      },
+      {
+        "kind": "fragment",
+        "selections": [
+          {
+            "kind": "scalar",
+            "name": "id",
+          },
+        ],
+        "typeCondition": "Oven",
+      },
+    ],
+    "includes": [],
+    "kind": "interface",
+    "ofType": "Product",
+    "operation": "{
+  products {
+    ... on Toaster {
+      id
+    }
+    ... on Toaster {
+      id
+    }
+    ... on Oven {
+      id
+    }
+    ... on Oven {
+      id
+    }
+  }
+}",
+    "pathInData": [
+      "products",
+    ],
+    "pathToExportData": [
+      "products",
+    ],
+    "subgraph": "a",
+    "type": "[Product]",
+    "variables": {},
+  },
+]
+`;
+
+exports[`fixture 'federation/union-interface-distributed' > query 'ProductsNodeFragmentId' > should plan gather 1`] = `
+{
+  "operation": {
+    "name": "ProductsNodeFragmentId",
+    "resolvers": {
+      "products": {
+        "exports": [
+          {
+            "kind": "fragment",
+            "selections": [
+              {
+                "inlineVariables": {},
+                "kind": "scalar",
+                "name": "id",
+                "ofType": "ID",
+                "path": "products.id",
+                "type": "ID!",
+              },
+            ],
+            "typeCondition": "Toaster",
+          },
+          {
+            "kind": "fragment",
+            "selections": [
+              {
+                "kind": "scalar",
+                "name": "id",
+              },
+            ],
+            "typeCondition": "Toaster",
+          },
+          {
+            "kind": "fragment",
+            "selections": [
+              {
+                "inlineVariables": {},
+                "kind": "scalar",
+                "name": "id",
+                "ofType": "ID",
+                "path": "products.id",
+                "type": "ID!",
+              },
+            ],
+            "typeCondition": "Oven",
+          },
+          {
+            "kind": "fragment",
+            "selections": [
+              {
+                "kind": "scalar",
+                "name": "id",
+              },
+            ],
+            "typeCondition": "Oven",
+          },
+        ],
+        "includes": {},
+        "kind": "interface",
+        "ofType": "Product",
+        "operation": "{
+  products {
+    ... on Toaster {
+      id
+    }
+    ... on Toaster {
+      id
+    }
+    ... on Oven {
+      id
+    }
+    ... on Oven {
+      id
+    }
+  }
+}",
+        "pathToExportData": [
+          "products",
+        ],
+        "subgraph": "a",
+        "type": "[Product]",
+        "variables": {},
+      },
+    },
+    "type": "Query",
+  },
+  "query": "query ProductsNodeFragmentId {
+  products {
+    ... on Node {
+      id
+    }
+  }
+}",
+}
+`;
+
 exports[`fixture 'federation/union-interface-distributed' > query 'Warranty' > should execute and explain 1`] = `
 [
   {

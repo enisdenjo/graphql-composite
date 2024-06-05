@@ -382,6 +382,25 @@ type OperationField = OperationObjectField | OperationScalarField;
 
 type OperationCompositeSelection = OperationObjectField | OperationFragment;
 
+function removeSelectionAtDepth(
+  selections: OperationSelection[],
+  sel: OperationSelection,
+  depth: number,
+): void;
+function removeSelectionAtDepth(
+  selections: OperationExport[],
+  sel: OperationExport,
+  depth: number,
+): void;
+function removeSelectionAtDepth(
+  selections: (OperationSelection | OperationExport)[],
+  sel: OperationSelection | OperationExport,
+  depth: number,
+): void {
+  const list = getSelectionsAtDepth(selections, depth);
+  list.splice(list.indexOf(sel), 1);
+}
+
 function getSelectionsAtDepth(
   selections: OperationSelection[],
   depth: number,
@@ -491,27 +510,90 @@ function insertResolversForSelection(
         // TODO: what if all fragments are skipped?
         return;
       }
-      const objectType = blueprint.types[sel.typeCondition];
-      if (!objectType || objectType.kind !== 'object') {
+
+      const selectedType = blueprint.types[sel.typeCondition];
+
+      if (!selectedType) {
+        throw new Error(`Blueprint doesn't have a "${sel.typeCondition}" type`);
+      }
+
+      if (selectedType.kind === 'interface') {
+        // Convert the fragment to a set of fragments.
+        // Do it for each object that implements the interface and is resolvable by the parent type.
+        //
+        // { ... on Interface { fieldA } }
+        // ->
+        // { ... on Object1 { fieldA }, ... on Object2 { fieldA } }
+        //
+        // We can't pass `... on Interface` to a subgraph that is not aware of the interface.
+        // The public schema may show the interface on the object types
+        // but the subgraph may not have the interface in its schema.
+        // It is valid to send such a query in a distributed schema.
+
+        // Find all the object types that implement the interface type
+        const possibleObjectTypes = Object.values(blueprint.types)
+          .filter((t): t is BlueprintObject => t.kind === 'object')
+          .filter((t) => implementsInterface(t, selectedType.name));
+
+        // TODO: intersection
+
+        if (!possibleObjectTypes.length) {
+          throw new Error(
+            `Blueprint interface "${selectedType.name}" doesn't have any implementing objects`,
+          );
+        }
+
+        // Remove the current fragment from the parent's exports
+        removeSelectionAtDepth(currentResolver.exports, sel, depth);
+
+        for (const possibleType of possibleObjectTypes) {
+          // Add a new fragment for each object type that implements the interface
+          getSelectionsAtDepth(currentResolver.exports, depth).push({
+            kind: 'fragment',
+            typeCondition: possibleType.name,
+            selections: sel.selections,
+          });
+
+          // Run the function again for each new fragment, with the same arguments as before,
+          // except for the type condition of the fragment
+          insertResolversForSelection(
+            blueprint,
+            parentSelInType,
+            parentSel,
+            {
+              ...sel,
+              typeCondition: possibleType.name,
+            },
+            currentResolver,
+            depth,
+            resolvingAdditionalFields,
+          );
+        }
+
+        // We're done with the fragment
+        return;
+      }
+
+      if (selectedType.kind !== 'object') {
         throw new Error(
           `Blueprint doesn't have a "${sel.typeCondition}" object`,
         );
       }
 
-      if (!implementsInterface(objectType, interfaceType.name)) {
+      if (!implementsInterface(selectedType, interfaceType.name)) {
         throw new Error(
           `Blueprint "${sel.typeCondition}" object doesn't implement the "${interfaceType.name}" interface`,
         );
       }
 
-      const implementsInterfaceInCurrentSubgraph = objectType.implements[
+      const implementsInterfaceInCurrentSubgraph = selectedType.implements[
         interfaceType.name
       ]?.subgraphs.includes(currentResolver.subgraph);
 
-      const objectTypeAvailableInSubgraphs = allSubgraphsForType(objectType);
+      const objectTypeAvailableInSubgraphs = allSubgraphsForType(selectedType);
       if (
         !implementsInterfaceInCurrentSubgraph ||
-        (!Object.keys(objectType.resolvers).length &&
+        (!Object.keys(selectedType.resolvers).length &&
           !parentSelInType.fields[parentSel.name]!.subgraphs.every((s) =>
             objectTypeAvailableInSubgraphs.includes(s),
           ))
@@ -548,10 +630,10 @@ function insertResolversForSelection(
         // subgraph, we have to resolve it from another subgraph
 
         // TODO: actually choose the best resolver, not the first one
-        const resolverPlan = Object.values(objectType.resolvers)[0]?.[0];
+        const resolverPlan = Object.values(selectedType.resolvers)[0]?.[0];
         if (!resolverPlan) {
           throw new Error(
-            `Blueprint type "${objectType.name}" doesn't have any resolvers`,
+            `Blueprint type "${selectedType.name}" doesn't have any resolvers`,
           );
         }
 
@@ -567,7 +649,7 @@ function insertResolversForSelection(
         for (const subSel of sel.selections) {
           insertResolversForSelection(
             blueprint,
-            objectType,
+            selectedType,
             sel,
             subSel,
             resolver,

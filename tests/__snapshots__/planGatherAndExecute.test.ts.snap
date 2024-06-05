@@ -2796,6 +2796,522 @@ exports[`fixture 'federation/simple-interface-object' > query 'UsersWithUsername
 }
 `;
 
+exports[`fixture 'federation/union-interface-distributed' > query 'NodesDiffFields' > should execute and explain 1`] = `
+[
+  {
+    "data": {
+      "nodes": [
+        {
+          "warranty": 3,
+        },
+        {
+          "warranty": 4,
+        },
+      ],
+    },
+    "exports": [
+      {
+        "kind": "fragment",
+        "selections": [
+          {
+            "kind": "scalar",
+            "name": "warranty",
+          },
+        ],
+        "typeCondition": "Toaster",
+      },
+    ],
+    "includes": [],
+    "kind": "interface",
+    "ofType": "Node",
+    "operation": "{
+  nodes {
+    ... on Toaster {
+      warranty
+    }
+  }
+}",
+    "pathInData": [
+      "nodes",
+    ],
+    "pathToExportData": [
+      "nodes",
+    ],
+    "subgraph": "a",
+    "type": "[Node]",
+    "variables": {},
+  },
+]
+`;
+
+exports[`fixture 'federation/union-interface-distributed' > query 'NodesDiffFields' > should plan gather 1`] = `
+{
+  "operation": {
+    "name": "NodesDiffFields",
+    "resolvers": {
+      "nodes": {
+        "exports": [
+          {
+            "kind": "fragment",
+            "selections": [
+              {
+                "kind": "scalar",
+                "name": "warranty",
+              },
+            ],
+            "typeCondition": "Toaster",
+          },
+        ],
+        "includes": {},
+        "kind": "interface",
+        "ofType": "Node",
+        "operation": "{
+  nodes {
+    ... on Toaster {
+      warranty
+    }
+  }
+}",
+        "pathToExportData": [
+          "nodes",
+        ],
+        "subgraph": "a",
+        "type": "[Node]",
+        "variables": {},
+      },
+    },
+    "type": "Query",
+  },
+  "query": "query NodesDiffFields {
+  nodes {
+    ... on Toaster {
+      warranty
+    }
+    ... on Oven {
+      id
+    }
+  }
+}",
+}
+`;
+
+exports[`fixture 'federation/union-interface-distributed' > query 'NodesId' > should execute and explain 1`] = `
+[
+  {
+    "data": {
+      "nodes": [
+        {
+          "id": "toaster1",
+        },
+        {
+          "id": "toaster2",
+        },
+      ],
+    },
+    "exports": [
+      {
+        "kind": "scalar",
+        "name": "id",
+      },
+    ],
+    "includes": [],
+    "kind": "interface",
+    "ofType": "Node",
+    "operation": "{
+  nodes {
+    id
+  }
+}",
+    "pathInData": [
+      "nodes",
+    ],
+    "pathToExportData": [
+      "nodes",
+    ],
+    "subgraph": "a",
+    "type": "[Node]",
+    "variables": {},
+  },
+]
+`;
+
+exports[`fixture 'federation/union-interface-distributed' > query 'NodesId' > should plan gather 1`] = `
+{
+  "operation": {
+    "name": "NodesId",
+    "resolvers": {
+      "nodes": {
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "id",
+          },
+        ],
+        "includes": {},
+        "kind": "interface",
+        "ofType": "Node",
+        "operation": "{
+  nodes {
+    id
+  }
+}",
+        "pathToExportData": [
+          "nodes",
+        ],
+        "subgraph": "a",
+        "type": "[Node]",
+        "variables": {},
+      },
+    },
+    "type": "Query",
+  },
+  "query": "query NodesId {
+  nodes {
+    id
+  }
+}",
+}
+`;
+
+exports[`fixture 'federation/union-interface-distributed' > query 'ProductsNodeFragmentId' > should execute and explain 1`] = `
+[
+  {
+    "data": {
+      "products": [
+        {
+          "id": "oven1",
+        },
+        {
+          "id": "oven2",
+        },
+        {
+          "id": "toaster1",
+        },
+        {
+          "id": "toaster2",
+        },
+      ],
+    },
+    "exports": [
+      {
+        "kind": "fragment",
+        "selections": [
+          {
+            "kind": "scalar",
+            "name": "id",
+          },
+        ],
+        "typeCondition": "Toaster",
+      },
+      {
+        "kind": "fragment",
+        "selections": [
+          {
+            "kind": "scalar",
+            "name": "id",
+          },
+        ],
+        "typeCondition": "Oven",
+      },
+    ],
+    "includes": [],
+    "kind": "interface",
+    "ofType": "Product",
+    "operation": "{
+  products {
+    ... on Toaster {
+      id
+    }
+    ... on Oven {
+      id
+    }
+  }
+}",
+    "pathInData": [
+      "products",
+    ],
+    "pathToExportData": [
+      "products",
+    ],
+    "subgraph": "a",
+    "type": "[Product]",
+    "variables": {},
+  },
+]
+`;
+
+exports[`fixture 'federation/union-interface-distributed' > query 'ProductsNodeFragmentId' > should plan gather 1`] = `
+{
+  "operation": {
+    "name": "ProductsNodeFragmentId",
+    "resolvers": {
+      "products": {
+        "exports": [
+          {
+            "kind": "fragment",
+            "selections": [
+              {
+                "kind": "scalar",
+                "name": "id",
+              },
+            ],
+            "typeCondition": "Toaster",
+          },
+          {
+            "kind": "fragment",
+            "selections": [
+              {
+                "kind": "scalar",
+                "name": "id",
+              },
+            ],
+            "typeCondition": "Oven",
+          },
+        ],
+        "includes": {},
+        "kind": "interface",
+        "ofType": "Product",
+        "operation": "{
+  products {
+    ... on Toaster {
+      id
+    }
+    ... on Oven {
+      id
+    }
+  }
+}",
+        "pathToExportData": [
+          "products",
+        ],
+        "subgraph": "a",
+        "type": "[Product]",
+        "variables": {},
+      },
+    },
+    "type": "Query",
+  },
+  "query": "query ProductsNodeFragmentId {
+  products {
+    ... on Node {
+      id
+    }
+  }
+}",
+}
+`;
+
+exports[`fixture 'federation/union-interface-distributed' > query 'ToastersFragments' > should execute and explain 1`] = `
+[
+  {
+    "data": {
+      "toasters": [
+        {
+          "__typename": "Toaster",
+          "id": "toaster1",
+          "warranty": 3,
+        },
+        {
+          "__typename": "Toaster",
+          "id": "toaster2",
+          "warranty": 4,
+        },
+      ],
+    },
+    "exports": [
+      {
+        "kind": "scalar",
+        "name": "warranty",
+      },
+      {
+        "kind": "scalar",
+        "name": "id",
+      },
+      {
+        "kind": "scalar",
+        "name": "__typename",
+      },
+    ],
+    "includes": [],
+    "kind": "object",
+    "ofType": "Toaster",
+    "operation": "{
+  toasters {
+    warranty
+    id
+    __typename
+  }
+}",
+    "pathInData": [
+      "toasters",
+    ],
+    "pathToExportData": [
+      "toasters",
+    ],
+    "subgraph": "a",
+    "type": "[Toaster]",
+    "variables": {},
+  },
+]
+`;
+
+exports[`fixture 'federation/union-interface-distributed' > query 'ToastersFragments' > should plan gather 1`] = `
+{
+  "operation": {
+    "name": "ToastersFragments",
+    "resolvers": {
+      "toasters": {
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "warranty",
+          },
+          {
+            "kind": "scalar",
+            "name": "id",
+          },
+          {
+            "kind": "scalar",
+            "name": "__typename",
+          },
+        ],
+        "includes": {},
+        "kind": "object",
+        "ofType": "Toaster",
+        "operation": "{
+  toasters {
+    warranty
+    id
+    __typename
+  }
+}",
+        "pathToExportData": [
+          "toasters",
+        ],
+        "subgraph": "a",
+        "type": "[Toaster]",
+        "variables": {},
+      },
+    },
+    "type": "Query",
+  },
+  "query": "query ToastersFragments {
+  toasters {
+    ...ToasterFragment
+    ...NodeFragment
+  }
+}
+
+fragment ToasterFragment on Toaster {
+  warranty
+}
+
+fragment NodeFragment on Node {
+  id
+  __typename
+}",
+}
+`;
+
+exports[`fixture 'federation/union-interface-distributed' > query 'Warranty' > should execute and explain 1`] = `
+[
+  {
+    "data": {
+      "node": {
+        "warranty": 3,
+      },
+    },
+    "exports": [
+      {
+        "kind": "fragment",
+        "selections": [
+          {
+            "kind": "scalar",
+            "name": "warranty",
+          },
+        ],
+        "typeCondition": "Toaster",
+      },
+    ],
+    "includes": [],
+    "kind": "interface",
+    "ofType": "Node",
+    "operation": "query ($id: ID!) {
+  node(id: $id) {
+    ... on Toaster {
+      warranty
+    }
+  }
+}",
+    "pathInData": [
+      "node",
+    ],
+    "pathToExportData": [
+      "node",
+    ],
+    "subgraph": "a",
+    "type": "Node",
+    "variables": {
+      "id": "toaster1",
+    },
+  },
+]
+`;
+
+exports[`fixture 'federation/union-interface-distributed' > query 'Warranty' > should plan gather 1`] = `
+{
+  "operation": {
+    "name": "Warranty",
+    "resolvers": {
+      "node": {
+        "exports": [
+          {
+            "kind": "fragment",
+            "selections": [
+              {
+                "kind": "scalar",
+                "name": "warranty",
+              },
+            ],
+            "typeCondition": "Toaster",
+          },
+        ],
+        "includes": {},
+        "kind": "interface",
+        "ofType": "Node",
+        "operation": "query ($id: ID!) {
+  node(id: $id) {
+    ... on Toaster {
+      warranty
+    }
+  }
+}",
+        "pathToExportData": [
+          "node",
+        ],
+        "subgraph": "a",
+        "type": "Node",
+        "variables": {
+          "id": {
+            "kind": "constant",
+            "name": "id",
+            "value": "toaster1",
+          },
+        },
+      },
+    },
+    "type": "Query",
+  },
+  "query": "query Warranty {
+  node(id: "toaster1") {
+    ... on Toaster {
+      warranty
+    }
+  }
+}",
+}
+`;
+
 exports[`fixture 'federation/union-intersection' > query 'AllMedia' > should execute and explain 1`] = `
 [
   {

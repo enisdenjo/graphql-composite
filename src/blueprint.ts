@@ -24,14 +24,21 @@ export interface BlueprintInterface {
 export interface BlueprintObject {
   kind: 'object';
   name: string;
-  /** List of {@link BlueprintInterface.name interface name}s this type implements, if any. */
-  implements: BlueprintInterface['name'][];
+  /** Map of {@link BlueprintInterface.name interface name}s this type implements, if any. */
+  implements: {
+    [name in BlueprintInterface['name']]: BlueprintImplements;
+  };
   resolvers: {
     [subgraph in BlueprintObjectResolver['subgraph']]: BlueprintObjectResolver[];
   };
   fields: {
     [name in BlueprintField['name']]: BlueprintField;
   };
+}
+
+export interface BlueprintImplements {
+  name: string;
+  subgraphs: string[];
 }
 
 export interface BlueprintField {

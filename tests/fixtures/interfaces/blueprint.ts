@@ -30,7 +30,7 @@ export const blueprint: Blueprint = {
     Query: {
       kind: 'object',
       name: 'Query',
-      implements: [],
+      implements: {},
       fields: {
         animal: {
           name: 'animal',
@@ -149,7 +149,12 @@ export const blueprint: Blueprint = {
     Cat: {
       kind: 'object',
       name: 'Cat',
-      implements: ['Animal'],
+      implements: {
+        Animal: {
+          name: 'Animal',
+          subgraphs: ['shelter', 'store'],
+        },
+      },
       fields: {
         name: {
           name: 'name',
@@ -222,7 +227,12 @@ export const blueprint: Blueprint = {
     Dog: {
       kind: 'object',
       name: 'Dog',
-      implements: ['Animal'],
+      implements: {
+        Animal: {
+          name: 'Animal',
+          subgraphs: ['shelter', 'store'],
+        },
+      },
       fields: {
         name: {
           name: 'name',

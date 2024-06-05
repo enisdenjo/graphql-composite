@@ -35,7 +35,7 @@ export const blueprint: Blueprint = {
     Query: {
       kind: 'object',
       name: 'Query',
-      implements: [],
+      implements: {},
       fields: {
         media: {
           name: 'media',
@@ -175,7 +175,16 @@ export const blueprint: Blueprint = {
     Book: {
       kind: 'object',
       name: 'Book',
-      implements: ['Media', 'ViewerMedia'],
+      implements: {
+        Media: {
+          name: 'Media',
+          subgraphs: ['a', 'b'],
+        },
+        ViewerMedia: {
+          name: 'ViewerMedia',
+          subgraphs: ['a', 'b'],
+        },
+      },
       fields: {
         title: {
           name: 'title',
@@ -188,7 +197,16 @@ export const blueprint: Blueprint = {
     Movie: {
       kind: 'object',
       name: 'Movie',
-      implements: ['Media', 'ViewerMedia'],
+      implements: {
+        Media: {
+          name: 'Media',
+          subgraphs: ['b'],
+        },
+        ViewerMedia: {
+          name: 'ViewerMedia',
+          subgraphs: ['b'],
+        },
+      },
       fields: {
         title: {
           name: 'title',
@@ -201,7 +219,16 @@ export const blueprint: Blueprint = {
     Song: {
       kind: 'object',
       name: 'Song',
-      implements: ['Media', 'ViewerMedia'],
+      implements: {
+        Media: {
+          name: 'Media',
+          subgraphs: ['a'],
+        },
+        ViewerMedia: {
+          name: 'ViewerMedia',
+          subgraphs: ['a'],
+        },
+      },
       fields: {
         title: {
           name: 'title',
@@ -214,7 +241,7 @@ export const blueprint: Blueprint = {
     Viewer: {
       kind: 'object',
       name: 'Viewer',
-      implements: [],
+      implements: {},
       fields: {
         media: {
           name: 'media',

@@ -3169,6 +3169,54 @@ exports[`fixture 'federation/union-interface-distributed' > query 'ProductsNodeF
 }
 `;
 
+exports[`fixture 'federation/union-interface-distributed' > query 'ToastersFragments' > should plan gather 1`] = `
+{
+  "operation": {
+    "name": "ToastersFragments",
+    "resolvers": {
+      "toasters": {
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "warranty",
+          },
+        ],
+        "includes": {},
+        "kind": "object",
+        "ofType": "Toaster",
+        "operation": "{
+  toasters {
+    warranty
+  }
+}",
+        "pathToExportData": [
+          "toasters",
+        ],
+        "subgraph": "a",
+        "type": "[Toaster]",
+        "variables": {},
+      },
+    },
+    "type": "Query",
+  },
+  "query": "query ToastersFragments {
+  toasters {
+    ...ToasterFragment
+    ...NodeFragment
+  }
+}
+
+fragment ToasterFragment on Toaster {
+  warranty
+}
+
+fragment NodeFragment on Node {
+  id
+  __typename
+}",
+}
+`;
+
 exports[`fixture 'federation/union-interface-distributed' > query 'Warranty' > should execute and explain 1`] = `
 [
   {

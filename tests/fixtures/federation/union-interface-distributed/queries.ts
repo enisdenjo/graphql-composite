@@ -84,42 +84,43 @@ export const queries: FixtureQueries = [
       },
     },
   },
-  // FIXME: This query is not working
-  // {
-  //   name: 'ToastersFragments',
-  //   document: parse(/* GraphQL */ `
-  //     query ToastersFragments {
-  //       toasters {
-  //         ...ToasterFragment
-  //         ...NodeFragment
-  //       }
-  //     }
+  {
+    name: 'ToastersFragments',
+    document: parse(/* GraphQL */ `
+      query ToastersFragments {
+        toasters {
+          ...ToasterFragment
+          ...NodeFragment
+        }
+      }
 
-  //     fragment ToasterFragment on Toaster {
-  //       id
-  //     }
+      fragment ToasterFragment on Toaster {
+        warranty
+      }
 
-  //     fragment NodeFragment on Node {
-  //       id
-  //       __typename
-  //     }
-  //   `),
-  //   variables: {},
-  //   result: {
-  //     data: {
-  //       toasters: [
-  //         {
-  //           id: 'toaster1',
-  //           __typename: 'Toaster',
-  //         },
-  //         {
-  //           id: 'toaster2',
-  //           __typename: 'Toaster',
-  //         },
-  //       ],
-  //     },
-  //   },
-  // },
+      fragment NodeFragment on Node {
+        id
+        __typename
+      }
+    `),
+    variables: {},
+    result: {
+      data: {
+        toasters: [
+          {
+            id: 'toaster1',
+            warranty: 3,
+            __typename: 'Toaster',
+          },
+          {
+            id: 'toaster2',
+            warranty: 4,
+            __typename: 'Toaster',
+          },
+        ],
+      },
+    },
+  },
   {
     name: 'Warranty',
     document: parse(/* GraphQL */ `

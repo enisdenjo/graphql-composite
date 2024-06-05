@@ -156,6 +156,10 @@ export const blueprint: Blueprint = {
           name: 'Node',
           subgraphs: ['a'],
         },
+        Product: {
+          name: 'Product',
+          subgraphs: ['a'],
+        },
       },
       fields: {
         __typename: {
@@ -210,6 +214,10 @@ export const blueprint: Blueprint = {
         Node: {
           name: 'Node',
           subgraphs: ['b'],
+        },
+        Product: {
+          name: 'Product',
+          subgraphs: ['a'],
         },
       },
       fields: {

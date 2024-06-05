@@ -2,38 +2,37 @@ import { parse } from 'graphql';
 import { FixtureQueries } from '../../../utils.js';
 
 export const queries: FixtureQueries = [
-  // FIXME: This query is not working
-  // {
-  //   name: 'ProductsNodeFragmentId',
-  //   document: parse(/* GraphQL */ `
-  //     query ProductsNodeFragmentId {
-  //       products {
-  //         ... on Node {
-  //           id
-  //         }
-  //       }
-  //     }
-  //   `),
-  //   variables: {},
-  //   result: {
-  //     data: {
-  //       products: [
-  //         {
-  //           id: 'oven1',
-  //         },
-  //         {
-  //           id: 'oven2',
-  //         },
-  //         {
-  //           id: 'toaster1',
-  //         },
-  //         {
-  //           id: 'toaster2',
-  //         },
-  //       ],
-  //     },
-  //   },
-  // },
+  {
+    name: 'ProductsNodeFragmentId',
+    document: parse(/* GraphQL */ `
+      query ProductsNodeFragmentId {
+        products {
+          ... on Node {
+            id
+          }
+        }
+      }
+    `),
+    variables: {},
+    result: {
+      data: {
+        products: [
+          {
+            id: 'oven1',
+          },
+          {
+            id: 'oven2',
+          },
+          {
+            id: 'toaster1',
+          },
+          {
+            id: 'toaster2',
+          },
+        ],
+      },
+    },
+  },
   {
     name: 'NodesDiffFields',
     document: parse(/* GraphQL */ `

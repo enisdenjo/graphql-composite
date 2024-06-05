@@ -502,19 +502,63 @@ function insertResolversForSelection(
 
     // fragment's type is different from the parent, the type should implement parent's interface
     if (sel.typeCondition !== parentOfType) {
-      const interfaceType = blueprint.types[parentOfType];
-      if (!interfaceType || interfaceType.kind !== 'interface') {
-        // because of [NOTE 2], we want to focus only on fragments whose type condition matches the parent resolver
-        // and skip others.
-        // see BookAll test case in tests/fixtures/federation/union-intersection/queries.ts
-        // TODO: what if all fragments are skipped?
-        return;
-      }
-
       const selectedType = blueprint.types[sel.typeCondition];
 
       if (!selectedType) {
         throw new Error(`Blueprint doesn't have a "${sel.typeCondition}" type`);
+      }
+
+      const parentType = blueprint.types[parentOfType];
+
+      if (!parentType) {
+        // should we ignore the fragment? or throw an error?
+        return;
+      }
+
+      if (parentType.kind !== 'interface') {
+        // we need to check if it implements an interface matching the type condition
+        if (!implementsInterface(parentType, sel.typeCondition)) {
+          // because of [NOTE 2], we want to focus only on fragments whose type condition matches the parent resolver
+          // and skip others.
+          // see BookAll test case in tests/fixtures/federation/union-intersection/queries.ts
+          // TODO: what if all fragments are skipped?
+          return;
+        }
+
+        // Changes the type of the fragment to the parent's type
+        // Does it only when the object type implements the interface
+        //
+        // { ... on Interface { fieldA } }
+        // ->
+        // { ... on Object    { fieldA } }
+        //
+        // We can't pass `... on Interface` to a subgraph that is not aware of the interface.
+        // The public schema may show the interface on the object types
+        // but the subgraph may not have the interface in its schema.
+        // It is valid to send such a query in a distributed schema.
+
+        getSelectionsAtDepth(currentResolver.exports, depth).push({
+          kind: 'fragment',
+          typeCondition: parentType.name,
+          selections: sel.selections,
+        });
+
+        // Run the function again for each new fragment, with the same arguments as before,
+        // except for the type condition of the fragment
+        insertResolversForSelection(
+          blueprint,
+          parentSelInType,
+          parentSel,
+          {
+            ...sel,
+            typeCondition: parentType.name,
+          },
+          currentResolver,
+          depth,
+          resolvingAdditionalFields,
+        );
+
+        return;
       }
 
       if (selectedType.kind === 'interface') {
@@ -580,14 +624,14 @@ function insertResolversForSelection(
         );
       }
 
-      if (!implementsInterface(selectedType, interfaceType.name)) {
+      if (!implementsInterface(selectedType, parentType.name)) {
         throw new Error(
-          `Blueprint "${sel.typeCondition}" object doesn't implement the "${interfaceType.name}" interface`,
+          `Blueprint "${sel.typeCondition}" object doesn't implement the "${parentType.name}" interface`,
         );
       }
 
       const implementsInterfaceInCurrentSubgraph = selectedType.implements[
-        interfaceType.name
+        parentType.name
       ]?.subgraphs.includes(currentResolver.subgraph);
 
       const objectTypeAvailableInSubgraphs = allSubgraphsForType(selectedType);

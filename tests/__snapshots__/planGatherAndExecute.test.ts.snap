@@ -2997,39 +2997,11 @@ exports[`fixture 'federation/union-interface-distributed' > query 'ProductsNodeF
         "kind": "fragment",
         "selections": [
           {
-            "inlineVariables": {},
-            "kind": "scalar",
-            "name": "id",
-            "ofType": "ID",
-            "path": "products.id",
-            "type": "ID!",
-          },
-        ],
-        "typeCondition": "Toaster",
-      },
-      {
-        "kind": "fragment",
-        "selections": [
-          {
             "kind": "scalar",
             "name": "id",
           },
         ],
         "typeCondition": "Toaster",
-      },
-      {
-        "kind": "fragment",
-        "selections": [
-          {
-            "inlineVariables": {},
-            "kind": "scalar",
-            "name": "id",
-            "ofType": "ID",
-            "path": "products.id",
-            "type": "ID!",
-          },
-        ],
-        "typeCondition": "Oven",
       },
       {
         "kind": "fragment",
@@ -3048,12 +3020,6 @@ exports[`fixture 'federation/union-interface-distributed' > query 'ProductsNodeF
     "operation": "{
   products {
     ... on Toaster {
-      id
-    }
-    ... on Toaster {
-      id
-    }
-    ... on Oven {
       id
     }
     ... on Oven {
@@ -3085,39 +3051,11 @@ exports[`fixture 'federation/union-interface-distributed' > query 'ProductsNodeF
             "kind": "fragment",
             "selections": [
               {
-                "inlineVariables": {},
-                "kind": "scalar",
-                "name": "id",
-                "ofType": "ID",
-                "path": "products.id",
-                "type": "ID!",
-              },
-            ],
-            "typeCondition": "Toaster",
-          },
-          {
-            "kind": "fragment",
-            "selections": [
-              {
                 "kind": "scalar",
                 "name": "id",
               },
             ],
             "typeCondition": "Toaster",
-          },
-          {
-            "kind": "fragment",
-            "selections": [
-              {
-                "inlineVariables": {},
-                "kind": "scalar",
-                "name": "id",
-                "ofType": "ID",
-                "path": "products.id",
-                "type": "ID!",
-              },
-            ],
-            "typeCondition": "Oven",
           },
           {
             "kind": "fragment",
@@ -3136,12 +3074,6 @@ exports[`fixture 'federation/union-interface-distributed' > query 'ProductsNodeF
         "operation": "{
   products {
     ... on Toaster {
-      id
-    }
-    ... on Toaster {
-      id
-    }
-    ... on Oven {
       id
     }
     ... on Oven {
@@ -3192,26 +3124,12 @@ exports[`fixture 'federation/union-interface-distributed' > query 'ToastersFragm
         "name": "warranty",
       },
       {
-        "kind": "fragment",
-        "selections": [
-          {
-            "inlineVariables": {},
-            "kind": "scalar",
-            "name": "id",
-            "ofType": "ID",
-            "path": "toasters.id",
-            "type": "ID!",
-          },
-          {
-            "inlineVariables": {},
-            "kind": "scalar",
-            "name": "__typename",
-            "ofType": "String",
-            "path": "toasters.__typename",
-            "type": "String!",
-          },
-        ],
-        "typeCondition": "Toaster",
+        "kind": "scalar",
+        "name": "id",
+      },
+      {
+        "kind": "scalar",
+        "name": "__typename",
       },
     ],
     "includes": [],
@@ -3220,10 +3138,8 @@ exports[`fixture 'federation/union-interface-distributed' > query 'ToastersFragm
     "operation": "{
   toasters {
     warranty
-    ... on Toaster {
-      id
-      __typename
-    }
+    id
+    __typename
   }
 }",
     "pathInData": [
@@ -3251,26 +3167,12 @@ exports[`fixture 'federation/union-interface-distributed' > query 'ToastersFragm
             "name": "warranty",
           },
           {
-            "kind": "fragment",
-            "selections": [
-              {
-                "inlineVariables": {},
-                "kind": "scalar",
-                "name": "id",
-                "ofType": "ID",
-                "path": "toasters.id",
-                "type": "ID!",
-              },
-              {
-                "inlineVariables": {},
-                "kind": "scalar",
-                "name": "__typename",
-                "ofType": "String",
-                "path": "toasters.__typename",
-                "type": "String!",
-              },
-            ],
-            "typeCondition": "Toaster",
+            "kind": "scalar",
+            "name": "id",
+          },
+          {
+            "kind": "scalar",
+            "name": "__typename",
           },
         ],
         "includes": {},
@@ -3279,10 +3181,8 @@ exports[`fixture 'federation/union-interface-distributed' > query 'ToastersFragm
         "operation": "{
   toasters {
     warranty
-    ... on Toaster {
-      id
-      __typename
-    }
+    id
+    __typename
   }
 }",
         "pathToExportData": [

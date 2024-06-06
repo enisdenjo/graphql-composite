@@ -559,6 +559,147 @@ exports[`fixture 'federation/simple-inaccessible' > query 'InaccessibleEnumInOut
 }
 `;
 
+exports[`fixture 'federation/simple-inaccessible' > query 'UsersInAge' > should execute and explain 1`] = `
+[
+  {
+    "data": {
+      "usersInAge": [
+        {
+          "id": "u1",
+        },
+        {
+          "id": "u2",
+        },
+      ],
+    },
+    "exports": [
+      {
+        "kind": "scalar",
+        "name": "id",
+      },
+    ],
+    "includes": [
+      {
+        "data": {
+          "_entities": [
+            {
+              "friends": [
+                {
+                  "id": "u2",
+                },
+              ],
+            },
+          ],
+        },
+        "exports": [
+          {
+            "kind": "object",
+            "name": "friends",
+            "selections": [
+              {
+                "kind": "scalar",
+                "name": "id",
+              },
+            ],
+          },
+        ],
+        "includes": [],
+        "kind": "object",
+        "ofType": "User",
+        "operation": "query ($id: ID!) {
+  _entities(representations: [{__typename: "User", id: $id}]) {
+    ... on User {
+      friends {
+        id
+      }
+    }
+  }
+}",
+        "pathInData": [
+          "usersInAge",
+          0,
+        ],
+        "pathToExportData": [
+          "_entities",
+          0,
+        ],
+        "subgraph": "friends",
+        "type": "[User]!",
+        "variables": {
+          "id": "u1",
+        },
+      },
+      {
+        "data": {
+          "_entities": [
+            {
+              "friends": [
+                {
+                  "id": "u1",
+                },
+              ],
+            },
+          ],
+        },
+        "exports": [
+          {
+            "kind": "object",
+            "name": "friends",
+            "selections": [
+              {
+                "kind": "scalar",
+                "name": "id",
+              },
+            ],
+          },
+        ],
+        "includes": [],
+        "kind": "object",
+        "ofType": "User",
+        "operation": "query ($id: ID!) {
+  _entities(representations: [{__typename: "User", id: $id}]) {
+    ... on User {
+      friends {
+        id
+      }
+    }
+  }
+}",
+        "pathInData": [
+          "usersInAge",
+          1,
+        ],
+        "pathToExportData": [
+          "_entities",
+          0,
+        ],
+        "subgraph": "friends",
+        "type": "[User]!",
+        "variables": {
+          "id": "u2",
+        },
+      },
+    ],
+    "kind": "object",
+    "ofType": "User",
+    "operation": "{
+  usersInAge {
+    id
+  }
+}",
+    "pathInData": [
+      "usersInAge",
+    ],
+    "pathToExportData": [
+      "usersInAge",
+    ],
+    "subgraph": "age",
+    "type": "[User!]!",
+    "variables": {},
+  },
+]
+`;
+
 exports[`fixture 'federation/simple-inaccessible' > query 'UsersInAge' > should plan gather 1`] = `
 {
   "operation": {
@@ -578,11 +719,12 @@ exports[`fixture 'federation/simple-inaccessible' > query 'UsersInAge' > should 
                 {
                   "kind": "object",
                   "name": "friends",
-                  "selections": [],
-                },
-                {
-                  "kind": "scalar",
-                  "name": "id",
+                  "selections": [
+                    {
+                      "kind": "scalar",
+                      "name": "id",
+                    },
+                  ],
                 },
               ],
               "includes": {},
@@ -591,8 +733,9 @@ exports[`fixture 'federation/simple-inaccessible' > query 'UsersInAge' > should 
               "operation": "query ($id: ID!) {
   _entities(representations: [{__typename: "User", id: $id}]) {
     ... on User {
-      friends
-      id
+      friends {
+        id
+      }
     }
   }
 }",

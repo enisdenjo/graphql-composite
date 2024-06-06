@@ -220,9 +220,17 @@ export function planGather(
               // skip over fields needing operation variables
               continue;
             }
-            const argDef = fieldDef.args.find(
-              (a) => a.name === arg.name.value,
-            )!; // TODO: check instead of assert
+
+            const argDef = fieldDef.args.find((a) => a.name === arg.name.value);
+
+            if (!argDef) {
+              // This should never happen if the DocumentNode was validated against the schema
+              // before planning the gather.
+              throw new Error(
+                `Field "${ofType.name}.${node.name.value}" doesn't have an argument "${arg.name.value}"`,
+              );
+            }
+
             inlineVariables[arg.name.value] = valueFromAST(
               arg.value,
               argDef.type,

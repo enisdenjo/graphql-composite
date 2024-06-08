@@ -17,18 +17,12 @@ export const queries: FixtureQueries = [
     variables: {},
     result: {
       data: {
-        anotherUsers: [
-          {
-            id: 'u1',
-            name: 'u1-name',
-            username: 'u1-username',
-          },
-          {
-            id: 'u2',
-            name: 'u2-name',
-            username: 'u2-username',
-          },
-        ],
+        product: {
+          id: '1',
+          name: 'Product 1',
+          category: 'Category 1',
+          price: 100,
+        },
       },
     },
   },

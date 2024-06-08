@@ -66,7 +66,7 @@ export type GatherPlanCompositeResolver = BlueprintCompositeResolver & {
    * A map of field paths to the necessary resolver. If the field path is an empty string,
    * the include is resolving additional fields for the current resolver.
    */
-  includes: Record<string, GatherPlanCompositeResolver>;
+  includes: Record<string, GatherPlanCompositeResolver[]>;
 };
 
 export interface GatherPlanScalarResolver extends BlueprintScalarResolver {
@@ -633,8 +633,10 @@ function insertResolversForSelection(
           getSelectionsAtDepth(currentResolver.exports, depth),
         );
 
-        // TODO: what if currentResolver.includes already has this key? solution: an include may have multiple resolvers
-        currentResolver.includes[''] = resolver;
+        if (!currentResolver.includes['']) {
+          currentResolver.includes[''] = [];
+        }
+        currentResolver.includes[''].push(resolver);
 
         for (const subSel of sel.selections) {
           insertResolversForSelection(
@@ -690,9 +692,9 @@ function insertResolversForSelection(
     // if not, try finding a resolver in parents includes
     resolver = selField.subgraphs.includes(currentResolver.subgraph)
       ? currentResolver
-      : Object.values(currentResolver.includes).find((r) =>
-          selField!.subgraphs.includes(r.subgraph),
-        );
+      : Object.values(currentResolver.includes)
+          .flat()
+          .find((r) => selField!.subgraphs.includes(r.subgraph));
   } else {
     // the parent type may not implement the specific field, but its interface may.
     // in that case, we have to resolve the field from the interface instead
@@ -727,13 +729,27 @@ function insertResolversForSelection(
     const commonSubgraph = Object.keys(selType.resolvers).find((subgraph) =>
       selField.subgraphs.includes(subgraph),
     );
-    const resolverPlan = commonSubgraph
+    let resolverPlan = commonSubgraph
       ? // TODO: actually choose the best resolver, not the first one
         selType.resolvers[commonSubgraph]![0]
       : undefined;
     if (!resolverPlan) {
+      // theres no resolver for the type, try finding a shared root resolver
+      // TODO: dont reuse shared root mutations to avoid running them multiple times?
+      if (parentSelInType.name === 'Query') {
+        const fieldInQuery =
+          parentSelInType.fields[
+            parentSel.kind === 'object' ? parentSel.name : parentSel.fieldName
+          ];
+        resolverPlan = Object.values(fieldInQuery?.resolvers || {}).find(
+          (r): r is BlueprintCompositeResolver =>
+            r.kind !== 'scalar' && selField.subgraphs.includes(r.subgraph),
+        );
+      }
+    }
+    if (!resolverPlan) {
       throw new Error(
-        `Blueprint type "${selType.name}" doesn't have a resolver for any of the "${selField.name}" field subgraphs`,
+        `Blueprint type "${selType.name}" doesn't have a resolver for the "${selField.name}" field`,
       );
     }
 
@@ -743,14 +759,15 @@ function insertResolversForSelection(
       getSelectionsAtDepth(currentResolver.exports, depth),
     );
 
-    // TODO: what if currentResolver.includes already has this key? solution: an include may have multiple resolvers
-    currentResolver.includes[
-      resolvingAdditionalFields
-        ? ''
-        : parentSel.kind === 'fragment'
-          ? parentSel.fieldName
-          : parentSel.name
-    ] = resolver;
+    const path = resolvingAdditionalFields
+      ? ''
+      : parentSel.kind === 'fragment'
+        ? parentSel.fieldName
+        : parentSel.name;
+    if (!currentResolver.includes[path]) {
+      currentResolver.includes[path] = [];
+    }
+    currentResolver.includes[path]!.push(resolver);
   }
 
   const exp: OperationObjectExport | OperationScalarExport =
@@ -796,13 +813,6 @@ function prepareCompositeResolverForSelection(
   /** Available exports of the parent resolver. */
   exps: OperationExport[],
 ): GatherPlanCompositeResolver {
-  if (!Object.keys(resolverPlan.variables).length) {
-    // TODO: object resolver must always have variables, right?
-    throw new Error(
-      `Blueprint resolver for type "${resolverPlan.ofType}" doesn't require variables`,
-    );
-  }
-
   for (const variable of Object.values(resolverPlan.variables).filter(
     isBlueprintResolverSelectVariable,
   )) {
@@ -877,7 +887,9 @@ function buildAndInsertOperationsInResolvers(resolvers: GatherPlanResolver[]) {
       ...resolver.pathToExportData,
     ];
     if ('includes' in resolver) {
-      buildAndInsertOperationsInResolvers(Object.values(resolver.includes));
+      buildAndInsertOperationsInResolvers(
+        Object.values(resolver.includes).flat(),
+      );
     }
   }
 }

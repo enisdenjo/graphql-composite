@@ -66,7 +66,7 @@ export type GatherPlanCompositeResolver = BlueprintCompositeResolver & {
    * A map of field paths to the necessary resolver. If the field path is an empty string,
    * the include is resolving additional fields for the current resolver.
    */
-  includes: Record<string, GatherPlanCompositeResolver>;
+  includes: Record<string, GatherPlanCompositeResolver[]>;
 };
 
 export interface GatherPlanScalarResolver extends BlueprintScalarResolver {
@@ -633,8 +633,10 @@ function insertResolversForSelection(
           getSelectionsAtDepth(currentResolver.exports, depth),
         );
 
-        // TODO: what if currentResolver.includes already has this key? solution: an include may have multiple resolvers
-        currentResolver.includes[''] = resolver;
+        if (!currentResolver.includes['']) {
+          currentResolver.includes[''] = [];
+        }
+        currentResolver.includes[''].push(resolver);
 
         for (const subSel of sel.selections) {
           insertResolversForSelection(
@@ -690,9 +692,9 @@ function insertResolversForSelection(
     // if not, try finding a resolver in parents includes
     resolver = selField.subgraphs.includes(currentResolver.subgraph)
       ? currentResolver
-      : Object.values(currentResolver.includes).find((r) =>
-          selField!.subgraphs.includes(r.subgraph),
-        );
+      : Object.values(currentResolver.includes)
+          .flat()
+          .find((r) => selField!.subgraphs.includes(r.subgraph));
   } else {
     // the parent type may not implement the specific field, but its interface may.
     // in that case, we have to resolve the field from the interface instead
@@ -757,14 +759,15 @@ function insertResolversForSelection(
       getSelectionsAtDepth(currentResolver.exports, depth),
     );
 
-    // TODO: what if currentResolver.includes already has this key? solution: an include may have multiple resolvers
-    currentResolver.includes[
-      resolvingAdditionalFields
-        ? ''
-        : parentSel.kind === 'fragment'
-          ? parentSel.fieldName
-          : parentSel.name
-    ] = resolver;
+    const path = resolvingAdditionalFields
+      ? ''
+      : parentSel.kind === 'fragment'
+        ? parentSel.fieldName
+        : parentSel.name;
+    if (!currentResolver.includes[path]) {
+      currentResolver.includes[path] = [];
+    }
+    currentResolver.includes[path]!.push(resolver);
   }
 
   const exp: OperationObjectExport | OperationScalarExport =
@@ -884,7 +887,9 @@ function buildAndInsertOperationsInResolvers(resolvers: GatherPlanResolver[]) {
       ...resolver.pathToExportData,
     ];
     if ('includes' in resolver) {
-      buildAndInsertOperationsInResolvers(Object.values(resolver.includes));
+      buildAndInsertOperationsInResolvers(
+        Object.values(resolver.includes).flat(),
+      );
     }
   }
 }

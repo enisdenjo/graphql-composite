@@ -171,37 +171,39 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsIsActive'
           },
         ],
         "includes": {
-          "": {
-            "exports": [
-              {
-                "kind": "scalar",
-                "name": "isActive",
-              },
-            ],
-            "includes": {},
-            "kind": "interface",
-            "ofType": "Account",
-            "operation": "query ($id: ID!) {
+          "": [
+            {
+              "exports": [
+                {
+                  "kind": "scalar",
+                  "name": "isActive",
+                },
+              ],
+              "includes": {},
+              "kind": "interface",
+              "ofType": "Account",
+              "operation": "query ($id: ID!) {
   _entities(representations: [{__typename: "Account", id: $id}]) {
     ... on Account {
       isActive
     }
   }
 }",
-            "pathToExportData": [
-              "_entities",
-              0,
-            ],
-            "subgraph": "c",
-            "type": "[Account]!",
-            "variables": {
-              "id": {
-                "kind": "select",
-                "name": "id",
-                "select": "id",
+              "pathToExportData": [
+                "_entities",
+                0,
+              ],
+              "subgraph": "c",
+              "type": "[Account]!",
+              "variables": {
+                "id": {
+                  "kind": "select",
+                  "name": "id",
+                  "select": "id",
+                },
               },
             },
-          },
+          ],
         },
         "kind": "interface",
         "ofType": "Account",
@@ -398,37 +400,39 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsIsActiveO
           },
         ],
         "includes": {
-          "": {
-            "exports": [
-              {
-                "kind": "scalar",
-                "name": "isActive",
-              },
-            ],
-            "includes": {},
-            "kind": "object",
-            "ofType": "Admin",
-            "operation": "query ($id: ID!) {
+          "": [
+            {
+              "exports": [
+                {
+                  "kind": "scalar",
+                  "name": "isActive",
+                },
+              ],
+              "includes": {},
+              "kind": "object",
+              "ofType": "Admin",
+              "operation": "query ($id: ID!) {
   _entities(representations: [{__typename: "Admin", id: $id}]) {
     ... on Admin {
       isActive
     }
   }
 }",
-            "pathToExportData": [
-              "_entities",
-              0,
-            ],
-            "subgraph": "a",
-            "type": "[Admin]!",
-            "variables": {
-              "id": {
-                "kind": "select",
-                "name": "id",
-                "select": "id",
+              "pathToExportData": [
+                "_entities",
+                0,
+              ],
+              "subgraph": "a",
+              "type": "[Admin]!",
+              "variables": {
+                "id": {
+                  "kind": "select",
+                  "name": "id",
+                  "select": "id",
+                },
               },
             },
-          },
+          ],
         },
         "kind": "interface",
         "ofType": "Account",
@@ -823,70 +827,74 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsSpreadAdm
           },
         ],
         "includes": {
-          "": {
-            "exports": [
-              {
-                "kind": "scalar",
-                "name": "id",
-                "private": true,
-              },
-            ],
-            "includes": {
-              "": {
-                "exports": [
+          "": [
+            {
+              "exports": [
+                {
+                  "kind": "scalar",
+                  "name": "id",
+                  "private": true,
+                },
+              ],
+              "includes": {
+                "": [
                   {
-                    "kind": "scalar",
-                    "name": "name",
-                  },
-                ],
-                "includes": {},
-                "kind": "interface",
-                "ofType": "Account",
-                "operation": "query ($id: ID!) {
+                    "exports": [
+                      {
+                        "kind": "scalar",
+                        "name": "name",
+                      },
+                    ],
+                    "includes": {},
+                    "kind": "interface",
+                    "ofType": "Account",
+                    "operation": "query ($id: ID!) {
   _entities(representations: [{__typename: "Account", id: $id}]) {
     ... on Account {
       name
     }
   }
 }",
-                "pathToExportData": [
-                  "_entities",
-                  0,
-                ],
-                "subgraph": "b",
-                "type": "[Account]!",
-                "variables": {
-                  "id": {
-                    "kind": "select",
-                    "name": "id",
-                    "select": "id",
+                    "pathToExportData": [
+                      "_entities",
+                      0,
+                    ],
+                    "subgraph": "b",
+                    "type": "[Account]!",
+                    "variables": {
+                      "id": {
+                        "kind": "select",
+                        "name": "id",
+                        "select": "id",
+                      },
+                    },
                   },
-                },
+                ],
               },
-            },
-            "kind": "object",
-            "ofType": "Admin",
-            "operation": "query ($id: ID!) {
+              "kind": "object",
+              "ofType": "Admin",
+              "operation": "query ($id: ID!) {
   _entities(representations: [{__typename: "Admin", id: $id}]) {
     ... on Admin {
       id
     }
   }
 }",
-            "pathToExportData": [
-              "_entities",
-              0,
-            ],
-            "subgraph": "a",
-            "type": "[Admin]!",
-            "variables": {
-              "id": {
-                "kind": "select",
-                "name": "id",
-                "select": "id",
+              "pathToExportData": [
+                "_entities",
+                0,
+              ],
+              "subgraph": "a",
+              "type": "[Admin]!",
+              "variables": {
+                "id": {
+                  "kind": "select",
+                  "name": "id",
+                  "select": "id",
+                },
               },
             },
-          },
+          ],
         },
         "kind": "interface",
         "ofType": "Account",
@@ -1199,70 +1207,74 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsWithAdmin
           },
         ],
         "includes": {
-          "": {
-            "exports": [
-              {
-                "kind": "scalar",
-                "name": "id",
-                "private": true,
-              },
-            ],
-            "includes": {
-              "": {
-                "exports": [
+          "": [
+            {
+              "exports": [
+                {
+                  "kind": "scalar",
+                  "name": "id",
+                  "private": true,
+                },
+              ],
+              "includes": {
+                "": [
                   {
-                    "kind": "scalar",
-                    "name": "__typename",
-                  },
-                ],
-                "includes": {},
-                "kind": "interface",
-                "ofType": "Account",
-                "operation": "query ($id: ID!) {
+                    "exports": [
+                      {
+                        "kind": "scalar",
+                        "name": "__typename",
+                      },
+                    ],
+                    "includes": {},
+                    "kind": "interface",
+                    "ofType": "Account",
+                    "operation": "query ($id: ID!) {
   _entities(representations: [{__typename: "Account", id: $id}]) {
     ... on Account {
       __typename
     }
   }
 }",
-                "pathToExportData": [
-                  "_entities",
-                  0,
-                ],
-                "subgraph": "a",
-                "type": "[Account]!",
-                "variables": {
-                  "id": {
-                    "kind": "select",
-                    "name": "id",
-                    "select": "id",
+                    "pathToExportData": [
+                      "_entities",
+                      0,
+                    ],
+                    "subgraph": "a",
+                    "type": "[Account]!",
+                    "variables": {
+                      "id": {
+                        "kind": "select",
+                        "name": "id",
+                        "select": "id",
+                      },
+                    },
                   },
-                },
+                ],
               },
-            },
-            "kind": "object",
-            "ofType": "Admin",
-            "operation": "query ($id: ID!) {
+              "kind": "object",
+              "ofType": "Admin",
+              "operation": "query ($id: ID!) {
   _entities(representations: [{__typename: "Admin", id: $id}]) {
     ... on Admin {
       id
     }
   }
 }",
-            "pathToExportData": [
-              "_entities",
-              0,
-            ],
-            "subgraph": "a",
-            "type": "[Admin]!",
-            "variables": {
-              "id": {
-                "kind": "select",
-                "name": "id",
-                "select": "id",
+              "pathToExportData": [
+                "_entities",
+                0,
+              ],
+              "subgraph": "a",
+              "type": "[Admin]!",
+              "variables": {
+                "id": {
+                  "kind": "select",
+                  "name": "id",
+                  "select": "id",
+                },
               },
             },
-          },
+          ],
         },
         "kind": "interface",
         "ofType": "Account",
@@ -1476,37 +1488,39 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsWithTypen
           },
         ],
         "includes": {
-          "": {
-            "exports": [
-              {
-                "kind": "scalar",
-                "name": "__typename",
-              },
-            ],
-            "includes": {},
-            "kind": "interface",
-            "ofType": "Account",
-            "operation": "query ($id: ID!) {
+          "": [
+            {
+              "exports": [
+                {
+                  "kind": "scalar",
+                  "name": "__typename",
+                },
+              ],
+              "includes": {},
+              "kind": "interface",
+              "ofType": "Account",
+              "operation": "query ($id: ID!) {
   _entities(representations: [{__typename: "Account", id: $id}]) {
     ... on Account {
       __typename
     }
   }
 }",
-            "pathToExportData": [
-              "_entities",
-              0,
-            ],
-            "subgraph": "a",
-            "type": "[Account]!",
-            "variables": {
-              "id": {
-                "kind": "select",
-                "name": "id",
-                "select": "id",
+              "pathToExportData": [
+                "_entities",
+                0,
+              ],
+              "subgraph": "a",
+              "type": "[Account]!",
+              "variables": {
+                "id": {
+                  "kind": "select",
+                  "name": "id",
+                  "select": "id",
+                },
               },
             },
-          },
+          ],
         },
         "kind": "interface",
         "ofType": "Account",
@@ -1676,37 +1690,39 @@ exports[`fixture 'federation/simple-interface-object' > query 'AnotherUsers' > s
           },
         ],
         "includes": {
-          "": {
-            "exports": [
-              {
-                "kind": "scalar",
-                "name": "name",
-              },
-            ],
-            "includes": {},
-            "kind": "interface",
-            "ofType": "NodeWithName",
-            "operation": "query ($id: ID!) {
+          "": [
+            {
+              "exports": [
+                {
+                  "kind": "scalar",
+                  "name": "name",
+                },
+              ],
+              "includes": {},
+              "kind": "interface",
+              "ofType": "NodeWithName",
+              "operation": "query ($id: ID!) {
   _entities(representations: [{__typename: "NodeWithName", id: $id}]) {
     ... on NodeWithName {
       name
     }
   }
 }",
-            "pathToExportData": [
-              "_entities",
-              0,
-            ],
-            "subgraph": "a",
-            "type": "[NodeWithName]!",
-            "variables": {
-              "id": {
-                "kind": "select",
-                "name": "id",
-                "select": "id",
+              "pathToExportData": [
+                "_entities",
+                0,
+              ],
+              "subgraph": "a",
+              "type": "[NodeWithName]!",
+              "variables": {
+                "id": {
+                  "kind": "select",
+                  "name": "id",
+                  "select": "id",
+                },
               },
             },
-          },
+          ],
         },
         "kind": "interface",
         "ofType": "NodeWithName",
@@ -1968,57 +1984,60 @@ exports[`fixture 'federation/simple-interface-object' > query 'AnotherUsersWithA
           },
         ],
         "includes": {
-          "": {
-            "exports": [
-              {
-                "kind": "scalar",
-                "name": "age",
-              },
-              {
-                "kind": "scalar",
-                "name": "id",
-              },
-              {
-                "kind": "scalar",
-                "name": "name",
-              },
-            ],
-            "includes": {
-              "": {
-                "exports": [
+          "": [
+            {
+              "exports": [
+                {
+                  "kind": "scalar",
+                  "name": "age",
+                },
+                {
+                  "kind": "scalar",
+                  "name": "id",
+                },
+                {
+                  "kind": "scalar",
+                  "name": "name",
+                },
+              ],
+              "includes": {
+                "": [
                   {
-                    "kind": "scalar",
-                    "name": "username",
-                  },
-                ],
-                "includes": {},
-                "kind": "interface",
-                "ofType": "NodeWithName",
-                "operation": "query ($id: ID!) {
+                    "exports": [
+                      {
+                        "kind": "scalar",
+                        "name": "username",
+                      },
+                    ],
+                    "includes": {},
+                    "kind": "interface",
+                    "ofType": "NodeWithName",
+                    "operation": "query ($id: ID!) {
   _entities(representations: [{__typename: "NodeWithName", id: $id}]) {
     ... on NodeWithName {
       username
     }
   }
 }",
-                "pathToExportData": [
-                  "_entities",
-                  0,
-                ],
-                "subgraph": "b",
-                "type": "[NodeWithName]!",
-                "variables": {
-                  "id": {
-                    "kind": "select",
-                    "name": "id",
-                    "select": "id",
+                    "pathToExportData": [
+                      "_entities",
+                      0,
+                    ],
+                    "subgraph": "b",
+                    "type": "[NodeWithName]!",
+                    "variables": {
+                      "id": {
+                        "kind": "select",
+                        "name": "id",
+                        "select": "id",
+                      },
+                    },
                   },
-                },
+                ],
               },
-            },
-            "kind": "object",
-            "ofType": "User",
-            "operation": "query ($id: ID!) {
+              "kind": "object",
+              "ofType": "User",
+              "operation": "query ($id: ID!) {
   _entities(representations: [{__typename: "User", id: $id}]) {
     ... on User {
       age
@@ -2027,20 +2046,21 @@ exports[`fixture 'federation/simple-interface-object' > query 'AnotherUsersWithA
     }
   }
 }",
-            "pathToExportData": [
-              "_entities",
-              0,
-            ],
-            "subgraph": "a",
-            "type": "[User]!",
-            "variables": {
-              "id": {
-                "kind": "select",
-                "name": "id",
-                "select": "id",
+              "pathToExportData": [
+                "_entities",
+                0,
+              ],
+              "subgraph": "a",
+              "type": "[User]!",
+              "variables": {
+                "id": {
+                  "kind": "select",
+                  "name": "id",
+                  "select": "id",
+                },
               },
             },
-          },
+          ],
         },
         "kind": "interface",
         "ofType": "NodeWithName",
@@ -2206,37 +2226,39 @@ exports[`fixture 'federation/simple-interface-object' > query 'AnotherUsersWithU
           },
         ],
         "includes": {
-          "": {
-            "exports": [
-              {
-                "kind": "scalar",
-                "name": "age",
-              },
-            ],
-            "includes": {},
-            "kind": "object",
-            "ofType": "User",
-            "operation": "query ($id: ID!) {
+          "": [
+            {
+              "exports": [
+                {
+                  "kind": "scalar",
+                  "name": "age",
+                },
+              ],
+              "includes": {},
+              "kind": "object",
+              "ofType": "User",
+              "operation": "query ($id: ID!) {
   _entities(representations: [{__typename: "User", id: $id}]) {
     ... on User {
       age
     }
   }
 }",
-            "pathToExportData": [
-              "_entities",
-              0,
-            ],
-            "subgraph": "a",
-            "type": "[User]!",
-            "variables": {
-              "id": {
-                "kind": "select",
-                "name": "id",
-                "select": "id",
+              "pathToExportData": [
+                "_entities",
+                0,
+              ],
+              "subgraph": "a",
+              "type": "[User]!",
+              "variables": {
+                "id": {
+                  "kind": "select",
+                  "name": "id",
+                  "select": "id",
+                },
               },
             },
-          },
+          ],
         },
         "kind": "interface",
         "ofType": "NodeWithName",
@@ -2431,37 +2453,39 @@ exports[`fixture 'federation/simple-interface-object' > query 'UsersWithAdvanced
           },
         ],
         "includes": {
-          "": {
-            "exports": [
-              {
-                "kind": "scalar",
-                "name": "username",
-              },
-            ],
-            "includes": {},
-            "kind": "interface",
-            "ofType": "NodeWithName",
-            "operation": "query ($id: ID!) {
+          "": [
+            {
+              "exports": [
+                {
+                  "kind": "scalar",
+                  "name": "username",
+                },
+              ],
+              "includes": {},
+              "kind": "interface",
+              "ofType": "NodeWithName",
+              "operation": "query ($id: ID!) {
   _entities(representations: [{__typename: "NodeWithName", id: $id}]) {
     ... on NodeWithName {
       username
     }
   }
 }",
-            "pathToExportData": [
-              "_entities",
-              0,
-            ],
-            "subgraph": "b",
-            "type": "[NodeWithName]!",
-            "variables": {
-              "id": {
-                "kind": "select",
-                "name": "id",
-                "select": "id",
+              "pathToExportData": [
+                "_entities",
+                0,
+              ],
+              "subgraph": "b",
+              "type": "[NodeWithName]!",
+              "variables": {
+                "id": {
+                  "kind": "select",
+                  "name": "id",
+                  "select": "id",
+                },
               },
             },
-          },
+          ],
         },
         "kind": "interface",
         "ofType": "NodeWithName",
@@ -2736,37 +2760,39 @@ exports[`fixture 'federation/simple-interface-object' > query 'UsersWithUsername
           },
         ],
         "includes": {
-          "": {
-            "exports": [
-              {
-                "kind": "scalar",
-                "name": "username",
-              },
-            ],
-            "includes": {},
-            "kind": "interface",
-            "ofType": "NodeWithName",
-            "operation": "query ($id: ID!) {
+          "": [
+            {
+              "exports": [
+                {
+                  "kind": "scalar",
+                  "name": "username",
+                },
+              ],
+              "includes": {},
+              "kind": "interface",
+              "ofType": "NodeWithName",
+              "operation": "query ($id: ID!) {
   _entities(representations: [{__typename: "NodeWithName", id: $id}]) {
     ... on NodeWithName {
       username
     }
   }
 }",
-            "pathToExportData": [
-              "_entities",
-              0,
-            ],
-            "subgraph": "b",
-            "type": "[NodeWithName]!",
-            "variables": {
-              "id": {
-                "kind": "select",
-                "name": "id",
-                "select": "id",
+              "pathToExportData": [
+                "_entities",
+                0,
+              ],
+              "subgraph": "b",
+              "type": "[NodeWithName]!",
+              "variables": {
+                "id": {
+                  "kind": "select",
+                  "name": "id",
+                  "select": "id",
+                },
               },
             },
-          },
+          ],
         },
         "kind": "interface",
         "ofType": "NodeWithName",
@@ -4975,6 +5001,108 @@ exports[`fixture 'interfaces' > query 'BasicNestedAnimal' > should plan gather 1
 }
 `;
 
+exports[`fixture 'shared-root' > query 'SharedRootMultiple' > should execute and explain 1`] = `
+[
+  {
+    "data": {
+      "product": {
+        "category": "Category 1",
+        "id": "1",
+      },
+    },
+    "exports": [
+      {
+        "kind": "scalar",
+        "name": "id",
+      },
+      {
+        "kind": "scalar",
+        "name": "category",
+      },
+    ],
+    "includes": [
+      {
+        "data": {
+          "product": {
+            "name": "Product 1",
+          },
+        },
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "name",
+          },
+        ],
+        "includes": [],
+        "kind": "object",
+        "ofType": "Product",
+        "operation": "{
+  product {
+    name
+  }
+}",
+        "pathInData": [
+          "product",
+        ],
+        "pathToExportData": [
+          "product",
+        ],
+        "subgraph": "name",
+        "type": "Product",
+        "variables": {},
+      },
+      {
+        "data": {
+          "product": {
+            "price": 100,
+          },
+        },
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "price",
+          },
+        ],
+        "includes": [],
+        "kind": "object",
+        "ofType": "Product",
+        "operation": "{
+  product {
+    price
+  }
+}",
+        "pathInData": [
+          "product",
+        ],
+        "pathToExportData": [
+          "product",
+        ],
+        "subgraph": "price",
+        "type": "Product",
+        "variables": {},
+      },
+    ],
+    "kind": "object",
+    "ofType": "Product",
+    "operation": "{
+  product {
+    id
+    category
+  }
+}",
+    "pathInData": [
+      "product",
+    ],
+    "pathToExportData": [
+      "product",
+    ],
+    "subgraph": "category",
+    "type": "Product",
+    "variables": {},
+  },
+]
+`;
+
 exports[`fixture 'shared-root' > query 'SharedRootMultiple' > should plan gather 1`] = `
 {
   "operation": {
@@ -4992,28 +5120,52 @@ exports[`fixture 'shared-root' > query 'SharedRootMultiple' > should plan gather
           },
         ],
         "includes": {
-          "": {
-            "exports": [
-              {
-                "kind": "scalar",
-                "name": "price",
-              },
-            ],
-            "includes": {},
-            "kind": "object",
-            "ofType": "Product",
-            "operation": "{
+          "": [
+            {
+              "exports": [
+                {
+                  "kind": "scalar",
+                  "name": "name",
+                },
+              ],
+              "includes": {},
+              "kind": "object",
+              "ofType": "Product",
+              "operation": "{
+  product {
+    name
+  }
+}",
+              "pathToExportData": [
+                "product",
+              ],
+              "subgraph": "name",
+              "type": "Product",
+              "variables": {},
+            },
+            {
+              "exports": [
+                {
+                  "kind": "scalar",
+                  "name": "price",
+                },
+              ],
+              "includes": {},
+              "kind": "object",
+              "ofType": "Product",
+              "operation": "{
   product {
     price
   }
 }",
-            "pathToExportData": [
-              "product",
-            ],
-            "subgraph": "price",
-            "type": "Product",
-            "variables": {},
-          },
+              "pathToExportData": [
+                "product",
+              ],
+              "subgraph": "price",
+              "type": "Product",
+              "variables": {},
+            },
+          ],
         },
         "kind": "object",
         "ofType": "Product",
@@ -5133,28 +5285,30 @@ exports[`fixture 'shared-root' > query 'SharedRootSingle' > should plan gather 1
           },
         ],
         "includes": {
-          "": {
-            "exports": [
-              {
-                "kind": "scalar",
-                "name": "name",
-              },
-            ],
-            "includes": {},
-            "kind": "object",
-            "ofType": "Product",
-            "operation": "{
+          "": [
+            {
+              "exports": [
+                {
+                  "kind": "scalar",
+                  "name": "name",
+                },
+              ],
+              "includes": {},
+              "kind": "object",
+              "ofType": "Product",
+              "operation": "{
   product {
     name
   }
 }",
-            "pathToExportData": [
-              "product",
-            ],
-            "subgraph": "name",
-            "type": "Product",
-            "variables": {},
-          },
+              "pathToExportData": [
+                "product",
+              ],
+              "subgraph": "name",
+              "type": "Product",
+              "variables": {},
+            },
+          ],
         },
         "kind": "object",
         "ofType": "Product",
@@ -5364,42 +5518,44 @@ exports[`fixture 'store' > query 'BasicWithFragmentDefinition' > should plan gat
           },
         ],
         "includes": {
-          "products": {
-            "exports": [
-              {
-                "kind": "object",
-                "name": "manufacturer",
-                "selections": [
-                  {
-                    "kind": "scalar",
-                    "name": "id",
-                  },
-                ],
-              },
-            ],
-            "includes": {},
-            "kind": "object",
-            "ofType": "Product",
-            "operation": "query ProductByUpc($Product_upc: ID!) {
+          "products": [
+            {
+              "exports": [
+                {
+                  "kind": "object",
+                  "name": "manufacturer",
+                  "selections": [
+                    {
+                      "kind": "scalar",
+                      "name": "id",
+                    },
+                  ],
+                },
+              ],
+              "includes": {},
+              "kind": "object",
+              "ofType": "Product",
+              "operation": "query ProductByUpc($Product_upc: ID!) {
   product(upc: $Product_upc) {
     manufacturer {
       id
     }
   }
 }",
-            "pathToExportData": [
-              "product",
-            ],
-            "subgraph": "products",
-            "type": "Product",
-            "variables": {
-              "Product_upc": {
-                "kind": "select",
-                "name": "Product_upc",
-                "select": "upc",
+              "pathToExportData": [
+                "product",
+              ],
+              "subgraph": "products",
+              "type": "Product",
+              "variables": {
+                "Product_upc": {
+                  "kind": "select",
+                  "name": "Product_upc",
+                  "select": "upc",
+                },
               },
             },
-          },
+          ],
         },
         "kind": "object",
         "ofType": "Storefront",
@@ -5644,34 +5800,36 @@ exports[`fixture 'store' > query 'BasicWithInlineFragment' > should plan gather 
           },
         ],
         "includes": {
-          "products": {
-            "exports": [
-              {
-                "kind": "scalar",
-                "name": "name",
-              },
-            ],
-            "includes": {},
-            "kind": "object",
-            "ofType": "Product",
-            "operation": "query ProductByUpc($Product_upc: ID!) {
+          "products": [
+            {
+              "exports": [
+                {
+                  "kind": "scalar",
+                  "name": "name",
+                },
+              ],
+              "includes": {},
+              "kind": "object",
+              "ofType": "Product",
+              "operation": "query ProductByUpc($Product_upc: ID!) {
   product(upc: $Product_upc) {
     name
   }
 }",
-            "pathToExportData": [
-              "product",
-            ],
-            "subgraph": "products",
-            "type": "Product",
-            "variables": {
-              "Product_upc": {
-                "kind": "select",
-                "name": "Product_upc",
-                "select": "upc",
+              "pathToExportData": [
+                "product",
+              ],
+              "subgraph": "products",
+              "type": "Product",
+              "variables": {
+                "Product_upc": {
+                  "kind": "select",
+                  "name": "Product_upc",
+                  "select": "upc",
+                },
               },
             },
-          },
+          ],
         },
         "kind": "object",
         "ofType": "Storefront",
@@ -5940,34 +6098,36 @@ exports[`fixture 'store' > query 'ListOperationResolver' > should plan gather 1`
           },
         ],
         "includes": {
-          "manufacturer": {
-            "exports": [
-              {
-                "kind": "scalar",
-                "name": "name",
-              },
-            ],
-            "includes": {},
-            "kind": "object",
-            "ofType": "Manufacturer",
-            "operation": "query ManufacturerById($Manufacturer_id: ID!) {
+          "manufacturer": [
+            {
+              "exports": [
+                {
+                  "kind": "scalar",
+                  "name": "name",
+                },
+              ],
+              "includes": {},
+              "kind": "object",
+              "ofType": "Manufacturer",
+              "operation": "query ManufacturerById($Manufacturer_id: ID!) {
   manufacturer(id: $Manufacturer_id) {
     name
   }
 }",
-            "pathToExportData": [
-              "manufacturer",
-            ],
-            "subgraph": "manufacturers",
-            "type": "Manufacturer",
-            "variables": {
-              "Manufacturer_id": {
-                "kind": "select",
-                "name": "Manufacturer_id",
-                "select": "id",
+              "pathToExportData": [
+                "manufacturer",
+              ],
+              "subgraph": "manufacturers",
+              "type": "Manufacturer",
+              "variables": {
+                "Manufacturer_id": {
+                  "kind": "select",
+                  "name": "Manufacturer_id",
+                  "select": "id",
+                },
               },
             },
-          },
+          ],
         },
         "kind": "object",
         "ofType": "Product",
@@ -6471,71 +6631,74 @@ exports[`fixture 'store' > query 'NotBasicWithInlineVariables' > should plan gat
           },
         ],
         "includes": {
-          "products": {
-            "exports": [
-              {
-                "kind": "scalar",
-                "name": "name",
-              },
-              {
-                "kind": "object",
-                "name": "manufacturer",
-                "selections": [
+          "products": [
+            {
+              "exports": [
+                {
+                  "kind": "scalar",
+                  "name": "name",
+                },
+                {
+                  "kind": "object",
+                  "name": "manufacturer",
+                  "selections": [
+                    {
+                      "kind": "object",
+                      "name": "products",
+                      "selections": [
+                        {
+                          "kind": "scalar",
+                          "name": "upc",
+                        },
+                        {
+                          "kind": "scalar",
+                          "name": "name",
+                        },
+                      ],
+                    },
+                    {
+                      "kind": "scalar",
+                      "name": "id",
+                      "private": true,
+                    },
+                  ],
+                },
+              ],
+              "includes": {
+                "manufacturer": [
                   {
-                    "kind": "object",
-                    "name": "products",
-                    "selections": [
-                      {
-                        "kind": "scalar",
-                        "name": "upc",
-                      },
+                    "exports": [
                       {
                         "kind": "scalar",
                         "name": "name",
                       },
                     ],
-                  },
-                  {
-                    "kind": "scalar",
-                    "name": "id",
-                    "private": true,
-                  },
-                ],
-              },
-            ],
-            "includes": {
-              "manufacturer": {
-                "exports": [
-                  {
-                    "kind": "scalar",
-                    "name": "name",
-                  },
-                ],
-                "includes": {},
-                "kind": "object",
-                "ofType": "Manufacturer",
-                "operation": "query ManufacturerById($Manufacturer_id: ID!) {
+                    "includes": {},
+                    "kind": "object",
+                    "ofType": "Manufacturer",
+                    "operation": "query ManufacturerById($Manufacturer_id: ID!) {
   manufacturer(id: $Manufacturer_id) {
     name
   }
 }",
-                "pathToExportData": [
-                  "manufacturer",
-                ],
-                "subgraph": "manufacturers",
-                "type": "Manufacturer",
-                "variables": {
-                  "Manufacturer_id": {
-                    "kind": "select",
-                    "name": "Manufacturer_id",
-                    "select": "id",
+                    "pathToExportData": [
+                      "manufacturer",
+                    ],
+                    "subgraph": "manufacturers",
+                    "type": "Manufacturer",
+                    "variables": {
+                      "Manufacturer_id": {
+                        "kind": "select",
+                        "name": "Manufacturer_id",
+                        "select": "id",
+                      },
+                    },
                   },
-                },
+                ],
               },
-            },
-            "kind": "object",
-            "ofType": "Product",
-            "operation": "query ProductByUpc($Product_upc: ID!) {
+              "kind": "object",
+              "ofType": "Product",
+              "operation": "query ProductByUpc($Product_upc: ID!) {
   product(upc: $Product_upc) {
     name
     manufacturer {
@@ -6547,19 +6710,20 @@ exports[`fixture 'store' > query 'NotBasicWithInlineVariables' > should plan gat
     }
   }
 }",
-            "pathToExportData": [
-              "product",
-            ],
-            "subgraph": "products",
-            "type": "Product",
-            "variables": {
-              "Product_upc": {
-                "kind": "select",
-                "name": "Product_upc",
-                "select": "upc",
+              "pathToExportData": [
+                "product",
+              ],
+              "subgraph": "products",
+              "type": "Product",
+              "variables": {
+                "Product_upc": {
+                  "kind": "select",
+                  "name": "Product_upc",
+                  "select": "upc",
+                },
               },
             },
-          },
+          ],
         },
         "kind": "object",
         "ofType": "Storefront",
@@ -6930,71 +7094,74 @@ exports[`fixture 'store' > query 'NotBasicWithOperationVariables' > should plan 
           },
         ],
         "includes": {
-          "products": {
-            "exports": [
-              {
-                "kind": "scalar",
-                "name": "name",
-              },
-              {
-                "kind": "object",
-                "name": "manufacturer",
-                "selections": [
+          "products": [
+            {
+              "exports": [
+                {
+                  "kind": "scalar",
+                  "name": "name",
+                },
+                {
+                  "kind": "object",
+                  "name": "manufacturer",
+                  "selections": [
+                    {
+                      "kind": "object",
+                      "name": "products",
+                      "selections": [
+                        {
+                          "kind": "scalar",
+                          "name": "upc",
+                        },
+                        {
+                          "kind": "scalar",
+                          "name": "name",
+                        },
+                      ],
+                    },
+                    {
+                      "kind": "scalar",
+                      "name": "id",
+                      "private": true,
+                    },
+                  ],
+                },
+              ],
+              "includes": {
+                "manufacturer": [
                   {
-                    "kind": "object",
-                    "name": "products",
-                    "selections": [
-                      {
-                        "kind": "scalar",
-                        "name": "upc",
-                      },
+                    "exports": [
                       {
                         "kind": "scalar",
                         "name": "name",
                       },
                     ],
-                  },
-                  {
-                    "kind": "scalar",
-                    "name": "id",
-                    "private": true,
-                  },
-                ],
-              },
-            ],
-            "includes": {
-              "manufacturer": {
-                "exports": [
-                  {
-                    "kind": "scalar",
-                    "name": "name",
-                  },
-                ],
-                "includes": {},
-                "kind": "object",
-                "ofType": "Manufacturer",
-                "operation": "query ManufacturerById($Manufacturer_id: ID!) {
+                    "includes": {},
+                    "kind": "object",
+                    "ofType": "Manufacturer",
+                    "operation": "query ManufacturerById($Manufacturer_id: ID!) {
   manufacturer(id: $Manufacturer_id) {
     name
   }
 }",
-                "pathToExportData": [
-                  "manufacturer",
-                ],
-                "subgraph": "manufacturers",
-                "type": "Manufacturer",
-                "variables": {
-                  "Manufacturer_id": {
-                    "kind": "select",
-                    "name": "Manufacturer_id",
-                    "select": "id",
+                    "pathToExportData": [
+                      "manufacturer",
+                    ],
+                    "subgraph": "manufacturers",
+                    "type": "Manufacturer",
+                    "variables": {
+                      "Manufacturer_id": {
+                        "kind": "select",
+                        "name": "Manufacturer_id",
+                        "select": "id",
+                      },
+                    },
                   },
-                },
+                ],
               },
-            },
-            "kind": "object",
-            "ofType": "Product",
-            "operation": "query ProductByUpc($Product_upc: ID!) {
+              "kind": "object",
+              "ofType": "Product",
+              "operation": "query ProductByUpc($Product_upc: ID!) {
   product(upc: $Product_upc) {
     name
     manufacturer {
@@ -7006,19 +7173,20 @@ exports[`fixture 'store' > query 'NotBasicWithOperationVariables' > should plan 
     }
   }
 }",
-            "pathToExportData": [
-              "product",
-            ],
-            "subgraph": "products",
-            "type": "Product",
-            "variables": {
-              "Product_upc": {
-                "kind": "select",
-                "name": "Product_upc",
-                "select": "upc",
+              "pathToExportData": [
+                "product",
+              ],
+              "subgraph": "products",
+              "type": "Product",
+              "variables": {
+                "Product_upc": {
+                  "kind": "select",
+                  "name": "Product_upc",
+                  "select": "upc",
+                },
               },
             },
-          },
+          ],
         },
         "kind": "object",
         "ofType": "Storefront",

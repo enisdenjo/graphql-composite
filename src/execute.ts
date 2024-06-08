@@ -181,71 +181,73 @@ async function executeResolver(
         variables,
         // TODO: batch resolvers going to the same subgraph
         includes: await Promise.all(
-          Object.entries(resolver.includes).flatMap(([field, resolver]) => {
-            // if there's no field specified, we're resolving additional fields for the current one
-            const resolvingAdditionalFields = !field;
+          Object.entries(resolver.includes).flatMap(([field, resolvers]) =>
+            resolvers.flatMap((resolver) => {
+              // if there's no field specified, we're resolving additional fields for the current one
+              const resolvingAdditionalFields = !field;
 
-            if (Array.isArray(exportData)) {
-              // if the export data is an array, we need to gather resolve each item
-              return exportData.flatMap((exportData, i) => {
-                const fieldData = resolvingAdditionalFields
-                  ? exportData
-                  : getAtPath(exportData, field);
-                if (Array.isArray(fieldData)) {
-                  // if the include points to an array, we need to gather resolve each item
-                  return fieldData.map((fieldDataItem, j) =>
-                    executeResolver(
-                      transports,
-                      operationVariables,
-                      resolver,
-                      fieldDataItem,
-                      resolvingAdditionalFields
-                        ? [...pathInData, i, j]
-                        : [...pathInData, i, field, j],
-                      resultRef,
-                    ),
+              if (Array.isArray(exportData)) {
+                // if the export data is an array, we need to gather resolve each item
+                return exportData.flatMap((exportData, i) => {
+                  const fieldData = resolvingAdditionalFields
+                    ? exportData
+                    : getAtPath(exportData, field);
+                  if (Array.isArray(fieldData)) {
+                    // if the include points to an array, we need to gather resolve each item
+                    return fieldData.map((fieldDataItem, j) =>
+                      executeResolver(
+                        transports,
+                        operationVariables,
+                        resolver,
+                        fieldDataItem,
+                        resolvingAdditionalFields
+                          ? [...pathInData, i, j]
+                          : [...pathInData, i, field, j],
+                        resultRef,
+                      ),
+                    );
+                  }
+                  return executeResolver(
+                    transports,
+                    operationVariables,
+                    resolver,
+                    fieldData,
+                    resolvingAdditionalFields
+                      ? [...pathInData, i]
+                      : [...pathInData, i, field],
+                    resultRef,
                   );
-                }
-                return executeResolver(
-                  transports,
-                  operationVariables,
-                  resolver,
-                  fieldData,
-                  resolvingAdditionalFields
-                    ? [...pathInData, i]
-                    : [...pathInData, i, field],
-                  resultRef,
-                );
-              });
-            }
+                });
+              }
 
-            const fieldData = resolvingAdditionalFields
-              ? exportData
-              : getAtPath(exportData, field);
-            if (Array.isArray(fieldData)) {
-              // if the include points to an array, we need to gather resolve each item
-              return fieldData.map((fieldDataItem, i) =>
-                executeResolver(
-                  transports,
-                  operationVariables,
-                  resolver,
-                  fieldDataItem,
-                  resolvingAdditionalFields
-                    ? [...pathInData, i]
-                    : [...pathInData, field, i],
-                  resultRef,
-                ),
+              const fieldData = resolvingAdditionalFields
+                ? exportData
+                : getAtPath(exportData, field);
+              if (Array.isArray(fieldData)) {
+                // if the include points to an array, we need to gather resolve each item
+                return fieldData.map((fieldDataItem, i) =>
+                  executeResolver(
+                    transports,
+                    operationVariables,
+                    resolver,
+                    fieldDataItem,
+                    resolvingAdditionalFields
+                      ? [...pathInData, i]
+                      : [...pathInData, field, i],
+                    resultRef,
+                  ),
+                );
+              }
+              return executeResolver(
+                transports,
+                operationVariables,
+                resolver,
+                fieldData,
+                resolvingAdditionalFields ? pathInData : [...pathInData, field],
+                resultRef,
               );
-            }
-            return executeResolver(
-              transports,
-              operationVariables,
-              resolver,
-              fieldData,
-              resolvingAdditionalFields ? pathInData : [...pathInData, field],
-              resultRef,
-            );
-          }),
+            }),
+          ),
         ),
       };
 }

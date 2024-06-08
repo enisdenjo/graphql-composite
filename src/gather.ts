@@ -733,19 +733,21 @@ function insertResolversForSelection(
       ? // TODO: actually choose the best resolver, not the first one
         selType.resolvers[commonSubgraph]![0]
       : undefined;
-    if (!resolverPlan) {
-      // theres no resolver for the type, try finding a shared root resolver
-      // TODO: dont reuse shared root mutations to avoid running them multiple times?
-      if (parentSelInType.name === 'Query') {
-        const fieldInQuery =
-          parentSelInType.fields[
-            parentSel.kind === 'object' ? parentSel.name : parentSel.fieldName
-          ];
-        resolverPlan = Object.values(fieldInQuery?.resolvers || {}).find(
-          (r): r is BlueprintCompositeResolver =>
-            r.kind !== 'scalar' && selField.subgraphs.includes(r.subgraph),
-        );
-      }
+    if (
+      !resolverPlan &&
+      // TODO: dont reuse shared root Mutation type to avoid running them multiple times?
+      parentSelInType.name === 'Query'
+    ) {
+      // theres no resolver for the type but the selection is in a root Query type,
+      // try finding a shared root resolver to use
+      const fieldInQuery =
+        parentSelInType.fields[
+          parentSel.kind === 'object' ? parentSel.name : parentSel.fieldName
+        ];
+      resolverPlan = Object.values(fieldInQuery?.resolvers || {}).find(
+        (r): r is BlueprintCompositeResolver =>
+          r.kind !== 'scalar' && selField.subgraphs.includes(r.subgraph),
+      );
     }
     if (!resolverPlan) {
       throw new Error(

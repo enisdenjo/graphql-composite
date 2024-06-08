@@ -1,5 +1,5 @@
 import { parse } from 'graphql';
-import { FixtureQueries } from '../../../utils.js';
+import { FixtureQueries } from '../../utils.js';
 
 export const queries: FixtureQueries = [
   {

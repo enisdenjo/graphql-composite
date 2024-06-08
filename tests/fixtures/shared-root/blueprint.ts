@@ -1,4 +1,4 @@
-import { Blueprint } from '../../../../src/blueprint.js';
+import { Blueprint } from '../../../src/blueprint.js';
 
 export const blueprint: Blueprint = {
   schema: /* GraphQL */ `
@@ -145,86 +145,7 @@ export const blueprint: Blueprint = {
           resolvers: {},
         },
       },
-      resolvers: {
-        // category: [
-        //   {
-        //     subgraph: 'category',
-        //     kind: 'object',
-        //     type: '[Product]!',
-        //     ofType: 'Product',
-        //     operation: /* GraphQL */ `
-        //       query ($id: ID!) {
-        //         _entities(
-        //           representations: [{ __typename: "Product", id: $id }]
-        //         ) {
-        //           ... on Product {
-        //             ...__export
-        //           }
-        //         }
-        //       }
-        //     `,
-        //     variables: {
-        //       id: {
-        //         kind: 'select',
-        //         name: 'id',
-        //         select: 'id',
-        //       },
-        //     },
-        //   },
-        // ],
-        // name: [
-        //   {
-        //     subgraph: 'name',
-        //     kind: 'object',
-        //     type: '[Product]!',
-        //     ofType: 'Product',
-        //     operation: /* GraphQL */ `
-        //       query ($id: ID!) {
-        //         _entities(
-        //           representations: [{ __typename: "Product", id: $id }]
-        //         ) {
-        //           ... on Product {
-        //             ...__export
-        //           }
-        //         }
-        //       }
-        //     `,
-        //     variables: {
-        //       id: {
-        //         kind: 'select',
-        //         name: 'id',
-        //         select: 'id',
-        //       },
-        //     },
-        //   },
-        // ],
-        // price: [
-        //   {
-        //     subgraph: 'price',
-        //     kind: 'object',
-        //     type: '[Product]!',
-        //     ofType: 'Product',
-        //     operation: /* GraphQL */ `
-        //       query ($id: ID!) {
-        //         _entities(
-        //           representations: [{ __typename: "Product", id: $id }]
-        //         ) {
-        //           ... on Product {
-        //             ...__export
-        //           }
-        //         }
-        //       }
-        //     `,
-        //     variables: {
-        //       id: {
-        //         kind: 'select',
-        //         name: 'id',
-        //         select: 'id',
-        //       },
-        //     },
-        //   },
-        // ],
-      },
+      resolvers: {},
     },
   },
 };

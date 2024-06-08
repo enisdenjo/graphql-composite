@@ -1,214 +1,5 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`fixture 'federation/shared-root' > query 'SharedRootMultiple' > should plan gather 1`] = `
-{
-  "operation": {
-    "name": "SharedRootMultiple",
-    "resolvers": {
-      "product": {
-        "exports": [
-          {
-            "kind": "scalar",
-            "name": "id",
-          },
-          {
-            "kind": "scalar",
-            "name": "category",
-          },
-        ],
-        "includes": {
-          "": {
-            "exports": [
-              {
-                "kind": "scalar",
-                "name": "price",
-              },
-            ],
-            "includes": {},
-            "kind": "object",
-            "ofType": "Product",
-            "operation": "{
-  product {
-    price
-  }
-}",
-            "pathToExportData": [
-              "product",
-            ],
-            "subgraph": "price",
-            "type": "Product",
-            "variables": {},
-          },
-        },
-        "kind": "object",
-        "ofType": "Product",
-        "operation": "{
-  product {
-    id
-    category
-  }
-}",
-        "pathToExportData": [
-          "product",
-        ],
-        "subgraph": "category",
-        "type": "Product",
-        "variables": {},
-      },
-    },
-    "type": "Query",
-  },
-  "query": "query SharedRootMultiple {
-  product {
-    id
-    name
-    category
-    price
-  }
-}",
-}
-`;
-
-exports[`fixture 'federation/shared-root' > query 'SharedRootSingle' > should execute and explain 1`] = `
-[
-  {
-    "data": {
-      "product": {
-        "category": "Category 1",
-        "id": "1",
-      },
-    },
-    "exports": [
-      {
-        "kind": "scalar",
-        "name": "id",
-      },
-      {
-        "kind": "scalar",
-        "name": "category",
-      },
-    ],
-    "includes": [
-      {
-        "data": {
-          "product": {
-            "name": "Product 1",
-          },
-        },
-        "exports": [
-          {
-            "kind": "scalar",
-            "name": "name",
-          },
-        ],
-        "includes": [],
-        "kind": "object",
-        "ofType": "Product",
-        "operation": "{
-  product {
-    name
-  }
-}",
-        "pathInData": [
-          "product",
-        ],
-        "pathToExportData": [
-          "product",
-        ],
-        "subgraph": "name",
-        "type": "Product",
-        "variables": {},
-      },
-    ],
-    "kind": "object",
-    "ofType": "Product",
-    "operation": "{
-  product {
-    id
-    category
-  }
-}",
-    "pathInData": [
-      "product",
-    ],
-    "pathToExportData": [
-      "product",
-    ],
-    "subgraph": "category",
-    "type": "Product",
-    "variables": {},
-  },
-]
-`;
-
-exports[`fixture 'federation/shared-root' > query 'SharedRootSingle' > should plan gather 1`] = `
-{
-  "operation": {
-    "name": "SharedRootSingle",
-    "resolvers": {
-      "product": {
-        "exports": [
-          {
-            "kind": "scalar",
-            "name": "id",
-          },
-          {
-            "kind": "scalar",
-            "name": "category",
-          },
-        ],
-        "includes": {
-          "": {
-            "exports": [
-              {
-                "kind": "scalar",
-                "name": "name",
-              },
-            ],
-            "includes": {},
-            "kind": "object",
-            "ofType": "Product",
-            "operation": "{
-  product {
-    name
-  }
-}",
-            "pathToExportData": [
-              "product",
-            ],
-            "subgraph": "name",
-            "type": "Product",
-            "variables": {},
-          },
-        },
-        "kind": "object",
-        "ofType": "Product",
-        "operation": "{
-  product {
-    id
-    category
-  }
-}",
-        "pathToExportData": [
-          "product",
-        ],
-        "subgraph": "category",
-        "type": "Product",
-        "variables": {},
-      },
-    },
-    "type": "Query",
-  },
-  "query": "query SharedRootSingle {
-  product {
-    id
-    name
-    category
-  }
-}",
-}
-`;
-
 exports[`fixture 'federation/simple-interface-object' > query 'AccountsIsActive' > should execute and explain 1`] = `
 [
   {
@@ -5179,6 +4970,215 @@ exports[`fixture 'interfaces' > query 'BasicNestedAnimal' > should plan gather 1
         }
       }
     }
+  }
+}",
+}
+`;
+
+exports[`fixture 'shared-root' > query 'SharedRootMultiple' > should plan gather 1`] = `
+{
+  "operation": {
+    "name": "SharedRootMultiple",
+    "resolvers": {
+      "product": {
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "id",
+          },
+          {
+            "kind": "scalar",
+            "name": "category",
+          },
+        ],
+        "includes": {
+          "": {
+            "exports": [
+              {
+                "kind": "scalar",
+                "name": "price",
+              },
+            ],
+            "includes": {},
+            "kind": "object",
+            "ofType": "Product",
+            "operation": "{
+  product {
+    price
+  }
+}",
+            "pathToExportData": [
+              "product",
+            ],
+            "subgraph": "price",
+            "type": "Product",
+            "variables": {},
+          },
+        },
+        "kind": "object",
+        "ofType": "Product",
+        "operation": "{
+  product {
+    id
+    category
+  }
+}",
+        "pathToExportData": [
+          "product",
+        ],
+        "subgraph": "category",
+        "type": "Product",
+        "variables": {},
+      },
+    },
+    "type": "Query",
+  },
+  "query": "query SharedRootMultiple {
+  product {
+    id
+    name
+    category
+    price
+  }
+}",
+}
+`;
+
+exports[`fixture 'shared-root' > query 'SharedRootSingle' > should execute and explain 1`] = `
+[
+  {
+    "data": {
+      "product": {
+        "category": "Category 1",
+        "id": "1",
+      },
+    },
+    "exports": [
+      {
+        "kind": "scalar",
+        "name": "id",
+      },
+      {
+        "kind": "scalar",
+        "name": "category",
+      },
+    ],
+    "includes": [
+      {
+        "data": {
+          "product": {
+            "name": "Product 1",
+          },
+        },
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "name",
+          },
+        ],
+        "includes": [],
+        "kind": "object",
+        "ofType": "Product",
+        "operation": "{
+  product {
+    name
+  }
+}",
+        "pathInData": [
+          "product",
+        ],
+        "pathToExportData": [
+          "product",
+        ],
+        "subgraph": "name",
+        "type": "Product",
+        "variables": {},
+      },
+    ],
+    "kind": "object",
+    "ofType": "Product",
+    "operation": "{
+  product {
+    id
+    category
+  }
+}",
+    "pathInData": [
+      "product",
+    ],
+    "pathToExportData": [
+      "product",
+    ],
+    "subgraph": "category",
+    "type": "Product",
+    "variables": {},
+  },
+]
+`;
+
+exports[`fixture 'shared-root' > query 'SharedRootSingle' > should plan gather 1`] = `
+{
+  "operation": {
+    "name": "SharedRootSingle",
+    "resolvers": {
+      "product": {
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "id",
+          },
+          {
+            "kind": "scalar",
+            "name": "category",
+          },
+        ],
+        "includes": {
+          "": {
+            "exports": [
+              {
+                "kind": "scalar",
+                "name": "name",
+              },
+            ],
+            "includes": {},
+            "kind": "object",
+            "ofType": "Product",
+            "operation": "{
+  product {
+    name
+  }
+}",
+            "pathToExportData": [
+              "product",
+            ],
+            "subgraph": "name",
+            "type": "Product",
+            "variables": {},
+          },
+        },
+        "kind": "object",
+        "ofType": "Product",
+        "operation": "{
+  product {
+    id
+    category
+  }
+}",
+        "pathToExportData": [
+          "product",
+        ],
+        "subgraph": "category",
+        "type": "Product",
+        "variables": {},
+      },
+    },
+    "type": "Query",
+  },
+  "query": "query SharedRootSingle {
+  product {
+    id
+    name
+    category
   }
 }",
 }

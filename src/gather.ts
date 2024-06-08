@@ -63,10 +63,17 @@ export type GatherPlanCompositeResolver = BlueprintCompositeResolver & {
    * on fields from this resolver. These resolvers of fields that don't
    * exist in this resolver.
    *
-   * A map of field paths to the necessary resolver. If the field path is an empty string,
-   * the include is resolving additional fields for the current resolver.
+   * A map of field paths to the necessary resolver.
+   *
+   * If the field path is an empty string (`""`), the include is resolving additional
+   * fields for the current resolver. Because of this, the map value is an array of
+   * resolvers. Otherwise, the map is a one to one relation of field to resolver.
    */
-  includes: Record<string, GatherPlanCompositeResolver[]>;
+  includes: {
+    ''?: GatherPlanCompositeResolver[];
+  } & {
+    [field: string]: GatherPlanCompositeResolver;
+  };
 };
 
 export interface GatherPlanScalarResolver extends BlueprintScalarResolver {
@@ -633,9 +640,7 @@ function insertResolversForSelection(
           getSelectionsAtDepth(currentResolver.exports, depth),
         );
 
-        if (!currentResolver.includes['']) {
-          currentResolver.includes[''] = [];
-        }
+        currentResolver.includes[''] ??= [];
         currentResolver.includes[''].push(resolver);
 
         for (const subSel of sel.selections) {
@@ -761,15 +766,14 @@ function insertResolversForSelection(
       getSelectionsAtDepth(currentResolver.exports, depth),
     );
 
-    const path = resolvingAdditionalFields
-      ? ''
-      : parentSel.kind === 'fragment'
-        ? parentSel.fieldName
-        : parentSel.name;
-    if (!currentResolver.includes[path]) {
-      currentResolver.includes[path] = [];
+    if (resolvingAdditionalFields) {
+      currentResolver.includes[''] ??= [];
+      currentResolver.includes[''].push(resolver);
+    } else {
+      currentResolver.includes[
+        parentSel.kind === 'fragment' ? parentSel.fieldName : parentSel.name
+      ] = resolver;
     }
-    currentResolver.includes[path]!.push(resolver);
   }
 
   const exp: OperationObjectExport | OperationScalarExport =

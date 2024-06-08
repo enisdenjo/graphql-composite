@@ -733,7 +733,7 @@ function insertResolversForSelection(
       : undefined;
     if (!resolverPlan) {
       throw new Error(
-        `Blueprint type "${selType.name}" doesn't have a resolver for any of the "${selField.name}" field subgraphs`,
+        `Blueprint type "${selType.name}" doesn't have a resolver for the "${selField.name}" field`,
       );
     }
 

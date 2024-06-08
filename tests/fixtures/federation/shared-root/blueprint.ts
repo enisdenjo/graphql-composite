@@ -18,7 +18,7 @@ export const blueprint: Blueprint = {
     Query: {
       kind: 'object',
       name: 'Query',
-      implements: [],
+      implements: {},
       fields: {
         product: {
           name: 'product',
@@ -122,7 +122,7 @@ export const blueprint: Blueprint = {
     Product: {
       kind: 'object',
       name: 'Product',
-      implements: [],
+      implements: {},
       fields: {
         id: {
           name: 'id',

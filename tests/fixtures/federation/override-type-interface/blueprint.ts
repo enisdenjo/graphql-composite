@@ -32,7 +32,7 @@ export const blueprint: Blueprint = {
     Query: {
       name: 'Query',
       kind: 'object',
-      implements: [],
+      implements: {},
       fields: {
         feed: {
           name: 'feed',
@@ -114,7 +114,16 @@ export const blueprint: Blueprint = {
     ImagePost: {
       kind: 'object',
       name: 'ImagePost',
-      implements: ['AnotherPost', 'Post'],
+      implements: {
+        AnotherPost: {
+          name: 'AnotherPost',
+          subgraphs: ['a', 'b'],
+        },
+        Post: {
+          name: 'Post',
+          subgraphs: ['a', 'b'],
+        },
+      },
       fields: {
         id: {
           name: 'id',
@@ -159,7 +168,12 @@ export const blueprint: Blueprint = {
     TextPost: {
       kind: 'object',
       name: 'TextPost',
-      implements: ['Post'],
+      implements: {
+        Post: {
+          name: 'Post',
+          subgraphs: ['a', 'b'],
+        },
+      },
       fields: {
         id: {
           name: 'id',

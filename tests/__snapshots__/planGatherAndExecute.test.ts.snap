@@ -102,20 +102,6 @@ exports[`fixture 'federation/override-type-interface' > query 'AnotherFeedFragme
         "kind": "scalar",
         "name": "id",
       },
-      {
-        "kind": "fragment",
-        "selections": [
-          {
-            "kind": "scalar",
-            "name": "createdAt",
-          },
-          {
-            "kind": "scalar",
-            "name": "id",
-          },
-        ],
-        "typeCondition": "ImagePost",
-      },
     ],
     "includes": [],
     "kind": "interface",
@@ -124,10 +110,6 @@ exports[`fixture 'federation/override-type-interface' > query 'AnotherFeedFragme
   anotherFeed {
     createdAt
     id
-    ... on ImagePost {
-      createdAt
-      id
-    }
   }
 }",
     "pathInData": [
@@ -158,20 +140,6 @@ exports[`fixture 'federation/override-type-interface' > query 'AnotherFeedFragme
             "kind": "scalar",
             "name": "id",
           },
-          {
-            "kind": "fragment",
-            "selections": [
-              {
-                "kind": "scalar",
-                "name": "createdAt",
-              },
-              {
-                "kind": "scalar",
-                "name": "id",
-              },
-            ],
-            "typeCondition": "ImagePost",
-          },
         ],
         "includes": {},
         "kind": "interface",
@@ -180,10 +148,6 @@ exports[`fixture 'federation/override-type-interface' > query 'AnotherFeedFragme
   anotherFeed {
     createdAt
     id
-    ... on ImagePost {
-      createdAt
-      id
-    }
   }
 }",
         "pathToExportData": [
@@ -215,109 +179,26 @@ exports[`fixture 'federation/override-type-interface' > query 'EmptyFeed' > shou
     "data": {
       "feed": [
         {
-          "id": "i1",
+          "__typename": "ImagePost",
         },
         {
-          "id": "i2",
+          "__typename": "ImagePost",
         },
       ],
     },
     "exports": [
       {
         "kind": "scalar",
-        "name": "id",
+        "name": "__typename",
         "private": true,
       },
     ],
-    "includes": [
-      {
-        "data": {
-          "_entities": [
-            null,
-          ],
-        },
-        "exports": [
-          {
-            "kind": "scalar",
-            "name": "id",
-          },
-          {
-            "kind": "scalar",
-            "name": "body",
-          },
-        ],
-        "includes": [],
-        "kind": "object",
-        "ofType": "TextPost",
-        "operation": "query ($id: ID!) {
-  _entities(representations: [{__typename: "TextPost", id: $id}]) {
-    ... on TextPost {
-      id
-      body
-    }
-  }
-}",
-        "pathInData": [
-          "feed",
-          0,
-        ],
-        "pathToExportData": [
-          "_entities",
-          0,
-        ],
-        "subgraph": "b",
-        "type": "[TextPost]",
-        "variables": {
-          "id": "i1",
-        },
-      },
-      {
-        "data": {
-          "_entities": [
-            null,
-          ],
-        },
-        "exports": [
-          {
-            "kind": "scalar",
-            "name": "id",
-          },
-          {
-            "kind": "scalar",
-            "name": "body",
-          },
-        ],
-        "includes": [],
-        "kind": "object",
-        "ofType": "TextPost",
-        "operation": "query ($id: ID!) {
-  _entities(representations: [{__typename: "TextPost", id: $id}]) {
-    ... on TextPost {
-      id
-      body
-    }
-  }
-}",
-        "pathInData": [
-          "feed",
-          1,
-        ],
-        "pathToExportData": [
-          "_entities",
-          0,
-        ],
-        "subgraph": "b",
-        "type": "[TextPost]",
-        "variables": {
-          "id": "i2",
-        },
-      },
-    ],
+    "includes": [],
     "kind": "interface",
     "ofType": "Post",
     "operation": "{
   feed {
-    id
+    __typename
   }
 }",
     "pathInData": [
@@ -342,53 +223,16 @@ exports[`fixture 'federation/override-type-interface' > query 'EmptyFeed' > shou
         "exports": [
           {
             "kind": "scalar",
-            "name": "id",
+            "name": "__typename",
             "private": true,
           },
         ],
-        "includes": {
-          "": {
-            "exports": [
-              {
-                "kind": "scalar",
-                "name": "id",
-              },
-              {
-                "kind": "scalar",
-                "name": "body",
-              },
-            ],
-            "includes": {},
-            "kind": "object",
-            "ofType": "TextPost",
-            "operation": "query ($id: ID!) {
-  _entities(representations: [{__typename: "TextPost", id: $id}]) {
-    ... on TextPost {
-      id
-      body
-    }
-  }
-}",
-            "pathToExportData": [
-              "_entities",
-              0,
-            ],
-            "subgraph": "b",
-            "type": "[TextPost]",
-            "variables": {
-              "id": {
-                "kind": "select",
-                "name": "id",
-                "select": "id",
-              },
-            },
-          },
-        },
+        "includes": {},
         "kind": "interface",
         "ofType": "Post",
         "operation": "{
   feed {
-    id
+    __typename
   }
 }",
         "pathToExportData": [

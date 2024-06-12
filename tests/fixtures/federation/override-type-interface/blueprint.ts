@@ -120,11 +120,11 @@ export const blueprint: Blueprint = {
       implements: {
         AnotherPost: {
           name: 'AnotherPost',
-          subgraphs: ['a', 'b'],
+          subgraphs: ['b'],
         },
         Post: {
           name: 'Post',
-          subgraphs: ['a', 'b'],
+          subgraphs: ['a'],
         },
       },
       fields: {
@@ -174,7 +174,7 @@ export const blueprint: Blueprint = {
       implements: {
         Post: {
           name: 'Post',
-          subgraphs: ['a', 'b'],
+          subgraphs: ['b'],
         },
       },
       fields: {

@@ -754,6 +754,18 @@ function insertResolversForSelection(
           r.kind !== 'scalar' && selField.subgraphs.includes(r.subgraph),
       );
     }
+    if (!resolverPlan && selType.kind === 'interface') {
+      // try resolving the field from an implementing type of the interface
+      const implementingObjectTypeWithSelField = Object.values(blueprint.types)
+        .filter((t): t is BlueprintObject => t.kind === 'object')
+        .filter((t) => implementsInterface(t, selType.name))
+        .find((t) => !!t.fields[selField.name]);
+
+      // TODO: choose the right resolver when multiple
+      resolverPlan = Object.values(
+        implementingObjectTypeWithSelField?.resolvers || [],
+      ).flat()[0];
+    }
     if (!resolverPlan) {
       throw new Error(
         `Blueprint type "${selType.name}" doesn't have a resolver for the "${selField.name}" field`,

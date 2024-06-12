@@ -693,19 +693,6 @@ function insertResolversForSelection(
   if (selField) {
     selType = parentTypePlan;
 
-    // if interface field has an implementation in form of an object field, that is not resolvable by a subgraph
-    if (selType.kind === 'interface') {
-      // TODO: check if the interface field is has an implementation in the current subgraph.
-      // There may be a case where a local object type implementing the interface, has its field overridden by another subgraph.
-      // If that's the case, then we should use the other subgraph's resolver, to resolve the missing field.
-      // Other local object types that implement the interface may have the field resolvable in the current subgraph,
-      // then we would have to break the selection set into fragments,
-      // each representing a different object type that implements the interface.
-      //
-      // Some object types could be available in the subgraph, so are their fields, but not implementing the interface,
-      // we might want to wait for https://github.com/enisdenjo/graphql-composite/pull/39
-    }
-
     // use the parent resolver if the field is available in its subgraph;
     // if not, try finding a resolver in parents includes
     resolver = selField.subgraphs.includes(currentResolver.subgraph)

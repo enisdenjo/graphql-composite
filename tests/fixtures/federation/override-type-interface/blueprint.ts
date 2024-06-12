@@ -89,7 +89,10 @@ export const blueprint: Blueprint = {
         },
         createdAt: {
           name: 'createdAt',
-          subgraphs: ['a', 'b'],
+          subgraphs: [
+            // 'a', field has an @override in subgraph "b"
+            'b',
+          ],
           resolvers: {},
         },
       },

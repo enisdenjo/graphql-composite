@@ -102,6 +102,20 @@ exports[`fixture 'federation/override-type-interface' > query 'AnotherFeedFragme
         "kind": "scalar",
         "name": "id",
       },
+      {
+        "kind": "fragment",
+        "selections": [
+          {
+            "kind": "scalar",
+            "name": "createdAt",
+          },
+          {
+            "kind": "scalar",
+            "name": "id",
+          },
+        ],
+        "typeCondition": "ImagePost",
+      },
     ],
     "includes": [],
     "kind": "interface",
@@ -110,6 +124,10 @@ exports[`fixture 'federation/override-type-interface' > query 'AnotherFeedFragme
   anotherFeed {
     createdAt
     id
+    ... on ImagePost {
+      createdAt
+      id
+    }
   }
 }",
     "pathInData": [
@@ -140,6 +158,20 @@ exports[`fixture 'federation/override-type-interface' > query 'AnotherFeedFragme
             "kind": "scalar",
             "name": "id",
           },
+          {
+            "kind": "fragment",
+            "selections": [
+              {
+                "kind": "scalar",
+                "name": "createdAt",
+              },
+              {
+                "kind": "scalar",
+                "name": "id",
+              },
+            ],
+            "typeCondition": "ImagePost",
+          },
         ],
         "includes": {},
         "kind": "interface",
@@ -148,6 +180,10 @@ exports[`fixture 'federation/override-type-interface' > query 'AnotherFeedFragme
   anotherFeed {
     createdAt
     id
+    ... on ImagePost {
+      createdAt
+      id
+    }
   }
 }",
         "pathToExportData": [
@@ -256,6 +292,123 @@ exports[`fixture 'federation/override-type-interface' > query 'EmptyFeed' > shou
 }
 `;
 
+exports[`fixture 'federation/override-type-interface' > query 'Feed' > should execute and explain 1`] = `
+[
+  {
+    "data": {
+      "feed": [
+        {
+          "id": "i1",
+        },
+        {
+          "id": "i2",
+        },
+      ],
+    },
+    "exports": [
+      {
+        "kind": "scalar",
+        "name": "id",
+      },
+    ],
+    "includes": [
+      {
+        "data": {
+          "_entities": [
+            {
+              "createdAt": "i1-createdAt",
+            },
+          ],
+        },
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "createdAt",
+          },
+        ],
+        "includes": [],
+        "kind": "object",
+        "ofType": "ImagePost",
+        "operation": "query ($id: ID!) {
+  _entities(representations: [{__typename: "ImagePost", id: $id}]) {
+    ... on ImagePost {
+      createdAt
+    }
+  }
+}",
+        "pathInData": [
+          "feed",
+          0,
+        ],
+        "pathToExportData": [
+          "_entities",
+          0,
+        ],
+        "subgraph": "b",
+        "type": "[ImagePost]",
+        "variables": {
+          "id": "i1",
+        },
+      },
+      {
+        "data": {
+          "_entities": [
+            {
+              "createdAt": "i2-createdAt",
+            },
+          ],
+        },
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "createdAt",
+          },
+        ],
+        "includes": [],
+        "kind": "object",
+        "ofType": "ImagePost",
+        "operation": "query ($id: ID!) {
+  _entities(representations: [{__typename: "ImagePost", id: $id}]) {
+    ... on ImagePost {
+      createdAt
+    }
+  }
+}",
+        "pathInData": [
+          "feed",
+          1,
+        ],
+        "pathToExportData": [
+          "_entities",
+          0,
+        ],
+        "subgraph": "b",
+        "type": "[ImagePost]",
+        "variables": {
+          "id": "i2",
+        },
+      },
+    ],
+    "kind": "interface",
+    "ofType": "Post",
+    "operation": "{
+  feed {
+    id
+  }
+}",
+    "pathInData": [
+      "feed",
+    ],
+    "pathToExportData": [
+      "feed",
+    ],
+    "subgraph": "a",
+    "type": "[Post]",
+    "variables": {},
+  },
+]
+`;
+
 exports[`fixture 'federation/override-type-interface' > query 'Feed' > should plan gather 1`] = `
 {
   "operation": {
@@ -267,18 +420,47 @@ exports[`fixture 'federation/override-type-interface' > query 'Feed' > should pl
             "kind": "scalar",
             "name": "id",
           },
-          {
-            "kind": "scalar",
-            "name": "createdAt",
-          },
         ],
-        "includes": {},
+        "includes": {
+          "": [
+            {
+              "exports": [
+                {
+                  "kind": "scalar",
+                  "name": "createdAt",
+                },
+              ],
+              "includes": {},
+              "kind": "object",
+              "ofType": "ImagePost",
+              "operation": "query ($id: ID!) {
+  _entities(representations: [{__typename: "ImagePost", id: $id}]) {
+    ... on ImagePost {
+      createdAt
+    }
+  }
+}",
+              "pathToExportData": [
+                "_entities",
+                0,
+              ],
+              "subgraph": "b",
+              "type": "[ImagePost]",
+              "variables": {
+                "id": {
+                  "kind": "select",
+                  "name": "id",
+                  "select": "id",
+                },
+              },
+            },
+          ],
+        },
         "kind": "interface",
         "ofType": "Post",
         "operation": "{
   feed {
     id
-    createdAt
   }
 }",
         "pathToExportData": [

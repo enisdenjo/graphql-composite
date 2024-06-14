@@ -286,6 +286,7 @@ function populateResultWithExportData(
   }
 
   const publicExportPaths = resolver.exports.flatMap(getPublicPathsOfExport);
+
   if (!publicExportPaths.length) {
     for (const deepestObjectPath of resolver.exports.flatMap(
       getDeepestObjectPublicPathsOfExport,
@@ -339,35 +340,40 @@ function populateResultWithExportData(
  * {
  *   "kind": "public",
  *   "name": "products",
+ *   "property": "products"
  *   "selections": [
  *     {
  *       "kind": "public",
- *       "name": "upc"
+ *       "name": "upc",
+ *       "property": "p"
  *     },
  *     {
  *       "kind": "public",
  *       "name": "manufacturer",
+ *       "property": "manufacturer"
  *       "selections": [
  *         {
  *           "kind": "public",
- *           "name": "name"
+ *           "name": "name",
+ *           "property": "name"
  *         }
  *       ]
  *     },
  *     {
  *       "kind": "public",
- *       "name": "price"
+ *       "name": "price",
+ *       "property": "price"
  *     }
  *   ]
  * }
  * ```
  * the result will be:
  * ```json
- * [
- *   ["products", "upc"],
- *   ["products", "manufacturer", "name"],
- *   ["products", "price"]
- * ]
+ *  [
+ *    ["products", "p"],
+ *    ["products", "manufacturer", "name"],
+ *    ["products", "price"]
+ *  ]
  * ```
  */
 function getPublicPathsOfExport(exp: OperationExport): string[][] {
@@ -377,15 +383,16 @@ function getPublicPathsOfExport(exp: OperationExport): string[][] {
   }
 
   if (exp.kind === 'scalar') {
-    return [[exp.name]];
+    return [[exp.prop]];
   }
 
   const paths: string[][] = [];
   for (const sel of exp.selections || []) {
     const selPaths = getPublicPathsOfExport(sel);
+
     for (const path of selPaths) {
       if ('name' in exp) {
-        paths.push([exp.name, ...path]);
+        paths.push([exp.prop, ...path]);
       } else {
         paths.push(path);
       }
@@ -447,7 +454,7 @@ function getDeepestObjectPublicPathsOfExport(exp: OperationExport): string[][] {
     for (const path of selPaths) {
       path.pop();
       if ('name' in exp) {
-        paths.push([exp.name, ...path]);
+        paths.push([exp.prop, ...path]);
       } else {
         paths.push(path);
       }

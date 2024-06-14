@@ -315,4 +315,77 @@ export const queries: FixtureQueries = [
       },
     },
   },
+  {
+    name: 'Aliases',
+    document: parse(/* GraphQL */ `
+      query Aliases {
+        v: viewer {
+          m: media {
+            __typename
+            ... on Song {
+              songTitle: title
+              title
+            }
+            ... on Movie {
+              movieTitle: title
+              title
+            }
+            ... on Book {
+              bookTitle: title
+              bookTitle2: title
+              title
+            }
+          }
+          b: book {
+            type: __typename
+            ... on Song {
+              songTitle: title
+            }
+            ... on Movie {
+              movieTitle: title
+            }
+            ... on Book {
+              bookTitle: title
+            }
+          }
+          s: song {
+            __typename
+            ... on Song {
+              # FIXME songTypename: __typename  - this will break the test
+              songTitle: title
+            }
+            ... on Movie {
+              # movieTypename: __typename
+              movieTitle: title
+            }
+            ... on Book {
+              # bookTypename: __typename
+              bookTitle: title
+            }
+          }
+        }
+      }
+    `),
+    variables: {},
+    result: {
+      data: {
+        v: {
+          m: {
+            __typename: 'Book',
+            bookTitle: 'The Lord of the Rings',
+            bookTitle2: 'The Lord of the Rings',
+            title: 'The Lord of the Rings',
+          },
+          b: {
+            type: 'Book',
+            bookTitle: 'The Lord of the Rings',
+          },
+          s: {
+            __typename: 'Song',
+            songTitle: 'Song Title',
+          },
+        },
+      },
+    },
+  },
 ];

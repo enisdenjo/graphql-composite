@@ -17,7 +17,7 @@ exports[`fixture 'federation/override-type-interface' > query 'AnotherFeed' > sh
       {
         "kind": "scalar",
         "name": "createdAt",
-        "property": "createdAt",
+        "prop": "createdAt",
       },
     ],
     "includes": [],
@@ -51,7 +51,7 @@ exports[`fixture 'federation/override-type-interface' > query 'AnotherFeed' > sh
           {
             "kind": "scalar",
             "name": "createdAt",
-            "property": "createdAt",
+            "prop": "createdAt",
           },
         ],
         "includes": {},
@@ -99,12 +99,12 @@ exports[`fixture 'federation/override-type-interface' > query 'AnotherFeedFragme
       {
         "kind": "scalar",
         "name": "createdAt",
-        "property": "createdAt",
+        "prop": "createdAt",
       },
       {
         "kind": "scalar",
         "name": "id",
-        "property": "id",
+        "prop": "id",
       },
       {
         "kind": "fragment",
@@ -112,12 +112,12 @@ exports[`fixture 'federation/override-type-interface' > query 'AnotherFeedFragme
           {
             "kind": "scalar",
             "name": "createdAt",
-            "property": "createdAt",
+            "prop": "createdAt",
           },
           {
             "kind": "scalar",
             "name": "id",
-            "property": "id",
+            "prop": "id",
           },
         ],
         "typeCondition": "ImagePost",
@@ -159,12 +159,12 @@ exports[`fixture 'federation/override-type-interface' > query 'AnotherFeedFragme
           {
             "kind": "scalar",
             "name": "createdAt",
-            "property": "createdAt",
+            "prop": "createdAt",
           },
           {
             "kind": "scalar",
             "name": "id",
-            "property": "id",
+            "prop": "id",
           },
           {
             "kind": "fragment",
@@ -172,12 +172,12 @@ exports[`fixture 'federation/override-type-interface' > query 'AnotherFeedFragme
               {
                 "kind": "scalar",
                 "name": "createdAt",
-                "property": "createdAt",
+                "prop": "createdAt",
               },
               {
                 "kind": "scalar",
                 "name": "id",
-                "property": "id",
+                "prop": "id",
               },
             ],
             "typeCondition": "ImagePost",
@@ -237,7 +237,7 @@ exports[`fixture 'federation/override-type-interface' > query 'EmptyFeed' > shou
         "kind": "scalar",
         "name": "__typename",
         "private": true,
-        "property": "__typename",
+        "prop": "__typename",
       },
     ],
     "includes": [],
@@ -272,7 +272,7 @@ exports[`fixture 'federation/override-type-interface' > query 'EmptyFeed' > shou
             "kind": "scalar",
             "name": "__typename",
             "private": true,
-            "property": "__typename",
+            "prop": "__typename",
           },
         ],
         "includes": {},
@@ -321,7 +321,7 @@ exports[`fixture 'federation/override-type-interface' > query 'Feed' > should ex
       {
         "kind": "scalar",
         "name": "id",
-        "property": "id",
+        "prop": "id",
       },
     ],
     "includes": [
@@ -337,7 +337,7 @@ exports[`fixture 'federation/override-type-interface' > query 'Feed' > should ex
           {
             "kind": "scalar",
             "name": "createdAt",
-            "property": "createdAt",
+            "prop": "createdAt",
           },
         ],
         "includes": [],
@@ -376,7 +376,7 @@ exports[`fixture 'federation/override-type-interface' > query 'Feed' > should ex
           {
             "kind": "scalar",
             "name": "createdAt",
-            "property": "createdAt",
+            "prop": "createdAt",
           },
         ],
         "includes": [],
@@ -434,7 +434,7 @@ exports[`fixture 'federation/override-type-interface' > query 'Feed' > should pl
           {
             "kind": "scalar",
             "name": "id",
-            "property": "id",
+            "prop": "id",
           },
         ],
         "includes": {
@@ -444,7 +444,7 @@ exports[`fixture 'federation/override-type-interface' > query 'Feed' > should pl
                 {
                   "kind": "scalar",
                   "name": "createdAt",
-                  "property": "createdAt",
+                  "prop": "createdAt",
                 },
               ],
               "includes": {},
@@ -519,7 +519,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsIsActive'
       {
         "kind": "scalar",
         "name": "id",
-        "property": "id",
+        "prop": "id",
       },
     ],
     "includes": [
@@ -535,7 +535,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsIsActive'
           {
             "kind": "scalar",
             "name": "isActive",
-            "property": "isActive",
+            "prop": "isActive",
           },
         ],
         "includes": [],
@@ -574,7 +574,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsIsActive'
           {
             "kind": "scalar",
             "name": "isActive",
-            "property": "isActive",
+            "prop": "isActive",
           },
         ],
         "includes": [],
@@ -613,7 +613,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsIsActive'
           {
             "kind": "scalar",
             "name": "isActive",
-            "property": "isActive",
+            "prop": "isActive",
           },
         ],
         "includes": [],
@@ -671,7 +671,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsIsActive'
           {
             "kind": "scalar",
             "name": "id",
-            "property": "id",
+            "prop": "id",
           },
         ],
         "includes": {
@@ -681,7 +681,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsIsActive'
                 {
                   "kind": "scalar",
                   "name": "isActive",
-                  "property": "isActive",
+                  "prop": "isActive",
                 },
               ],
               "includes": {},
@@ -756,7 +756,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsIsActiveO
       {
         "kind": "scalar",
         "name": "id",
-        "property": "id",
+        "prop": "id",
       },
     ],
     "includes": [
@@ -772,7 +772,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsIsActiveO
           {
             "kind": "scalar",
             "name": "isActive",
-            "property": "isActive",
+            "prop": "isActive",
           },
         ],
         "includes": [],
@@ -811,7 +811,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsIsActiveO
           {
             "kind": "scalar",
             "name": "isActive",
-            "property": "isActive",
+            "prop": "isActive",
           },
         ],
         "includes": [],
@@ -848,7 +848,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsIsActiveO
           {
             "kind": "scalar",
             "name": "isActive",
-            "property": "isActive",
+            "prop": "isActive",
           },
         ],
         "includes": [],
@@ -906,7 +906,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsIsActiveO
           {
             "kind": "scalar",
             "name": "id",
-            "property": "id",
+            "prop": "id",
           },
         ],
         "includes": {
@@ -916,7 +916,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsIsActiveO
                 {
                   "kind": "scalar",
                   "name": "isActive",
-                  "property": "isActive",
+                  "prop": "isActive",
                 },
               ],
               "includes": {},
@@ -993,7 +993,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsNames' > 
       {
         "kind": "scalar",
         "name": "name",
-        "property": "name",
+        "prop": "name",
       },
     ],
     "includes": [],
@@ -1027,7 +1027,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsNames' > 
           {
             "kind": "scalar",
             "name": "name",
-            "property": "name",
+            "prop": "name",
           },
         ],
         "includes": {},
@@ -1077,7 +1077,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsSpreadAdm
         "kind": "scalar",
         "name": "id",
         "private": true,
-        "property": "id",
+        "prop": "id",
       },
     ],
     "includes": [
@@ -1094,7 +1094,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsSpreadAdm
             "kind": "scalar",
             "name": "id",
             "private": true,
-            "property": "id",
+            "prop": "id",
           },
         ],
         "includes": [
@@ -1110,7 +1110,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsSpreadAdm
               {
                 "kind": "scalar",
                 "name": "name",
-                "property": "name",
+                "prop": "name",
               },
             ],
             "includes": [],
@@ -1174,7 +1174,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsSpreadAdm
             "kind": "scalar",
             "name": "id",
             "private": true,
-            "property": "id",
+            "prop": "id",
           },
         ],
         "includes": [
@@ -1190,7 +1190,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsSpreadAdm
               {
                 "kind": "scalar",
                 "name": "name",
-                "property": "name",
+                "prop": "name",
               },
             ],
             "includes": [],
@@ -1252,7 +1252,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsSpreadAdm
             "kind": "scalar",
             "name": "id",
             "private": true,
-            "property": "id",
+            "prop": "id",
           },
         ],
         "includes": [
@@ -1261,7 +1261,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsSpreadAdm
               {
                 "kind": "scalar",
                 "name": "name",
-                "property": "name",
+                "prop": "name",
               },
             ],
             "includes": [],
@@ -1344,7 +1344,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsSpreadAdm
             "kind": "scalar",
             "name": "id",
             "private": true,
-            "property": "id",
+            "prop": "id",
           },
         ],
         "includes": {
@@ -1355,7 +1355,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsSpreadAdm
                   "kind": "scalar",
                   "name": "id",
                   "private": true,
-                  "property": "id",
+                  "prop": "id",
                 },
               ],
               "includes": {
@@ -1365,7 +1365,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsSpreadAdm
                       {
                         "kind": "scalar",
                         "name": "name",
-                        "property": "name",
+                        "prop": "name",
                       },
                     ],
                     "includes": {},
@@ -1467,7 +1467,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsWithAdmin
         "kind": "scalar",
         "name": "id",
         "private": true,
-        "property": "id",
+        "prop": "id",
       },
     ],
     "includes": [
@@ -1484,7 +1484,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsWithAdmin
             "kind": "scalar",
             "name": "id",
             "private": true,
-            "property": "id",
+            "prop": "id",
           },
         ],
         "includes": [
@@ -1500,7 +1500,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsWithAdmin
               {
                 "kind": "scalar",
                 "name": "__typename",
-                "property": "__typename",
+                "prop": "__typename",
               },
             ],
             "includes": [],
@@ -1564,7 +1564,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsWithAdmin
             "kind": "scalar",
             "name": "id",
             "private": true,
-            "property": "id",
+            "prop": "id",
           },
         ],
         "includes": [
@@ -1580,7 +1580,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsWithAdmin
               {
                 "kind": "scalar",
                 "name": "__typename",
-                "property": "__typename",
+                "prop": "__typename",
               },
             ],
             "includes": [],
@@ -1642,7 +1642,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsWithAdmin
             "kind": "scalar",
             "name": "id",
             "private": true,
-            "property": "id",
+            "prop": "id",
           },
         ],
         "includes": [
@@ -1651,7 +1651,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsWithAdmin
               {
                 "kind": "scalar",
                 "name": "__typename",
-                "property": "__typename",
+                "prop": "__typename",
               },
             ],
             "includes": [],
@@ -1734,7 +1734,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsWithAdmin
             "kind": "scalar",
             "name": "id",
             "private": true,
-            "property": "id",
+            "prop": "id",
           },
         ],
         "includes": {
@@ -1745,7 +1745,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsWithAdmin
                   "kind": "scalar",
                   "name": "id",
                   "private": true,
-                  "property": "id",
+                  "prop": "id",
                 },
               ],
               "includes": {
@@ -1755,7 +1755,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsWithAdmin
                       {
                         "kind": "scalar",
                         "name": "__typename",
-                        "property": "__typename",
+                        "prop": "__typename",
                       },
                     ],
                     "includes": {},
@@ -1859,13 +1859,13 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsWithTypen
       {
         "kind": "scalar",
         "name": "name",
-        "property": "name",
+        "prop": "name",
       },
       {
         "kind": "scalar",
         "name": "id",
         "private": true,
-        "property": "id",
+        "prop": "id",
       },
     ],
     "includes": [
@@ -1881,7 +1881,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsWithTypen
           {
             "kind": "scalar",
             "name": "__typename",
-            "property": "__typename",
+            "prop": "__typename",
           },
         ],
         "includes": [],
@@ -1920,7 +1920,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsWithTypen
           {
             "kind": "scalar",
             "name": "__typename",
-            "property": "__typename",
+            "prop": "__typename",
           },
         ],
         "includes": [],
@@ -1959,7 +1959,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsWithTypen
           {
             "kind": "scalar",
             "name": "__typename",
-            "property": "__typename",
+            "prop": "__typename",
           },
         ],
         "includes": [],
@@ -2018,13 +2018,13 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsWithTypen
           {
             "kind": "scalar",
             "name": "name",
-            "property": "name",
+            "prop": "name",
           },
           {
             "kind": "scalar",
             "name": "id",
             "private": true,
-            "property": "id",
+            "prop": "id",
           },
         ],
         "includes": {
@@ -2034,7 +2034,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsWithTypen
                 {
                   "kind": "scalar",
                   "name": "__typename",
-                  "property": "__typename",
+                  "prop": "__typename",
                 },
               ],
               "includes": {},
@@ -2109,12 +2109,12 @@ exports[`fixture 'federation/simple-interface-object' > query 'AnotherUsers' > s
       {
         "kind": "scalar",
         "name": "id",
-        "property": "id",
+        "prop": "id",
       },
       {
         "kind": "scalar",
         "name": "username",
-        "property": "username",
+        "prop": "username",
       },
     ],
     "includes": [
@@ -2130,7 +2130,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'AnotherUsers' > s
           {
             "kind": "scalar",
             "name": "name",
-            "property": "name",
+            "prop": "name",
           },
         ],
         "includes": [],
@@ -2169,7 +2169,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'AnotherUsers' > s
           {
             "kind": "scalar",
             "name": "name",
-            "property": "name",
+            "prop": "name",
           },
         ],
         "includes": [],
@@ -2228,12 +2228,12 @@ exports[`fixture 'federation/simple-interface-object' > query 'AnotherUsers' > s
           {
             "kind": "scalar",
             "name": "id",
-            "property": "id",
+            "prop": "id",
           },
           {
             "kind": "scalar",
             "name": "username",
-            "property": "username",
+            "prop": "username",
           },
         ],
         "includes": {
@@ -2243,7 +2243,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'AnotherUsers' > s
                 {
                   "kind": "scalar",
                   "name": "name",
-                  "property": "name",
+                  "prop": "name",
                 },
               ],
               "includes": {},
@@ -2317,7 +2317,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'AnotherUsersWithA
       {
         "kind": "scalar",
         "name": "id",
-        "property": "id",
+        "prop": "id",
       },
     ],
     "includes": [
@@ -2335,17 +2335,17 @@ exports[`fixture 'federation/simple-interface-object' > query 'AnotherUsersWithA
           {
             "kind": "scalar",
             "name": "age",
-            "property": "age",
+            "prop": "age",
           },
           {
             "kind": "scalar",
             "name": "id",
-            "property": "id",
+            "prop": "id",
           },
           {
             "kind": "scalar",
             "name": "name",
-            "property": "name",
+            "prop": "name",
           },
         ],
         "includes": [
@@ -2361,7 +2361,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'AnotherUsersWithA
               {
                 "kind": "scalar",
                 "name": "username",
-                "property": "username",
+                "prop": "username",
               },
             ],
             "includes": [],
@@ -2428,17 +2428,17 @@ exports[`fixture 'federation/simple-interface-object' > query 'AnotherUsersWithA
           {
             "kind": "scalar",
             "name": "age",
-            "property": "age",
+            "prop": "age",
           },
           {
             "kind": "scalar",
             "name": "id",
-            "property": "id",
+            "prop": "id",
           },
           {
             "kind": "scalar",
             "name": "name",
-            "property": "name",
+            "prop": "name",
           },
         ],
         "includes": [
@@ -2454,7 +2454,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'AnotherUsersWithA
               {
                 "kind": "scalar",
                 "name": "username",
-                "property": "username",
+                "prop": "username",
               },
             ],
             "includes": [],
@@ -2538,7 +2538,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'AnotherUsersWithA
           {
             "kind": "scalar",
             "name": "id",
-            "property": "id",
+            "prop": "id",
           },
         ],
         "includes": {
@@ -2548,17 +2548,17 @@ exports[`fixture 'federation/simple-interface-object' > query 'AnotherUsersWithA
                 {
                   "kind": "scalar",
                   "name": "age",
-                  "property": "age",
+                  "prop": "age",
                 },
                 {
                   "kind": "scalar",
                   "name": "id",
-                  "property": "id",
+                  "prop": "id",
                 },
                 {
                   "kind": "scalar",
                   "name": "name",
-                  "property": "name",
+                  "prop": "name",
                 },
               ],
               "includes": {
@@ -2568,7 +2568,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'AnotherUsersWithA
                       {
                         "kind": "scalar",
                         "name": "username",
-                        "property": "username",
+                        "prop": "username",
                       },
                     ],
                     "includes": {},
@@ -2674,7 +2674,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'AnotherUsersWithU
         "kind": "scalar",
         "name": "id",
         "private": true,
-        "property": "id",
+        "prop": "id",
       },
     ],
     "includes": [
@@ -2690,7 +2690,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'AnotherUsersWithU
           {
             "kind": "scalar",
             "name": "age",
-            "property": "age",
+            "prop": "age",
           },
         ],
         "includes": [],
@@ -2729,7 +2729,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'AnotherUsersWithU
           {
             "kind": "scalar",
             "name": "age",
-            "property": "age",
+            "prop": "age",
           },
         ],
         "includes": [],
@@ -2788,7 +2788,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'AnotherUsersWithU
             "kind": "scalar",
             "name": "id",
             "private": true,
-            "property": "id",
+            "prop": "id",
           },
         ],
         "includes": {
@@ -2798,7 +2798,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'AnotherUsersWithU
                 {
                   "kind": "scalar",
                   "name": "age",
-                  "property": "age",
+                  "prop": "age",
                 },
               ],
               "includes": {},
@@ -2878,17 +2878,17 @@ exports[`fixture 'federation/simple-interface-object' > query 'UsersWithAdvanced
           {
             "kind": "scalar",
             "name": "age",
-            "property": "age",
+            "prop": "age",
           },
           {
             "kind": "scalar",
             "name": "id",
-            "property": "id",
+            "prop": "id",
           },
           {
             "kind": "scalar",
             "name": "name",
-            "property": "name",
+            "prop": "name",
           },
         ],
         "typeCondition": "User",
@@ -2907,7 +2907,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'UsersWithAdvanced
           {
             "kind": "scalar",
             "name": "username",
-            "property": "username",
+            "prop": "username",
           },
         ],
         "includes": [],
@@ -2946,7 +2946,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'UsersWithAdvanced
           {
             "kind": "scalar",
             "name": "username",
-            "property": "username",
+            "prop": "username",
           },
         ],
         "includes": [],
@@ -3011,17 +3011,17 @@ exports[`fixture 'federation/simple-interface-object' > query 'UsersWithAdvanced
               {
                 "kind": "scalar",
                 "name": "age",
-                "property": "age",
+                "prop": "age",
               },
               {
                 "kind": "scalar",
                 "name": "id",
-                "property": "id",
+                "prop": "id",
               },
               {
                 "kind": "scalar",
                 "name": "name",
-                "property": "name",
+                "prop": "name",
               },
             ],
             "typeCondition": "User",
@@ -3034,7 +3034,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'UsersWithAdvanced
                 {
                   "kind": "scalar",
                   "name": "username",
-                  "property": "username",
+                  "prop": "username",
                 },
               ],
               "includes": {},
@@ -3119,7 +3119,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'UsersWithUserSpre
           {
             "kind": "scalar",
             "name": "age",
-            "property": "age",
+            "prop": "age",
           },
         ],
         "typeCondition": "User",
@@ -3161,7 +3161,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'UsersWithUserSpre
               {
                 "kind": "scalar",
                 "name": "age",
-                "property": "age",
+                "prop": "age",
               },
             ],
             "typeCondition": "User",
@@ -3216,12 +3216,12 @@ exports[`fixture 'federation/simple-interface-object' > query 'UsersWithUsername
       {
         "kind": "scalar",
         "name": "id",
-        "property": "id",
+        "prop": "id",
       },
       {
         "kind": "scalar",
         "name": "name",
-        "property": "name",
+        "prop": "name",
       },
     ],
     "includes": [
@@ -3237,7 +3237,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'UsersWithUsername
           {
             "kind": "scalar",
             "name": "username",
-            "property": "username",
+            "prop": "username",
           },
         ],
         "includes": [],
@@ -3276,7 +3276,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'UsersWithUsername
           {
             "kind": "scalar",
             "name": "username",
-            "property": "username",
+            "prop": "username",
           },
         ],
         "includes": [],
@@ -3335,12 +3335,12 @@ exports[`fixture 'federation/simple-interface-object' > query 'UsersWithUsername
           {
             "kind": "scalar",
             "name": "id",
-            "property": "id",
+            "prop": "id",
           },
           {
             "kind": "scalar",
             "name": "name",
-            "property": "name",
+            "prop": "name",
           },
         ],
         "includes": {
@@ -3350,7 +3350,7 @@ exports[`fixture 'federation/simple-interface-object' > query 'UsersWithUsername
                 {
                   "kind": "scalar",
                   "name": "username",
-                  "property": "username",
+                  "prop": "username",
                 },
               ],
               "includes": {},
@@ -3427,7 +3427,7 @@ exports[`fixture 'federation/union-interface-distributed' > query 'NodesDiffFiel
           {
             "kind": "scalar",
             "name": "warranty",
-            "property": "warranty",
+            "prop": "warranty",
           },
         ],
         "typeCondition": "Toaster",
@@ -3469,7 +3469,7 @@ exports[`fixture 'federation/union-interface-distributed' > query 'NodesDiffFiel
               {
                 "kind": "scalar",
                 "name": "warranty",
-                "property": "warranty",
+                "prop": "warranty",
               },
             ],
             "typeCondition": "Toaster",
@@ -3525,7 +3525,7 @@ exports[`fixture 'federation/union-interface-distributed' > query 'NodesId' > sh
       {
         "kind": "scalar",
         "name": "id",
-        "property": "id",
+        "prop": "id",
       },
     ],
     "includes": [],
@@ -3559,7 +3559,7 @@ exports[`fixture 'federation/union-interface-distributed' > query 'NodesId' > sh
           {
             "kind": "scalar",
             "name": "id",
-            "property": "id",
+            "prop": "id",
           },
         ],
         "includes": {},
@@ -3614,7 +3614,7 @@ exports[`fixture 'federation/union-interface-distributed' > query 'ProductsNodeF
           {
             "kind": "scalar",
             "name": "id",
-            "property": "id",
+            "prop": "id",
           },
         ],
         "typeCondition": "Toaster",
@@ -3625,7 +3625,7 @@ exports[`fixture 'federation/union-interface-distributed' > query 'ProductsNodeF
           {
             "kind": "scalar",
             "name": "id",
-            "property": "id",
+            "prop": "id",
           },
         ],
         "typeCondition": "Oven",
@@ -3670,7 +3670,7 @@ exports[`fixture 'federation/union-interface-distributed' > query 'ProductsNodeF
               {
                 "kind": "scalar",
                 "name": "id",
-                "property": "id",
+                "prop": "id",
               },
             ],
             "typeCondition": "Toaster",
@@ -3681,7 +3681,7 @@ exports[`fixture 'federation/union-interface-distributed' > query 'ProductsNodeF
               {
                 "kind": "scalar",
                 "name": "id",
-                "property": "id",
+                "prop": "id",
               },
             ],
             "typeCondition": "Oven",
@@ -3741,17 +3741,17 @@ exports[`fixture 'federation/union-interface-distributed' > query 'ToastersFragm
       {
         "kind": "scalar",
         "name": "warranty",
-        "property": "warranty",
+        "prop": "warranty",
       },
       {
         "kind": "scalar",
         "name": "id",
-        "property": "id",
+        "prop": "id",
       },
       {
         "kind": "scalar",
         "name": "__typename",
-        "property": "__typename",
+        "prop": "__typename",
       },
     ],
     "includes": [],
@@ -3787,17 +3787,17 @@ exports[`fixture 'federation/union-interface-distributed' > query 'ToastersFragm
           {
             "kind": "scalar",
             "name": "warranty",
-            "property": "warranty",
+            "prop": "warranty",
           },
           {
             "kind": "scalar",
             "name": "id",
-            "property": "id",
+            "prop": "id",
           },
           {
             "kind": "scalar",
             "name": "__typename",
-            "property": "__typename",
+            "prop": "__typename",
           },
         ],
         "includes": {},
@@ -3853,7 +3853,7 @@ exports[`fixture 'federation/union-interface-distributed' > query 'Warranty' > s
           {
             "kind": "scalar",
             "name": "warranty",
-            "property": "warranty",
+            "prop": "warranty",
           },
         ],
         "typeCondition": "Toaster",
@@ -3897,7 +3897,7 @@ exports[`fixture 'federation/union-interface-distributed' > query 'Warranty' > s
               {
                 "kind": "scalar",
                 "name": "warranty",
-                "property": "warranty",
+                "prop": "warranty",
               },
             ],
             "typeCondition": "Toaster",
@@ -3964,12 +3964,12 @@ exports[`fixture 'federation/union-intersection' > query 'Aliases' > should exec
       {
         "kind": "object",
         "name": "media",
-        "property": "m",
+        "prop": "m",
         "selections": [
           {
             "kind": "scalar",
             "name": "__typename",
-            "property": "__typename",
+            "prop": "__typename",
           },
           {
             "kind": "fragment",
@@ -3977,17 +3977,17 @@ exports[`fixture 'federation/union-intersection' > query 'Aliases' > should exec
               {
                 "kind": "scalar",
                 "name": "title",
-                "property": "bookTitle",
+                "prop": "bookTitle",
               },
               {
                 "kind": "scalar",
                 "name": "title",
-                "property": "bookTitle2",
+                "prop": "bookTitle2",
               },
               {
                 "kind": "scalar",
                 "name": "title",
-                "property": "title",
+                "prop": "title",
               },
             ],
             "typeCondition": "Book",
@@ -3997,12 +3997,12 @@ exports[`fixture 'federation/union-intersection' > query 'Aliases' > should exec
       {
         "kind": "object",
         "name": "book",
-        "property": "b",
+        "prop": "b",
         "selections": [
           {
             "kind": "scalar",
             "name": "__typename",
-            "property": "type",
+            "prop": "type",
           },
           {
             "kind": "fragment",
@@ -4010,7 +4010,7 @@ exports[`fixture 'federation/union-intersection' > query 'Aliases' > should exec
               {
                 "kind": "scalar",
                 "name": "title",
-                "property": "bookTitle",
+                "prop": "bookTitle",
               },
             ],
             "typeCondition": "Book",
@@ -4020,12 +4020,12 @@ exports[`fixture 'federation/union-intersection' > query 'Aliases' > should exec
       {
         "kind": "object",
         "name": "song",
-        "property": "s",
+        "prop": "s",
         "selections": [
           {
             "kind": "scalar",
             "name": "__typename",
-            "property": "__typename",
+            "prop": "__typename",
           },
           {
             "kind": "fragment",
@@ -4033,7 +4033,7 @@ exports[`fixture 'federation/union-intersection' > query 'Aliases' > should exec
               {
                 "kind": "scalar",
                 "name": "title",
-                "property": "songTitle",
+                "prop": "songTitle",
               },
             ],
             "typeCondition": "Song",
@@ -4044,7 +4044,7 @@ exports[`fixture 'federation/union-intersection' > query 'Aliases' > should exec
               {
                 "kind": "scalar",
                 "name": "title",
-                "property": "bookTitle",
+                "prop": "bookTitle",
               },
             ],
             "typeCondition": "Book",
@@ -4105,12 +4105,12 @@ exports[`fixture 'federation/union-intersection' > query 'Aliases' > should plan
           {
             "kind": "object",
             "name": "media",
-            "property": "m",
+            "prop": "m",
             "selections": [
               {
                 "kind": "scalar",
                 "name": "__typename",
-                "property": "__typename",
+                "prop": "__typename",
               },
               {
                 "kind": "fragment",
@@ -4118,17 +4118,17 @@ exports[`fixture 'federation/union-intersection' > query 'Aliases' > should plan
                   {
                     "kind": "scalar",
                     "name": "title",
-                    "property": "bookTitle",
+                    "prop": "bookTitle",
                   },
                   {
                     "kind": "scalar",
                     "name": "title",
-                    "property": "bookTitle2",
+                    "prop": "bookTitle2",
                   },
                   {
                     "kind": "scalar",
                     "name": "title",
-                    "property": "title",
+                    "prop": "title",
                   },
                 ],
                 "typeCondition": "Book",
@@ -4138,12 +4138,12 @@ exports[`fixture 'federation/union-intersection' > query 'Aliases' > should plan
           {
             "kind": "object",
             "name": "book",
-            "property": "b",
+            "prop": "b",
             "selections": [
               {
                 "kind": "scalar",
                 "name": "__typename",
-                "property": "type",
+                "prop": "type",
               },
               {
                 "kind": "fragment",
@@ -4151,7 +4151,7 @@ exports[`fixture 'federation/union-intersection' > query 'Aliases' > should plan
                   {
                     "kind": "scalar",
                     "name": "title",
-                    "property": "bookTitle",
+                    "prop": "bookTitle",
                   },
                 ],
                 "typeCondition": "Book",
@@ -4161,12 +4161,12 @@ exports[`fixture 'federation/union-intersection' > query 'Aliases' > should plan
           {
             "kind": "object",
             "name": "song",
-            "property": "s",
+            "prop": "s",
             "selections": [
               {
                 "kind": "scalar",
                 "name": "__typename",
-                "property": "__typename",
+                "prop": "__typename",
               },
               {
                 "kind": "fragment",
@@ -4174,7 +4174,7 @@ exports[`fixture 'federation/union-intersection' > query 'Aliases' > should plan
                   {
                     "kind": "scalar",
                     "name": "title",
-                    "property": "songTitle",
+                    "prop": "songTitle",
                   },
                 ],
                 "typeCondition": "Song",
@@ -4185,7 +4185,7 @@ exports[`fixture 'federation/union-intersection' > query 'Aliases' > should plan
                   {
                     "kind": "scalar",
                     "name": "title",
-                    "property": "bookTitle",
+                    "prop": "bookTitle",
                   },
                 ],
                 "typeCondition": "Book",
@@ -4293,7 +4293,7 @@ exports[`fixture 'federation/union-intersection' > query 'AllMedia' > should exe
       {
         "kind": "scalar",
         "name": "__typename",
-        "property": "__typename",
+        "prop": "__typename",
       },
       {
         "kind": "fragment",
@@ -4301,7 +4301,7 @@ exports[`fixture 'federation/union-intersection' > query 'AllMedia' > should exe
           {
             "kind": "scalar",
             "name": "title",
-            "property": "title",
+            "prop": "title",
           },
         ],
         "typeCondition": "Book",
@@ -4339,12 +4339,12 @@ exports[`fixture 'federation/union-intersection' > query 'AllMedia' > should exe
       {
         "kind": "scalar",
         "name": "__typename",
-        "property": "__typename",
+        "prop": "__typename",
       },
       {
         "kind": "scalar",
         "name": "title",
-        "property": "title",
+        "prop": "title",
       },
     ],
     "includes": [],
@@ -4377,7 +4377,7 @@ exports[`fixture 'federation/union-intersection' > query 'AllMedia' > should exe
       {
         "kind": "scalar",
         "name": "__typename",
-        "property": "__typename",
+        "prop": "__typename",
       },
       {
         "kind": "fragment",
@@ -4385,7 +4385,7 @@ exports[`fixture 'federation/union-intersection' > query 'AllMedia' > should exe
           {
             "kind": "scalar",
             "name": "title",
-            "property": "title",
+            "prop": "title",
           },
         ],
         "typeCondition": "Song",
@@ -4396,7 +4396,7 @@ exports[`fixture 'federation/union-intersection' > query 'AllMedia' > should exe
           {
             "kind": "scalar",
             "name": "title",
-            "property": "title",
+            "prop": "title",
           },
         ],
         "typeCondition": "Book",
@@ -4439,12 +4439,12 @@ exports[`fixture 'federation/union-intersection' > query 'AllMedia' > should pla
           {
             "kind": "scalar",
             "name": "__typename",
-            "property": "__typename",
+            "prop": "__typename",
           },
           {
             "kind": "scalar",
             "name": "title",
-            "property": "title",
+            "prop": "title",
           },
         ],
         "includes": {},
@@ -4468,7 +4468,7 @@ exports[`fixture 'federation/union-intersection' > query 'AllMedia' > should pla
           {
             "kind": "scalar",
             "name": "__typename",
-            "property": "__typename",
+            "prop": "__typename",
           },
           {
             "kind": "fragment",
@@ -4476,7 +4476,7 @@ exports[`fixture 'federation/union-intersection' > query 'AllMedia' > should pla
               {
                 "kind": "scalar",
                 "name": "title",
-                "property": "title",
+                "prop": "title",
               },
             ],
             "typeCondition": "Book",
@@ -4505,7 +4505,7 @@ exports[`fixture 'federation/union-intersection' > query 'AllMedia' > should pla
           {
             "kind": "scalar",
             "name": "__typename",
-            "property": "__typename",
+            "prop": "__typename",
           },
           {
             "kind": "fragment",
@@ -4513,7 +4513,7 @@ exports[`fixture 'federation/union-intersection' > query 'AllMedia' > should pla
               {
                 "kind": "scalar",
                 "name": "title",
-                "property": "title",
+                "prop": "title",
               },
             ],
             "typeCondition": "Song",
@@ -4524,7 +4524,7 @@ exports[`fixture 'federation/union-intersection' > query 'AllMedia' > should pla
               {
                 "kind": "scalar",
                 "name": "title",
-                "property": "title",
+                "prop": "title",
               },
             ],
             "typeCondition": "Book",
@@ -4608,12 +4608,12 @@ exports[`fixture 'federation/union-intersection' > query 'BookAll' > should exec
       {
         "kind": "scalar",
         "name": "__typename",
-        "property": "__typename",
+        "prop": "__typename",
       },
       {
         "kind": "scalar",
         "name": "title",
-        "property": "title",
+        "prop": "title",
       },
     ],
     "includes": [],
@@ -4648,12 +4648,12 @@ exports[`fixture 'federation/union-intersection' > query 'BookAll' > should plan
           {
             "kind": "scalar",
             "name": "__typename",
-            "property": "__typename",
+            "prop": "__typename",
           },
           {
             "kind": "scalar",
             "name": "title",
-            "property": "title",
+            "prop": "title",
           },
         ],
         "includes": {},
@@ -4705,7 +4705,7 @@ exports[`fixture 'federation/union-intersection' > query 'MediaAll' > should exe
       {
         "kind": "scalar",
         "name": "__typename",
-        "property": "__typename",
+        "prop": "__typename",
       },
       {
         "kind": "fragment",
@@ -4713,7 +4713,7 @@ exports[`fixture 'federation/union-intersection' > query 'MediaAll' > should exe
           {
             "kind": "scalar",
             "name": "title",
-            "property": "title",
+            "prop": "title",
           },
         ],
         "typeCondition": "Book",
@@ -4753,7 +4753,7 @@ exports[`fixture 'federation/union-intersection' > query 'MediaAll' > should pla
           {
             "kind": "scalar",
             "name": "__typename",
-            "property": "__typename",
+            "prop": "__typename",
           },
           {
             "kind": "fragment",
@@ -4761,7 +4761,7 @@ exports[`fixture 'federation/union-intersection' > query 'MediaAll' > should pla
               {
                 "kind": "scalar",
                 "name": "title",
-                "property": "title",
+                "prop": "title",
               },
             ],
             "typeCondition": "Book",
@@ -4820,7 +4820,7 @@ exports[`fixture 'federation/union-intersection' > query 'MediaBook' > should ex
           {
             "kind": "scalar",
             "name": "title",
-            "property": "title",
+            "prop": "title",
           },
         ],
         "typeCondition": "Book",
@@ -4862,7 +4862,7 @@ exports[`fixture 'federation/union-intersection' > query 'MediaBook' > should pl
               {
                 "kind": "scalar",
                 "name": "title",
-                "property": "title",
+                "prop": "title",
               },
             ],
             "typeCondition": "Book",
@@ -4913,7 +4913,7 @@ exports[`fixture 'federation/union-intersection' > query 'MediaBookMovie' > shou
           {
             "kind": "scalar",
             "name": "title",
-            "property": "title",
+            "prop": "title",
           },
         ],
         "typeCondition": "Book",
@@ -4955,7 +4955,7 @@ exports[`fixture 'federation/union-intersection' > query 'MediaBookMovie' > shou
               {
                 "kind": "scalar",
                 "name": "title",
-                "property": "title",
+                "prop": "title",
               },
             ],
             "typeCondition": "Book",
@@ -5007,7 +5007,7 @@ exports[`fixture 'federation/union-intersection' > query 'MediaMovie' > should e
         "kind": "scalar",
         "name": "__typename",
         "private": true,
-        "property": "__typename",
+        "prop": "__typename",
       },
     ],
     "includes": [],
@@ -5042,7 +5042,7 @@ exports[`fixture 'federation/union-intersection' > query 'MediaMovie' > should p
             "kind": "scalar",
             "name": "__typename",
             "private": true,
-            "property": "__typename",
+            "prop": "__typename",
           },
         ],
         "includes": {},
@@ -5085,7 +5085,7 @@ exports[`fixture 'federation/union-intersection' > query 'MediaTypename' > shoul
       {
         "kind": "scalar",
         "name": "__typename",
-        "property": "__typename",
+        "prop": "__typename",
       },
     ],
     "includes": [],
@@ -5119,7 +5119,7 @@ exports[`fixture 'federation/union-intersection' > query 'MediaTypename' > shoul
           {
             "kind": "scalar",
             "name": "__typename",
-            "property": "__typename",
+            "prop": "__typename",
           },
         ],
         "includes": {},
@@ -5171,12 +5171,12 @@ exports[`fixture 'federation/union-intersection' > query 'ViewerAllAll' > should
       {
         "kind": "object",
         "name": "media",
-        "property": "media",
+        "prop": "media",
         "selections": [
           {
             "kind": "scalar",
             "name": "__typename",
-            "property": "__typename",
+            "prop": "__typename",
           },
           {
             "kind": "fragment",
@@ -5184,7 +5184,7 @@ exports[`fixture 'federation/union-intersection' > query 'ViewerAllAll' > should
               {
                 "kind": "scalar",
                 "name": "title",
-                "property": "title",
+                "prop": "title",
               },
             ],
             "typeCondition": "Book",
@@ -5194,12 +5194,12 @@ exports[`fixture 'federation/union-intersection' > query 'ViewerAllAll' > should
       {
         "kind": "object",
         "name": "book",
-        "property": "book",
+        "prop": "book",
         "selections": [
           {
             "kind": "scalar",
             "name": "__typename",
-            "property": "__typename",
+            "prop": "__typename",
           },
           {
             "kind": "fragment",
@@ -5207,7 +5207,7 @@ exports[`fixture 'federation/union-intersection' > query 'ViewerAllAll' > should
               {
                 "kind": "scalar",
                 "name": "title",
-                "property": "title",
+                "prop": "title",
               },
             ],
             "typeCondition": "Book",
@@ -5217,12 +5217,12 @@ exports[`fixture 'federation/union-intersection' > query 'ViewerAllAll' > should
       {
         "kind": "object",
         "name": "song",
-        "property": "song",
+        "prop": "song",
         "selections": [
           {
             "kind": "scalar",
             "name": "__typename",
-            "property": "__typename",
+            "prop": "__typename",
           },
           {
             "kind": "fragment",
@@ -5230,7 +5230,7 @@ exports[`fixture 'federation/union-intersection' > query 'ViewerAllAll' > should
               {
                 "kind": "scalar",
                 "name": "title",
-                "property": "title",
+                "prop": "title",
               },
             ],
             "typeCondition": "Song",
@@ -5241,7 +5241,7 @@ exports[`fixture 'federation/union-intersection' > query 'ViewerAllAll' > should
               {
                 "kind": "scalar",
                 "name": "title",
-                "property": "title",
+                "prop": "title",
               },
             ],
             "typeCondition": "Book",
@@ -5300,12 +5300,12 @@ exports[`fixture 'federation/union-intersection' > query 'ViewerAllAll' > should
           {
             "kind": "object",
             "name": "media",
-            "property": "media",
+            "prop": "media",
             "selections": [
               {
                 "kind": "scalar",
                 "name": "__typename",
-                "property": "__typename",
+                "prop": "__typename",
               },
               {
                 "kind": "fragment",
@@ -5313,7 +5313,7 @@ exports[`fixture 'federation/union-intersection' > query 'ViewerAllAll' > should
                   {
                     "kind": "scalar",
                     "name": "title",
-                    "property": "title",
+                    "prop": "title",
                   },
                 ],
                 "typeCondition": "Book",
@@ -5323,12 +5323,12 @@ exports[`fixture 'federation/union-intersection' > query 'ViewerAllAll' > should
           {
             "kind": "object",
             "name": "book",
-            "property": "book",
+            "prop": "book",
             "selections": [
               {
                 "kind": "scalar",
                 "name": "__typename",
-                "property": "__typename",
+                "prop": "__typename",
               },
               {
                 "kind": "fragment",
@@ -5336,7 +5336,7 @@ exports[`fixture 'federation/union-intersection' > query 'ViewerAllAll' > should
                   {
                     "kind": "scalar",
                     "name": "title",
-                    "property": "title",
+                    "prop": "title",
                   },
                 ],
                 "typeCondition": "Book",
@@ -5346,12 +5346,12 @@ exports[`fixture 'federation/union-intersection' > query 'ViewerAllAll' > should
           {
             "kind": "object",
             "name": "song",
-            "property": "song",
+            "prop": "song",
             "selections": [
               {
                 "kind": "scalar",
                 "name": "__typename",
-                "property": "__typename",
+                "prop": "__typename",
               },
               {
                 "kind": "fragment",
@@ -5359,7 +5359,7 @@ exports[`fixture 'federation/union-intersection' > query 'ViewerAllAll' > should
                   {
                     "kind": "scalar",
                     "name": "title",
-                    "property": "title",
+                    "prop": "title",
                   },
                 ],
                 "typeCondition": "Song",
@@ -5370,7 +5370,7 @@ exports[`fixture 'federation/union-intersection' > query 'ViewerAllAll' > should
                   {
                     "kind": "scalar",
                     "name": "title",
-                    "property": "title",
+                    "prop": "title",
                   },
                 ],
                 "typeCondition": "Book",
@@ -5474,12 +5474,12 @@ exports[`fixture 'federation/union-intersection' > query 'ViewerMediaAll' > shou
       {
         "kind": "object",
         "name": "media",
-        "property": "media",
+        "prop": "media",
         "selections": [
           {
             "kind": "scalar",
             "name": "__typename",
-            "property": "__typename",
+            "prop": "__typename",
           },
           {
             "kind": "fragment",
@@ -5487,7 +5487,7 @@ exports[`fixture 'federation/union-intersection' > query 'ViewerMediaAll' > shou
               {
                 "kind": "scalar",
                 "name": "title",
-                "property": "title",
+                "prop": "title",
               },
             ],
             "typeCondition": "Book",
@@ -5531,12 +5531,12 @@ exports[`fixture 'federation/union-intersection' > query 'ViewerMediaAll' > shou
           {
             "kind": "object",
             "name": "media",
-            "property": "media",
+            "prop": "media",
             "selections": [
               {
                 "kind": "scalar",
                 "name": "__typename",
-                "property": "__typename",
+                "prop": "__typename",
               },
               {
                 "kind": "fragment",
@@ -5544,7 +5544,7 @@ exports[`fixture 'federation/union-intersection' > query 'ViewerMediaAll' > shou
                   {
                     "kind": "scalar",
                     "name": "title",
-                    "property": "title",
+                    "prop": "title",
                   },
                 ],
                 "typeCondition": "Book",
@@ -5608,13 +5608,13 @@ exports[`fixture 'federation/union-intersection' > query 'ViewerMediaMovie' > sh
       {
         "kind": "object",
         "name": "media",
-        "property": "media",
+        "prop": "media",
         "selections": [
           {
             "kind": "scalar",
             "name": "__typename",
             "private": true,
-            "property": "__typename",
+            "prop": "__typename",
           },
         ],
       },
@@ -5652,13 +5652,13 @@ exports[`fixture 'federation/union-intersection' > query 'ViewerMediaMovie' > sh
           {
             "kind": "object",
             "name": "media",
-            "property": "media",
+            "prop": "media",
             "selections": [
               {
                 "kind": "scalar",
                 "name": "__typename",
                 "private": true,
-                "property": "__typename",
+                "prop": "__typename",
               },
             ],
           },
@@ -5709,12 +5709,12 @@ exports[`fixture 'interfaces' > query 'BasicCat' > should execute and explain 1`
       {
         "kind": "scalar",
         "name": "name",
-        "property": "name",
+        "prop": "name",
       },
       {
         "kind": "scalar",
         "name": "type",
-        "property": "type",
+        "prop": "type",
       },
       {
         "kind": "fragment",
@@ -5722,7 +5722,7 @@ exports[`fixture 'interfaces' > query 'BasicCat' > should execute and explain 1`
           {
             "kind": "scalar",
             "name": "meows",
-            "property": "meows",
+            "prop": "meows",
           },
         ],
         "typeCondition": "Cat",
@@ -5765,12 +5765,12 @@ exports[`fixture 'interfaces' > query 'BasicCat' > should plan gather 1`] = `
           {
             "kind": "scalar",
             "name": "name",
-            "property": "name",
+            "prop": "name",
           },
           {
             "kind": "scalar",
             "name": "type",
-            "property": "type",
+            "prop": "type",
           },
           {
             "kind": "fragment",
@@ -5778,7 +5778,7 @@ exports[`fixture 'interfaces' > query 'BasicCat' > should plan gather 1`] = `
               {
                 "kind": "scalar",
                 "name": "meows",
-                "property": "meows",
+                "prop": "meows",
               },
             ],
             "typeCondition": "Cat",
@@ -5842,12 +5842,12 @@ exports[`fixture 'interfaces' > query 'BasicNestedAnimal' > should execute and e
       {
         "kind": "scalar",
         "name": "name",
-        "property": "name",
+        "prop": "name",
       },
       {
         "kind": "scalar",
         "name": "type",
-        "property": "type",
+        "prop": "type",
       },
       {
         "kind": "fragment",
@@ -5855,12 +5855,12 @@ exports[`fixture 'interfaces' > query 'BasicNestedAnimal' > should execute and e
           {
             "kind": "scalar",
             "name": "barks",
-            "property": "barks",
+            "prop": "barks",
           },
           {
             "kind": "object",
             "name": "bestFriend",
-            "property": "bestFriend",
+            "prop": "bestFriend",
             "selections": [
               {
                 "kind": "fragment",
@@ -5868,12 +5868,12 @@ exports[`fixture 'interfaces' > query 'BasicNestedAnimal' > should execute and e
                   {
                     "kind": "scalar",
                     "name": "meows",
-                    "property": "meows",
+                    "prop": "meows",
                   },
                   {
                     "kind": "scalar",
                     "name": "name",
-                    "property": "name",
+                    "prop": "name",
                   },
                 ],
                 "typeCondition": "Cat",
@@ -5927,12 +5927,12 @@ exports[`fixture 'interfaces' > query 'BasicNestedAnimal' > should plan gather 1
           {
             "kind": "scalar",
             "name": "name",
-            "property": "name",
+            "prop": "name",
           },
           {
             "kind": "scalar",
             "name": "type",
-            "property": "type",
+            "prop": "type",
           },
           {
             "kind": "fragment",
@@ -5940,12 +5940,12 @@ exports[`fixture 'interfaces' > query 'BasicNestedAnimal' > should plan gather 1
               {
                 "kind": "scalar",
                 "name": "barks",
-                "property": "barks",
+                "prop": "barks",
               },
               {
                 "kind": "object",
                 "name": "bestFriend",
-                "property": "bestFriend",
+                "prop": "bestFriend",
                 "selections": [
                   {
                     "kind": "fragment",
@@ -5953,12 +5953,12 @@ exports[`fixture 'interfaces' > query 'BasicNestedAnimal' > should plan gather 1
                       {
                         "kind": "scalar",
                         "name": "meows",
-                        "property": "meows",
+                        "prop": "meows",
                       },
                       {
                         "kind": "scalar",
                         "name": "name",
-                        "property": "name",
+                        "prop": "name",
                       },
                     ],
                     "typeCondition": "Cat",
@@ -6034,12 +6034,12 @@ exports[`fixture 'shared-root' > query 'SharedRootMultiple' > should execute and
       {
         "kind": "scalar",
         "name": "id",
-        "property": "id",
+        "prop": "id",
       },
       {
         "kind": "scalar",
         "name": "category",
-        "property": "category",
+        "prop": "category",
       },
     ],
     "includes": [
@@ -6053,7 +6053,7 @@ exports[`fixture 'shared-root' > query 'SharedRootMultiple' > should execute and
           {
             "kind": "scalar",
             "name": "name",
-            "property": "name",
+            "prop": "name",
           },
         ],
         "includes": [],
@@ -6084,7 +6084,7 @@ exports[`fixture 'shared-root' > query 'SharedRootMultiple' > should execute and
           {
             "kind": "scalar",
             "name": "price",
-            "property": "price",
+            "prop": "price",
           },
         ],
         "includes": [],
@@ -6137,12 +6137,12 @@ exports[`fixture 'shared-root' > query 'SharedRootMultiple' > should plan gather
           {
             "kind": "scalar",
             "name": "id",
-            "property": "id",
+            "prop": "id",
           },
           {
             "kind": "scalar",
             "name": "category",
-            "property": "category",
+            "prop": "category",
           },
         ],
         "includes": {
@@ -6152,7 +6152,7 @@ exports[`fixture 'shared-root' > query 'SharedRootMultiple' > should plan gather
                 {
                   "kind": "scalar",
                   "name": "name",
-                  "property": "name",
+                  "prop": "name",
                 },
               ],
               "includes": {},
@@ -6175,7 +6175,7 @@ exports[`fixture 'shared-root' > query 'SharedRootMultiple' > should plan gather
                 {
                   "kind": "scalar",
                   "name": "price",
-                  "property": "price",
+                  "prop": "price",
                 },
               ],
               "includes": {},
@@ -6237,12 +6237,12 @@ exports[`fixture 'shared-root' > query 'SharedRootSingle' > should execute and e
       {
         "kind": "scalar",
         "name": "id",
-        "property": "id",
+        "prop": "id",
       },
       {
         "kind": "scalar",
         "name": "category",
-        "property": "category",
+        "prop": "category",
       },
     ],
     "includes": [
@@ -6256,7 +6256,7 @@ exports[`fixture 'shared-root' > query 'SharedRootSingle' > should execute and e
           {
             "kind": "scalar",
             "name": "name",
-            "property": "name",
+            "prop": "name",
           },
         ],
         "includes": [],
@@ -6309,12 +6309,12 @@ exports[`fixture 'shared-root' > query 'SharedRootSingle' > should plan gather 1
           {
             "kind": "scalar",
             "name": "id",
-            "property": "id",
+            "prop": "id",
           },
           {
             "kind": "scalar",
             "name": "category",
-            "property": "category",
+            "prop": "category",
           },
         ],
         "includes": {
@@ -6324,7 +6324,7 @@ exports[`fixture 'shared-root' > query 'SharedRootSingle' > should plan gather 1
                 {
                   "kind": "scalar",
                   "name": "name",
-                  "property": "name",
+                  "prop": "name",
                 },
               ],
               "includes": {},
@@ -6393,24 +6393,24 @@ exports[`fixture 'store' > query 'BasicWithFragmentDefinition' > should execute 
       {
         "kind": "scalar",
         "name": "id",
-        "property": "id",
+        "prop": "id",
       },
       {
         "kind": "object",
         "name": "products",
-        "property": "products",
+        "prop": "products",
         "selections": [
           {
             "kind": "scalar",
             "name": "upc",
-            "property": "upc",
+            "prop": "upc",
           },
         ],
       },
       {
         "kind": "scalar",
         "name": "name",
-        "property": "name",
+        "prop": "name",
       },
     ],
     "includes": [
@@ -6426,12 +6426,12 @@ exports[`fixture 'store' > query 'BasicWithFragmentDefinition' > should execute 
           {
             "kind": "object",
             "name": "manufacturer",
-            "property": "manufacturer",
+            "prop": "manufacturer",
             "selections": [
               {
                 "kind": "scalar",
                 "name": "id",
-                "property": "id",
+                "prop": "id",
               },
             ],
           },
@@ -6472,12 +6472,12 @@ exports[`fixture 'store' > query 'BasicWithFragmentDefinition' > should execute 
           {
             "kind": "object",
             "name": "manufacturer",
-            "property": "manufacturer",
+            "prop": "manufacturer",
             "selections": [
               {
                 "kind": "scalar",
                 "name": "id",
-                "property": "id",
+                "prop": "id",
               },
             ],
           },
@@ -6543,24 +6543,24 @@ exports[`fixture 'store' > query 'BasicWithFragmentDefinition' > should plan gat
           {
             "kind": "scalar",
             "name": "id",
-            "property": "id",
+            "prop": "id",
           },
           {
             "kind": "object",
             "name": "products",
-            "property": "products",
+            "prop": "products",
             "selections": [
               {
                 "kind": "scalar",
                 "name": "upc",
-                "property": "upc",
+                "prop": "upc",
               },
             ],
           },
           {
             "kind": "scalar",
             "name": "name",
-            "property": "name",
+            "prop": "name",
           },
         ],
         "includes": {
@@ -6569,12 +6569,12 @@ exports[`fixture 'store' > query 'BasicWithFragmentDefinition' > should plan gat
               {
                 "kind": "object",
                 "name": "manufacturer",
-                "property": "manufacturer",
+                "prop": "manufacturer",
                 "selections": [
                   {
                     "kind": "scalar",
                     "name": "id",
-                    "property": "id",
+                    "prop": "id",
                   },
                 ],
               },
@@ -6673,22 +6673,22 @@ exports[`fixture 'store' > query 'BasicWithInlineFragment' > should execute and 
       {
         "kind": "scalar",
         "name": "id",
-        "property": "id",
+        "prop": "id",
       },
       {
         "kind": "scalar",
         "name": "name",
-        "property": "name",
+        "prop": "name",
       },
       {
         "kind": "object",
         "name": "products",
-        "property": "products",
+        "prop": "products",
         "selections": [
           {
             "kind": "scalar",
             "name": "upc",
-            "property": "upc",
+            "prop": "upc",
           },
         ],
       },
@@ -6704,7 +6704,7 @@ exports[`fixture 'store' > query 'BasicWithInlineFragment' > should execute and 
           {
             "kind": "scalar",
             "name": "name",
-            "property": "name",
+            "prop": "name",
           },
         ],
         "includes": [],
@@ -6739,7 +6739,7 @@ exports[`fixture 'store' > query 'BasicWithInlineFragment' > should execute and 
           {
             "kind": "scalar",
             "name": "name",
-            "property": "name",
+            "prop": "name",
           },
         ],
         "includes": [],
@@ -6774,7 +6774,7 @@ exports[`fixture 'store' > query 'BasicWithInlineFragment' > should execute and 
           {
             "kind": "scalar",
             "name": "name",
-            "property": "name",
+            "prop": "name",
           },
         ],
         "includes": [],
@@ -6836,22 +6836,22 @@ exports[`fixture 'store' > query 'BasicWithInlineFragment' > should plan gather 
           {
             "kind": "scalar",
             "name": "id",
-            "property": "id",
+            "prop": "id",
           },
           {
             "kind": "scalar",
             "name": "name",
-            "property": "name",
+            "prop": "name",
           },
           {
             "kind": "object",
             "name": "products",
-            "property": "products",
+            "prop": "products",
             "selections": [
               {
                 "kind": "scalar",
                 "name": "upc",
-                "property": "upc",
+                "prop": "upc",
               },
             ],
           },
@@ -6862,7 +6862,7 @@ exports[`fixture 'store' > query 'BasicWithInlineFragment' > should plan gather 
               {
                 "kind": "scalar",
                 "name": "name",
-                "property": "name",
+                "prop": "name",
               },
             ],
             "includes": {},
@@ -6978,32 +6978,32 @@ exports[`fixture 'store' > query 'ListOperationResolver' > should execute and ex
       {
         "kind": "scalar",
         "name": "upc",
-        "property": "upc",
+        "prop": "upc",
       },
       {
         "kind": "scalar",
         "name": "name",
-        "property": "name",
+        "prop": "name",
       },
       {
         "kind": "object",
         "name": "manufacturer",
-        "property": "manufacturer",
+        "prop": "manufacturer",
         "selections": [
           {
             "kind": "object",
             "name": "products",
-            "property": "products",
+            "prop": "products",
             "selections": [
               {
                 "kind": "scalar",
                 "name": "upc",
-                "property": "upc",
+                "prop": "upc",
               },
               {
                 "kind": "scalar",
                 "name": "name",
-                "property": "name",
+                "prop": "name",
               },
             ],
           },
@@ -7011,7 +7011,7 @@ exports[`fixture 'store' > query 'ListOperationResolver' > should execute and ex
             "kind": "scalar",
             "name": "id",
             "private": true,
-            "property": "id",
+            "prop": "id",
           },
         ],
       },
@@ -7027,7 +7027,7 @@ exports[`fixture 'store' > query 'ListOperationResolver' > should execute and ex
           {
             "kind": "scalar",
             "name": "name",
-            "property": "name",
+            "prop": "name",
           },
         ],
         "includes": [],
@@ -7062,7 +7062,7 @@ exports[`fixture 'store' > query 'ListOperationResolver' > should execute and ex
           {
             "kind": "scalar",
             "name": "name",
-            "property": "name",
+            "prop": "name",
           },
         ],
         "includes": [],
@@ -7131,32 +7131,32 @@ exports[`fixture 'store' > query 'ListOperationResolver' > should plan gather 1`
           {
             "kind": "scalar",
             "name": "upc",
-            "property": "upc",
+            "prop": "upc",
           },
           {
             "kind": "scalar",
             "name": "name",
-            "property": "name",
+            "prop": "name",
           },
           {
             "kind": "object",
             "name": "manufacturer",
-            "property": "manufacturer",
+            "prop": "manufacturer",
             "selections": [
               {
                 "kind": "object",
                 "name": "products",
-                "property": "products",
+                "prop": "products",
                 "selections": [
                   {
                     "kind": "scalar",
                     "name": "upc",
-                    "property": "upc",
+                    "prop": "upc",
                   },
                   {
                     "kind": "scalar",
                     "name": "name",
-                    "property": "name",
+                    "prop": "name",
                   },
                 ],
               },
@@ -7164,7 +7164,7 @@ exports[`fixture 'store' > query 'ListOperationResolver' > should plan gather 1`
                 "kind": "scalar",
                 "name": "id",
                 "private": true,
-                "property": "id",
+                "prop": "id",
               },
             ],
           },
@@ -7175,7 +7175,7 @@ exports[`fixture 'store' > query 'ListOperationResolver' > should plan gather 1`
               {
                 "kind": "scalar",
                 "name": "name",
-                "property": "name",
+                "prop": "name",
               },
             ],
             "includes": {},
@@ -7274,22 +7274,22 @@ exports[`fixture 'store' > query 'NotBasicWithInlineVariables' > should execute 
       {
         "kind": "scalar",
         "name": "id",
-        "property": "id",
+        "prop": "id",
       },
       {
         "kind": "scalar",
         "name": "name",
-        "property": "name",
+        "prop": "name",
       },
       {
         "kind": "object",
         "name": "products",
-        "property": "products",
+        "prop": "products",
         "selections": [
           {
             "kind": "scalar",
             "name": "upc",
-            "property": "upc",
+            "prop": "upc",
           },
         ],
       },
@@ -7322,27 +7322,27 @@ exports[`fixture 'store' > query 'NotBasicWithInlineVariables' > should execute 
           {
             "kind": "scalar",
             "name": "name",
-            "property": "name",
+            "prop": "name",
           },
           {
             "kind": "object",
             "name": "manufacturer",
-            "property": "manufacturer",
+            "prop": "manufacturer",
             "selections": [
               {
                 "kind": "object",
                 "name": "products",
-                "property": "products",
+                "prop": "products",
                 "selections": [
                   {
                     "kind": "scalar",
                     "name": "upc",
-                    "property": "upc",
+                    "prop": "upc",
                   },
                   {
                     "kind": "scalar",
                     "name": "name",
-                    "property": "name",
+                    "prop": "name",
                   },
                 ],
               },
@@ -7350,7 +7350,7 @@ exports[`fixture 'store' > query 'NotBasicWithInlineVariables' > should execute 
                 "kind": "scalar",
                 "name": "id",
                 "private": true,
-                "property": "id",
+                "prop": "id",
               },
             ],
           },
@@ -7366,7 +7366,7 @@ exports[`fixture 'store' > query 'NotBasicWithInlineVariables' > should execute 
               {
                 "kind": "scalar",
                 "name": "name",
-                "property": "name",
+                "prop": "name",
               },
             ],
             "includes": [],
@@ -7448,27 +7448,27 @@ exports[`fixture 'store' > query 'NotBasicWithInlineVariables' > should execute 
           {
             "kind": "scalar",
             "name": "name",
-            "property": "name",
+            "prop": "name",
           },
           {
             "kind": "object",
             "name": "manufacturer",
-            "property": "manufacturer",
+            "prop": "manufacturer",
             "selections": [
               {
                 "kind": "object",
                 "name": "products",
-                "property": "products",
+                "prop": "products",
                 "selections": [
                   {
                     "kind": "scalar",
                     "name": "upc",
-                    "property": "upc",
+                    "prop": "upc",
                   },
                   {
                     "kind": "scalar",
                     "name": "name",
-                    "property": "name",
+                    "prop": "name",
                   },
                 ],
               },
@@ -7476,7 +7476,7 @@ exports[`fixture 'store' > query 'NotBasicWithInlineVariables' > should execute 
                 "kind": "scalar",
                 "name": "id",
                 "private": true,
-                "property": "id",
+                "prop": "id",
               },
             ],
           },
@@ -7492,7 +7492,7 @@ exports[`fixture 'store' > query 'NotBasicWithInlineVariables' > should execute 
               {
                 "kind": "scalar",
                 "name": "name",
-                "property": "name",
+                "prop": "name",
               },
             ],
             "includes": [],
@@ -7574,27 +7574,27 @@ exports[`fixture 'store' > query 'NotBasicWithInlineVariables' > should execute 
           {
             "kind": "scalar",
             "name": "name",
-            "property": "name",
+            "prop": "name",
           },
           {
             "kind": "object",
             "name": "manufacturer",
-            "property": "manufacturer",
+            "prop": "manufacturer",
             "selections": [
               {
                 "kind": "object",
                 "name": "products",
-                "property": "products",
+                "prop": "products",
                 "selections": [
                   {
                     "kind": "scalar",
                     "name": "upc",
-                    "property": "upc",
+                    "prop": "upc",
                   },
                   {
                     "kind": "scalar",
                     "name": "name",
-                    "property": "name",
+                    "prop": "name",
                   },
                 ],
               },
@@ -7602,7 +7602,7 @@ exports[`fixture 'store' > query 'NotBasicWithInlineVariables' > should execute 
                 "kind": "scalar",
                 "name": "id",
                 "private": true,
-                "property": "id",
+                "prop": "id",
               },
             ],
           },
@@ -7618,7 +7618,7 @@ exports[`fixture 'store' > query 'NotBasicWithInlineVariables' > should execute 
               {
                 "kind": "scalar",
                 "name": "name",
-                "property": "name",
+                "prop": "name",
               },
             ],
             "includes": [],
@@ -7710,22 +7710,22 @@ exports[`fixture 'store' > query 'NotBasicWithInlineVariables' > should plan gat
           {
             "kind": "scalar",
             "name": "id",
-            "property": "id",
+            "prop": "id",
           },
           {
             "kind": "scalar",
             "name": "name",
-            "property": "name",
+            "prop": "name",
           },
           {
             "kind": "object",
             "name": "products",
-            "property": "products",
+            "prop": "products",
             "selections": [
               {
                 "kind": "scalar",
                 "name": "upc",
-                "property": "upc",
+                "prop": "upc",
               },
             ],
           },
@@ -7736,27 +7736,27 @@ exports[`fixture 'store' > query 'NotBasicWithInlineVariables' > should plan gat
               {
                 "kind": "scalar",
                 "name": "name",
-                "property": "name",
+                "prop": "name",
               },
               {
                 "kind": "object",
                 "name": "manufacturer",
-                "property": "manufacturer",
+                "prop": "manufacturer",
                 "selections": [
                   {
                     "kind": "object",
                     "name": "products",
-                    "property": "products",
+                    "prop": "products",
                     "selections": [
                       {
                         "kind": "scalar",
                         "name": "upc",
-                        "property": "upc",
+                        "prop": "upc",
                       },
                       {
                         "kind": "scalar",
                         "name": "name",
-                        "property": "name",
+                        "prop": "name",
                       },
                     ],
                   },
@@ -7764,7 +7764,7 @@ exports[`fixture 'store' > query 'NotBasicWithInlineVariables' > should plan gat
                     "kind": "scalar",
                     "name": "id",
                     "private": true,
-                    "property": "id",
+                    "prop": "id",
                   },
                 ],
               },
@@ -7775,7 +7775,7 @@ exports[`fixture 'store' > query 'NotBasicWithInlineVariables' > should plan gat
                   {
                     "kind": "scalar",
                     "name": "name",
-                    "property": "name",
+                    "prop": "name",
                   },
                 ],
                 "includes": {},
@@ -7896,22 +7896,22 @@ exports[`fixture 'store' > query 'NotBasicWithOperationVariables' > should execu
       {
         "kind": "scalar",
         "name": "id",
-        "property": "id",
+        "prop": "id",
       },
       {
         "kind": "scalar",
         "name": "name",
-        "property": "name",
+        "prop": "name",
       },
       {
         "kind": "object",
         "name": "products",
-        "property": "products",
+        "prop": "products",
         "selections": [
           {
             "kind": "scalar",
             "name": "upc",
-            "property": "upc",
+            "prop": "upc",
           },
         ],
       },
@@ -7940,27 +7940,27 @@ exports[`fixture 'store' > query 'NotBasicWithOperationVariables' > should execu
           {
             "kind": "scalar",
             "name": "name",
-            "property": "name",
+            "prop": "name",
           },
           {
             "kind": "object",
             "name": "manufacturer",
-            "property": "manufacturer",
+            "prop": "manufacturer",
             "selections": [
               {
                 "kind": "object",
                 "name": "products",
-                "property": "products",
+                "prop": "products",
                 "selections": [
                   {
                     "kind": "scalar",
                     "name": "upc",
-                    "property": "upc",
+                    "prop": "upc",
                   },
                   {
                     "kind": "scalar",
                     "name": "name",
-                    "property": "name",
+                    "prop": "name",
                   },
                 ],
               },
@@ -7968,7 +7968,7 @@ exports[`fixture 'store' > query 'NotBasicWithOperationVariables' > should execu
                 "kind": "scalar",
                 "name": "id",
                 "private": true,
-                "property": "id",
+                "prop": "id",
               },
             ],
           },
@@ -7984,7 +7984,7 @@ exports[`fixture 'store' > query 'NotBasicWithOperationVariables' > should execu
               {
                 "kind": "scalar",
                 "name": "name",
-                "property": "name",
+                "prop": "name",
               },
             ],
             "includes": [],
@@ -8062,27 +8062,27 @@ exports[`fixture 'store' > query 'NotBasicWithOperationVariables' > should execu
           {
             "kind": "scalar",
             "name": "name",
-            "property": "name",
+            "prop": "name",
           },
           {
             "kind": "object",
             "name": "manufacturer",
-            "property": "manufacturer",
+            "prop": "manufacturer",
             "selections": [
               {
                 "kind": "object",
                 "name": "products",
-                "property": "products",
+                "prop": "products",
                 "selections": [
                   {
                     "kind": "scalar",
                     "name": "upc",
-                    "property": "upc",
+                    "prop": "upc",
                   },
                   {
                     "kind": "scalar",
                     "name": "name",
-                    "property": "name",
+                    "prop": "name",
                   },
                 ],
               },
@@ -8090,7 +8090,7 @@ exports[`fixture 'store' > query 'NotBasicWithOperationVariables' > should execu
                 "kind": "scalar",
                 "name": "id",
                 "private": true,
-                "property": "id",
+                "prop": "id",
               },
             ],
           },
@@ -8106,7 +8106,7 @@ exports[`fixture 'store' > query 'NotBasicWithOperationVariables' > should execu
               {
                 "kind": "scalar",
                 "name": "name",
-                "property": "name",
+                "prop": "name",
               },
             ],
             "includes": [],
@@ -8198,22 +8198,22 @@ exports[`fixture 'store' > query 'NotBasicWithOperationVariables' > should plan 
           {
             "kind": "scalar",
             "name": "id",
-            "property": "id",
+            "prop": "id",
           },
           {
             "kind": "scalar",
             "name": "name",
-            "property": "name",
+            "prop": "name",
           },
           {
             "kind": "object",
             "name": "products",
-            "property": "products",
+            "prop": "products",
             "selections": [
               {
                 "kind": "scalar",
                 "name": "upc",
-                "property": "upc",
+                "prop": "upc",
               },
             ],
           },
@@ -8224,27 +8224,27 @@ exports[`fixture 'store' > query 'NotBasicWithOperationVariables' > should plan 
               {
                 "kind": "scalar",
                 "name": "name",
-                "property": "name",
+                "prop": "name",
               },
               {
                 "kind": "object",
                 "name": "manufacturer",
-                "property": "manufacturer",
+                "prop": "manufacturer",
                 "selections": [
                   {
                     "kind": "object",
                     "name": "products",
-                    "property": "products",
+                    "prop": "products",
                     "selections": [
                       {
                         "kind": "scalar",
                         "name": "upc",
-                        "property": "upc",
+                        "prop": "upc",
                       },
                       {
                         "kind": "scalar",
                         "name": "name",
-                        "property": "name",
+                        "prop": "name",
                       },
                     ],
                   },
@@ -8252,7 +8252,7 @@ exports[`fixture 'store' > query 'NotBasicWithOperationVariables' > should plan 
                     "kind": "scalar",
                     "name": "id",
                     "private": true,
-                    "property": "id",
+                    "prop": "id",
                   },
                 ],
               },
@@ -8263,7 +8263,7 @@ exports[`fixture 'store' > query 'NotBasicWithOperationVariables' > should plan 
                   {
                     "kind": "scalar",
                     "name": "name",
-                    "property": "name",
+                    "prop": "name",
                   },
                 ],
                 "includes": {},
@@ -8434,7 +8434,7 @@ exports[`fixture 'store' > query 'ScalarListInType' > should execute and explain
       {
         "kind": "scalar",
         "name": "productNames",
-        "property": "productNames",
+        "prop": "productNames",
       },
     ],
     "includes": [],
@@ -8470,7 +8470,7 @@ exports[`fixture 'store' > query 'ScalarListInType' > should plan gather 1`] = `
           {
             "kind": "scalar",
             "name": "productNames",
-            "property": "productNames",
+            "prop": "productNames",
           },
         ],
         "includes": {},

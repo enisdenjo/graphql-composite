@@ -383,7 +383,7 @@ function getPublicPathsOfExport(exp: OperationExport): string[][] {
   }
 
   if (exp.kind === 'scalar') {
-    return [[exp.property]];
+    return [[exp.prop]];
   }
 
   const paths: string[][] = [];
@@ -392,7 +392,7 @@ function getPublicPathsOfExport(exp: OperationExport): string[][] {
 
     for (const path of selPaths) {
       if ('name' in exp) {
-        paths.push([exp.property, ...path]);
+        paths.push([exp.prop, ...path]);
       } else {
         paths.push(path);
       }
@@ -454,7 +454,7 @@ function getDeepestObjectPublicPathsOfExport(exp: OperationExport): string[][] {
     for (const path of selPaths) {
       path.pop();
       if ('name' in exp) {
-        paths.push([exp.property, ...path]);
+        paths.push([exp.prop, ...path]);
       } else {
         paths.push(path);
       }

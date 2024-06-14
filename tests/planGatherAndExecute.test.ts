@@ -49,22 +49,22 @@ it.each([
       {
         kind: 'scalar',
         name: 'id',
-        property: 'id',
+        prop: 'id',
       },
       {
         kind: 'scalar',
         name: 'name',
-        property: 'name',
+        prop: 'name',
       },
       {
         kind: 'object',
         name: 'products',
-        property: 'products',
+        prop: 'products',
         selections: [
           {
             kind: 'scalar',
             name: 'upc',
-            property: 'upc',
+            prop: 'upc',
           },
         ],
       },
@@ -83,34 +83,34 @@ it.each([
       {
         kind: 'scalar',
         name: 'name',
-        property: 'name',
+        prop: 'name',
       },
       {
         kind: 'object',
         name: 'manufacturer',
-        property: 'manufacturer',
+        prop: 'manufacturer',
         selections: [
           {
             kind: 'object',
             name: 'products',
-            property: 'products',
+            prop: 'products',
             selections: [
               {
                 kind: 'scalar',
                 name: 'upc',
-                property: 'upc',
+                prop: 'upc',
               },
               {
                 kind: 'scalar',
                 name: 'name',
-                property: 'name',
+                prop: 'name',
               },
             ],
           },
           {
             kind: 'scalar',
             name: 'id',
-            property: 'id',
+            prop: 'id',
           },
         ],
       },
@@ -129,12 +129,12 @@ it.each([
       {
         kind: 'scalar',
         name: 'id',
-        property: 'id',
+        prop: 'id',
       },
       {
         kind: 'scalar',
         name: 'name',
-        property: 'name',
+        prop: 'name',
       },
     ],
   },
@@ -155,34 +155,34 @@ it.each([
       {
         kind: 'scalar',
         name: 'id',
-        property: 'id',
+        prop: 'id',
       },
       {
         kind: 'scalar',
         name: 'name',
-        property: 'name',
+        prop: 'name',
       },
       {
         kind: 'object',
         name: 'products',
-        property: 'products',
+        prop: 'products',
         selections: [
           {
             kind: 'object',
             name: 'manufacturer',
-            property: 'manufacturer',
+            prop: 'manufacturer',
             selections: [
               {
                 kind: 'scalar',
                 name: 'location',
-                property: 'location',
+                prop: 'location',
               },
             ],
           },
           {
             kind: 'scalar',
             name: 'name',
-            property: 'name',
+            prop: 'name',
           },
         ],
       },
@@ -218,34 +218,34 @@ it.each([
           {
             kind: 'scalar',
             name: 'name',
-            property: 'name',
+            prop: 'name',
           },
           {
             kind: 'object',
             name: 'manufacturer',
-            property: 'manufacturer',
+            prop: 'manufacturer',
             selections: [
               {
                 kind: 'object',
                 name: 'products',
-                property: 'products',
+                prop: 'products',
                 selections: [
                   {
                     kind: 'scalar',
                     name: 'upc',
-                    property: 'upc',
+                    prop: 'upc',
                   },
                   {
                     kind: 'scalar',
                     name: 'name',
-                    property: 'name',
+                    prop: 'name',
                   },
                 ],
               },
               {
                 kind: 'scalar',
                 name: 'id',
-                property: 'id',
+                prop: 'id',
               },
             ],
           },
@@ -258,34 +258,34 @@ it.each([
           {
             kind: 'scalar',
             name: 'id',
-            property: 'id',
+            prop: 'id',
           },
           {
             kind: 'scalar',
             name: 'name',
-            property: 'name',
+            prop: 'name',
           },
           {
             kind: 'object',
             name: 'products',
-            property: 'products',
+            prop: 'products',
             selections: [
               {
                 kind: 'object',
                 name: 'manufacturer',
-                property: 'manufacturer',
+                prop: 'manufacturer',
                 selections: [
                   {
                     kind: 'scalar',
                     name: 'location',
-                    property: 'location',
+                    prop: 'location',
                   },
                 ],
               },
               {
                 kind: 'scalar',
                 name: 'name',
-                property: 'name',
+                prop: 'name',
               },
             ],
           },
@@ -310,27 +310,27 @@ it.each([
           {
             kind: 'scalar',
             name: 'name',
-            property: 'name',
+            prop: 'name',
           },
           {
             kind: 'object',
             name: 'manufacturer',
-            property: 'manufacturer',
+            prop: 'manufacturer',
             selections: [
               {
                 kind: 'object',
                 name: 'products',
-                property: 'products',
+                prop: 'products',
                 selections: [
                   {
                     kind: 'scalar',
                     name: 'upc',
-                    property: 'upc',
+                    prop: 'upc',
                   },
                   {
                     kind: 'scalar',
                     name: 'name',
-                    property: 'name',
+                    prop: 'name',
                   },
                 ],
               },
@@ -341,34 +341,34 @@ it.each([
                   {
                     kind: 'scalar',
                     name: 'id',
-                    property: 'id',
+                    prop: 'id',
                   },
                   {
                     kind: 'scalar',
                     name: 'name',
-                    property: 'name',
+                    prop: 'name',
                   },
                   {
                     kind: 'object',
                     name: 'products',
-                    property: 'products',
+                    prop: 'products',
                     selections: [
                       {
                         kind: 'object',
                         name: 'manufacturer',
-                        property: 'manufacturer',
+                        prop: 'manufacturer',
                         selections: [
                           {
                             kind: 'scalar',
                             name: 'location',
-                            property: 'location',
+                            prop: 'location',
                           },
                         ],
                       },
                       {
                         kind: 'scalar',
                         name: 'name',
-                        property: 'name',
+                        prop: 'name',
                       },
                     ],
                   },

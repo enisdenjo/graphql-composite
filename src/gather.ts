@@ -106,10 +106,11 @@ export interface OperationScalarExport extends OperationExportAvailability {
   /** Name of the scalar field. */
   name: string;
   /**
-   * The property name to pluck from the execution result.
-   * It's the same as {@link name} unless an alias is used.
-   **/
-  property: string;
+   * The property name to pluck from the operation result.
+   * It's the same as {@link name} unless an alias is used
+   * in user's query.
+   */
+  prop: string;
 }
 
 export interface OperationObjectExport extends OperationExportAvailability {
@@ -117,10 +118,11 @@ export interface OperationObjectExport extends OperationExportAvailability {
   /** Name of the composite field. */
   name: string;
   /**
-   * The property name to pluck from the execution result.
-   * It's the same as {@link name} unless an alias is used.
-   **/
-  property: string;
+   * The property name to pluck from the operation result.
+   * It's the same as {@link name} unless an alias is used
+   * in user's query.
+   */
+  prop: string;
   /** Nested selections of the field. */
   selections: OperationExport[];
 }
@@ -232,7 +234,7 @@ export function planGather(
               kind: 'object',
               path: entries.join('.'),
               name: node.name.value,
-              property: node.alias?.value ?? node.name.value,
+              prop: node.alias?.value ?? node.name.value,
               type: String(type),
               ofType: ofType.name,
               inlineVariables,
@@ -243,7 +245,7 @@ export function planGather(
               kind: 'scalar',
               path: entries.join('.'),
               name: node.name.value,
-              property: node.alias?.value ?? node.name.value,
+              prop: node.alias?.value ?? node.name.value,
               type: String(type),
               ofType: ofType.name,
               inlineVariables,
@@ -326,7 +328,7 @@ export function planGather(
       }
     }
 
-    gatherPlan.operation.resolvers[field.property] = resolver;
+    gatherPlan.operation.resolvers[field.prop] = resolver;
   }
 
   // we build resolvers operations only after gather.
@@ -627,7 +629,7 @@ function insertResolversForSelection(
           getSelectionsAtDepth(currentResolver.exports, depth).push({
             kind: 'scalar',
             name: '__typename',
-            property: '__typename',
+            prop: '__typename',
             private: true,
           });
         }
@@ -805,12 +807,12 @@ function insertResolversForSelection(
       ? {
           kind: 'scalar',
           name: sel.name,
-          property: sel.property,
+          prop: sel.prop,
         }
       : {
           kind: 'object',
           name: sel.name,
-          property: sel.property,
+          prop: sel.prop,
           selections: [],
         };
 
@@ -819,7 +821,7 @@ function insertResolversForSelection(
       ? getSelectionsAtDepth(currentResolver.exports, depth)
       : resolver.exports;
 
-  if (!exportsIncludeField(dest, exp.property, true)) {
+  if (!exportsIncludeField(dest, exp.prop, true)) {
     dest.push(exp);
   }
 
@@ -862,7 +864,7 @@ function prepareCompositeResolverForSelection(
         private: true,
         kind: 'scalar', // TODO: do variables always select scalars?
         name: variable.select,
-        property: variable.select,
+        prop: variable.select,
       });
     }
   }
@@ -897,7 +899,7 @@ function exportsIncludeField(
     if (exp.kind === 'fragment') {
       return exportsIncludeField(exp.selections, property, convertToPublic);
     }
-    if (exp.property === property) {
+    if (exp.prop === property) {
       if (convertToPublic && exp.private) {
         delete exp.private;
       }
@@ -1108,11 +1110,11 @@ function createSelectionsForExports(
           kind: Kind.NAME,
           value: exp.name,
         },
-        ...(exp.property !== exp.name
+        ...(exp.prop !== exp.name
           ? {
               alias: {
                 kind: Kind.NAME,
-                value: exp.property,
+                value: exp.prop,
               },
             }
           : {}),
@@ -1128,11 +1130,11 @@ function createSelectionsForExports(
           kind: Kind.NAME,
           value: exp.name,
         },
-        ...(exp.property !== exp.name
+        ...(exp.prop !== exp.name
           ? {
               alias: {
                 kind: Kind.NAME,
-                value: exp.property,
+                value: exp.prop,
               },
             }
           : {}),

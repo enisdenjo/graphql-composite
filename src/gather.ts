@@ -833,7 +833,15 @@ function insertResolversForSelection(
         sel,
         subSel,
         resolver,
-        resolver === currentResolver ? depth + 1 : depth,
+        // we increase depth if we're staying in the same resolver because that means that
+        // the subselections are within a composite field
+        resolver === currentResolver ||
+          // we also increase depth if we have been resolving additional fields because that
+          // means that the subselections are also within a composite field but we're not
+          // resolving additional fields any more
+          resolvingAdditionalFields
+          ? depth + 1
+          : depth,
         false,
       );
     }

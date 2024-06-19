@@ -1,4 +1,4 @@
-import { buildSchema, print, validate } from 'graphql';
+import { buildSchema, validate } from 'graphql';
 import { describe, expect, it } from 'vitest';
 import { execute } from '../src/execute.js';
 import {

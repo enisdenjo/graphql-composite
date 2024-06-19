@@ -301,6 +301,11 @@ function populateResultWithExportData(
       const exp = getExportAtPath(resolver.exports, exportPath);
 
       const lastKey = exportPath[exportPath.length - 1];
+      // valBeforeLast is undefined for deeply nested paths.
+      // One example is the `child-type-mismatch` test,
+      // where the paths are missing an index number from the nested (second) array.
+      // We get:      accounts.0.similarAccounts.similarAccounts.name
+      // Should be:   accounts.0.similarAccounts.[0|1].similarAccounts.name
       const valBeforeLast =
         exportPath.length > 1
           ? getAtPath(exportData, exportPath.slice(0, exportPath.length - 1))

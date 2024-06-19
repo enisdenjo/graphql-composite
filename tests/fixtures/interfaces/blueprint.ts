@@ -35,6 +35,10 @@ export const blueprint: Blueprint = {
         animal: {
           name: 'animal',
           subgraphs: ['shelter', 'store'],
+          types: {
+            shelter: 'Animal',
+            store: 'Animal',
+          },
           resolvers: {
             shelter: {
               subgraph: 'shelter',
@@ -86,16 +90,28 @@ export const blueprint: Blueprint = {
         name: {
           name: 'name',
           subgraphs: ['shelter', 'store'],
+          types: {
+            shelter: 'ID!',
+            store: 'ID!',
+          },
           resolvers: {},
         },
         type: {
           name: 'type',
           subgraphs: ['shelter', 'store'],
+          types: {
+            shelter: 'String!',
+            store: 'String!',
+          },
           resolvers: {},
         },
         bestFriend: {
           name: 'bestFriend',
           subgraphs: ['shelter', 'store'],
+          types: {
+            shelter: 'Animal',
+            store: 'Animal',
+          },
           resolvers: {},
         },
       },
@@ -159,21 +175,37 @@ export const blueprint: Blueprint = {
         name: {
           name: 'name',
           subgraphs: ['shelter', 'store'],
+          types: {
+            shelter: 'ID!',
+            store: 'ID!',
+          },
           resolvers: {},
         },
         type: {
           name: 'type',
           subgraphs: ['shelter', 'store'],
+          types: {
+            shelter: 'String!',
+            store: 'String!',
+          },
           resolvers: {},
         },
         meows: {
           name: 'meows',
           subgraphs: ['shelter', 'store'],
+          types: {
+            shelter: 'Boolean!',
+            store: 'Boolean!',
+          },
           resolvers: {},
         },
         bestFriend: {
           name: 'bestFriend',
           subgraphs: ['shelter', 'store'],
+          types: {
+            shelter: 'Animal',
+            store: 'Animal',
+          },
           resolvers: {},
         },
       },
@@ -237,21 +269,37 @@ export const blueprint: Blueprint = {
         name: {
           name: 'name',
           subgraphs: ['shelter', 'store'],
+          types: {
+            shelter: 'ID!',
+            store: 'ID!',
+          },
           resolvers: {},
         },
         type: {
           name: 'type',
           subgraphs: ['shelter', 'store'],
+          types: {
+            shelter: 'String!',
+            store: 'String!',
+          },
           resolvers: {},
         },
         barks: {
           name: 'barks',
           subgraphs: ['shelter', 'store'],
+          types: {
+            shelter: 'Boolean!',
+            store: 'Boolean!',
+          },
           resolvers: {},
         },
         bestFriend: {
           name: 'bestFriend',
           subgraphs: ['shelter', 'store'],
+          types: {
+            shelter: 'Animal',
+            store: 'Animal',
+          },
           resolvers: {},
         },
       },

@@ -26,7 +26,11 @@ import {
   BlueprintType,
   isBlueprintResolverSelectVariable,
 } from './blueprint.js';
-import { flattenFragments, isListType as parseIsListType } from './utils.js';
+import {
+  assert,
+  flattenFragments,
+  isListType as parseIsListType,
+} from './utils.js';
 
 export interface GatherPlan {
   query: string;
@@ -103,7 +107,29 @@ export interface OperationExportAvailability {
   private?: true;
 }
 
-export interface OperationScalarExport extends OperationExportAvailability {
+export interface OperationExportRewrite {
+  /**
+   * The property name to pluck from the operation result, with a rename step to {@link prop}.
+   *
+   * It's used in cases of type conflicts, we need to rename the field, before making a request to the subgraph,
+   * but later on we need to rename it back to the original name {@link prop} to match the expected field name.
+   * See: https://spec.graphql.org/draft/#FieldsInSetCanMerge()
+   * See: https://github.com/enisdenjo/graphql-composite/issues/31
+   *
+   * TODO: find a better name
+   */
+  originalProp: string | null;
+  /**
+   * Stores the name of the type the field is defined in.
+   *
+   * TODO: find a better name (I continue the theme)
+   */
+  parentType: string;
+}
+
+export interface OperationScalarExport
+  extends OperationExportAvailability,
+    OperationExportRewrite {
   kind: 'scalar';
   /** Name of the scalar field. */
   name: string;
@@ -115,7 +141,9 @@ export interface OperationScalarExport extends OperationExportAvailability {
   prop: string;
 }
 
-export interface OperationEnumExport extends OperationExportAvailability {
+export interface OperationEnumExport
+  extends OperationExportAvailability,
+    OperationExportRewrite {
   kind: 'enum';
   /** Name of the scalar field. */
   name: string;
@@ -138,7 +166,9 @@ export type OperationPrimitiveExport =
   | OperationScalarExport
   | OperationEnumExport;
 
-export interface OperationObjectExport extends OperationExportAvailability {
+export interface OperationObjectExport
+  extends OperationExportAvailability,
+    OperationExportRewrite {
   kind: 'object';
   /** Name of the composite field. */
   name: string;
@@ -261,12 +291,71 @@ export function planGather(
             );
           }
 
+          const blueprintType = blueprint.types[parentType.name];
+          assert(
+            blueprintType,
+            `Blueprint doesn't have a "${parentType.name}" type`,
+          );
+          const blueprintField = blueprintType.fields[node.name.value];
+
+          // There might be a case where the field is missing in the type,
+          // but it's available in an interface that the type implements.
+          // In this case, it's a field provided by an interface object.
+          // It's a very specific case.
+          // We want to control the name of the parent type,
+          // that we later on pass to OperationExport.parentType
+          /**
+           * There might be a case where the field is missing in the type,
+           * but it's available in an interface that the type implements.
+           * In this case, it's a field provided by an interface object.
+           * It's a very specific case.
+           *
+           * We want to control the name of the parent type, because of that reason.
+           * The value is later on pass to {@link OperationExportRewrite.parentType}
+           */
+          let parentTypeName = parentType.name;
+
+          // If it's missing, it's most likely because it's provided by an interface object
+          if (!blueprintField) {
+            assert(blueprintType.kind === 'object', 'Expected object type');
+
+            const possibleParentTypes: string[] = [];
+
+            // find an interface that has the field
+            for (const interfaceName of Object.keys(blueprintType.implements)) {
+              const blueprintInterface = blueprint.types[interfaceName];
+              assert(
+                blueprintInterface,
+                `Blueprint doesn't have a "${interfaceName}" interface`,
+              );
+
+              if (!blueprintInterface.fields[node.name.value]) {
+                continue;
+              }
+
+              possibleParentTypes.push(interfaceName);
+            }
+
+            assert(
+              possibleParentTypes.length,
+              `Blueprint doesn't have a field "${node.name.value}" in any of the interfaces implemented by "${parentType.name}"`,
+            );
+            assert(
+              possibleParentTypes.length === 1,
+              `Field "${node.name.value}" is ambiguous, it's available in multiple interfaces: ${possibleParentTypes.join(', ')}`,
+            );
+
+            parentTypeName = possibleParentTypes[0]!;
+          }
+
           if (isCompositeType(ofType)) {
             getSelectionsAtDepth(fields, depth - 1).push({
               kind: 'object',
               path: entries.join('.'),
               name: node.name.value,
               prop: node.alias?.value ?? node.name.value,
+              originalProp: null,
+              parentType: parentTypeName,
               type: String(type),
               ofType: ofType.name,
               inlineVariables,
@@ -277,6 +366,8 @@ export function planGather(
               path: entries.join('.'),
               name: node.name.value,
               prop: node.alias?.value ?? node.name.value,
+              originalProp: null,
+              parentType: parentTypeName,
               type: String(type),
               ofType: ofType.name,
               inlineVariables,
@@ -382,6 +473,7 @@ export function planGather(
   // in both the private and public lists
   buildAndInsertOperationsInResolvers(
     Object.values(gatherPlan.operation.resolvers),
+    blueprint,
   );
 
   return gatherPlan;
@@ -561,7 +653,7 @@ function insertResolversForSelection(
 
       if (parentType.kind === 'object') {
         if (!implementsInterface(parentType, fragmentType.name)) {
-          // parent's object type doesnt implement the type of the fragment
+          // parent's object type doesn't implement the type of the fragment
           //
           // because of [NOTE 2], we want to focus only on fragments whose type condition matches
           // the parent resolver and skip others.
@@ -658,8 +750,8 @@ function insertResolversForSelection(
             fragmentTypeSubgraphs.includes(s),
           ))
       ) {
-        // the selection's object doesnt have any other resolvers and its available subgraphs
-        // dont intersect with the parent field's subgraphs. this means that the field is
+        // the selection's object doesn't have any other resolvers and its available subgraphs
+        // don't intersect with the parent field's subgraphs. this means that the field is
         // available in more subgraphs than the selection's object.
         // we therefore skip the fragment spread altogether
 
@@ -676,6 +768,8 @@ function insertResolversForSelection(
             kind: 'scalar',
             name: '__typename',
             prop: '__typename',
+            parentType: parentSelInType.name, // TODO: double check if this is correct parent type name
+            originalProp: null,
             private: true,
           });
         }
@@ -697,6 +791,7 @@ function insertResolversForSelection(
         const resolver = prepareCompositeResolverForSelection(
           resolverPlan,
           sel,
+          parentType,
           getSelectionsAtDepth(currentResolver.exports, depth),
         );
 
@@ -835,6 +930,7 @@ function insertResolversForSelection(
     resolver = prepareCompositeResolverForSelection(
       resolverPlan,
       sel,
+      parentTypePlan,
       getSelectionsAtDepth(currentResolver.exports, depth),
     );
 
@@ -854,6 +950,8 @@ function insertResolversForSelection(
           kind: 'scalar',
           name: sel.name,
           prop: sel.prop,
+          originalProp: sel.originalProp,
+          parentType: sel.parentType,
         }
       : sel.kind === 'enum'
         ? {
@@ -861,12 +959,16 @@ function insertResolversForSelection(
             name: sel.name,
             prop: sel.prop,
             values: sel.values,
+            originalProp: sel.originalProp,
+            parentType: sel.parentType,
           }
         : {
             kind: 'object',
             name: sel.name,
             prop: sel.prop,
             selections: [],
+            originalProp: sel.originalProp,
+            parentType: sel.parentType,
           };
 
   const dest =
@@ -906,6 +1008,8 @@ function prepareCompositeResolverForSelection(
   resolverPlan: BlueprintCompositeResolver,
   /** The selection in question. */
   sel: OperationSelection,
+  /** The parent type of the selection. */
+  parentType: BlueprintType,
   /** Available exports of the parent resolver. */
   exps: OperationExport[],
 ): GatherPlanCompositeResolver {
@@ -913,7 +1017,7 @@ function prepareCompositeResolverForSelection(
     isBlueprintResolverSelectVariable,
   )) {
     // make sure parent resolver exports fields that are needed
-    // as variables to perform the resolution. if the parent doesnt
+    // as variables to perform the resolution. if the parent doesn't
     // export the necessary variable, add it as private to parents
     // exports for resolution during execution but not available to the user
     if (
@@ -926,6 +1030,8 @@ function prepareCompositeResolverForSelection(
         kind: 'scalar', // TODO: do variables always select scalars, what happens with enums?
         name: variable.select,
         prop: variable.select,
+        parentType: parentType.name,
+        originalProp: null,
       });
     }
   }
@@ -970,8 +1076,18 @@ function exportsIncludeField(
   return false;
 }
 
-function buildAndInsertOperationsInResolvers(resolvers: GatherPlanResolver[]) {
+function buildAndInsertOperationsInResolvers(
+  resolvers: GatherPlanResolver[],
+  blueprint: Blueprint,
+) {
   for (const resolver of resolvers) {
+    if (resolver.kind !== 'primitive') {
+      aliasNonMergeableFieldsInExports(
+        resolver.subgraph,
+        resolver.exports,
+        blueprint,
+      );
+    }
     const { operation, pathToExportData } = buildResolverOperation(
       resolver.operation,
       resolver.kind === 'primitive' ? [] : resolver.exports,
@@ -986,8 +1102,104 @@ function buildAndInsertOperationsInResolvers(resolvers: GatherPlanResolver[]) {
     if ('includes' in resolver) {
       buildAndInsertOperationsInResolvers(
         Object.values(resolver.includes).flat(),
+        blueprint,
       );
     }
+  }
+}
+
+/**
+ * See: https://spec.graphql.org/draft/#FieldsInSetCanMerge()
+ */
+function aliasNonMergeableFieldsInExports(
+  subgraph: string,
+  exports: OperationExport[],
+  blueprint: Blueprint,
+) {
+  // We flatten the exports here to have only fields.
+  // In case of fragments, we flatten their selections.
+  const flattenedExports: Array<{
+    exp: OperationExport;
+    path: string;
+  }> = exports
+    .map((exp) => {
+      if (exp.kind === 'scalar' || exp.kind === 'enum') {
+        return { exp, path: exp.prop };
+      }
+
+      if (exp.kind === 'object') {
+        return {
+          exp,
+          path: exp.prop,
+        };
+      }
+
+      return exp.selections.flat().map((sel) => ({
+        exp: sel,
+        path: sel.kind === 'fragment' ? '' : sel.prop, // not sure about this one
+      }));
+    })
+    .flat(1);
+
+  const previousTypeForPath = new Map<string, string>();
+
+  let exportsToVisitNext: OperationExport[] = [];
+
+  const usedNames = new Set<string>();
+
+  for (const { exp, path } of flattenedExports) {
+    if (exp.kind === 'fragment') {
+      exportsToVisitNext.push(...exp.selections);
+      continue;
+    }
+
+    // __typename is a special field that is always String!.
+    // No need to alias it.
+    // If we don't skip it, we would have to define __typename in root level types.
+    if (exp.name === '__typename') {
+      continue;
+    }
+
+    const parentType = blueprint.types[exp.parentType];
+    assert(parentType, `Blueprint doesn't have a "${exp.parentType}" type`);
+
+    const field = parentType.fields[exp.name];
+    assert(
+      field,
+      `Blueprint type "${parentType.name}" doesn't have a "${exp.name}" field`,
+    );
+
+    const fieldType = field.types[subgraph];
+    assert(
+      fieldType,
+      `Blueprint field "${field.name}" on type "${parentType.name}" is missing type information for subgraph "${subgraph}"`,
+    );
+
+    // I don't like that we create a string here
+    const previousType = previousTypeForPath.get(path);
+
+    if (previousType) {
+      // I don't like the fact we mutate something, but maybe it's fine since we do not share it anywhere
+      if (previousType !== fieldType) {
+        // we have a conflict
+        // we need to alias the field
+        exp.originalProp = exp.prop;
+        exp.prop = produceUniqueAlias(exp.prop, usedNames);
+      }
+      usedNames.add(exp.prop);
+    } else {
+      // I don't like that we create a string here
+      previousTypeForPath.set(path, fieldType);
+      usedNames.add(exp.prop);
+    }
+
+    if (exp.kind === 'object' && path.length > 1) {
+      exportsToVisitNext.push(...exp.selections);
+    }
+  }
+
+  if (exportsToVisitNext.length) {
+    aliasNonMergeableFieldsInExports(subgraph, exportsToVisitNext, blueprint);
   }
 }
 
@@ -1210,4 +1422,16 @@ function implementsInterface(
   interfaceTypeName: string,
 ) {
   return objectType.implements[interfaceTypeName]?.name === interfaceTypeName;
+}
+
+function produceUniqueAlias(name: string, usedNames: Set<string>): string {
+  let i = 0;
+  while (usedNames.has(`${name}_${i}`)) {
+    i++;
+  }
+
+  const newName = `${name}_${i}`;
+  usedNames.add(newName);
+
+  return newName;
 }

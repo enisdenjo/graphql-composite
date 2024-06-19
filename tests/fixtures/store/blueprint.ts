@@ -41,6 +41,9 @@ export const blueprint: Blueprint = {
         manufacturer: {
           name: 'manufacturer',
           subgraphs: ['manufacturers'],
+          types: {
+            manufacturers: 'Manufacturer',
+          },
           resolvers: {
             manufacturers: {
               subgraph: 'manufacturers',
@@ -66,6 +69,9 @@ export const blueprint: Blueprint = {
         manufacturerName: {
           name: 'manufacturerName',
           subgraphs: ['manufacturers'],
+          types: {
+            manufacturers: 'String',
+          },
           resolvers: {
             manufacturers: {
               subgraph: 'manufacturers',
@@ -89,6 +95,9 @@ export const blueprint: Blueprint = {
         product: {
           name: 'product',
           subgraphs: ['products'],
+          types: {
+            products: 'Product',
+          },
           resolvers: {
             products: {
               subgraph: 'products',
@@ -114,6 +123,9 @@ export const blueprint: Blueprint = {
         productsByUpcs: {
           name: 'productsByUpcs',
           subgraphs: ['products'],
+          types: {
+            products: '[Product]!',
+          },
           resolvers: {
             products: {
               subgraph: 'products',
@@ -139,6 +151,9 @@ export const blueprint: Blueprint = {
         productName: {
           name: 'productName',
           subgraphs: ['products'],
+          types: {
+            products: 'String',
+          },
           resolvers: {
             products: {
               subgraph: 'products',
@@ -164,6 +179,9 @@ export const blueprint: Blueprint = {
         productNames: {
           name: 'productNames',
           subgraphs: ['products'],
+          types: {
+            products: '[String!]!',
+          },
           resolvers: {
             products: {
               subgraph: 'products',
@@ -182,6 +200,9 @@ export const blueprint: Blueprint = {
         storefront: {
           name: 'storefront',
           subgraphs: ['storefronts'],
+          types: {
+            storefronts: 'Storefront',
+          },
           resolvers: {
             storefronts: {
               subgraph: 'storefronts',
@@ -215,16 +236,26 @@ export const blueprint: Blueprint = {
         id: {
           name: 'id',
           subgraphs: ['manufacturers', 'products'],
+          types: {
+            manufacturers: 'ID!',
+            products: 'ID!',
+          },
           resolvers: {},
         },
         name: {
           name: 'name',
           subgraphs: ['manufacturers'],
+          types: {
+            manufacturers: 'String!',
+          },
           resolvers: {},
         },
         products: {
           name: 'products',
           subgraphs: ['products'],
+          types: {
+            products: '[Product]!',
+          },
           resolvers: {},
         },
       },
@@ -283,21 +314,34 @@ export const blueprint: Blueprint = {
         manufacturer: {
           name: 'manufacturer',
           subgraphs: ['products'],
+          types: {
+            products: 'Manufacturer',
+          },
           resolvers: {},
         },
         name: {
           name: 'name',
           subgraphs: ['products'],
+          types: {
+            products: 'String!',
+          },
           resolvers: {},
         },
         price: {
           name: 'price',
           subgraphs: ['products'],
+          types: {
+            products: 'Float!',
+          },
           resolvers: {},
         },
         upc: {
           name: 'upc',
           subgraphs: ['products', 'storefronts'],
+          types: {
+            products: 'ID!',
+            storefronts: 'ID!',
+          },
           resolvers: {},
         },
       },
@@ -356,21 +400,33 @@ export const blueprint: Blueprint = {
         id: {
           name: 'id',
           subgraphs: ['storefronts'],
+          types: {
+            storefronts: 'ID!',
+          },
           resolvers: {},
         },
         name: {
           name: 'name',
           subgraphs: ['storefronts'],
+          types: {
+            storefronts: 'String!',
+          },
           resolvers: {},
         },
         products: {
           name: 'products',
           subgraphs: ['storefronts'],
+          types: {
+            storefronts: '[Product]!',
+          },
           resolvers: {},
         },
         productNames: {
           name: 'productNames',
           subgraphs: ['storefronts'],
+          types: {
+            storefronts: '[String!]!',
+          },
           resolvers: {},
         },
       },

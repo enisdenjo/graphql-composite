@@ -47,6 +47,12 @@ export interface BlueprintField {
   /** List of subgraphs at which the field is available. */
   subgraphs: string[];
   /**
+   * Types of the field in each subgraph.
+   * */
+  types: {
+    [subgraph in BlueprintResolver['subgraph']]: string;
+  };
+  /**
    * The resolver for this specific field.
    * Required in `Query` and `Mutation` {@link BlueprintType types}.
    *

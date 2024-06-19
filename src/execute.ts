@@ -286,9 +286,19 @@ function populateResultWithExportData(
     return;
   }
 
-  const publicExportPaths = resolver.exports.flatMap(getPublicPathsOfExport);
+  // We store a list of rewrites.
+  // Each item has a path and a publicExportPath.
+  const rewrites: Array<{
+    // path in the export data
+    path: string[][];
+    // path in the result data
+    publicExportPath: string[][];
+  }> = [];
+  const publicExportPaths = resolver.exports.flatMap((p) =>
+    getPublicPathsOfExport(p, rewrites),
+  );
 
-  if (!publicExportPaths.length) {
+  if (!publicExportPaths.length && !rewrites.length) {
     for (const deepestObjectPath of resolver.exports.flatMap(
       getDeepestObjectPublicPathsOfExport,
     )) {
@@ -327,6 +337,52 @@ function populateResultWithExportData(
       exportData,
       dataRef,
     );
+  }
+
+  for (const rewrite of rewrites) {
+    assert(
+      rewrite.publicExportPath.length === rewrite.path.length,
+      'Rewrite public export path and path should have the same length',
+    );
+
+    for (let i = 0; i < rewrite.publicExportPath.length; i++) {
+      const exportPath = rewrite.publicExportPath[i]!;
+      const importPath = rewrite.path[i]!;
+
+      const lastKey = importPath[importPath.length - 1];
+      const valBeforeLast =
+        importPath.length > 1
+          ? getAtPath(exportData, importPath.slice(0, importPath.length - 1))
+          : null;
+
+      if (Array.isArray(valBeforeLast)) {
+        // if we're exporting fields in an array, set for each item of the array
+        for (let i = 0; i < valBeforeLast.length; i++) {
+          const value = getAtPath(valBeforeLast[i], [lastKey!]);
+
+          if (value !== undefined) {
+            setAtPath(
+              resultRef.data,
+              [
+                ...pathInData,
+                ...exportPath.slice(0, exportPath.length - 1)!,
+                i,
+                lastKey!,
+              ],
+              value,
+            );
+          }
+        }
+      } else {
+        // otherwise, just set in object
+        const value = getAtPath(exportData, importPath);
+
+        // if the value is undefined, we don't want to set it
+        if (value !== undefined) {
+          setAtPath(resultRef.data, [...pathInData, ...exportPath], value);
+        }
+      }
+    }
   }
 }
 
@@ -376,22 +432,44 @@ function populateResultWithExportData(
  *  ]
  * ```
  */
-export function getPublicPathsOfExport(exp: OperationExport): string[][] {
+export function getPublicPathsOfExport(
+  exp: OperationExport,
+  rewrites: Array<{
+    path: string[][];
+    publicExportPath: string[][];
+  }>,
+): string[][] {
   if (exp.private) {
     // we care about public exports only
     return [];
   }
 
   if (exp.kind === 'scalar' || exp.kind === 'enum') {
+    if (exp.originalProp) {
+      rewrites.push({
+        path: [[exp.prop]],
+        publicExportPath: [[exp.originalProp]],
+      });
+      return [];
+    }
+
     return [[exp.prop]];
   }
 
   const paths: string[][] = [];
   for (const sel of exp.selections || []) {
-    const selPaths = getPublicPathsOfExport(sel);
+    const selPaths = getPublicPathsOfExport(sel, rewrites);
 
     for (const path of selPaths) {
       if ('name' in exp) {
+        if (exp.originalProp) {
+          rewrites.push({
+            path: [[exp.prop, ...path]],
+            publicExportPath: [[exp.originalProp, ...path]],
+          });
+          return [];
+        }
+
         paths.push([exp.prop, ...path]);
       } else {
         paths.push(path);
@@ -484,6 +562,8 @@ export function getExportAtPath(
     // since path is not empty, no other field is really relevant - the loop
     // will immediately go into the exp.selections
     selections: exports,
+    originalProp: null,
+    parentType: '',
   };
   for (let i = 0; i < path.length; i++) {
     const part = path[i]!;

@@ -23,6 +23,11 @@ export const blueprint: Blueprint = {
         product: {
           name: 'product',
           subgraphs: ['category', 'name', 'price'],
+          types: {
+            category: 'Product',
+            name: 'Product',
+            price: 'Product',
+          },
           resolvers: {
             category: {
               subgraph: 'category',
@@ -71,6 +76,11 @@ export const blueprint: Blueprint = {
         products: {
           name: 'products',
           subgraphs: ['category', 'name', 'price'],
+          types: {
+            category: 'Product',
+            name: 'Product',
+            price: 'Product',
+          },
           resolvers: {
             category: {
               subgraph: 'category',
@@ -127,21 +137,35 @@ export const blueprint: Blueprint = {
         id: {
           name: 'id',
           subgraphs: ['category', 'name', 'price'],
+          types: {
+            category: 'Product',
+            name: 'Product',
+            price: 'Product',
+          },
           resolvers: {},
         },
         category: {
           name: 'category',
           subgraphs: ['category'],
+          types: {
+            category: 'Product',
+          },
           resolvers: {},
         },
         name: {
           name: 'name',
           subgraphs: ['name'],
+          types: {
+            name: 'Product',
+          },
           resolvers: {},
         },
         price: {
           name: 'price',
           subgraphs: ['price'],
+          types: {
+            price: 'Product',
+          },
           resolvers: {},
         },
       },

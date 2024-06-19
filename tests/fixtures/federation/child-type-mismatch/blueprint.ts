@@ -30,6 +30,9 @@ export const blueprint: Blueprint = {
         users: {
           name: 'users',
           subgraphs: ['a'],
+          types: {
+            a: '[User!]',
+          },
           resolvers: {
             a: {
               subgraph: 'a',
@@ -50,6 +53,9 @@ export const blueprint: Blueprint = {
         accounts: {
           name: 'accounts',
           subgraphs: ['b'],
+          types: {
+            b: '[Account!]',
+          },
           resolvers: {
             b: {
               subgraph: 'b',
@@ -83,21 +89,35 @@ export const blueprint: Blueprint = {
         __typename: {
           name: '__typename',
           subgraphs: ['a', 'b'],
+          types: {
+            a: 'String!',
+            b: 'String!',
+          },
           resolvers: {},
         },
         id: {
           name: 'id',
           subgraphs: ['a', 'b'],
+          types: {
+            a: 'ID',
+            b: 'ID!',
+          },
           resolvers: {},
         },
         name: {
           name: 'name',
           subgraphs: ['b'],
+          types: {
+            b: 'String',
+          },
           resolvers: {},
         },
         similarAccounts: {
           name: 'similarAccounts',
           subgraphs: ['b'],
+          types: {
+            b: '[Account!]!',
+          },
           resolvers: {},
         },
       },
@@ -141,21 +161,33 @@ export const blueprint: Blueprint = {
         __typename: {
           name: '__typename',
           subgraphs: ['b'],
+          types: {
+            b: 'String!',
+          },
           resolvers: {},
         },
         id: {
           name: 'id',
           subgraphs: ['b'],
+          types: {
+            b: 'ID',
+          },
           resolvers: {},
         },
         name: {
           name: 'name',
           subgraphs: ['b'],
+          types: {
+            b: 'String',
+          },
           resolvers: {},
         },
         similarAccounts: {
           name: 'similarAccounts',
           subgraphs: ['b'],
+          types: {
+            b: '[Account!]!',
+          },
           resolvers: {},
         },
       },
@@ -168,6 +200,9 @@ export const blueprint: Blueprint = {
         __typename: {
           name: '__typename',
           subgraphs: ['b'],
+          types: {
+            b: 'String!',
+          },
           resolvers: {},
         },
       },

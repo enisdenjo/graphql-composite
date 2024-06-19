@@ -68,11 +68,15 @@ exports[`fixture 'federation/child-type-mismatch' > query 'DeeplyNested' > shoul
           {
             "kind": "scalar",
             "name": "name",
+            "originalProp": null,
+            "parentType": "User",
             "prop": "name",
           },
           {
             "kind": "object",
             "name": "similarAccounts",
+            "originalProp": null,
+            "parentType": "User",
             "prop": "similarAccounts",
             "selections": [
               {
@@ -81,11 +85,15 @@ exports[`fixture 'federation/child-type-mismatch' > query 'DeeplyNested' > shoul
                   {
                     "kind": "scalar",
                     "name": "name",
+                    "originalProp": null,
+                    "parentType": "User",
                     "prop": "name",
                   },
                   {
                     "kind": "object",
                     "name": "similarAccounts",
+                    "originalProp": null,
+                    "parentType": "User",
                     "prop": "similarAccounts",
                     "selections": [
                       {
@@ -94,6 +102,8 @@ exports[`fixture 'federation/child-type-mismatch' > query 'DeeplyNested' > shoul
                           {
                             "kind": "scalar",
                             "name": "name",
+                            "originalProp": null,
+                            "parentType": "User",
                             "prop": "name",
                           },
                         ],
@@ -105,6 +115,8 @@ exports[`fixture 'federation/child-type-mismatch' > query 'DeeplyNested' > shoul
                           {
                             "kind": "scalar",
                             "name": "name",
+                            "originalProp": null,
+                            "parentType": "Admin",
                             "prop": "name",
                           },
                         ],
@@ -121,11 +133,15 @@ exports[`fixture 'federation/child-type-mismatch' > query 'DeeplyNested' > shoul
                   {
                     "kind": "scalar",
                     "name": "name",
+                    "originalProp": null,
+                    "parentType": "Admin",
                     "prop": "name",
                   },
                   {
                     "kind": "object",
                     "name": "similarAccounts",
+                    "originalProp": null,
+                    "parentType": "Admin",
                     "prop": "similarAccounts",
                     "selections": [
                       {
@@ -134,6 +150,8 @@ exports[`fixture 'federation/child-type-mismatch' > query 'DeeplyNested' > shoul
                           {
                             "kind": "scalar",
                             "name": "name",
+                            "originalProp": null,
+                            "parentType": "User",
                             "prop": "name",
                           },
                         ],
@@ -145,6 +163,8 @@ exports[`fixture 'federation/child-type-mismatch' > query 'DeeplyNested' > shoul
                           {
                             "kind": "scalar",
                             "name": "name",
+                            "originalProp": null,
+                            "parentType": "Admin",
                             "prop": "name",
                           },
                         ],
@@ -166,11 +186,15 @@ exports[`fixture 'federation/child-type-mismatch' > query 'DeeplyNested' > shoul
           {
             "kind": "scalar",
             "name": "name",
+            "originalProp": null,
+            "parentType": "Admin",
             "prop": "name",
           },
           {
             "kind": "object",
             "name": "similarAccounts",
+            "originalProp": null,
+            "parentType": "Admin",
             "prop": "similarAccounts",
             "selections": [
               {
@@ -179,11 +203,15 @@ exports[`fixture 'federation/child-type-mismatch' > query 'DeeplyNested' > shoul
                   {
                     "kind": "scalar",
                     "name": "name",
+                    "originalProp": null,
+                    "parentType": "User",
                     "prop": "name",
                   },
                   {
                     "kind": "object",
                     "name": "similarAccounts",
+                    "originalProp": null,
+                    "parentType": "User",
                     "prop": "similarAccounts",
                     "selections": [
                       {
@@ -192,6 +220,8 @@ exports[`fixture 'federation/child-type-mismatch' > query 'DeeplyNested' > shoul
                           {
                             "kind": "scalar",
                             "name": "name",
+                            "originalProp": null,
+                            "parentType": "User",
                             "prop": "name",
                           },
                         ],
@@ -203,6 +233,8 @@ exports[`fixture 'federation/child-type-mismatch' > query 'DeeplyNested' > shoul
                           {
                             "kind": "scalar",
                             "name": "name",
+                            "originalProp": null,
+                            "parentType": "Admin",
                             "prop": "name",
                           },
                         ],
@@ -219,11 +251,15 @@ exports[`fixture 'federation/child-type-mismatch' > query 'DeeplyNested' > shoul
                   {
                     "kind": "scalar",
                     "name": "name",
+                    "originalProp": null,
+                    "parentType": "Admin",
                     "prop": "name",
                   },
                   {
                     "kind": "object",
                     "name": "similarAccounts",
+                    "originalProp": null,
+                    "parentType": "Admin",
                     "prop": "similarAccounts",
                     "selections": [
                       {
@@ -232,6 +268,8 @@ exports[`fixture 'federation/child-type-mismatch' > query 'DeeplyNested' > shoul
                           {
                             "kind": "scalar",
                             "name": "name",
+                            "originalProp": null,
+                            "parentType": "User",
                             "prop": "name",
                           },
                         ],
@@ -243,6 +281,8 @@ exports[`fixture 'federation/child-type-mismatch' > query 'DeeplyNested' > shoul
                           {
                             "kind": "scalar",
                             "name": "name",
+                            "originalProp": null,
+                            "parentType": "Admin",
                             "prop": "name",
                           },
                         ],
@@ -346,11 +386,15 @@ exports[`fixture 'federation/child-type-mismatch' > query 'DeeplyNested' > shoul
               {
                 "kind": "scalar",
                 "name": "name",
+                "originalProp": null,
+                "parentType": "User",
                 "prop": "name",
               },
               {
                 "kind": "object",
                 "name": "similarAccounts",
+                "originalProp": null,
+                "parentType": "User",
                 "prop": "similarAccounts",
                 "selections": [
                   {
@@ -359,11 +403,15 @@ exports[`fixture 'federation/child-type-mismatch' > query 'DeeplyNested' > shoul
                       {
                         "kind": "scalar",
                         "name": "name",
+                        "originalProp": null,
+                        "parentType": "User",
                         "prop": "name",
                       },
                       {
                         "kind": "object",
                         "name": "similarAccounts",
+                        "originalProp": null,
+                        "parentType": "User",
                         "prop": "similarAccounts",
                         "selections": [
                           {
@@ -372,6 +420,8 @@ exports[`fixture 'federation/child-type-mismatch' > query 'DeeplyNested' > shoul
                               {
                                 "kind": "scalar",
                                 "name": "name",
+                                "originalProp": null,
+                                "parentType": "User",
                                 "prop": "name",
                               },
                             ],
@@ -383,6 +433,8 @@ exports[`fixture 'federation/child-type-mismatch' > query 'DeeplyNested' > shoul
                               {
                                 "kind": "scalar",
                                 "name": "name",
+                                "originalProp": null,
+                                "parentType": "Admin",
                                 "prop": "name",
                               },
                             ],
@@ -399,11 +451,15 @@ exports[`fixture 'federation/child-type-mismatch' > query 'DeeplyNested' > shoul
                       {
                         "kind": "scalar",
                         "name": "name",
+                        "originalProp": null,
+                        "parentType": "Admin",
                         "prop": "name",
                       },
                       {
                         "kind": "object",
                         "name": "similarAccounts",
+                        "originalProp": null,
+                        "parentType": "Admin",
                         "prop": "similarAccounts",
                         "selections": [
                           {
@@ -412,6 +468,8 @@ exports[`fixture 'federation/child-type-mismatch' > query 'DeeplyNested' > shoul
                               {
                                 "kind": "scalar",
                                 "name": "name",
+                                "originalProp": null,
+                                "parentType": "User",
                                 "prop": "name",
                               },
                             ],
@@ -423,6 +481,8 @@ exports[`fixture 'federation/child-type-mismatch' > query 'DeeplyNested' > shoul
                               {
                                 "kind": "scalar",
                                 "name": "name",
+                                "originalProp": null,
+                                "parentType": "Admin",
                                 "prop": "name",
                               },
                             ],
@@ -444,11 +504,15 @@ exports[`fixture 'federation/child-type-mismatch' > query 'DeeplyNested' > shoul
               {
                 "kind": "scalar",
                 "name": "name",
+                "originalProp": null,
+                "parentType": "Admin",
                 "prop": "name",
               },
               {
                 "kind": "object",
                 "name": "similarAccounts",
+                "originalProp": null,
+                "parentType": "Admin",
                 "prop": "similarAccounts",
                 "selections": [
                   {
@@ -457,11 +521,15 @@ exports[`fixture 'federation/child-type-mismatch' > query 'DeeplyNested' > shoul
                       {
                         "kind": "scalar",
                         "name": "name",
+                        "originalProp": null,
+                        "parentType": "User",
                         "prop": "name",
                       },
                       {
                         "kind": "object",
                         "name": "similarAccounts",
+                        "originalProp": null,
+                        "parentType": "User",
                         "prop": "similarAccounts",
                         "selections": [
                           {
@@ -470,6 +538,8 @@ exports[`fixture 'federation/child-type-mismatch' > query 'DeeplyNested' > shoul
                               {
                                 "kind": "scalar",
                                 "name": "name",
+                                "originalProp": null,
+                                "parentType": "User",
                                 "prop": "name",
                               },
                             ],
@@ -481,6 +551,8 @@ exports[`fixture 'federation/child-type-mismatch' > query 'DeeplyNested' > shoul
                               {
                                 "kind": "scalar",
                                 "name": "name",
+                                "originalProp": null,
+                                "parentType": "Admin",
                                 "prop": "name",
                               },
                             ],
@@ -497,11 +569,15 @@ exports[`fixture 'federation/child-type-mismatch' > query 'DeeplyNested' > shoul
                       {
                         "kind": "scalar",
                         "name": "name",
+                        "originalProp": null,
+                        "parentType": "Admin",
                         "prop": "name",
                       },
                       {
                         "kind": "object",
                         "name": "similarAccounts",
+                        "originalProp": null,
+                        "parentType": "Admin",
                         "prop": "similarAccounts",
                         "selections": [
                           {
@@ -510,6 +586,8 @@ exports[`fixture 'federation/child-type-mismatch' > query 'DeeplyNested' > shoul
                               {
                                 "kind": "scalar",
                                 "name": "name",
+                                "originalProp": null,
+                                "parentType": "User",
                                 "prop": "name",
                               },
                             ],
@@ -521,6 +599,8 @@ exports[`fixture 'federation/child-type-mismatch' > query 'DeeplyNested' > shoul
                               {
                                 "kind": "scalar",
                                 "name": "name",
+                                "originalProp": null,
+                                "parentType": "Admin",
                                 "prop": "name",
                               },
                             ],
@@ -686,6 +766,8 @@ exports[`fixture 'federation/override-type-interface' > query 'AnotherFeed' > sh
       {
         "kind": "scalar",
         "name": "createdAt",
+        "originalProp": null,
+        "parentType": "AnotherPost",
         "prop": "createdAt",
       },
     ],
@@ -720,6 +802,8 @@ exports[`fixture 'federation/override-type-interface' > query 'AnotherFeed' > sh
           {
             "kind": "scalar",
             "name": "createdAt",
+            "originalProp": null,
+            "parentType": "AnotherPost",
             "prop": "createdAt",
           },
         ],
@@ -768,11 +852,15 @@ exports[`fixture 'federation/override-type-interface' > query 'AnotherFeedFragme
       {
         "kind": "scalar",
         "name": "createdAt",
+        "originalProp": null,
+        "parentType": "AnotherPost",
         "prop": "createdAt",
       },
       {
         "kind": "scalar",
         "name": "id",
+        "originalProp": null,
+        "parentType": "AnotherPost",
         "prop": "id",
       },
       {
@@ -781,11 +869,15 @@ exports[`fixture 'federation/override-type-interface' > query 'AnotherFeedFragme
           {
             "kind": "scalar",
             "name": "createdAt",
+            "originalProp": null,
+            "parentType": "ImagePost",
             "prop": "createdAt",
           },
           {
             "kind": "scalar",
             "name": "id",
+            "originalProp": null,
+            "parentType": "ImagePost",
             "prop": "id",
           },
         ],
@@ -828,11 +920,15 @@ exports[`fixture 'federation/override-type-interface' > query 'AnotherFeedFragme
           {
             "kind": "scalar",
             "name": "createdAt",
+            "originalProp": null,
+            "parentType": "AnotherPost",
             "prop": "createdAt",
           },
           {
             "kind": "scalar",
             "name": "id",
+            "originalProp": null,
+            "parentType": "AnotherPost",
             "prop": "id",
           },
           {
@@ -841,11 +937,15 @@ exports[`fixture 'federation/override-type-interface' > query 'AnotherFeedFragme
               {
                 "kind": "scalar",
                 "name": "createdAt",
+                "originalProp": null,
+                "parentType": "ImagePost",
                 "prop": "createdAt",
               },
               {
                 "kind": "scalar",
                 "name": "id",
+                "originalProp": null,
+                "parentType": "ImagePost",
                 "prop": "id",
               },
             ],
@@ -905,6 +1005,8 @@ exports[`fixture 'federation/override-type-interface' > query 'EmptyFeed' > shou
       {
         "kind": "scalar",
         "name": "__typename",
+        "originalProp": null,
+        "parentType": "Query",
         "private": true,
         "prop": "__typename",
       },
@@ -940,6 +1042,8 @@ exports[`fixture 'federation/override-type-interface' > query 'EmptyFeed' > shou
           {
             "kind": "scalar",
             "name": "__typename",
+            "originalProp": null,
+            "parentType": "Query",
             "private": true,
             "prop": "__typename",
           },
@@ -990,6 +1094,8 @@ exports[`fixture 'federation/override-type-interface' > query 'Feed' > should ex
       {
         "kind": "scalar",
         "name": "id",
+        "originalProp": null,
+        "parentType": "Post",
         "prop": "id",
       },
     ],
@@ -1006,6 +1112,8 @@ exports[`fixture 'federation/override-type-interface' > query 'Feed' > should ex
           {
             "kind": "scalar",
             "name": "createdAt",
+            "originalProp": null,
+            "parentType": "Post",
             "prop": "createdAt",
           },
         ],
@@ -1045,6 +1153,8 @@ exports[`fixture 'federation/override-type-interface' > query 'Feed' > should ex
           {
             "kind": "scalar",
             "name": "createdAt",
+            "originalProp": null,
+            "parentType": "Post",
             "prop": "createdAt",
           },
         ],
@@ -1103,6 +1213,8 @@ exports[`fixture 'federation/override-type-interface' > query 'Feed' > should pl
           {
             "kind": "scalar",
             "name": "id",
+            "originalProp": null,
+            "parentType": "Post",
             "prop": "id",
           },
         ],
@@ -1113,6 +1225,8 @@ exports[`fixture 'federation/override-type-interface' > query 'Feed' > should pl
                 {
                   "kind": "scalar",
                   "name": "createdAt",
+                  "originalProp": null,
+                  "parentType": "Post",
                   "prop": "createdAt",
                 },
               ],
@@ -1197,21 +1311,29 @@ exports[`fixture 'federation/simple-inaccessible' > query 'InaccessibleEnumInOut
       {
         "kind": "scalar",
         "name": "id",
+        "originalProp": null,
+        "parentType": "User",
         "prop": "id",
       },
       {
         "kind": "object",
         "name": "friends",
+        "originalProp": null,
+        "parentType": "User",
         "prop": "friends",
         "selections": [
           {
             "kind": "scalar",
             "name": "id",
+            "originalProp": null,
+            "parentType": "User",
             "prop": "id",
           },
           {
             "kind": "enum",
             "name": "type",
+            "originalProp": null,
+            "parentType": "User",
             "prop": "type",
             "values": [
               "FRIEND",
@@ -1255,21 +1377,29 @@ exports[`fixture 'federation/simple-inaccessible' > query 'InaccessibleEnumInOut
           {
             "kind": "scalar",
             "name": "id",
+            "originalProp": null,
+            "parentType": "User",
             "prop": "id",
           },
           {
             "kind": "object",
             "name": "friends",
+            "originalProp": null,
+            "parentType": "User",
             "prop": "friends",
             "selections": [
               {
                 "kind": "scalar",
                 "name": "id",
+                "originalProp": null,
+                "parentType": "User",
                 "prop": "id",
               },
               {
                 "kind": "enum",
                 "name": "type",
+                "originalProp": null,
+                "parentType": "User",
                 "prop": "type",
                 "values": [
                   "FRIEND",
@@ -1329,6 +1459,8 @@ exports[`fixture 'federation/simple-inaccessible' > query 'UsersInAge' > should 
       {
         "kind": "scalar",
         "name": "id",
+        "originalProp": null,
+        "parentType": "User",
         "prop": "id",
       },
     ],
@@ -1349,11 +1481,15 @@ exports[`fixture 'federation/simple-inaccessible' > query 'UsersInAge' > should 
           {
             "kind": "object",
             "name": "friends",
+            "originalProp": null,
+            "parentType": "User",
             "prop": "friends",
             "selections": [
               {
                 "kind": "scalar",
                 "name": "id",
+                "originalProp": null,
+                "parentType": "User",
                 "prop": "id",
               },
             ],
@@ -1401,11 +1537,15 @@ exports[`fixture 'federation/simple-inaccessible' > query 'UsersInAge' > should 
           {
             "kind": "object",
             "name": "friends",
+            "originalProp": null,
+            "parentType": "User",
             "prop": "friends",
             "selections": [
               {
                 "kind": "scalar",
                 "name": "id",
+                "originalProp": null,
+                "parentType": "User",
                 "prop": "id",
               },
             ],
@@ -1468,6 +1608,8 @@ exports[`fixture 'federation/simple-inaccessible' > query 'UsersInAge' > should 
           {
             "kind": "scalar",
             "name": "id",
+            "originalProp": null,
+            "parentType": "User",
             "prop": "id",
           },
         ],
@@ -1478,11 +1620,15 @@ exports[`fixture 'federation/simple-inaccessible' > query 'UsersInAge' > should 
                 {
                   "kind": "object",
                   "name": "friends",
+                  "originalProp": null,
+                  "parentType": "User",
                   "prop": "friends",
                   "selections": [
                     {
                       "kind": "scalar",
                       "name": "id",
+                      "originalProp": null,
+                      "parentType": "User",
                       "prop": "id",
                     },
                   ],
@@ -1571,16 +1717,22 @@ exports[`fixture 'federation/simple-inaccessible' > query 'UsersInFriends' > sho
       {
         "kind": "scalar",
         "name": "id",
+        "originalProp": null,
+        "parentType": "User",
         "prop": "id",
       },
       {
         "kind": "object",
         "name": "friends",
+        "originalProp": null,
+        "parentType": "User",
         "prop": "friends",
         "selections": [
           {
             "kind": "scalar",
             "name": "id",
+            "originalProp": null,
+            "parentType": "User",
             "prop": "id",
           },
         ],
@@ -1620,16 +1772,22 @@ exports[`fixture 'federation/simple-inaccessible' > query 'UsersInFriends' > sho
           {
             "kind": "scalar",
             "name": "id",
+            "originalProp": null,
+            "parentType": "User",
             "prop": "id",
           },
           {
             "kind": "object",
             "name": "friends",
+            "originalProp": null,
+            "parentType": "User",
             "prop": "friends",
             "selections": [
               {
                 "kind": "scalar",
                 "name": "id",
+                "originalProp": null,
+                "parentType": "User",
                 "prop": "id",
               },
             ],
@@ -1687,6 +1845,8 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsIsActive'
       {
         "kind": "scalar",
         "name": "id",
+        "originalProp": null,
+        "parentType": "Account",
         "prop": "id",
       },
     ],
@@ -1703,6 +1863,8 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsIsActive'
           {
             "kind": "scalar",
             "name": "isActive",
+            "originalProp": null,
+            "parentType": "Account",
             "prop": "isActive",
           },
         ],
@@ -1742,6 +1904,8 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsIsActive'
           {
             "kind": "scalar",
             "name": "isActive",
+            "originalProp": null,
+            "parentType": "Account",
             "prop": "isActive",
           },
         ],
@@ -1781,6 +1945,8 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsIsActive'
           {
             "kind": "scalar",
             "name": "isActive",
+            "originalProp": null,
+            "parentType": "Account",
             "prop": "isActive",
           },
         ],
@@ -1839,6 +2005,8 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsIsActive'
           {
             "kind": "scalar",
             "name": "id",
+            "originalProp": null,
+            "parentType": "Account",
             "prop": "id",
           },
         ],
@@ -1849,6 +2017,8 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsIsActive'
                 {
                   "kind": "scalar",
                   "name": "isActive",
+                  "originalProp": null,
+                  "parentType": "Account",
                   "prop": "isActive",
                 },
               ],
@@ -1924,6 +2094,8 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsIsActiveO
       {
         "kind": "scalar",
         "name": "id",
+        "originalProp": null,
+        "parentType": "Account",
         "prop": "id",
       },
     ],
@@ -1940,6 +2112,8 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsIsActiveO
           {
             "kind": "scalar",
             "name": "isActive",
+            "originalProp": null,
+            "parentType": "Admin",
             "prop": "isActive",
           },
         ],
@@ -1979,6 +2153,8 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsIsActiveO
           {
             "kind": "scalar",
             "name": "isActive",
+            "originalProp": null,
+            "parentType": "Admin",
             "prop": "isActive",
           },
         ],
@@ -2016,6 +2192,8 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsIsActiveO
           {
             "kind": "scalar",
             "name": "isActive",
+            "originalProp": null,
+            "parentType": "Admin",
             "prop": "isActive",
           },
         ],
@@ -2074,6 +2252,8 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsIsActiveO
           {
             "kind": "scalar",
             "name": "id",
+            "originalProp": null,
+            "parentType": "Account",
             "prop": "id",
           },
         ],
@@ -2084,6 +2264,8 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsIsActiveO
                 {
                   "kind": "scalar",
                   "name": "isActive",
+                  "originalProp": null,
+                  "parentType": "Admin",
                   "prop": "isActive",
                 },
               ],
@@ -2161,6 +2343,8 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsNames' > 
       {
         "kind": "scalar",
         "name": "name",
+        "originalProp": null,
+        "parentType": "Account",
         "prop": "name",
       },
     ],
@@ -2195,6 +2379,8 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsNames' > 
           {
             "kind": "scalar",
             "name": "name",
+            "originalProp": null,
+            "parentType": "Account",
             "prop": "name",
           },
         ],
@@ -2244,6 +2430,8 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsSpreadAdm
       {
         "kind": "scalar",
         "name": "id",
+        "originalProp": null,
+        "parentType": "Account",
         "private": true,
         "prop": "id",
       },
@@ -2261,6 +2449,8 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsSpreadAdm
           {
             "kind": "scalar",
             "name": "id",
+            "originalProp": null,
+            "parentType": "Admin",
             "private": true,
             "prop": "id",
           },
@@ -2278,6 +2468,8 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsSpreadAdm
               {
                 "kind": "scalar",
                 "name": "name",
+                "originalProp": null,
+                "parentType": "Account",
                 "prop": "name",
               },
             ],
@@ -2341,6 +2533,8 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsSpreadAdm
           {
             "kind": "scalar",
             "name": "id",
+            "originalProp": null,
+            "parentType": "Admin",
             "private": true,
             "prop": "id",
           },
@@ -2358,6 +2552,8 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsSpreadAdm
               {
                 "kind": "scalar",
                 "name": "name",
+                "originalProp": null,
+                "parentType": "Account",
                 "prop": "name",
               },
             ],
@@ -2419,6 +2615,8 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsSpreadAdm
           {
             "kind": "scalar",
             "name": "id",
+            "originalProp": null,
+            "parentType": "Admin",
             "private": true,
             "prop": "id",
           },
@@ -2429,6 +2627,8 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsSpreadAdm
               {
                 "kind": "scalar",
                 "name": "name",
+                "originalProp": null,
+                "parentType": "Account",
                 "prop": "name",
               },
             ],
@@ -2511,6 +2711,8 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsSpreadAdm
           {
             "kind": "scalar",
             "name": "id",
+            "originalProp": null,
+            "parentType": "Account",
             "private": true,
             "prop": "id",
           },
@@ -2522,6 +2724,8 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsSpreadAdm
                 {
                   "kind": "scalar",
                   "name": "id",
+                  "originalProp": null,
+                  "parentType": "Admin",
                   "private": true,
                   "prop": "id",
                 },
@@ -2533,6 +2737,8 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsSpreadAdm
                       {
                         "kind": "scalar",
                         "name": "name",
+                        "originalProp": null,
+                        "parentType": "Account",
                         "prop": "name",
                       },
                     ],
@@ -2634,6 +2840,8 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsWithAdmin
       {
         "kind": "scalar",
         "name": "id",
+        "originalProp": null,
+        "parentType": "Account",
         "private": true,
         "prop": "id",
       },
@@ -2651,6 +2859,8 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsWithAdmin
           {
             "kind": "scalar",
             "name": "id",
+            "originalProp": null,
+            "parentType": "Admin",
             "private": true,
             "prop": "id",
           },
@@ -2668,6 +2878,8 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsWithAdmin
               {
                 "kind": "scalar",
                 "name": "__typename",
+                "originalProp": null,
+                "parentType": "Account",
                 "prop": "__typename",
               },
             ],
@@ -2731,6 +2943,8 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsWithAdmin
           {
             "kind": "scalar",
             "name": "id",
+            "originalProp": null,
+            "parentType": "Admin",
             "private": true,
             "prop": "id",
           },
@@ -2748,6 +2962,8 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsWithAdmin
               {
                 "kind": "scalar",
                 "name": "__typename",
+                "originalProp": null,
+                "parentType": "Account",
                 "prop": "__typename",
               },
             ],
@@ -2809,6 +3025,8 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsWithAdmin
           {
             "kind": "scalar",
             "name": "id",
+            "originalProp": null,
+            "parentType": "Admin",
             "private": true,
             "prop": "id",
           },
@@ -2819,6 +3037,8 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsWithAdmin
               {
                 "kind": "scalar",
                 "name": "__typename",
+                "originalProp": null,
+                "parentType": "Account",
                 "prop": "__typename",
               },
             ],
@@ -2901,6 +3121,8 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsWithAdmin
           {
             "kind": "scalar",
             "name": "id",
+            "originalProp": null,
+            "parentType": "Account",
             "private": true,
             "prop": "id",
           },
@@ -2912,6 +3134,8 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsWithAdmin
                 {
                   "kind": "scalar",
                   "name": "id",
+                  "originalProp": null,
+                  "parentType": "Admin",
                   "private": true,
                   "prop": "id",
                 },
@@ -2923,6 +3147,8 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsWithAdmin
                       {
                         "kind": "scalar",
                         "name": "__typename",
+                        "originalProp": null,
+                        "parentType": "Account",
                         "prop": "__typename",
                       },
                     ],
@@ -3027,11 +3253,15 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsWithTypen
       {
         "kind": "scalar",
         "name": "name",
+        "originalProp": null,
+        "parentType": "Account",
         "prop": "name",
       },
       {
         "kind": "scalar",
         "name": "id",
+        "originalProp": null,
+        "parentType": "Account",
         "private": true,
         "prop": "id",
       },
@@ -3049,6 +3279,8 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsWithTypen
           {
             "kind": "scalar",
             "name": "__typename",
+            "originalProp": null,
+            "parentType": "Account",
             "prop": "__typename",
           },
         ],
@@ -3088,6 +3320,8 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsWithTypen
           {
             "kind": "scalar",
             "name": "__typename",
+            "originalProp": null,
+            "parentType": "Account",
             "prop": "__typename",
           },
         ],
@@ -3127,6 +3361,8 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsWithTypen
           {
             "kind": "scalar",
             "name": "__typename",
+            "originalProp": null,
+            "parentType": "Account",
             "prop": "__typename",
           },
         ],
@@ -3186,11 +3422,15 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsWithTypen
           {
             "kind": "scalar",
             "name": "name",
+            "originalProp": null,
+            "parentType": "Account",
             "prop": "name",
           },
           {
             "kind": "scalar",
             "name": "id",
+            "originalProp": null,
+            "parentType": "Account",
             "private": true,
             "prop": "id",
           },
@@ -3202,6 +3442,8 @@ exports[`fixture 'federation/simple-interface-object' > query 'AccountsWithTypen
                 {
                   "kind": "scalar",
                   "name": "__typename",
+                  "originalProp": null,
+                  "parentType": "Account",
                   "prop": "__typename",
                 },
               ],
@@ -3277,11 +3519,15 @@ exports[`fixture 'federation/simple-interface-object' > query 'AnotherUsers' > s
       {
         "kind": "scalar",
         "name": "id",
+        "originalProp": null,
+        "parentType": "NodeWithName",
         "prop": "id",
       },
       {
         "kind": "scalar",
         "name": "username",
+        "originalProp": null,
+        "parentType": "NodeWithName",
         "prop": "username",
       },
     ],
@@ -3298,6 +3544,8 @@ exports[`fixture 'federation/simple-interface-object' > query 'AnotherUsers' > s
           {
             "kind": "scalar",
             "name": "name",
+            "originalProp": null,
+            "parentType": "NodeWithName",
             "prop": "name",
           },
         ],
@@ -3337,6 +3585,8 @@ exports[`fixture 'federation/simple-interface-object' > query 'AnotherUsers' > s
           {
             "kind": "scalar",
             "name": "name",
+            "originalProp": null,
+            "parentType": "NodeWithName",
             "prop": "name",
           },
         ],
@@ -3396,11 +3646,15 @@ exports[`fixture 'federation/simple-interface-object' > query 'AnotherUsers' > s
           {
             "kind": "scalar",
             "name": "id",
+            "originalProp": null,
+            "parentType": "NodeWithName",
             "prop": "id",
           },
           {
             "kind": "scalar",
             "name": "username",
+            "originalProp": null,
+            "parentType": "NodeWithName",
             "prop": "username",
           },
         ],
@@ -3411,6 +3665,8 @@ exports[`fixture 'federation/simple-interface-object' > query 'AnotherUsers' > s
                 {
                   "kind": "scalar",
                   "name": "name",
+                  "originalProp": null,
+                  "parentType": "NodeWithName",
                   "prop": "name",
                 },
               ],
@@ -3485,6 +3741,8 @@ exports[`fixture 'federation/simple-interface-object' > query 'AnotherUsersWithA
       {
         "kind": "scalar",
         "name": "id",
+        "originalProp": null,
+        "parentType": "NodeWithName",
         "prop": "id",
       },
     ],
@@ -3503,16 +3761,22 @@ exports[`fixture 'federation/simple-interface-object' > query 'AnotherUsersWithA
           {
             "kind": "scalar",
             "name": "age",
+            "originalProp": null,
+            "parentType": "User",
             "prop": "age",
           },
           {
             "kind": "scalar",
             "name": "id",
+            "originalProp": null,
+            "parentType": "User",
             "prop": "id",
           },
           {
             "kind": "scalar",
             "name": "name",
+            "originalProp": null,
+            "parentType": "User",
             "prop": "name",
           },
         ],
@@ -3529,6 +3793,8 @@ exports[`fixture 'federation/simple-interface-object' > query 'AnotherUsersWithA
               {
                 "kind": "scalar",
                 "name": "username",
+                "originalProp": null,
+                "parentType": "NodeWithName",
                 "prop": "username",
               },
             ],
@@ -3596,16 +3862,22 @@ exports[`fixture 'federation/simple-interface-object' > query 'AnotherUsersWithA
           {
             "kind": "scalar",
             "name": "age",
+            "originalProp": null,
+            "parentType": "User",
             "prop": "age",
           },
           {
             "kind": "scalar",
             "name": "id",
+            "originalProp": null,
+            "parentType": "User",
             "prop": "id",
           },
           {
             "kind": "scalar",
             "name": "name",
+            "originalProp": null,
+            "parentType": "User",
             "prop": "name",
           },
         ],
@@ -3622,6 +3894,8 @@ exports[`fixture 'federation/simple-interface-object' > query 'AnotherUsersWithA
               {
                 "kind": "scalar",
                 "name": "username",
+                "originalProp": null,
+                "parentType": "NodeWithName",
                 "prop": "username",
               },
             ],
@@ -3706,6 +3980,8 @@ exports[`fixture 'federation/simple-interface-object' > query 'AnotherUsersWithA
           {
             "kind": "scalar",
             "name": "id",
+            "originalProp": null,
+            "parentType": "NodeWithName",
             "prop": "id",
           },
         ],
@@ -3716,16 +3992,22 @@ exports[`fixture 'federation/simple-interface-object' > query 'AnotherUsersWithA
                 {
                   "kind": "scalar",
                   "name": "age",
+                  "originalProp": null,
+                  "parentType": "User",
                   "prop": "age",
                 },
                 {
                   "kind": "scalar",
                   "name": "id",
+                  "originalProp": null,
+                  "parentType": "User",
                   "prop": "id",
                 },
                 {
                   "kind": "scalar",
                   "name": "name",
+                  "originalProp": null,
+                  "parentType": "User",
                   "prop": "name",
                 },
               ],
@@ -3736,6 +4018,8 @@ exports[`fixture 'federation/simple-interface-object' > query 'AnotherUsersWithA
                       {
                         "kind": "scalar",
                         "name": "username",
+                        "originalProp": null,
+                        "parentType": "NodeWithName",
                         "prop": "username",
                       },
                     ],
@@ -3841,6 +4125,8 @@ exports[`fixture 'federation/simple-interface-object' > query 'AnotherUsersWithU
       {
         "kind": "scalar",
         "name": "id",
+        "originalProp": null,
+        "parentType": "NodeWithName",
         "private": true,
         "prop": "id",
       },
@@ -3858,6 +4144,8 @@ exports[`fixture 'federation/simple-interface-object' > query 'AnotherUsersWithU
           {
             "kind": "scalar",
             "name": "age",
+            "originalProp": null,
+            "parentType": "User",
             "prop": "age",
           },
         ],
@@ -3897,6 +4185,8 @@ exports[`fixture 'federation/simple-interface-object' > query 'AnotherUsersWithU
           {
             "kind": "scalar",
             "name": "age",
+            "originalProp": null,
+            "parentType": "User",
             "prop": "age",
           },
         ],
@@ -3955,6 +4245,8 @@ exports[`fixture 'federation/simple-interface-object' > query 'AnotherUsersWithU
           {
             "kind": "scalar",
             "name": "id",
+            "originalProp": null,
+            "parentType": "NodeWithName",
             "private": true,
             "prop": "id",
           },
@@ -3966,6 +4258,8 @@ exports[`fixture 'federation/simple-interface-object' > query 'AnotherUsersWithU
                 {
                   "kind": "scalar",
                   "name": "age",
+                  "originalProp": null,
+                  "parentType": "User",
                   "prop": "age",
                 },
               ],
@@ -4046,16 +4340,22 @@ exports[`fixture 'federation/simple-interface-object' > query 'UsersWithAdvanced
           {
             "kind": "scalar",
             "name": "age",
+            "originalProp": null,
+            "parentType": "User",
             "prop": "age",
           },
           {
             "kind": "scalar",
             "name": "id",
+            "originalProp": null,
+            "parentType": "User",
             "prop": "id",
           },
           {
             "kind": "scalar",
             "name": "name",
+            "originalProp": null,
+            "parentType": "User",
             "prop": "name",
           },
         ],
@@ -4075,6 +4375,8 @@ exports[`fixture 'federation/simple-interface-object' > query 'UsersWithAdvanced
           {
             "kind": "scalar",
             "name": "username",
+            "originalProp": null,
+            "parentType": "NodeWithName",
             "prop": "username",
           },
         ],
@@ -4114,6 +4416,8 @@ exports[`fixture 'federation/simple-interface-object' > query 'UsersWithAdvanced
           {
             "kind": "scalar",
             "name": "username",
+            "originalProp": null,
+            "parentType": "NodeWithName",
             "prop": "username",
           },
         ],
@@ -4179,16 +4483,22 @@ exports[`fixture 'federation/simple-interface-object' > query 'UsersWithAdvanced
               {
                 "kind": "scalar",
                 "name": "age",
+                "originalProp": null,
+                "parentType": "User",
                 "prop": "age",
               },
               {
                 "kind": "scalar",
                 "name": "id",
+                "originalProp": null,
+                "parentType": "User",
                 "prop": "id",
               },
               {
                 "kind": "scalar",
                 "name": "name",
+                "originalProp": null,
+                "parentType": "User",
                 "prop": "name",
               },
             ],
@@ -4202,6 +4512,8 @@ exports[`fixture 'federation/simple-interface-object' > query 'UsersWithAdvanced
                 {
                   "kind": "scalar",
                   "name": "username",
+                  "originalProp": null,
+                  "parentType": "NodeWithName",
                   "prop": "username",
                 },
               ],
@@ -4287,6 +4599,8 @@ exports[`fixture 'federation/simple-interface-object' > query 'UsersWithUserSpre
           {
             "kind": "scalar",
             "name": "age",
+            "originalProp": null,
+            "parentType": "User",
             "prop": "age",
           },
         ],
@@ -4329,6 +4643,8 @@ exports[`fixture 'federation/simple-interface-object' > query 'UsersWithUserSpre
               {
                 "kind": "scalar",
                 "name": "age",
+                "originalProp": null,
+                "parentType": "User",
                 "prop": "age",
               },
             ],
@@ -4384,11 +4700,15 @@ exports[`fixture 'federation/simple-interface-object' > query 'UsersWithUsername
       {
         "kind": "scalar",
         "name": "id",
+        "originalProp": null,
+        "parentType": "NodeWithName",
         "prop": "id",
       },
       {
         "kind": "scalar",
         "name": "name",
+        "originalProp": null,
+        "parentType": "NodeWithName",
         "prop": "name",
       },
     ],
@@ -4405,6 +4725,8 @@ exports[`fixture 'federation/simple-interface-object' > query 'UsersWithUsername
           {
             "kind": "scalar",
             "name": "username",
+            "originalProp": null,
+            "parentType": "NodeWithName",
             "prop": "username",
           },
         ],
@@ -4444,6 +4766,8 @@ exports[`fixture 'federation/simple-interface-object' > query 'UsersWithUsername
           {
             "kind": "scalar",
             "name": "username",
+            "originalProp": null,
+            "parentType": "NodeWithName",
             "prop": "username",
           },
         ],
@@ -4503,11 +4827,15 @@ exports[`fixture 'federation/simple-interface-object' > query 'UsersWithUsername
           {
             "kind": "scalar",
             "name": "id",
+            "originalProp": null,
+            "parentType": "NodeWithName",
             "prop": "id",
           },
           {
             "kind": "scalar",
             "name": "name",
+            "originalProp": null,
+            "parentType": "NodeWithName",
             "prop": "name",
           },
         ],
@@ -4518,6 +4846,8 @@ exports[`fixture 'federation/simple-interface-object' > query 'UsersWithUsername
                 {
                   "kind": "scalar",
                   "name": "username",
+                  "originalProp": null,
+                  "parentType": "NodeWithName",
                   "prop": "username",
                 },
               ],
@@ -4595,6 +4925,8 @@ exports[`fixture 'federation/union-interface-distributed' > query 'NodesDiffFiel
           {
             "kind": "scalar",
             "name": "warranty",
+            "originalProp": null,
+            "parentType": "Toaster",
             "prop": "warranty",
           },
         ],
@@ -4637,6 +4969,8 @@ exports[`fixture 'federation/union-interface-distributed' > query 'NodesDiffFiel
               {
                 "kind": "scalar",
                 "name": "warranty",
+                "originalProp": null,
+                "parentType": "Toaster",
                 "prop": "warranty",
               },
             ],
@@ -4693,6 +5027,8 @@ exports[`fixture 'federation/union-interface-distributed' > query 'NodesId' > sh
       {
         "kind": "scalar",
         "name": "id",
+        "originalProp": null,
+        "parentType": "Node",
         "prop": "id",
       },
     ],
@@ -4727,6 +5063,8 @@ exports[`fixture 'federation/union-interface-distributed' > query 'NodesId' > sh
           {
             "kind": "scalar",
             "name": "id",
+            "originalProp": null,
+            "parentType": "Node",
             "prop": "id",
           },
         ],
@@ -4782,6 +5120,8 @@ exports[`fixture 'federation/union-interface-distributed' > query 'ProductsNodeF
           {
             "kind": "scalar",
             "name": "id",
+            "originalProp": null,
+            "parentType": "Node",
             "prop": "id",
           },
         ],
@@ -4793,6 +5133,8 @@ exports[`fixture 'federation/union-interface-distributed' > query 'ProductsNodeF
           {
             "kind": "scalar",
             "name": "id",
+            "originalProp": null,
+            "parentType": "Node",
             "prop": "id",
           },
         ],
@@ -4838,6 +5180,8 @@ exports[`fixture 'federation/union-interface-distributed' > query 'ProductsNodeF
               {
                 "kind": "scalar",
                 "name": "id",
+                "originalProp": null,
+                "parentType": "Node",
                 "prop": "id",
               },
             ],
@@ -4849,6 +5193,8 @@ exports[`fixture 'federation/union-interface-distributed' > query 'ProductsNodeF
               {
                 "kind": "scalar",
                 "name": "id",
+                "originalProp": null,
+                "parentType": "Node",
                 "prop": "id",
               },
             ],
@@ -4909,16 +5255,22 @@ exports[`fixture 'federation/union-interface-distributed' > query 'ToastersFragm
       {
         "kind": "scalar",
         "name": "warranty",
+        "originalProp": null,
+        "parentType": "Toaster",
         "prop": "warranty",
       },
       {
         "kind": "scalar",
         "name": "id",
+        "originalProp": null,
+        "parentType": "Node",
         "prop": "id",
       },
       {
         "kind": "scalar",
         "name": "__typename",
+        "originalProp": null,
+        "parentType": "Node",
         "prop": "__typename",
       },
     ],
@@ -4955,16 +5307,22 @@ exports[`fixture 'federation/union-interface-distributed' > query 'ToastersFragm
           {
             "kind": "scalar",
             "name": "warranty",
+            "originalProp": null,
+            "parentType": "Toaster",
             "prop": "warranty",
           },
           {
             "kind": "scalar",
             "name": "id",
+            "originalProp": null,
+            "parentType": "Node",
             "prop": "id",
           },
           {
             "kind": "scalar",
             "name": "__typename",
+            "originalProp": null,
+            "parentType": "Node",
             "prop": "__typename",
           },
         ],
@@ -5021,6 +5379,8 @@ exports[`fixture 'federation/union-interface-distributed' > query 'Warranty' > s
           {
             "kind": "scalar",
             "name": "warranty",
+            "originalProp": null,
+            "parentType": "Toaster",
             "prop": "warranty",
           },
         ],
@@ -5065,6 +5425,8 @@ exports[`fixture 'federation/union-interface-distributed' > query 'Warranty' > s
               {
                 "kind": "scalar",
                 "name": "warranty",
+                "originalProp": null,
+                "parentType": "Toaster",
                 "prop": "warranty",
               },
             ],
@@ -5132,11 +5494,15 @@ exports[`fixture 'federation/union-intersection' > query 'Aliases' > should exec
       {
         "kind": "object",
         "name": "media",
+        "originalProp": null,
+        "parentType": "Viewer",
         "prop": "m",
         "selections": [
           {
             "kind": "scalar",
             "name": "__typename",
+            "originalProp": null,
+            "parentType": "ViewerMedia",
             "prop": "__typename",
           },
           {
@@ -5145,16 +5511,22 @@ exports[`fixture 'federation/union-intersection' > query 'Aliases' > should exec
               {
                 "kind": "scalar",
                 "name": "title",
+                "originalProp": null,
+                "parentType": "Book",
                 "prop": "bookTitle",
               },
               {
                 "kind": "scalar",
                 "name": "title",
+                "originalProp": null,
+                "parentType": "Book",
                 "prop": "bookTitle2",
               },
               {
                 "kind": "scalar",
                 "name": "title",
+                "originalProp": null,
+                "parentType": "Book",
                 "prop": "title",
               },
             ],
@@ -5165,11 +5537,15 @@ exports[`fixture 'federation/union-intersection' > query 'Aliases' > should exec
       {
         "kind": "object",
         "name": "book",
+        "originalProp": null,
+        "parentType": "Viewer",
         "prop": "b",
         "selections": [
           {
             "kind": "scalar",
             "name": "__typename",
+            "originalProp": null,
+            "parentType": "ViewerMedia",
             "prop": "type",
           },
           {
@@ -5178,6 +5554,8 @@ exports[`fixture 'federation/union-intersection' > query 'Aliases' > should exec
               {
                 "kind": "scalar",
                 "name": "title",
+                "originalProp": null,
+                "parentType": "Book",
                 "prop": "bookTitle",
               },
             ],
@@ -5188,11 +5566,15 @@ exports[`fixture 'federation/union-intersection' > query 'Aliases' > should exec
       {
         "kind": "object",
         "name": "song",
+        "originalProp": null,
+        "parentType": "Viewer",
         "prop": "s",
         "selections": [
           {
             "kind": "scalar",
             "name": "__typename",
+            "originalProp": null,
+            "parentType": "ViewerMedia",
             "prop": "__typename",
           },
           {
@@ -5201,6 +5583,8 @@ exports[`fixture 'federation/union-intersection' > query 'Aliases' > should exec
               {
                 "kind": "scalar",
                 "name": "title",
+                "originalProp": null,
+                "parentType": "Song",
                 "prop": "songTitle",
               },
             ],
@@ -5212,6 +5596,8 @@ exports[`fixture 'federation/union-intersection' > query 'Aliases' > should exec
               {
                 "kind": "scalar",
                 "name": "title",
+                "originalProp": null,
+                "parentType": "Book",
                 "prop": "bookTitle",
               },
             ],
@@ -5273,11 +5659,15 @@ exports[`fixture 'federation/union-intersection' > query 'Aliases' > should plan
           {
             "kind": "object",
             "name": "media",
+            "originalProp": null,
+            "parentType": "Viewer",
             "prop": "m",
             "selections": [
               {
                 "kind": "scalar",
                 "name": "__typename",
+                "originalProp": null,
+                "parentType": "ViewerMedia",
                 "prop": "__typename",
               },
               {
@@ -5286,16 +5676,22 @@ exports[`fixture 'federation/union-intersection' > query 'Aliases' > should plan
                   {
                     "kind": "scalar",
                     "name": "title",
+                    "originalProp": null,
+                    "parentType": "Book",
                     "prop": "bookTitle",
                   },
                   {
                     "kind": "scalar",
                     "name": "title",
+                    "originalProp": null,
+                    "parentType": "Book",
                     "prop": "bookTitle2",
                   },
                   {
                     "kind": "scalar",
                     "name": "title",
+                    "originalProp": null,
+                    "parentType": "Book",
                     "prop": "title",
                   },
                 ],
@@ -5306,11 +5702,15 @@ exports[`fixture 'federation/union-intersection' > query 'Aliases' > should plan
           {
             "kind": "object",
             "name": "book",
+            "originalProp": null,
+            "parentType": "Viewer",
             "prop": "b",
             "selections": [
               {
                 "kind": "scalar",
                 "name": "__typename",
+                "originalProp": null,
+                "parentType": "ViewerMedia",
                 "prop": "type",
               },
               {
@@ -5319,6 +5719,8 @@ exports[`fixture 'federation/union-intersection' > query 'Aliases' > should plan
                   {
                     "kind": "scalar",
                     "name": "title",
+                    "originalProp": null,
+                    "parentType": "Book",
                     "prop": "bookTitle",
                   },
                 ],
@@ -5329,11 +5731,15 @@ exports[`fixture 'federation/union-intersection' > query 'Aliases' > should plan
           {
             "kind": "object",
             "name": "song",
+            "originalProp": null,
+            "parentType": "Viewer",
             "prop": "s",
             "selections": [
               {
                 "kind": "scalar",
                 "name": "__typename",
+                "originalProp": null,
+                "parentType": "ViewerMedia",
                 "prop": "__typename",
               },
               {
@@ -5342,6 +5748,8 @@ exports[`fixture 'federation/union-intersection' > query 'Aliases' > should plan
                   {
                     "kind": "scalar",
                     "name": "title",
+                    "originalProp": null,
+                    "parentType": "Song",
                     "prop": "songTitle",
                   },
                 ],
@@ -5353,6 +5761,8 @@ exports[`fixture 'federation/union-intersection' > query 'Aliases' > should plan
                   {
                     "kind": "scalar",
                     "name": "title",
+                    "originalProp": null,
+                    "parentType": "Book",
                     "prop": "bookTitle",
                   },
                 ],
@@ -5461,6 +5871,8 @@ exports[`fixture 'federation/union-intersection' > query 'AllMedia' > should exe
       {
         "kind": "scalar",
         "name": "__typename",
+        "originalProp": null,
+        "parentType": "Media",
         "prop": "__typename",
       },
       {
@@ -5469,6 +5881,8 @@ exports[`fixture 'federation/union-intersection' > query 'AllMedia' > should exe
           {
             "kind": "scalar",
             "name": "title",
+            "originalProp": null,
+            "parentType": "Book",
             "prop": "title",
           },
         ],
@@ -5507,11 +5921,15 @@ exports[`fixture 'federation/union-intersection' > query 'AllMedia' > should exe
       {
         "kind": "scalar",
         "name": "__typename",
+        "originalProp": null,
+        "parentType": "Media",
         "prop": "__typename",
       },
       {
         "kind": "scalar",
         "name": "title",
+        "originalProp": null,
+        "parentType": "Book",
         "prop": "title",
       },
     ],
@@ -5545,6 +5963,8 @@ exports[`fixture 'federation/union-intersection' > query 'AllMedia' > should exe
       {
         "kind": "scalar",
         "name": "__typename",
+        "originalProp": null,
+        "parentType": "Media",
         "prop": "__typename",
       },
       {
@@ -5553,6 +5973,8 @@ exports[`fixture 'federation/union-intersection' > query 'AllMedia' > should exe
           {
             "kind": "scalar",
             "name": "title",
+            "originalProp": null,
+            "parentType": "Song",
             "prop": "title",
           },
         ],
@@ -5564,6 +5986,8 @@ exports[`fixture 'federation/union-intersection' > query 'AllMedia' > should exe
           {
             "kind": "scalar",
             "name": "title",
+            "originalProp": null,
+            "parentType": "Book",
             "prop": "title",
           },
         ],
@@ -5607,11 +6031,15 @@ exports[`fixture 'federation/union-intersection' > query 'AllMedia' > should pla
           {
             "kind": "scalar",
             "name": "__typename",
+            "originalProp": null,
+            "parentType": "Media",
             "prop": "__typename",
           },
           {
             "kind": "scalar",
             "name": "title",
+            "originalProp": null,
+            "parentType": "Book",
             "prop": "title",
           },
         ],
@@ -5636,6 +6064,8 @@ exports[`fixture 'federation/union-intersection' > query 'AllMedia' > should pla
           {
             "kind": "scalar",
             "name": "__typename",
+            "originalProp": null,
+            "parentType": "Media",
             "prop": "__typename",
           },
           {
@@ -5644,6 +6074,8 @@ exports[`fixture 'federation/union-intersection' > query 'AllMedia' > should pla
               {
                 "kind": "scalar",
                 "name": "title",
+                "originalProp": null,
+                "parentType": "Book",
                 "prop": "title",
               },
             ],
@@ -5673,6 +6105,8 @@ exports[`fixture 'federation/union-intersection' > query 'AllMedia' > should pla
           {
             "kind": "scalar",
             "name": "__typename",
+            "originalProp": null,
+            "parentType": "Media",
             "prop": "__typename",
           },
           {
@@ -5681,6 +6115,8 @@ exports[`fixture 'federation/union-intersection' > query 'AllMedia' > should pla
               {
                 "kind": "scalar",
                 "name": "title",
+                "originalProp": null,
+                "parentType": "Song",
                 "prop": "title",
               },
             ],
@@ -5692,6 +6128,8 @@ exports[`fixture 'federation/union-intersection' > query 'AllMedia' > should pla
               {
                 "kind": "scalar",
                 "name": "title",
+                "originalProp": null,
+                "parentType": "Book",
                 "prop": "title",
               },
             ],
@@ -5776,11 +6214,15 @@ exports[`fixture 'federation/union-intersection' > query 'BookAll' > should exec
       {
         "kind": "scalar",
         "name": "__typename",
+        "originalProp": null,
+        "parentType": "Media",
         "prop": "__typename",
       },
       {
         "kind": "scalar",
         "name": "title",
+        "originalProp": null,
+        "parentType": "Book",
         "prop": "title",
       },
     ],
@@ -5816,11 +6258,15 @@ exports[`fixture 'federation/union-intersection' > query 'BookAll' > should plan
           {
             "kind": "scalar",
             "name": "__typename",
+            "originalProp": null,
+            "parentType": "Media",
             "prop": "__typename",
           },
           {
             "kind": "scalar",
             "name": "title",
+            "originalProp": null,
+            "parentType": "Book",
             "prop": "title",
           },
         ],
@@ -5873,6 +6319,8 @@ exports[`fixture 'federation/union-intersection' > query 'MediaAll' > should exe
       {
         "kind": "scalar",
         "name": "__typename",
+        "originalProp": null,
+        "parentType": "Media",
         "prop": "__typename",
       },
       {
@@ -5881,6 +6329,8 @@ exports[`fixture 'federation/union-intersection' > query 'MediaAll' > should exe
           {
             "kind": "scalar",
             "name": "title",
+            "originalProp": null,
+            "parentType": "Book",
             "prop": "title",
           },
         ],
@@ -5921,6 +6371,8 @@ exports[`fixture 'federation/union-intersection' > query 'MediaAll' > should pla
           {
             "kind": "scalar",
             "name": "__typename",
+            "originalProp": null,
+            "parentType": "Media",
             "prop": "__typename",
           },
           {
@@ -5929,6 +6381,8 @@ exports[`fixture 'federation/union-intersection' > query 'MediaAll' > should pla
               {
                 "kind": "scalar",
                 "name": "title",
+                "originalProp": null,
+                "parentType": "Book",
                 "prop": "title",
               },
             ],
@@ -5988,6 +6442,8 @@ exports[`fixture 'federation/union-intersection' > query 'MediaBook' > should ex
           {
             "kind": "scalar",
             "name": "title",
+            "originalProp": null,
+            "parentType": "Book",
             "prop": "title",
           },
         ],
@@ -6030,6 +6486,8 @@ exports[`fixture 'federation/union-intersection' > query 'MediaBook' > should pl
               {
                 "kind": "scalar",
                 "name": "title",
+                "originalProp": null,
+                "parentType": "Book",
                 "prop": "title",
               },
             ],
@@ -6081,6 +6539,8 @@ exports[`fixture 'federation/union-intersection' > query 'MediaBookMovie' > shou
           {
             "kind": "scalar",
             "name": "title",
+            "originalProp": null,
+            "parentType": "Book",
             "prop": "title",
           },
         ],
@@ -6123,6 +6583,8 @@ exports[`fixture 'federation/union-intersection' > query 'MediaBookMovie' > shou
               {
                 "kind": "scalar",
                 "name": "title",
+                "originalProp": null,
+                "parentType": "Book",
                 "prop": "title",
               },
             ],
@@ -6174,6 +6636,8 @@ exports[`fixture 'federation/union-intersection' > query 'MediaMovie' > should e
       {
         "kind": "scalar",
         "name": "__typename",
+        "originalProp": null,
+        "parentType": "Query",
         "private": true,
         "prop": "__typename",
       },
@@ -6209,6 +6673,8 @@ exports[`fixture 'federation/union-intersection' > query 'MediaMovie' > should p
           {
             "kind": "scalar",
             "name": "__typename",
+            "originalProp": null,
+            "parentType": "Query",
             "private": true,
             "prop": "__typename",
           },
@@ -6253,6 +6719,8 @@ exports[`fixture 'federation/union-intersection' > query 'MediaTypename' > shoul
       {
         "kind": "scalar",
         "name": "__typename",
+        "originalProp": null,
+        "parentType": "Media",
         "prop": "__typename",
       },
     ],
@@ -6287,6 +6755,8 @@ exports[`fixture 'federation/union-intersection' > query 'MediaTypename' > shoul
           {
             "kind": "scalar",
             "name": "__typename",
+            "originalProp": null,
+            "parentType": "Media",
             "prop": "__typename",
           },
         ],
@@ -6339,11 +6809,15 @@ exports[`fixture 'federation/union-intersection' > query 'ViewerAllAll' > should
       {
         "kind": "object",
         "name": "media",
+        "originalProp": null,
+        "parentType": "Viewer",
         "prop": "media",
         "selections": [
           {
             "kind": "scalar",
             "name": "__typename",
+            "originalProp": null,
+            "parentType": "ViewerMedia",
             "prop": "__typename",
           },
           {
@@ -6352,6 +6826,8 @@ exports[`fixture 'federation/union-intersection' > query 'ViewerAllAll' > should
               {
                 "kind": "scalar",
                 "name": "title",
+                "originalProp": null,
+                "parentType": "Book",
                 "prop": "title",
               },
             ],
@@ -6362,11 +6838,15 @@ exports[`fixture 'federation/union-intersection' > query 'ViewerAllAll' > should
       {
         "kind": "object",
         "name": "book",
+        "originalProp": null,
+        "parentType": "Viewer",
         "prop": "book",
         "selections": [
           {
             "kind": "scalar",
             "name": "__typename",
+            "originalProp": null,
+            "parentType": "ViewerMedia",
             "prop": "__typename",
           },
           {
@@ -6375,6 +6855,8 @@ exports[`fixture 'federation/union-intersection' > query 'ViewerAllAll' > should
               {
                 "kind": "scalar",
                 "name": "title",
+                "originalProp": null,
+                "parentType": "Book",
                 "prop": "title",
               },
             ],
@@ -6385,11 +6867,15 @@ exports[`fixture 'federation/union-intersection' > query 'ViewerAllAll' > should
       {
         "kind": "object",
         "name": "song",
+        "originalProp": null,
+        "parentType": "Viewer",
         "prop": "song",
         "selections": [
           {
             "kind": "scalar",
             "name": "__typename",
+            "originalProp": null,
+            "parentType": "ViewerMedia",
             "prop": "__typename",
           },
           {
@@ -6398,6 +6884,8 @@ exports[`fixture 'federation/union-intersection' > query 'ViewerAllAll' > should
               {
                 "kind": "scalar",
                 "name": "title",
+                "originalProp": null,
+                "parentType": "Song",
                 "prop": "title",
               },
             ],
@@ -6409,6 +6897,8 @@ exports[`fixture 'federation/union-intersection' > query 'ViewerAllAll' > should
               {
                 "kind": "scalar",
                 "name": "title",
+                "originalProp": null,
+                "parentType": "Book",
                 "prop": "title",
               },
             ],
@@ -6468,11 +6958,15 @@ exports[`fixture 'federation/union-intersection' > query 'ViewerAllAll' > should
           {
             "kind": "object",
             "name": "media",
+            "originalProp": null,
+            "parentType": "Viewer",
             "prop": "media",
             "selections": [
               {
                 "kind": "scalar",
                 "name": "__typename",
+                "originalProp": null,
+                "parentType": "ViewerMedia",
                 "prop": "__typename",
               },
               {
@@ -6481,6 +6975,8 @@ exports[`fixture 'federation/union-intersection' > query 'ViewerAllAll' > should
                   {
                     "kind": "scalar",
                     "name": "title",
+                    "originalProp": null,
+                    "parentType": "Book",
                     "prop": "title",
                   },
                 ],
@@ -6491,11 +6987,15 @@ exports[`fixture 'federation/union-intersection' > query 'ViewerAllAll' > should
           {
             "kind": "object",
             "name": "book",
+            "originalProp": null,
+            "parentType": "Viewer",
             "prop": "book",
             "selections": [
               {
                 "kind": "scalar",
                 "name": "__typename",
+                "originalProp": null,
+                "parentType": "ViewerMedia",
                 "prop": "__typename",
               },
               {
@@ -6504,6 +7004,8 @@ exports[`fixture 'federation/union-intersection' > query 'ViewerAllAll' > should
                   {
                     "kind": "scalar",
                     "name": "title",
+                    "originalProp": null,
+                    "parentType": "Book",
                     "prop": "title",
                   },
                 ],
@@ -6514,11 +7016,15 @@ exports[`fixture 'federation/union-intersection' > query 'ViewerAllAll' > should
           {
             "kind": "object",
             "name": "song",
+            "originalProp": null,
+            "parentType": "Viewer",
             "prop": "song",
             "selections": [
               {
                 "kind": "scalar",
                 "name": "__typename",
+                "originalProp": null,
+                "parentType": "ViewerMedia",
                 "prop": "__typename",
               },
               {
@@ -6527,6 +7033,8 @@ exports[`fixture 'federation/union-intersection' > query 'ViewerAllAll' > should
                   {
                     "kind": "scalar",
                     "name": "title",
+                    "originalProp": null,
+                    "parentType": "Song",
                     "prop": "title",
                   },
                 ],
@@ -6538,6 +7046,8 @@ exports[`fixture 'federation/union-intersection' > query 'ViewerAllAll' > should
                   {
                     "kind": "scalar",
                     "name": "title",
+                    "originalProp": null,
+                    "parentType": "Book",
                     "prop": "title",
                   },
                 ],
@@ -6642,11 +7152,15 @@ exports[`fixture 'federation/union-intersection' > query 'ViewerMediaAll' > shou
       {
         "kind": "object",
         "name": "media",
+        "originalProp": null,
+        "parentType": "Viewer",
         "prop": "media",
         "selections": [
           {
             "kind": "scalar",
             "name": "__typename",
+            "originalProp": null,
+            "parentType": "ViewerMedia",
             "prop": "__typename",
           },
           {
@@ -6655,6 +7169,8 @@ exports[`fixture 'federation/union-intersection' > query 'ViewerMediaAll' > shou
               {
                 "kind": "scalar",
                 "name": "title",
+                "originalProp": null,
+                "parentType": "Book",
                 "prop": "title",
               },
             ],
@@ -6699,11 +7215,15 @@ exports[`fixture 'federation/union-intersection' > query 'ViewerMediaAll' > shou
           {
             "kind": "object",
             "name": "media",
+            "originalProp": null,
+            "parentType": "Viewer",
             "prop": "media",
             "selections": [
               {
                 "kind": "scalar",
                 "name": "__typename",
+                "originalProp": null,
+                "parentType": "ViewerMedia",
                 "prop": "__typename",
               },
               {
@@ -6712,6 +7232,8 @@ exports[`fixture 'federation/union-intersection' > query 'ViewerMediaAll' > shou
                   {
                     "kind": "scalar",
                     "name": "title",
+                    "originalProp": null,
+                    "parentType": "Book",
                     "prop": "title",
                   },
                 ],
@@ -6776,11 +7298,15 @@ exports[`fixture 'federation/union-intersection' > query 'ViewerMediaMovie' > sh
       {
         "kind": "object",
         "name": "media",
+        "originalProp": null,
+        "parentType": "Viewer",
         "prop": "media",
         "selections": [
           {
             "kind": "scalar",
             "name": "__typename",
+            "originalProp": null,
+            "parentType": "Viewer",
             "private": true,
             "prop": "__typename",
           },
@@ -6820,11 +7346,15 @@ exports[`fixture 'federation/union-intersection' > query 'ViewerMediaMovie' > sh
           {
             "kind": "object",
             "name": "media",
+            "originalProp": null,
+            "parentType": "Viewer",
             "prop": "media",
             "selections": [
               {
                 "kind": "scalar",
                 "name": "__typename",
+                "originalProp": null,
+                "parentType": "Viewer",
                 "private": true,
                 "prop": "__typename",
               },
@@ -6877,11 +7407,15 @@ exports[`fixture 'interfaces' > query 'BasicCat' > should execute and explain 1`
       {
         "kind": "scalar",
         "name": "name",
+        "originalProp": null,
+        "parentType": "Animal",
         "prop": "name",
       },
       {
         "kind": "scalar",
         "name": "type",
+        "originalProp": null,
+        "parentType": "Animal",
         "prop": "type",
       },
       {
@@ -6890,6 +7424,8 @@ exports[`fixture 'interfaces' > query 'BasicCat' > should execute and explain 1`
           {
             "kind": "scalar",
             "name": "meows",
+            "originalProp": null,
+            "parentType": "Cat",
             "prop": "meows",
           },
         ],
@@ -6933,11 +7469,15 @@ exports[`fixture 'interfaces' > query 'BasicCat' > should plan gather 1`] = `
           {
             "kind": "scalar",
             "name": "name",
+            "originalProp": null,
+            "parentType": "Animal",
             "prop": "name",
           },
           {
             "kind": "scalar",
             "name": "type",
+            "originalProp": null,
+            "parentType": "Animal",
             "prop": "type",
           },
           {
@@ -6946,6 +7486,8 @@ exports[`fixture 'interfaces' > query 'BasicCat' > should plan gather 1`] = `
               {
                 "kind": "scalar",
                 "name": "meows",
+                "originalProp": null,
+                "parentType": "Cat",
                 "prop": "meows",
               },
             ],
@@ -7010,11 +7552,15 @@ exports[`fixture 'interfaces' > query 'BasicNestedAnimal' > should execute and e
       {
         "kind": "scalar",
         "name": "name",
+        "originalProp": null,
+        "parentType": "Animal",
         "prop": "name",
       },
       {
         "kind": "scalar",
         "name": "type",
+        "originalProp": null,
+        "parentType": "Animal",
         "prop": "type",
       },
       {
@@ -7023,11 +7569,15 @@ exports[`fixture 'interfaces' > query 'BasicNestedAnimal' > should execute and e
           {
             "kind": "scalar",
             "name": "barks",
+            "originalProp": null,
+            "parentType": "Dog",
             "prop": "barks",
           },
           {
             "kind": "object",
             "name": "bestFriend",
+            "originalProp": null,
+            "parentType": "Dog",
             "prop": "bestFriend",
             "selections": [
               {
@@ -7036,11 +7586,15 @@ exports[`fixture 'interfaces' > query 'BasicNestedAnimal' > should execute and e
                   {
                     "kind": "scalar",
                     "name": "meows",
+                    "originalProp": null,
+                    "parentType": "Cat",
                     "prop": "meows",
                   },
                   {
                     "kind": "scalar",
                     "name": "name",
+                    "originalProp": null,
+                    "parentType": "Cat",
                     "prop": "name",
                   },
                 ],
@@ -7095,11 +7649,15 @@ exports[`fixture 'interfaces' > query 'BasicNestedAnimal' > should plan gather 1
           {
             "kind": "scalar",
             "name": "name",
+            "originalProp": null,
+            "parentType": "Animal",
             "prop": "name",
           },
           {
             "kind": "scalar",
             "name": "type",
+            "originalProp": null,
+            "parentType": "Animal",
             "prop": "type",
           },
           {
@@ -7108,11 +7666,15 @@ exports[`fixture 'interfaces' > query 'BasicNestedAnimal' > should plan gather 1
               {
                 "kind": "scalar",
                 "name": "barks",
+                "originalProp": null,
+                "parentType": "Dog",
                 "prop": "barks",
               },
               {
                 "kind": "object",
                 "name": "bestFriend",
+                "originalProp": null,
+                "parentType": "Dog",
                 "prop": "bestFriend",
                 "selections": [
                   {
@@ -7121,11 +7683,15 @@ exports[`fixture 'interfaces' > query 'BasicNestedAnimal' > should plan gather 1
                       {
                         "kind": "scalar",
                         "name": "meows",
+                        "originalProp": null,
+                        "parentType": "Cat",
                         "prop": "meows",
                       },
                       {
                         "kind": "scalar",
                         "name": "name",
+                        "originalProp": null,
+                        "parentType": "Cat",
                         "prop": "name",
                       },
                     ],
@@ -7202,11 +7768,15 @@ exports[`fixture 'shared-root' > query 'SharedRootMultiple' > should execute and
       {
         "kind": "scalar",
         "name": "id",
+        "originalProp": null,
+        "parentType": "Product",
         "prop": "id",
       },
       {
         "kind": "scalar",
         "name": "category",
+        "originalProp": null,
+        "parentType": "Product",
         "prop": "category",
       },
     ],
@@ -7221,6 +7791,8 @@ exports[`fixture 'shared-root' > query 'SharedRootMultiple' > should execute and
           {
             "kind": "scalar",
             "name": "name",
+            "originalProp": null,
+            "parentType": "Product",
             "prop": "name",
           },
         ],
@@ -7252,6 +7824,8 @@ exports[`fixture 'shared-root' > query 'SharedRootMultiple' > should execute and
           {
             "kind": "scalar",
             "name": "price",
+            "originalProp": null,
+            "parentType": "Product",
             "prop": "price",
           },
         ],
@@ -7305,11 +7879,15 @@ exports[`fixture 'shared-root' > query 'SharedRootMultiple' > should plan gather
           {
             "kind": "scalar",
             "name": "id",
+            "originalProp": null,
+            "parentType": "Product",
             "prop": "id",
           },
           {
             "kind": "scalar",
             "name": "category",
+            "originalProp": null,
+            "parentType": "Product",
             "prop": "category",
           },
         ],
@@ -7320,6 +7898,8 @@ exports[`fixture 'shared-root' > query 'SharedRootMultiple' > should plan gather
                 {
                   "kind": "scalar",
                   "name": "name",
+                  "originalProp": null,
+                  "parentType": "Product",
                   "prop": "name",
                 },
               ],
@@ -7343,6 +7923,8 @@ exports[`fixture 'shared-root' > query 'SharedRootMultiple' > should plan gather
                 {
                   "kind": "scalar",
                   "name": "price",
+                  "originalProp": null,
+                  "parentType": "Product",
                   "prop": "price",
                 },
               ],
@@ -7405,11 +7987,15 @@ exports[`fixture 'shared-root' > query 'SharedRootSingle' > should execute and e
       {
         "kind": "scalar",
         "name": "id",
+        "originalProp": null,
+        "parentType": "Product",
         "prop": "id",
       },
       {
         "kind": "scalar",
         "name": "category",
+        "originalProp": null,
+        "parentType": "Product",
         "prop": "category",
       },
     ],
@@ -7424,6 +8010,8 @@ exports[`fixture 'shared-root' > query 'SharedRootSingle' > should execute and e
           {
             "kind": "scalar",
             "name": "name",
+            "originalProp": null,
+            "parentType": "Product",
             "prop": "name",
           },
         ],
@@ -7477,11 +8065,15 @@ exports[`fixture 'shared-root' > query 'SharedRootSingle' > should plan gather 1
           {
             "kind": "scalar",
             "name": "id",
+            "originalProp": null,
+            "parentType": "Product",
             "prop": "id",
           },
           {
             "kind": "scalar",
             "name": "category",
+            "originalProp": null,
+            "parentType": "Product",
             "prop": "category",
           },
         ],
@@ -7492,6 +8084,8 @@ exports[`fixture 'shared-root' > query 'SharedRootSingle' > should plan gather 1
                 {
                   "kind": "scalar",
                   "name": "name",
+                  "originalProp": null,
+                  "parentType": "Product",
                   "prop": "name",
                 },
               ],
@@ -7561,16 +8155,22 @@ exports[`fixture 'store' > query 'BasicWithFragmentDefinition' > should execute 
       {
         "kind": "scalar",
         "name": "id",
+        "originalProp": null,
+        "parentType": "Storefront",
         "prop": "id",
       },
       {
         "kind": "object",
         "name": "products",
+        "originalProp": null,
+        "parentType": "Storefront",
         "prop": "products",
         "selections": [
           {
             "kind": "scalar",
             "name": "upc",
+            "originalProp": null,
+            "parentType": "Product",
             "prop": "upc",
           },
         ],
@@ -7578,6 +8178,8 @@ exports[`fixture 'store' > query 'BasicWithFragmentDefinition' > should execute 
       {
         "kind": "scalar",
         "name": "name",
+        "originalProp": null,
+        "parentType": "Storefront",
         "prop": "name",
       },
     ],
@@ -7594,11 +8196,15 @@ exports[`fixture 'store' > query 'BasicWithFragmentDefinition' > should execute 
           {
             "kind": "object",
             "name": "manufacturer",
+            "originalProp": null,
+            "parentType": "Product",
             "prop": "manufacturer",
             "selections": [
               {
                 "kind": "scalar",
                 "name": "id",
+                "originalProp": null,
+                "parentType": "Manufacturer",
                 "prop": "id",
               },
             ],
@@ -7640,11 +8246,15 @@ exports[`fixture 'store' > query 'BasicWithFragmentDefinition' > should execute 
           {
             "kind": "object",
             "name": "manufacturer",
+            "originalProp": null,
+            "parentType": "Product",
             "prop": "manufacturer",
             "selections": [
               {
                 "kind": "scalar",
                 "name": "id",
+                "originalProp": null,
+                "parentType": "Manufacturer",
                 "prop": "id",
               },
             ],
@@ -7711,16 +8321,22 @@ exports[`fixture 'store' > query 'BasicWithFragmentDefinition' > should plan gat
           {
             "kind": "scalar",
             "name": "id",
+            "originalProp": null,
+            "parentType": "Storefront",
             "prop": "id",
           },
           {
             "kind": "object",
             "name": "products",
+            "originalProp": null,
+            "parentType": "Storefront",
             "prop": "products",
             "selections": [
               {
                 "kind": "scalar",
                 "name": "upc",
+                "originalProp": null,
+                "parentType": "Product",
                 "prop": "upc",
               },
             ],
@@ -7728,6 +8344,8 @@ exports[`fixture 'store' > query 'BasicWithFragmentDefinition' > should plan gat
           {
             "kind": "scalar",
             "name": "name",
+            "originalProp": null,
+            "parentType": "Storefront",
             "prop": "name",
           },
         ],
@@ -7737,11 +8355,15 @@ exports[`fixture 'store' > query 'BasicWithFragmentDefinition' > should plan gat
               {
                 "kind": "object",
                 "name": "manufacturer",
+                "originalProp": null,
+                "parentType": "Product",
                 "prop": "manufacturer",
                 "selections": [
                   {
                     "kind": "scalar",
                     "name": "id",
+                    "originalProp": null,
+                    "parentType": "Manufacturer",
                     "prop": "id",
                   },
                 ],
@@ -7841,21 +8463,29 @@ exports[`fixture 'store' > query 'BasicWithInlineFragment' > should execute and 
       {
         "kind": "scalar",
         "name": "id",
+        "originalProp": null,
+        "parentType": "Storefront",
         "prop": "id",
       },
       {
         "kind": "scalar",
         "name": "name",
+        "originalProp": null,
+        "parentType": "Storefront",
         "prop": "name",
       },
       {
         "kind": "object",
         "name": "products",
+        "originalProp": null,
+        "parentType": "Storefront",
         "prop": "products",
         "selections": [
           {
             "kind": "scalar",
             "name": "upc",
+            "originalProp": null,
+            "parentType": "Product",
             "prop": "upc",
           },
         ],
@@ -7872,6 +8502,8 @@ exports[`fixture 'store' > query 'BasicWithInlineFragment' > should execute and 
           {
             "kind": "scalar",
             "name": "name",
+            "originalProp": null,
+            "parentType": "Product",
             "prop": "name",
           },
         ],
@@ -7907,6 +8539,8 @@ exports[`fixture 'store' > query 'BasicWithInlineFragment' > should execute and 
           {
             "kind": "scalar",
             "name": "name",
+            "originalProp": null,
+            "parentType": "Product",
             "prop": "name",
           },
         ],
@@ -7942,6 +8576,8 @@ exports[`fixture 'store' > query 'BasicWithInlineFragment' > should execute and 
           {
             "kind": "scalar",
             "name": "name",
+            "originalProp": null,
+            "parentType": "Product",
             "prop": "name",
           },
         ],
@@ -8004,21 +8640,29 @@ exports[`fixture 'store' > query 'BasicWithInlineFragment' > should plan gather 
           {
             "kind": "scalar",
             "name": "id",
+            "originalProp": null,
+            "parentType": "Storefront",
             "prop": "id",
           },
           {
             "kind": "scalar",
             "name": "name",
+            "originalProp": null,
+            "parentType": "Storefront",
             "prop": "name",
           },
           {
             "kind": "object",
             "name": "products",
+            "originalProp": null,
+            "parentType": "Storefront",
             "prop": "products",
             "selections": [
               {
                 "kind": "scalar",
                 "name": "upc",
+                "originalProp": null,
+                "parentType": "Product",
                 "prop": "upc",
               },
             ],
@@ -8030,6 +8674,8 @@ exports[`fixture 'store' > query 'BasicWithInlineFragment' > should plan gather 
               {
                 "kind": "scalar",
                 "name": "name",
+                "originalProp": null,
+                "parentType": "Product",
                 "prop": "name",
               },
             ],
@@ -8146,31 +8792,43 @@ exports[`fixture 'store' > query 'ListOperationResolver' > should execute and ex
       {
         "kind": "scalar",
         "name": "upc",
+        "originalProp": null,
+        "parentType": "Product",
         "prop": "upc",
       },
       {
         "kind": "scalar",
         "name": "name",
+        "originalProp": null,
+        "parentType": "Product",
         "prop": "name",
       },
       {
         "kind": "object",
         "name": "manufacturer",
+        "originalProp": null,
+        "parentType": "Product",
         "prop": "manufacturer",
         "selections": [
           {
             "kind": "object",
             "name": "products",
+            "originalProp": null,
+            "parentType": "Manufacturer",
             "prop": "products",
             "selections": [
               {
                 "kind": "scalar",
                 "name": "upc",
+                "originalProp": null,
+                "parentType": "Product",
                 "prop": "upc",
               },
               {
                 "kind": "scalar",
                 "name": "name",
+                "originalProp": null,
+                "parentType": "Product",
                 "prop": "name",
               },
             ],
@@ -8178,6 +8836,8 @@ exports[`fixture 'store' > query 'ListOperationResolver' > should execute and ex
           {
             "kind": "scalar",
             "name": "id",
+            "originalProp": null,
+            "parentType": "Manufacturer",
             "private": true,
             "prop": "id",
           },
@@ -8195,6 +8855,8 @@ exports[`fixture 'store' > query 'ListOperationResolver' > should execute and ex
           {
             "kind": "scalar",
             "name": "name",
+            "originalProp": null,
+            "parentType": "Manufacturer",
             "prop": "name",
           },
         ],
@@ -8230,6 +8892,8 @@ exports[`fixture 'store' > query 'ListOperationResolver' > should execute and ex
           {
             "kind": "scalar",
             "name": "name",
+            "originalProp": null,
+            "parentType": "Manufacturer",
             "prop": "name",
           },
         ],
@@ -8299,31 +8963,43 @@ exports[`fixture 'store' > query 'ListOperationResolver' > should plan gather 1`
           {
             "kind": "scalar",
             "name": "upc",
+            "originalProp": null,
+            "parentType": "Product",
             "prop": "upc",
           },
           {
             "kind": "scalar",
             "name": "name",
+            "originalProp": null,
+            "parentType": "Product",
             "prop": "name",
           },
           {
             "kind": "object",
             "name": "manufacturer",
+            "originalProp": null,
+            "parentType": "Product",
             "prop": "manufacturer",
             "selections": [
               {
                 "kind": "object",
                 "name": "products",
+                "originalProp": null,
+                "parentType": "Manufacturer",
                 "prop": "products",
                 "selections": [
                   {
                     "kind": "scalar",
                     "name": "upc",
+                    "originalProp": null,
+                    "parentType": "Product",
                     "prop": "upc",
                   },
                   {
                     "kind": "scalar",
                     "name": "name",
+                    "originalProp": null,
+                    "parentType": "Product",
                     "prop": "name",
                   },
                 ],
@@ -8331,6 +9007,8 @@ exports[`fixture 'store' > query 'ListOperationResolver' > should plan gather 1`
               {
                 "kind": "scalar",
                 "name": "id",
+                "originalProp": null,
+                "parentType": "Manufacturer",
                 "private": true,
                 "prop": "id",
               },
@@ -8343,6 +9021,8 @@ exports[`fixture 'store' > query 'ListOperationResolver' > should plan gather 1`
               {
                 "kind": "scalar",
                 "name": "name",
+                "originalProp": null,
+                "parentType": "Manufacturer",
                 "prop": "name",
               },
             ],
@@ -8442,21 +9122,29 @@ exports[`fixture 'store' > query 'NotBasicWithInlineVariables' > should execute 
       {
         "kind": "scalar",
         "name": "id",
+        "originalProp": null,
+        "parentType": "Storefront",
         "prop": "id",
       },
       {
         "kind": "scalar",
         "name": "name",
+        "originalProp": null,
+        "parentType": "Storefront",
         "prop": "name",
       },
       {
         "kind": "object",
         "name": "products",
+        "originalProp": null,
+        "parentType": "Storefront",
         "prop": "products",
         "selections": [
           {
             "kind": "scalar",
             "name": "upc",
+            "originalProp": null,
+            "parentType": "Product",
             "prop": "upc",
           },
         ],
@@ -8490,26 +9178,36 @@ exports[`fixture 'store' > query 'NotBasicWithInlineVariables' > should execute 
           {
             "kind": "scalar",
             "name": "name",
+            "originalProp": null,
+            "parentType": "Product",
             "prop": "name",
           },
           {
             "kind": "object",
             "name": "manufacturer",
+            "originalProp": null,
+            "parentType": "Product",
             "prop": "manufacturer",
             "selections": [
               {
                 "kind": "object",
                 "name": "products",
+                "originalProp": null,
+                "parentType": "Manufacturer",
                 "prop": "products",
                 "selections": [
                   {
                     "kind": "scalar",
                     "name": "upc",
+                    "originalProp": null,
+                    "parentType": "Product",
                     "prop": "upc",
                   },
                   {
                     "kind": "scalar",
                     "name": "name",
+                    "originalProp": null,
+                    "parentType": "Product",
                     "prop": "name",
                   },
                 ],
@@ -8517,6 +9215,8 @@ exports[`fixture 'store' > query 'NotBasicWithInlineVariables' > should execute 
               {
                 "kind": "scalar",
                 "name": "id",
+                "originalProp": null,
+                "parentType": "Manufacturer",
                 "private": true,
                 "prop": "id",
               },
@@ -8534,6 +9234,8 @@ exports[`fixture 'store' > query 'NotBasicWithInlineVariables' > should execute 
               {
                 "kind": "scalar",
                 "name": "name",
+                "originalProp": null,
+                "parentType": "Manufacturer",
                 "prop": "name",
               },
             ],
@@ -8616,26 +9318,36 @@ exports[`fixture 'store' > query 'NotBasicWithInlineVariables' > should execute 
           {
             "kind": "scalar",
             "name": "name",
+            "originalProp": null,
+            "parentType": "Product",
             "prop": "name",
           },
           {
             "kind": "object",
             "name": "manufacturer",
+            "originalProp": null,
+            "parentType": "Product",
             "prop": "manufacturer",
             "selections": [
               {
                 "kind": "object",
                 "name": "products",
+                "originalProp": null,
+                "parentType": "Manufacturer",
                 "prop": "products",
                 "selections": [
                   {
                     "kind": "scalar",
                     "name": "upc",
+                    "originalProp": null,
+                    "parentType": "Product",
                     "prop": "upc",
                   },
                   {
                     "kind": "scalar",
                     "name": "name",
+                    "originalProp": null,
+                    "parentType": "Product",
                     "prop": "name",
                   },
                 ],
@@ -8643,6 +9355,8 @@ exports[`fixture 'store' > query 'NotBasicWithInlineVariables' > should execute 
               {
                 "kind": "scalar",
                 "name": "id",
+                "originalProp": null,
+                "parentType": "Manufacturer",
                 "private": true,
                 "prop": "id",
               },
@@ -8660,6 +9374,8 @@ exports[`fixture 'store' > query 'NotBasicWithInlineVariables' > should execute 
               {
                 "kind": "scalar",
                 "name": "name",
+                "originalProp": null,
+                "parentType": "Manufacturer",
                 "prop": "name",
               },
             ],
@@ -8742,26 +9458,36 @@ exports[`fixture 'store' > query 'NotBasicWithInlineVariables' > should execute 
           {
             "kind": "scalar",
             "name": "name",
+            "originalProp": null,
+            "parentType": "Product",
             "prop": "name",
           },
           {
             "kind": "object",
             "name": "manufacturer",
+            "originalProp": null,
+            "parentType": "Product",
             "prop": "manufacturer",
             "selections": [
               {
                 "kind": "object",
                 "name": "products",
+                "originalProp": null,
+                "parentType": "Manufacturer",
                 "prop": "products",
                 "selections": [
                   {
                     "kind": "scalar",
                     "name": "upc",
+                    "originalProp": null,
+                    "parentType": "Product",
                     "prop": "upc",
                   },
                   {
                     "kind": "scalar",
                     "name": "name",
+                    "originalProp": null,
+                    "parentType": "Product",
                     "prop": "name",
                   },
                 ],
@@ -8769,6 +9495,8 @@ exports[`fixture 'store' > query 'NotBasicWithInlineVariables' > should execute 
               {
                 "kind": "scalar",
                 "name": "id",
+                "originalProp": null,
+                "parentType": "Manufacturer",
                 "private": true,
                 "prop": "id",
               },
@@ -8786,6 +9514,8 @@ exports[`fixture 'store' > query 'NotBasicWithInlineVariables' > should execute 
               {
                 "kind": "scalar",
                 "name": "name",
+                "originalProp": null,
+                "parentType": "Manufacturer",
                 "prop": "name",
               },
             ],
@@ -8878,21 +9608,29 @@ exports[`fixture 'store' > query 'NotBasicWithInlineVariables' > should plan gat
           {
             "kind": "scalar",
             "name": "id",
+            "originalProp": null,
+            "parentType": "Storefront",
             "prop": "id",
           },
           {
             "kind": "scalar",
             "name": "name",
+            "originalProp": null,
+            "parentType": "Storefront",
             "prop": "name",
           },
           {
             "kind": "object",
             "name": "products",
+            "originalProp": null,
+            "parentType": "Storefront",
             "prop": "products",
             "selections": [
               {
                 "kind": "scalar",
                 "name": "upc",
+                "originalProp": null,
+                "parentType": "Product",
                 "prop": "upc",
               },
             ],
@@ -8904,26 +9642,36 @@ exports[`fixture 'store' > query 'NotBasicWithInlineVariables' > should plan gat
               {
                 "kind": "scalar",
                 "name": "name",
+                "originalProp": null,
+                "parentType": "Product",
                 "prop": "name",
               },
               {
                 "kind": "object",
                 "name": "manufacturer",
+                "originalProp": null,
+                "parentType": "Product",
                 "prop": "manufacturer",
                 "selections": [
                   {
                     "kind": "object",
                     "name": "products",
+                    "originalProp": null,
+                    "parentType": "Manufacturer",
                     "prop": "products",
                     "selections": [
                       {
                         "kind": "scalar",
                         "name": "upc",
+                        "originalProp": null,
+                        "parentType": "Product",
                         "prop": "upc",
                       },
                       {
                         "kind": "scalar",
                         "name": "name",
+                        "originalProp": null,
+                        "parentType": "Product",
                         "prop": "name",
                       },
                     ],
@@ -8931,6 +9679,8 @@ exports[`fixture 'store' > query 'NotBasicWithInlineVariables' > should plan gat
                   {
                     "kind": "scalar",
                     "name": "id",
+                    "originalProp": null,
+                    "parentType": "Manufacturer",
                     "private": true,
                     "prop": "id",
                   },
@@ -8943,6 +9693,8 @@ exports[`fixture 'store' > query 'NotBasicWithInlineVariables' > should plan gat
                   {
                     "kind": "scalar",
                     "name": "name",
+                    "originalProp": null,
+                    "parentType": "Manufacturer",
                     "prop": "name",
                   },
                 ],
@@ -9064,21 +9816,29 @@ exports[`fixture 'store' > query 'NotBasicWithOperationVariables' > should execu
       {
         "kind": "scalar",
         "name": "id",
+        "originalProp": null,
+        "parentType": "Storefront",
         "prop": "id",
       },
       {
         "kind": "scalar",
         "name": "name",
+        "originalProp": null,
+        "parentType": "Storefront",
         "prop": "name",
       },
       {
         "kind": "object",
         "name": "products",
+        "originalProp": null,
+        "parentType": "Storefront",
         "prop": "products",
         "selections": [
           {
             "kind": "scalar",
             "name": "upc",
+            "originalProp": null,
+            "parentType": "Product",
             "prop": "upc",
           },
         ],
@@ -9108,26 +9868,36 @@ exports[`fixture 'store' > query 'NotBasicWithOperationVariables' > should execu
           {
             "kind": "scalar",
             "name": "name",
+            "originalProp": null,
+            "parentType": "Product",
             "prop": "name",
           },
           {
             "kind": "object",
             "name": "manufacturer",
+            "originalProp": null,
+            "parentType": "Product",
             "prop": "manufacturer",
             "selections": [
               {
                 "kind": "object",
                 "name": "products",
+                "originalProp": null,
+                "parentType": "Manufacturer",
                 "prop": "products",
                 "selections": [
                   {
                     "kind": "scalar",
                     "name": "upc",
+                    "originalProp": null,
+                    "parentType": "Product",
                     "prop": "upc",
                   },
                   {
                     "kind": "scalar",
                     "name": "name",
+                    "originalProp": null,
+                    "parentType": "Product",
                     "prop": "name",
                   },
                 ],
@@ -9135,6 +9905,8 @@ exports[`fixture 'store' > query 'NotBasicWithOperationVariables' > should execu
               {
                 "kind": "scalar",
                 "name": "id",
+                "originalProp": null,
+                "parentType": "Manufacturer",
                 "private": true,
                 "prop": "id",
               },
@@ -9152,6 +9924,8 @@ exports[`fixture 'store' > query 'NotBasicWithOperationVariables' > should execu
               {
                 "kind": "scalar",
                 "name": "name",
+                "originalProp": null,
+                "parentType": "Manufacturer",
                 "prop": "name",
               },
             ],
@@ -9230,26 +10004,36 @@ exports[`fixture 'store' > query 'NotBasicWithOperationVariables' > should execu
           {
             "kind": "scalar",
             "name": "name",
+            "originalProp": null,
+            "parentType": "Product",
             "prop": "name",
           },
           {
             "kind": "object",
             "name": "manufacturer",
+            "originalProp": null,
+            "parentType": "Product",
             "prop": "manufacturer",
             "selections": [
               {
                 "kind": "object",
                 "name": "products",
+                "originalProp": null,
+                "parentType": "Manufacturer",
                 "prop": "products",
                 "selections": [
                   {
                     "kind": "scalar",
                     "name": "upc",
+                    "originalProp": null,
+                    "parentType": "Product",
                     "prop": "upc",
                   },
                   {
                     "kind": "scalar",
                     "name": "name",
+                    "originalProp": null,
+                    "parentType": "Product",
                     "prop": "name",
                   },
                 ],
@@ -9257,6 +10041,8 @@ exports[`fixture 'store' > query 'NotBasicWithOperationVariables' > should execu
               {
                 "kind": "scalar",
                 "name": "id",
+                "originalProp": null,
+                "parentType": "Manufacturer",
                 "private": true,
                 "prop": "id",
               },
@@ -9274,6 +10060,8 @@ exports[`fixture 'store' > query 'NotBasicWithOperationVariables' > should execu
               {
                 "kind": "scalar",
                 "name": "name",
+                "originalProp": null,
+                "parentType": "Manufacturer",
                 "prop": "name",
               },
             ],
@@ -9366,21 +10154,29 @@ exports[`fixture 'store' > query 'NotBasicWithOperationVariables' > should plan 
           {
             "kind": "scalar",
             "name": "id",
+            "originalProp": null,
+            "parentType": "Storefront",
             "prop": "id",
           },
           {
             "kind": "scalar",
             "name": "name",
+            "originalProp": null,
+            "parentType": "Storefront",
             "prop": "name",
           },
           {
             "kind": "object",
             "name": "products",
+            "originalProp": null,
+            "parentType": "Storefront",
             "prop": "products",
             "selections": [
               {
                 "kind": "scalar",
                 "name": "upc",
+                "originalProp": null,
+                "parentType": "Product",
                 "prop": "upc",
               },
             ],
@@ -9392,26 +10188,36 @@ exports[`fixture 'store' > query 'NotBasicWithOperationVariables' > should plan 
               {
                 "kind": "scalar",
                 "name": "name",
+                "originalProp": null,
+                "parentType": "Product",
                 "prop": "name",
               },
               {
                 "kind": "object",
                 "name": "manufacturer",
+                "originalProp": null,
+                "parentType": "Product",
                 "prop": "manufacturer",
                 "selections": [
                   {
                     "kind": "object",
                     "name": "products",
+                    "originalProp": null,
+                    "parentType": "Manufacturer",
                     "prop": "products",
                     "selections": [
                       {
                         "kind": "scalar",
                         "name": "upc",
+                        "originalProp": null,
+                        "parentType": "Product",
                         "prop": "upc",
                       },
                       {
                         "kind": "scalar",
                         "name": "name",
+                        "originalProp": null,
+                        "parentType": "Product",
                         "prop": "name",
                       },
                     ],
@@ -9419,6 +10225,8 @@ exports[`fixture 'store' > query 'NotBasicWithOperationVariables' > should plan 
                   {
                     "kind": "scalar",
                     "name": "id",
+                    "originalProp": null,
+                    "parentType": "Manufacturer",
                     "private": true,
                     "prop": "id",
                   },
@@ -9431,6 +10239,8 @@ exports[`fixture 'store' > query 'NotBasicWithOperationVariables' > should plan 
                   {
                     "kind": "scalar",
                     "name": "name",
+                    "originalProp": null,
+                    "parentType": "Manufacturer",
                     "prop": "name",
                   },
                 ],
@@ -9602,6 +10412,8 @@ exports[`fixture 'store' > query 'ScalarListInType' > should execute and explain
       {
         "kind": "scalar",
         "name": "productNames",
+        "originalProp": null,
+        "parentType": "Storefront",
         "prop": "productNames",
       },
     ],
@@ -9638,6 +10450,8 @@ exports[`fixture 'store' > query 'ScalarListInType' > should plan gather 1`] = `
           {
             "kind": "scalar",
             "name": "productNames",
+            "originalProp": null,
+            "parentType": "Storefront",
             "prop": "productNames",
           },
         ],

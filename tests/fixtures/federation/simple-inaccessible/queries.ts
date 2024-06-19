@@ -1,4 +1,4 @@
-import { parse } from 'graphql';
+import { GraphQLError, parse } from 'graphql';
 import { FixtureQueries } from '../../../utils.js';
 
 export const queries: FixtureQueries = [
@@ -74,23 +74,25 @@ export const queries: FixtureQueries = [
       },
     },
   },
-  // {
-  //   name: 'InaccessibleEnumInInput',
-  //   document: parse(/* GraphQL */ `
-  //     query InaccessibleEnumInInput {
-  //       usersInFriends {
-  //         id
-  //         friends(type: FRIEND) {
-  //           id
-  //         }
-  //       }
-  //     }
-  //   `),
-  //   variables: {},
-  //   result: {
-  //     errors: [...],
-  //   },
-  // },
+  {
+    name: 'InaccessibleEnumInInput',
+    document: parse(/* GraphQL */ `
+      query InaccessibleEnumInInput {
+        usersInFriends {
+          id
+          friends(type: FRIEND) {
+            id
+          }
+        }
+      }
+    `),
+    variables: {},
+    result: {
+      errors: [
+        new GraphQLError('Unknown argument "type" on field "User.friends".'),
+      ],
+    },
+  },
   {
     name: 'InaccessibleEnumInOutput',
     document: parse(/* GraphQL */ `

@@ -2,6 +2,11 @@ import { Blueprint } from '../../../../src/blueprint.js';
 
 export const blueprint: Blueprint = {
   schema: /* GraphQL */ `
+    enum FriendType {
+      # FAMILY @inaccessible
+      FRIEND
+    }
+
     type Query {
       usersInAge: [User!]!
       usersInFriends: [User!]!
@@ -10,13 +15,8 @@ export const blueprint: Blueprint = {
     type User {
       id: ID
       age: Int
-      friends: [User!]!
+      friends: [User!]! # argument (type: FriendType = FAMILY) is @inaccessible
       type: FriendType
-    }
-
-    enum FriendType {
-      # FAMILY @inaccessible
-      FRIEND
     }
   `,
   types: {

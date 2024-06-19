@@ -1,3 +1,4 @@
+import { buildSchema, print, validate } from 'graphql';
 import { describe, expect, it } from 'vitest';
 import { execute } from '../src/execute.js';
 import {
@@ -13,10 +14,20 @@ describe.each(await getFixtures())(
   ({ blueprint, subgraphs, queries }) => {
     describe.each(queries)('query $name', ({ document, variables, result }) => {
       it('should plan gather', () => {
+        const errors = validate(buildSchema(blueprint.schema), document);
+        if (errors.length) {
+          expect({ errors }).toEqual(result);
+          return;
+        }
         expect(planGather(blueprint, document)).toMatchSnapshot();
       });
 
       it('should execute and explain', async () => {
+        const errors = validate(buildSchema(blueprint.schema), document);
+        if (errors.length) {
+          expect({ errors }).toEqual(result);
+          return;
+        }
         const { extensions, ...actualResult } = await execute(
           Object.entries(subgraphs).reduce(
             (agg, [name, subgraph]) => ({

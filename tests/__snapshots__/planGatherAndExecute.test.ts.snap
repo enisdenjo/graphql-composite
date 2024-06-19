@@ -509,18 +509,22 @@ exports[`fixture 'federation/simple-inaccessible' > query 'InaccessibleEnumInOut
           {
             "kind": "scalar",
             "name": "id",
+            "prop": "id",
           },
           {
             "kind": "object",
             "name": "friends",
+            "prop": "friends",
             "selections": [
               {
                 "kind": "scalar",
                 "name": "id",
+                "prop": "id",
               },
               {
                 "kind": "scalar",
                 "name": "type",
+                "prop": "type",
               },
             ],
           },
@@ -576,6 +580,7 @@ exports[`fixture 'federation/simple-inaccessible' > query 'UsersInAge' > should 
       {
         "kind": "scalar",
         "name": "id",
+        "prop": "id",
       },
     ],
     "includes": [
@@ -595,10 +600,12 @@ exports[`fixture 'federation/simple-inaccessible' > query 'UsersInAge' > should 
           {
             "kind": "object",
             "name": "friends",
+            "prop": "friends",
             "selections": [
               {
                 "kind": "scalar",
                 "name": "id",
+                "prop": "id",
               },
             ],
           },
@@ -645,10 +652,12 @@ exports[`fixture 'federation/simple-inaccessible' > query 'UsersInAge' > should 
           {
             "kind": "object",
             "name": "friends",
+            "prop": "friends",
             "selections": [
               {
                 "kind": "scalar",
                 "name": "id",
+                "prop": "id",
               },
             ],
           },
@@ -710,6 +719,7 @@ exports[`fixture 'federation/simple-inaccessible' > query 'UsersInAge' > should 
           {
             "kind": "scalar",
             "name": "id",
+            "prop": "id",
           },
         ],
         "includes": {
@@ -719,10 +729,12 @@ exports[`fixture 'federation/simple-inaccessible' > query 'UsersInAge' > should 
                 {
                   "kind": "object",
                   "name": "friends",
+                  "prop": "friends",
                   "selections": [
                     {
                       "kind": "scalar",
                       "name": "id",
+                      "prop": "id",
                     },
                   ],
                 },
@@ -810,14 +822,17 @@ exports[`fixture 'federation/simple-inaccessible' > query 'UsersInFriends' > sho
       {
         "kind": "scalar",
         "name": "id",
+        "prop": "id",
       },
       {
         "kind": "object",
         "name": "friends",
+        "prop": "friends",
         "selections": [
           {
             "kind": "scalar",
             "name": "id",
+            "prop": "id",
           },
         ],
       },
@@ -856,14 +871,17 @@ exports[`fixture 'federation/simple-inaccessible' > query 'UsersInFriends' > sho
           {
             "kind": "scalar",
             "name": "id",
+            "prop": "id",
           },
           {
             "kind": "object",
             "name": "friends",
+            "prop": "friends",
             "selections": [
               {
                 "kind": "scalar",
                 "name": "id",
+                "prop": "id",
               },
             ],
           },

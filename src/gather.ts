@@ -286,7 +286,8 @@ export function planGather(
                 ? {
                     kind: 'enum',
                     values: isEnumType(ofType)
-                      ? ofType.getValues().map(({ value }) => value)
+                      ? // TODO: check if it's enough to look at public schema, maybe some enum values needs to be removed in some specific query paths
+                        ofType.getValues().map(({ value }) => value)
                       : [],
                     ...sel,
                   }

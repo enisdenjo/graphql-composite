@@ -69,7 +69,7 @@ export const blueprint: Blueprint = {
           resolvers: {
             manufacturers: {
               subgraph: 'manufacturers',
-              kind: 'scalar',
+              kind: 'primitive',
               type: 'String',
               ofType: 'String',
               operation: /* GraphQL */ `
@@ -142,7 +142,7 @@ export const blueprint: Blueprint = {
           resolvers: {
             products: {
               subgraph: 'products',
-              kind: 'scalar',
+              kind: 'primitive',
               type: 'String',
               ofType: 'String',
               operation: /* GraphQL */ `
@@ -167,7 +167,7 @@ export const blueprint: Blueprint = {
           resolvers: {
             products: {
               subgraph: 'products',
-              kind: 'scalar',
+              kind: 'primitive',
               type: '[String!]!',
               ofType: 'String',
               operation: /* GraphQL */ `

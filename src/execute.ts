@@ -109,7 +109,7 @@ async function executeResolver(
       // TODO: should throw if resultRef's data is not available?
       setAtPath(resultRef.data, pathInData, {});
     }
-    return resolver.kind === 'scalar'
+    return resolver.kind === 'primitive'
       ? {
           ...resolver,
           pathInData,
@@ -128,7 +128,7 @@ async function executeResolver(
   if (result.errors?.length) {
     // stop immediately on errors, we cant traverse further
     resultRef.errors = [...(resultRef.errors || []), ...result.errors];
-    return resolver.kind === 'scalar'
+    return resolver.kind === 'primitive'
       ? {
           ...resolver,
           ...result,
@@ -166,7 +166,7 @@ async function executeResolver(
     populateResultWithExportData(resolver, exportData, pathInData, resultRef);
   }
 
-  return resolver.kind === 'scalar'
+  return resolver.kind === 'primitive'
     ? {
         ...resolver,
         ...result,
@@ -279,7 +279,7 @@ function populateResultWithExportData(
     resultRef.data = {};
   }
 
-  if (resolver.kind === 'scalar') {
+  if (resolver.kind === 'primitive') {
     // scalar fields are exported directly at the path in the result
     setAtPath(resultRef.data, pathInData, exportData);
     return;
@@ -298,6 +298,8 @@ function populateResultWithExportData(
     }
   } else {
     for (const exportPath of publicExportPaths) {
+      const exp = getExportAtPath(resolver.exports, exportPath);
+
       const lastKey = exportPath[exportPath.length - 1];
       const valBeforeLast =
         exportPath.length > 1
@@ -307,6 +309,11 @@ function populateResultWithExportData(
       if (Array.isArray(valBeforeLast)) {
         // if we're exporting fields in an array, set for each item of the array
         for (let i = 0; i < valBeforeLast.length; i++) {
+          let val = getAtPath(valBeforeLast[i], [lastKey!]);
+          if (exp.kind === 'enum' && !exp.values.includes(val)) {
+            // some enum values can be inaccessible and should therefore be nullified
+            val = null;
+          }
           setAtPath(
             resultRef.data,
             [
@@ -315,16 +322,17 @@ function populateResultWithExportData(
               i,
               lastKey!,
             ],
-            getAtPath(valBeforeLast[i], [lastKey!]),
+            val,
           );
         }
       } else {
         // otherwise, just set in object
-        setAtPath(
-          resultRef.data,
-          [...pathInData, ...exportPath],
-          getAtPath(exportData, exportPath),
-        );
+        let val = getAtPath(exportData, exportPath);
+        if (exp.kind === 'enum' && !exp.values.includes(val)) {
+          // some enum values can be inaccessible and should therefore be nullified
+          val = null;
+        }
+        setAtPath(resultRef.data, [...pathInData, ...exportPath], val);
       }
     }
   }
@@ -382,7 +390,7 @@ function getPublicPathsOfExport(exp: OperationExport): string[][] {
     return [];
   }
 
-  if (exp.kind === 'scalar') {
+  if (exp.kind === 'scalar' || exp.kind === 'enum') {
     return [[exp.prop]];
   }
 
@@ -444,7 +452,7 @@ function getPublicPathsOfExport(exp: OperationExport): string[][] {
  * ```
  */
 function getDeepestObjectPublicPathsOfExport(exp: OperationExport): string[][] {
-  if (exp.private || exp.kind === 'scalar') {
+  if (exp.private || exp.kind === 'scalar' || exp.kind === 'enum') {
     return [[]];
   }
 
@@ -465,4 +473,48 @@ function getDeepestObjectPublicPathsOfExport(exp: OperationExport): string[][] {
   paths.sort();
 
   return paths;
+}
+
+function getExportAtPath(
+  exports: OperationExport[],
+  path: string[],
+): OperationExport {
+  if (!path.length) {
+    throw new Error('Cannot get values for export with an empty path');
+  }
+
+  let exp: OperationExport | undefined = {
+    kind: 'object',
+    name: '',
+    prop: '',
+    // since path is not empty, no other field is really relevant - the loop
+    // will immediately go into the exp.selections
+    selections: exports,
+  };
+  for (let i = 0; i < path.length; i++) {
+    const part = path[i]!;
+    if (!('selections' in exp)) {
+      throw new Error(
+        `Cannot go deeper in "${part}" after ${JSON.stringify(path.slice(0, i))} for ${JSON.stringify(
+          path,
+        )}`,
+      );
+    }
+    for (const sel of exp.selections) {
+      if (sel.kind === 'fragment') {
+        return getExportAtPath(sel.selections, path.slice(i));
+      }
+      if (sel.prop === part) {
+        exp = sel;
+        break;
+      }
+    }
+    if (!exp) {
+      throw new Error(
+        `Export at path ${JSON.stringify(path)} in ${JSON.stringify(exports)} not found`,
+      );
+    }
+  }
+
+  return exp!; // will never be null because of conditional in loop
 }

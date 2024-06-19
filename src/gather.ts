@@ -4,6 +4,7 @@ import {
   DocumentNode,
   getNamedType,
   isCompositeType,
+  isEnumType,
   Kind,
   parse,
   print,
@@ -19,9 +20,9 @@ import {
   Blueprint,
   BlueprintCompositeResolver,
   BlueprintObject,
+  BlueprintPrimitiveResolver,
   BlueprintResolver,
   BlueprintResolverConstantVariable,
-  BlueprintScalarResolver,
   BlueprintType,
   isBlueprintResolverSelectVariable,
 } from './blueprint.js';
@@ -47,7 +48,7 @@ export interface GatherPlanOperation {
 
 export type GatherPlanResolver =
   | GatherPlanCompositeResolver
-  | GatherPlanScalarResolver;
+  | GatherPlanPrimitiveResolver;
 
 export type GatherPlanCompositeResolver = BlueprintCompositeResolver & {
   /** The path to the `__export` fragment in the execution result. */
@@ -76,7 +77,8 @@ export type GatherPlanCompositeResolver = BlueprintCompositeResolver & {
   };
 };
 
-export interface GatherPlanScalarResolver extends BlueprintScalarResolver {
+export interface GatherPlanPrimitiveResolver
+  extends BlueprintPrimitiveResolver {
   /**
    * The path to the scalar in the execution result.
    */
@@ -84,7 +86,7 @@ export interface GatherPlanScalarResolver extends BlueprintScalarResolver {
 }
 
 export type OperationExport =
-  | OperationScalarExport
+  | OperationPrimitiveExport
   | OperationObjectExport
   | OperationFragmentExport;
 
@@ -112,6 +114,29 @@ export interface OperationScalarExport extends OperationExportAvailability {
    */
   prop: string;
 }
+
+export interface OperationEnumExport extends OperationExportAvailability {
+  kind: 'enum';
+  /** Name of the scalar field. */
+  name: string;
+  /**
+   * The property name to pluck from the operation result.
+   * It's the same as {@link name} unless an alias is used
+   * in user's query.
+   */
+  prop: string;
+  /**
+   * Whitelisted enum value list to be returned by the field. If a field
+   * yields a value that is not in the list, it'll be nullified.
+   *
+   * Values are compared using strict equality.
+   */
+  values: unknown[];
+}
+
+export type OperationPrimitiveExport =
+  | OperationScalarExport
+  | OperationEnumExport;
 
 export interface OperationObjectExport extends OperationExportAvailability {
   kind: 'object';
@@ -220,9 +245,16 @@ export function planGather(
               // skip over fields needing operation variables
               continue;
             }
-            const argDef = fieldDef.args.find(
-              (a) => a.name === arg.name.value,
-            )!; // TODO: check instead of assert
+
+            const argDef = fieldDef.args.find((a) => a.name === arg.name.value);
+            if (!argDef) {
+              // This should never happen if the DocumentNode was validated against the schema
+              // before planning the gather.
+              throw new Error(
+                `Field "${ofType.name}.${node.name.value}" doesn't have an argument "${arg.name.value}"`,
+              );
+            }
+
             inlineVariables[arg.name.value] = valueFromAST(
               arg.value,
               argDef.type,
@@ -241,15 +273,29 @@ export function planGather(
               selections: [],
             });
           } else {
-            getSelectionsAtDepth(fields, depth - 1).push({
-              kind: 'scalar',
+            const sel = {
               path: entries.join('.'),
               name: node.name.value,
               prop: node.alias?.value ?? node.name.value,
               type: String(type),
               ofType: ofType.name,
               inlineVariables,
-            });
+            };
+            getSelectionsAtDepth(fields, depth - 1).push(
+              isEnumType(ofType)
+                ? {
+                    kind: 'enum',
+                    values: isEnumType(ofType)
+                      ? // TODO: check if it's enough to look at public schema, maybe some enum values needs to be removed in some specific query paths
+                        ofType.getValues().map(({ value }) => value)
+                      : [],
+                    ...sel,
+                  }
+                : {
+                    kind: 'scalar',
+                    ...sel,
+                  },
+            );
           }
         },
         leave() {
@@ -289,7 +335,7 @@ export function planGather(
     }
 
     const resolver: GatherPlanResolver =
-      operationFieldResolver.kind === 'scalar'
+      operationFieldResolver.kind === 'primitive'
         ? {
             ...operationFieldResolver,
             variables: inlineToResolverConstantVariables(
@@ -309,10 +355,10 @@ export function planGather(
             includes: {},
           };
 
-    if (field.kind !== 'scalar') {
-      if (resolver.kind === 'scalar') {
+    if (field.kind !== 'scalar' && field.kind !== 'enum') {
+      if (resolver.kind === 'primitive') {
         throw new Error(
-          'Composite operation field must not have a scalar resolver',
+          'Composite operation field must not have a primitive resolver',
         );
       }
       for (const sel of field.selections) {
@@ -341,7 +387,7 @@ export function planGather(
   return gatherPlan;
 }
 
-interface OperationScalarField extends OperationScalarExport {
+type OperationPrimitiveField = OperationPrimitiveExport & {
   /** Dot-notation path to the field in the operation. */
   path: string;
   /** The type this field resolves. */
@@ -359,7 +405,7 @@ interface OperationScalarField extends OperationScalarExport {
   ofType: string;
   /** The inline variables on the field. */
   inlineVariables: Record<string, unknown>;
-}
+};
 
 interface OperationObjectField extends OperationObjectExport {
   /** Dot-notation path to the field in the operation. */
@@ -393,12 +439,12 @@ interface OperationFragment extends OperationFragmentExport {
 }
 
 type OperationSelection =
-  | OperationScalarField
+  | OperationPrimitiveField
   | OperationObjectField
   | OperationFragment;
 
 /** TODO: can an operation field be a fragment? */
-type OperationField = OperationObjectField | OperationScalarField;
+type OperationField = OperationObjectField | OperationPrimitiveField;
 
 type OperationCompositeSelection = OperationObjectField | OperationFragment;
 
@@ -765,7 +811,7 @@ function insertResolversForSelection(
         ];
       resolverPlan = Object.values(fieldInQuery?.resolvers || {}).find(
         (r): r is BlueprintCompositeResolver =>
-          r.kind !== 'scalar' && selField.subgraphs.includes(r.subgraph),
+          r.kind !== 'primitive' && selField.subgraphs.includes(r.subgraph),
       );
     }
     if (!resolverPlan && selType.kind === 'interface') {
@@ -802,19 +848,26 @@ function insertResolversForSelection(
     }
   }
 
-  const exp: OperationObjectExport | OperationScalarExport =
+  const exp: OperationObjectExport | OperationPrimitiveExport =
     sel.kind === 'scalar'
       ? {
           kind: 'scalar',
           name: sel.name,
           prop: sel.prop,
         }
-      : {
-          kind: 'object',
-          name: sel.name,
-          prop: sel.prop,
-          selections: [],
-        };
+      : sel.kind === 'enum'
+        ? {
+            kind: 'enum',
+            name: sel.name,
+            prop: sel.prop,
+            values: sel.values,
+          }
+        : {
+            kind: 'object',
+            name: sel.name,
+            prop: sel.prop,
+            selections: [],
+          };
 
   const dest =
     resolver === currentResolver
@@ -870,7 +923,7 @@ function prepareCompositeResolverForSelection(
       // TODO: what if the resolver plan cannot resolve the variable selection?
       exps.push({
         private: true,
-        kind: 'scalar', // TODO: do variables always select scalars?
+        kind: 'scalar', // TODO: do variables always select scalars, what happens with enums?
         name: variable.select,
         prop: variable.select,
       });
@@ -921,7 +974,7 @@ function buildAndInsertOperationsInResolvers(resolvers: GatherPlanResolver[]) {
   for (const resolver of resolvers) {
     const { operation, pathToExportData } = buildResolverOperation(
       resolver.operation,
-      resolver.kind === 'scalar' ? [] : resolver.exports,
+      resolver.kind === 'primitive' ? [] : resolver.exports,
     );
     resolver.operation = operation;
     resolver.pathToExportData = [

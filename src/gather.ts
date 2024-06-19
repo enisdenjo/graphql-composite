@@ -899,15 +899,15 @@ function prepareCompositeResolverForSelection(
  */
 function exportsIncludeField(
   exps: OperationExport[],
-  property: string,
+  prop: string,
   /** Whether to convert private exports to public ones if the field is found. */
   convertToPublic: boolean,
 ) {
   for (const exp of exps) {
     if (exp.kind === 'fragment') {
-      return exportsIncludeField(exp.selections, property, convertToPublic);
+      return exportsIncludeField(exp.selections, prop, convertToPublic);
     }
-    if (exp.prop === property) {
+    if (exp.prop === prop) {
       if (convertToPublic && exp.private) {
         delete exp.private;
       }

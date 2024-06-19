@@ -340,29 +340,29 @@ function populateResultWithExportData(
  * {
  *   "kind": "public",
  *   "name": "products",
- *   "property": "products"
+ *   "prop": "products"
  *   "selections": [
  *     {
  *       "kind": "public",
  *       "name": "upc",
- *       "property": "p"
+ *       "prop": "p"
  *     },
  *     {
  *       "kind": "public",
  *       "name": "manufacturer",
- *       "property": "manufacturer"
+ *       "prop": "manufacturer"
  *       "selections": [
  *         {
  *           "kind": "public",
  *           "name": "name",
- *           "property": "name"
+ *           "prop": "name"
  *         }
  *       ]
  *     },
  *     {
  *       "kind": "public",
  *       "name": "price",
- *       "property": "price"
+ *       "prop": "price"
  *     }
  *   ]
  * }

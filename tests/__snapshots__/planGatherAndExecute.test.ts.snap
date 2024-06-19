@@ -499,6 +499,83 @@ exports[`fixture 'federation/override-type-interface' > query 'Feed' > should pl
 }
 `;
 
+exports[`fixture 'federation/simple-inaccessible' > query 'InaccessibleEnumInOutput' > should execute and explain 1`] = `
+[
+  {
+    "data": {
+      "usersInFriends": [
+        {
+          "friends": [
+            {
+              "id": "u2",
+              "type": "FAMILY",
+            },
+          ],
+          "id": "u1",
+        },
+        {
+          "friends": [
+            {
+              "id": "u1",
+              "type": "FAMILY",
+            },
+          ],
+          "id": "u2",
+        },
+      ],
+    },
+    "exports": [
+      {
+        "kind": "scalar",
+        "name": "id",
+        "prop": "id",
+      },
+      {
+        "kind": "object",
+        "name": "friends",
+        "prop": "friends",
+        "selections": [
+          {
+            "kind": "scalar",
+            "name": "id",
+            "prop": "id",
+          },
+          {
+            "kind": "enum",
+            "name": "type",
+            "prop": "type",
+            "values": [
+              "FRIEND",
+            ],
+          },
+        ],
+      },
+    ],
+    "includes": [],
+    "kind": "object",
+    "ofType": "User",
+    "operation": "{
+  usersInFriends {
+    id
+    friends {
+      id
+      type
+    }
+  }
+}",
+    "pathInData": [
+      "usersInFriends",
+    ],
+    "pathToExportData": [
+      "usersInFriends",
+    ],
+    "subgraph": "friends",
+    "type": "[User!]!",
+    "variables": {},
+  },
+]
+`;
+
 exports[`fixture 'federation/simple-inaccessible' > query 'InaccessibleEnumInOutput' > should plan gather 1`] = `
 {
   "operation": {

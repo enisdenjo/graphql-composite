@@ -522,9 +522,12 @@ exports[`fixture 'federation/simple-inaccessible' > query 'InaccessibleEnumInOut
                 "prop": "id",
               },
               {
-                "kind": "scalar",
+                "kind": "enum",
                 "name": "type",
                 "prop": "type",
+                "values": [
+                  "FRIEND",
+                ],
               },
             ],
           },
@@ -8793,7 +8796,7 @@ exports[`fixture 'store' > query 'ScalarListInOperation' > should execute and ex
         "iPad",
       ],
     },
-    "kind": "scalar",
+    "kind": "primitive",
     "ofType": "String",
     "operation": "query productNames {
   productNames
@@ -8817,7 +8820,7 @@ exports[`fixture 'store' > query 'ScalarListInOperation' > should plan gather 1`
     "name": "ScalarListInOperation",
     "resolvers": {
       "productNames": {
-        "kind": "scalar",
+        "kind": "primitive",
         "ofType": "String",
         "operation": "query productNames {
   productNames
@@ -8930,7 +8933,7 @@ exports[`fixture 'store' > query 'ScalarOperationField' > should execute and exp
     "data": {
       "manufacturerName": "Samsung",
     },
-    "kind": "scalar",
+    "kind": "primitive",
     "ofType": "String",
     "operation": "query manufacturerName($id: ID!) {
   manufacturerName(id: $id)
@@ -8956,7 +8959,7 @@ exports[`fixture 'store' > query 'ScalarOperationField' > should plan gather 1`]
     "name": "ScalarOperationField",
     "resolvers": {
       "manufacturerName": {
-        "kind": "scalar",
+        "kind": "primitive",
         "ofType": "String",
         "operation": "query manufacturerName($id: ID!) {
   manufacturerName(id: $id)
@@ -8991,7 +8994,7 @@ exports[`fixture 'store' > query 'ScalarOperationFieldNested' > should execute a
         "name": "iPad",
       },
     },
-    "kind": "scalar",
+    "kind": "primitive",
     "ofType": "String",
     "operation": "query productName($upc: ID!) {
   product(upc: $upc) {
@@ -9020,7 +9023,7 @@ exports[`fixture 'store' > query 'ScalarOperationFieldNested' > should plan gath
     "name": "ScalarOperationFieldNested",
     "resolvers": {
       "productName": {
-        "kind": "scalar",
+        "kind": "primitive",
         "ofType": "String",
         "operation": "query productName($upc: ID!) {
   product(upc: $upc) {

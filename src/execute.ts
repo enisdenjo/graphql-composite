@@ -109,7 +109,7 @@ async function executeResolver(
       // TODO: should throw if resultRef's data is not available?
       setAtPath(resultRef.data, pathInData, {});
     }
-    return resolver.kind === 'scalar'
+    return resolver.kind === 'primitive'
       ? {
           ...resolver,
           pathInData,
@@ -128,7 +128,7 @@ async function executeResolver(
   if (result.errors?.length) {
     // stop immediately on errors, we cant traverse further
     resultRef.errors = [...(resultRef.errors || []), ...result.errors];
-    return resolver.kind === 'scalar'
+    return resolver.kind === 'primitive'
       ? {
           ...resolver,
           ...result,
@@ -166,7 +166,7 @@ async function executeResolver(
     populateResultWithExportData(resolver, exportData, pathInData, resultRef);
   }
 
-  return resolver.kind === 'scalar'
+  return resolver.kind === 'primitive'
     ? {
         ...resolver,
         ...result,
@@ -279,7 +279,7 @@ function populateResultWithExportData(
     resultRef.data = {};
   }
 
-  if (resolver.kind === 'scalar') {
+  if (resolver.kind === 'primitive') {
     // scalar fields are exported directly at the path in the result
     setAtPath(resultRef.data, pathInData, exportData);
     return;
@@ -382,7 +382,7 @@ function getPublicPathsOfExport(exp: OperationExport): string[][] {
     return [];
   }
 
-  if (exp.kind === 'scalar') {
+  if (exp.kind === 'scalar' || exp.kind === 'enum') {
     return [[exp.prop]];
   }
 
@@ -444,7 +444,7 @@ function getPublicPathsOfExport(exp: OperationExport): string[][] {
  * ```
  */
 function getDeepestObjectPublicPathsOfExport(exp: OperationExport): string[][] {
-  if (exp.private || exp.kind === 'scalar') {
+  if (exp.private || exp.kind === 'scalar' || exp.kind === 'enum') {
     return [[]];
   }
 

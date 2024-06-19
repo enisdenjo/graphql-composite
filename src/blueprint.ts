@@ -117,14 +117,14 @@ export type BlueprintCompositeResolver =
   | BlueprintInterfaceResolver
   | BlueprintObjectResolver;
 
-export interface BlueprintScalarResolver extends BlueprintResolver {
-  kind: 'scalar';
+export interface BlueprintPrimitiveResolver extends BlueprintResolver {
+  kind: 'primitive';
 }
 
 export type BlueprintTypeResolver =
   | BlueprintInterfaceResolver
   | BlueprintObjectResolver
-  | BlueprintScalarResolver;
+  | BlueprintPrimitiveResolver;
 
 export type BlueprintResolverVariable =
   | BlueprintResolverUserVariable

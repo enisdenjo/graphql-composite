@@ -156,8 +156,6 @@ async function executeResolver(
   if (Array.isArray(exportData)) {
     for (let i = 0; i < exportData.length; i++) {
       const exportDataItem = exportData[i];
-      console.log('populate', i + 1, '/', exportData.length);
-      console.log('start', [...pathInData, i].join('.'));
       populateResultWithExportData(
         resolver,
         exportDataItem,
@@ -166,11 +164,8 @@ async function executeResolver(
       );
     }
   } else {
-    console.log('populate');
     populateResultWithExportData(resolver, exportData, pathInData, resultRef);
   }
-
-  console.log(' < populated');
 
   return resolver.kind === 'primitive'
     ? {
@@ -334,7 +329,6 @@ function populateResultWithExportData(
 
   if (resolver.kind === 'primitive') {
     // scalar fields are exported directly at the path in the result
-    console.log('Setting (1)', pathInData.join('.'), 'to', exportData);
     setAtPath(resultRef.data, pathInData, exportData);
     return;
   }
@@ -389,95 +383,44 @@ function populateResultWithExportData(
     populateResultChunkWithExportData(
       getExportAtPath(resolver.exports, exportPath),
       exportPath,
+      exportPath,
       exportData,
       dataRef,
     );
   }
 
-  // for (const rewrite of rewrites) {
-  //   assert(
-  //     rewrite.to.length === rewrite.from.length,
-  //     'Rewrite public export path and path should have the same length',
-  //   );
+  for (const rewrite of rewrites) {
+    assert(
+      rewrite.to.length === rewrite.from.length,
+      'Rewrite public export path and path should have the same length',
+    );
+    populateResultChunkWithAliasedData(
+      getExportAtPath(resolver.exports, rewrite.from),
+      rewrite,
+      exportData,
+      dataRef,
+    );
+  }
+}
 
-  //   const importPath = rewrite.from;
-  //   const exportPath = rewrite.to;
-
-  //   console.log('From ', importPath);
-  //   console.log('To   ', exportPath);
-
-  //   const lastFromKey = importPath[importPath.length - 1];
-  //   const lastToKey = exportPath[exportPath.length - 1];
-  //   const valBeforeLast =
-  //     importPath.length > 1
-  //       ? getAtPath(exportData, importPath.slice(0, importPath.length - 1))
-  //       : null;
-
-  //   // console.log('before last p', importPath.slice(0, importPath.length - 1));
-  //   // console.log('valBeforeLast', valBeforeLast);
-
-  //   if (Array.isArray(valBeforeLast)) {
-  //     // if we're exporting fields in an array, set for each item of the array
-  //     for (let i = 0; i < valBeforeLast.length; i++) {
-  //       // console.log(' ', i);
-  //       // console.log('   value before last', valBeforeLast[i]);
-  //       // console.log('   last key         ', lastFromKey);
-  //       const value = getAtPath(valBeforeLast[i], [lastFromKey!]);
-
-  //       if (value !== undefined) {
-  //         console.log(
-  //           ' Rewriting (3)',
-  //           [
-  //             ...pathInData,
-  //             ...exportPath.slice(0, exportPath.length - 1)!,
-  //             i,
-  //             lastToKey!,
-  //           ].join('.'),
-  //           'to',
-  //           value,
-  //         );
-  //         setAtPath(
-  //           resultRef.data,
-  //           [
-  //             ...pathInData,
-  //             ...exportPath.slice(0, exportPath.length - 1)!,
-  //             i,
-  //             lastToKey!,
-  //           ],
-  //           value,
-  //         );
-  //       } else {
-  //         console.log(
-  //           ' no value (3)',
-  //           [
-  //             ...pathInData,
-  //             ...exportPath.slice(0, exportPath.length - 1)!,
-  //             i,
-  //             lastToKey!,
-  //           ].join('.'),
-  //         );
-  //       }
-  //     }
-  //   } else {
-  //     // otherwise, just set in object
-  //     const value = getAtPath(exportData, importPath);
-  //     console.log(JSON.stringify(exportData, null, 2));
-  //     console.log('>  ', importPath);
-
-  //     // if the value is undefined, we don't want to set it
-  //     if (value !== undefined) {
-  //       console.log(
-  //         ' Rewriting (4)',
-  //         [...pathInData, ...exportPath].join('.'),
-  //         'to',
-  //         value,
-  //       );
-  //       // setAtPath(resultRef.data, [...pathInData, ...exportPath], value);
-  //     } else {
-  //       console.log(' no value (4)');
-  //     }
-  //   }
-  // }
+function populateResultChunkWithAliasedData(
+  exp: OperationExport,
+  rewrite: {
+    to: string[];
+    from: string[];
+  },
+  exportData: unknown,
+  parentDataRef: unknown,
+) {
+  populateResultChunkWithExportData(
+    exp,
+    rewrite.from,
+    rewrite.to,
+    rewrite.from.length > 1
+      ? getAtPath(exportData, rewrite.from.slice(0, rewrite.from.length - 1))
+      : exportData,
+    parentDataRef,
+  );
 }
 
 /**
@@ -709,7 +652,7 @@ export function getExportAtPath(
  * It does it by mutating the result data reference.
  *
  * Important thing to understand here is that it always operates on relative data,
- * meaning that {@link exp}, {@link exportPath}, {@link exportData} and {@link parentDataRef} are always relative to each other.
+ * meaning that {@link exp}, {@link exportReadPath}, {@link exportWritePath}, {@link exportData} and {@link parentDataRef} are always relative to each other.
  *
  *  {
  *    data: {
@@ -723,10 +666,11 @@ export function getExportAtPath(
  * Each time we go deeper, we mutate a chunk of the result data reference.
  *
  * Example set of arguments:
- *  {@link exp}           { kind: 'scalar', name: 'name', prop: 'name' }
- *  {@link exportPath}    [ 'name']
- *  {@link exportData}    { id: 1, name: 'u-1' }
- *  {@link parentDataRef} { id: 1 }
+ *  {@link exp}             { kind: 'scalar', name: 'name', prop: 'name_1', originalProp: 'name' }
+ *  {@link exportReadPath}  [ 'name']
+ *  {@link exportWritePath} [ 'name_1']
+ *  {@link exportData}      { id: 1, name_1: 'u-1' }
+ *  {@link parentDataRef}   { id: 1 }
  *
  * The result will be:
  *    data: {
@@ -738,28 +682,35 @@ export function getExportAtPath(
  */
 function populateResultChunkWithExportData(
   /**
-   * The export operation matching the current {@link exportPath}.
+   * The export operation matching the current {@link exportReadPath} and {@link exportWritePath}.
    */
   exp: OperationExport,
   /**
    * The path to pluck data from the {@link exportData}.
    * It's always relative.
    */
-  exportPath: (string | number)[],
+  exportReadPath: (string | number)[],
+  /**
+   * The path to set data to {@link parentDataRef}.
+   * It's always relative.
+   */
+  exportWritePath: (string | number)[],
   /**
    * The data to populate the {@link parentDataRef} with.
    */
   exportData: unknown,
   /**
    * A chunk of ExecutionResult.data that is mutated to form the final result.
-   * It's always relative to the {@link exportPath}.
+   * It's always relative to the {@link exportReadPath} and {@link exportWritePath}.
    */
   parentDataRef: unknown,
 ) {
-  const prop = exportPath[0];
-  assert(prop != null, `Expected prop to be defined`);
+  const readProp = exportReadPath[0];
+  const writeProp = exportWritePath[0];
+  assert(readProp != null, `Expected read prop to be defined`);
+  assert(writeProp != null, `Expected write prop to be defined`);
 
-  const isLeaf = exportPath.length === 1;
+  const isLeaf = exportReadPath.length === 1;
 
   // If exportData is not present, we don't need to do anything
   if (exportData === undefined || exportData === null) {
@@ -768,24 +719,24 @@ function populateResultChunkWithExportData(
 
   // Assign the value based on export data and prop
   let exportValue = undefined;
-  if (typeof prop === 'number') {
+  if (typeof readProp === 'number') {
     assert(
       Array.isArray(exportData),
       'Expected exportData to be an array when prop is a number',
     );
 
     // If prop is a number, we need to get the value from the array
-    exportValue = exportData[prop];
+    exportValue = exportData[readProp];
   }
 
-  if (typeof prop === 'string') {
+  if (typeof readProp === 'string') {
     assert(
       isRecord(exportData),
-      `Expected exportData to be an object when prop is a string, got: ${JSON.stringify(exportData)}`,
+      `Expected exportData to be an object when prop "${readProp}" is a string, got: ${JSON.stringify(exportData)}`,
     );
 
     // If prop is a string, we need to get the value from the object
-    exportValue = exportData[prop];
+    exportValue = exportData[readProp];
   }
 
   if (exportValue === undefined) {
@@ -803,13 +754,13 @@ function populateResultChunkWithExportData(
 
     // If the parentDataRef does not have any data
     // We initialise it as an empty array
-    if (!Array.isArray(parentDataRef[prop])) {
-      parentDataRef[prop] = [];
+    if (!Array.isArray(parentDataRef[writeProp])) {
+      parentDataRef[writeProp] = [];
     }
 
     if (isLeaf) {
       // If it's a leaf ([String] for example), we just need to assign the value to the parentDataRef
-      parentDataRef[prop] = exportValue.map((val) =>
+      parentDataRef[writeProp] = exportValue.map((val) =>
         correctPrimitiveValue(exp!, val),
       );
       return;
@@ -820,14 +771,18 @@ function populateResultChunkWithExportData(
       // Prepend the index to the export path
       // so we can populate the export data correctly,
       // by mutating using a reference.
-      const pathAfter = ([j] as (string | number)[]).concat(
-        exportPath.slice(1),
+      const exportReadPathAfter = ([j] as (string | number)[]).concat(
+        exportReadPath.slice(1),
+      );
+      const exportWritePathAfter = ([j] as (string | number)[]).concat(
+        exportWritePath.slice(1),
       );
       populateResultChunkWithExportData(
         exp,
-        pathAfter,
+        exportReadPathAfter,
+        exportWritePathAfter,
         exportValue,
-        parentDataRef[prop],
+        parentDataRef[writeProp],
       );
     }
     return;
@@ -835,17 +790,21 @@ function populateResultChunkWithExportData(
 
   if (exportValue === null) {
     assert(isRecord(parentDataRef), 'Expected parentDataRef to be an object');
-    parentDataRef[prop] = null;
+    parentDataRef[writeProp] = null;
     return;
   }
 
   if (typeof exportValue === 'object') {
-    if (typeof prop === 'number') {
+    if (typeof readProp === 'number') {
       assert(
         Array.isArray(parentDataRef),
         'Expected parentDataRef to be an array',
       );
-      const index = prop;
+      assert(
+        typeof writeProp === 'number',
+        'Expected writeProp to be number as well',
+      );
+      const index = writeProp;
 
       if (parentDataRef.length <= index) {
         parentDataRef.push({});
@@ -853,7 +812,8 @@ function populateResultChunkWithExportData(
 
       populateResultChunkWithExportData(
         exp,
-        exportPath.slice(1),
+        exportReadPath.slice(1),
+        exportWritePath.slice(1),
         exportValue,
         parentDataRef[index],
       );
@@ -862,8 +822,8 @@ function populateResultChunkWithExportData(
 
     assert(isRecord(parentDataRef), 'Expected parentDataRef to be an object');
 
-    if (!parentDataRef[prop]) {
-      parentDataRef[prop] = isLeaf
+    if (!parentDataRef[writeProp]) {
+      parentDataRef[writeProp] = isLeaf
         ? correctPrimitiveValue(exp!, exportValue)
         : {};
     }
@@ -871,16 +831,17 @@ function populateResultChunkWithExportData(
     if (!isLeaf) {
       populateResultChunkWithExportData(
         exp,
-        exportPath.slice(1),
+        exportReadPath.slice(1),
+        exportWritePath.slice(1),
         exportValue,
-        parentDataRef[prop],
+        parentDataRef[writeProp],
       );
     }
     return;
   }
 
   assert(isRecord(parentDataRef), 'Expected parentDataRef to be an object');
-  parentDataRef[prop] = correctPrimitiveValue(exp, exportValue);
+  parentDataRef[writeProp] = correctPrimitiveValue(exp, exportValue);
 }
 
 function correctPrimitiveValue(exp: OperationExport, val: unknown): unknown {

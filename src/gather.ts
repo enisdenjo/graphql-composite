@@ -375,11 +375,7 @@ export function planGather(
           true,
         );
       }
-      deduplicateSameLevelDifferentTypeFields(
-        blueprint,
-        resolver.subgraph,
-        resolver.exports,
-      );
+      augmentConcflictingFields(blueprint, resolver.subgraph, resolver.exports);
     }
 
     gatherPlan.operation.resolvers[field.prop] = resolver;
@@ -395,7 +391,7 @@ export function planGather(
   return gatherPlan;
 }
 
-function deduplicateSameLevelDifferentTypeFields(
+function augmentConcflictingFields(
   blueprint: Blueprint,
   subgraph: string,
   exports: OperationExport[],
@@ -407,25 +403,18 @@ function deduplicateSameLevelDifferentTypeFields(
   } = {};
   let overwriteCount = 0;
   for (const frag of exports.filter(
+    // we only worry about fragments because same field names in an object are enforced during validation
     (e): e is OperationFragmentExport => e.kind === 'fragment',
   )) {
     const type = blueprint.types[frag.typeCondition]!;
     for (const sel of frag.selections) {
       if (sel.kind === 'fragment') {
-        deduplicateSameLevelDifferentTypeFields(
-          blueprint,
-          subgraph,
-          sel.selections,
-        );
+        augmentConcflictingFields(blueprint, subgraph, sel.selections);
         continue;
       }
 
       if (sel.kind === 'object') {
-        deduplicateSameLevelDifferentTypeFields(
-          blueprint,
-          subgraph,
-          sel.selections,
-        );
+        augmentConcflictingFields(blueprint, subgraph, sel.selections);
         // no "continue" because the object selection may be of a different type too
       }
 

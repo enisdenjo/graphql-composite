@@ -28,6 +28,9 @@ import {
 } from './blueprint.js';
 import { flattenFragments, isListType as parseIsListType } from './utils.js';
 
+export const OVERWRITE_FIELD_NAME_PART =
+  '__OVERWRITE_EXISTING_FIELD_IF_THIS_ONE_NOT_NULL__';
+
 export interface GatherPlan {
   query: string;
   /**
@@ -372,6 +375,11 @@ export function planGather(
           true,
         );
       }
+      deduplicateSameLevelDifferentTypeFields(
+        blueprint,
+        resolver.subgraph,
+        resolver.exports,
+      );
     }
 
     gatherPlan.operation.resolvers[field.prop] = resolver;
@@ -385,6 +393,49 @@ export function planGather(
   );
 
   return gatherPlan;
+}
+
+function deduplicateSameLevelDifferentTypeFields(
+  blueprint: Blueprint,
+  subgraph: string,
+  exports: OperationExport[],
+) {
+  // TODO: drop null assertions
+
+  const appearing: {
+    [fieldName: string]: /* typeName: */ string;
+  } = {};
+  let overwriteCount = 0;
+  for (const frag of exports.filter(
+    (e): e is OperationFragmentExport => e.kind === 'fragment',
+  )) {
+    const type = blueprint.types[frag.typeCondition]!;
+    for (const sel of frag.selections) {
+      if (sel.kind === 'fragment') {
+        return deduplicateSameLevelDifferentTypeFields(
+          blueprint,
+          subgraph,
+          sel.selections,
+        );
+      }
+
+      const fieldName = sel.prop;
+      const fieldTypeName = type.fields[fieldName]!.types[subgraph]!;
+
+      const appearingTypeName = appearing[fieldName];
+      if (!appearingTypeName) {
+        appearing[fieldName] = fieldTypeName;
+        continue;
+      }
+      if (appearingTypeName === fieldTypeName) {
+        continue;
+      }
+
+      // different type from a previously appearing, same named, field
+      sel.prop = `${fieldName}${OVERWRITE_FIELD_NAME_PART}${overwriteCount}`;
+      overwriteCount++;
+    }
+  }
 }
 
 type OperationPrimitiveField = OperationPrimitiveExport & {

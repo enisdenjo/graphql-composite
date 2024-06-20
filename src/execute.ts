@@ -1,7 +1,12 @@
 import { ExecutionResult, GraphQLError } from 'graphql';
 import getAtPath from 'lodash.get';
 import setAtPath from 'lodash.set';
-import { GatherPlan, GatherPlanResolver, OperationExport } from './gather.js';
+import {
+  GatherPlan,
+  GatherPlanResolver,
+  OperationExport,
+  OVERWRITE_FIELD_NAME_PART,
+} from './gather.js';
 import { Transport } from './transport.js';
 
 export type SourceTransports = {
@@ -332,7 +337,23 @@ function populateResultWithExportData(
           // some enum values can be inaccessible and should therefore be nullified
           val = null;
         }
-        setAtPath(resultRef.data, [...pathInData, ...exportPath], val);
+
+        const [lastProp, overwriteCount] = exportPath[
+          exportPath.length - 1
+        ]!.split(OVERWRITE_FIELD_NAME_PART);
+        if (overwriteCount && val != null) {
+          setAtPath(
+            resultRef.data,
+            [
+              ...pathInData,
+              ...exportPath.slice(0, exportPath.length - 1),
+              lastProp!,
+            ],
+            val,
+          );
+        } else {
+          setAtPath(resultRef.data, [...pathInData, ...exportPath], val);
+        }
       }
     }
   }

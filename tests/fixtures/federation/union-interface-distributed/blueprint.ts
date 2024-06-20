@@ -34,6 +34,9 @@ export const blueprint: Blueprint = {
         products: {
           name: 'products',
           subgraphs: ['a'],
+          types: {
+            a: '[Product]',
+          },
           resolvers: {
             a: {
               subgraph: 'a',
@@ -54,6 +57,9 @@ export const blueprint: Blueprint = {
         toasters: {
           name: 'toasters',
           subgraphs: ['a'],
+          types: {
+            a: '[Toaster]',
+          },
           resolvers: {
             a: {
               subgraph: 'a',
@@ -74,6 +80,9 @@ export const blueprint: Blueprint = {
         nodes: {
           name: 'nodes',
           subgraphs: ['a'],
+          types: {
+            a: '[Node]',
+          },
           resolvers: {
             a: {
               subgraph: 'a',
@@ -94,6 +103,9 @@ export const blueprint: Blueprint = {
         node: {
           name: 'node',
           subgraphs: ['a'],
+          types: {
+            a: 'Node',
+          },
           resolvers: {
             a: {
               subgraph: 'a',
@@ -126,11 +138,18 @@ export const blueprint: Blueprint = {
         __typename: {
           name: '__typename',
           subgraphs: ['a'],
+          types: {
+            a: 'String!',
+          },
           resolvers: {},
         },
         id: {
           name: 'id',
           subgraphs: ['a', 'b'],
+          types: {
+            a: 'ID!',
+            b: 'ID!',
+          },
           resolvers: {},
         },
       },
@@ -143,6 +162,9 @@ export const blueprint: Blueprint = {
         __typename: {
           name: '__typename',
           subgraphs: ['a'],
+          types: {
+            a: 'String!',
+          },
           resolvers: {},
         },
       },
@@ -165,16 +187,25 @@ export const blueprint: Blueprint = {
         __typename: {
           name: '__typename',
           subgraphs: ['a'],
+          types: {
+            a: 'String!',
+          },
           resolvers: {},
         },
         id: {
           name: 'id',
           subgraphs: ['a'],
+          types: {
+            a: 'ID!',
+          },
           resolvers: {},
         },
         warranty: {
           name: 'warranty',
           subgraphs: ['a'],
+          types: {
+            a: 'Int',
+          },
           resolvers: {},
         },
       },
@@ -224,16 +255,27 @@ export const blueprint: Blueprint = {
         __typename: {
           name: '__typename',
           subgraphs: ['a', 'b'],
+          types: {
+            a: 'String!',
+            b: 'String!',
+          },
           resolvers: {},
         },
         id: {
           name: 'id',
           subgraphs: ['a', 'b'],
+          types: {
+            a: 'ID!',
+            b: 'ID!',
+          },
           resolvers: {},
         },
         warranty: {
           name: 'warranty',
           subgraphs: ['b'],
+          types: {
+            b: 'Int',
+          },
           resolvers: {},
         },
       },

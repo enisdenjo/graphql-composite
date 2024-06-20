@@ -297,13 +297,35 @@ function populateResultWithExportData(
       // see [NOTE 1] in gather.ts for more info on why we perform no-export operations
       setAtPath(resultRef.data, [...pathInData, ...deepestObjectPath], {});
     }
-  } else {
-    populateResult(
-      resolver.exports,
-      publicExportPaths,
+    return;
+  }
+
+  for (const exportPath of publicExportPaths) {
+    let dataRef = pathInData.length
+      ? getAtPath(resultRef.data, pathInData)
+      : resultRef.data;
+
+    if (dataRef === undefined) {
+      dataRef = resultRef.data;
+      for (let i = 0; i < pathInData.length; i++) {
+        const key = pathInData[i];
+        const nextKey = pathInData[i + 1];
+
+        assert(key !== undefined, 'Expected key to be defined');
+
+        if (dataRef[key] === undefined) {
+          dataRef[key] = typeof nextKey === 'number' ? [] : {};
+        }
+
+        dataRef = dataRef[key];
+      }
+    }
+
+    populateResultChunkWithExportData(
+      getExportAtPath(resolver.exports, exportPath),
+      exportPath,
       exportData,
-      pathInData,
-      resultRef,
+      dataRef,
     );
   }
 }
@@ -492,60 +514,6 @@ export function getExportAtPath(
 }
 
 /**
- * Sets each of the publicly exported fields of the composite resolver
- * to the result object reference.
- */
-export function populateResult(
-  resolverExports: OperationExport[],
-  exportPaths: string[][],
-  exportData: unknown,
-  /**
-   * The path in the {@link resultRef} data this gather is resolving.
-   */
-  pathInData: (string | number)[],
-  /**
-   * Reference whose object gets mutated to form the final
-   * result (the one that the caller gets).
-   */
-  resultRef: ExecutionResult,
-) {
-  if (!resultRef.data) {
-    // at this point, we're sure that there are no errors
-    // so we can initialise the result data (if not already)
-    resultRef.data = {};
-  }
-
-  for (const exportPath of exportPaths) {
-    let dataRef = pathInData.length
-      ? getAtPath(resultRef.data, pathInData)
-      : resultRef.data;
-
-    if (dataRef === undefined) {
-      dataRef = resultRef.data;
-      for (let i = 0; i < pathInData.length; i++) {
-        const key = pathInData[i];
-        const nextKey = pathInData[i + 1];
-
-        assert(key !== undefined, 'Expected key to be defined');
-
-        if (dataRef[key] === undefined) {
-          dataRef[key] = typeof nextKey === 'number' ? [] : {};
-        }
-
-        dataRef = dataRef[key];
-      }
-    }
-
-    populateExport(
-      getExportAtPath(resolverExports, exportPath),
-      exportPath,
-      exportData,
-      dataRef,
-    );
-  }
-}
-
-/**
  * Populates the chunk of ExecutionResult.data with the export data.
  * It does it by mutating the result data reference.
  *
@@ -577,7 +545,7 @@ export function populateResult(
  *    }
  *  }
  */
-function populateExport(
+function populateResultChunkWithExportData(
   /**
    * The export operation matching the current {@link exportPath}.
    */
@@ -598,7 +566,7 @@ function populateExport(
   parentDataRef: unknown,
 ) {
   const prop = exportPath[0];
-  assert(prop, `Expected prop to be defined`);
+  assert(prop != null, `Expected prop to be defined`);
 
   const isLeaf = exportPath.length === 1;
 
@@ -664,7 +632,12 @@ function populateExport(
       const pathAfter = ([j] as (string | number)[]).concat(
         exportPath.slice(1),
       );
-      populateExport(exp, pathAfter, exportValue, parentDataRef[prop]);
+      populateResultChunkWithExportData(
+        exp,
+        pathAfter,
+        exportValue,
+        parentDataRef[prop],
+      );
     }
     return;
   }
@@ -687,7 +660,7 @@ function populateExport(
         parentDataRef.push({});
       }
 
-      populateExport(
+      populateResultChunkWithExportData(
         exp,
         exportPath.slice(1),
         exportValue,
@@ -705,7 +678,7 @@ function populateExport(
     }
 
     if (!isLeaf) {
-      populateExport(
+      populateResultChunkWithExportData(
         exp,
         exportPath.slice(1),
         exportValue,

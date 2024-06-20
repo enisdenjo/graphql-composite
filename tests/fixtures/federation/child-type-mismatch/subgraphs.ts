@@ -6,12 +6,11 @@ import {
 } from '../../../utils.js';
 
 const users = [
-    {
-      id: 'u1',
-      name: 'u1-name',
-    },
-  ];
-  
+  {
+    id: 'u1',
+    name: 'u1-name',
+  },
+];
 
 function accounts() {
   return [

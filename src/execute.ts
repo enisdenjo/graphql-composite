@@ -319,16 +319,33 @@ function populateResultWithExportData(
             // some enum values can be inaccessible and should therefore be nullified
             val = null;
           }
-          setAtPath(
-            resultRef.data,
-            [
-              ...pathInData,
-              ...exportPath.slice(0, exportPath.length - 1)!,
-              i,
-              lastKey!,
-            ],
-            val,
+
+          const [lastProp, overwriteCount] = lastKey!.split(
+            OVERWRITE_FIELD_NAME_PART,
           );
+          if (overwriteCount && val != null) {
+            setAtPath(
+              resultRef.data,
+              [
+                ...pathInData,
+                ...exportPath.slice(0, exportPath.length - 1)!,
+                i,
+                lastProp!,
+              ],
+              val,
+            );
+          } else {
+            setAtPath(
+              resultRef.data,
+              [
+                ...pathInData,
+                ...exportPath.slice(0, exportPath.length - 1)!,
+                i,
+                lastKey!,
+              ],
+              val,
+            );
+          }
         }
       } else {
         // otherwise, just set in object

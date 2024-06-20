@@ -411,12 +411,17 @@ function deduplicateSameLevelDifferentTypeFields(
   )) {
     const type = blueprint.types[frag.typeCondition]!;
     for (const sel of frag.selections) {
-      if (sel.kind === 'fragment') {
-        return deduplicateSameLevelDifferentTypeFields(
+      if (
+        sel.kind === 'fragment' ||
+        // TODO: can composite fields also be type mismatched?
+        sel.kind === 'object'
+      ) {
+        deduplicateSameLevelDifferentTypeFields(
           blueprint,
           subgraph,
           sel.selections,
         );
+        continue;
       }
 
       const fieldName = sel.prop;

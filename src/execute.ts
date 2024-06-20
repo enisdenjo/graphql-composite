@@ -305,7 +305,7 @@ function populateResultWithExportData(
     for (const exportPath of publicExportPaths) {
       const exp = getExportAtPath(resolver.exports, exportPath);
 
-      const lastKey = exportPath[exportPath.length - 1];
+      const lastPathPart = exportPath[exportPath.length - 1];
       const valBeforeLast =
         exportPath.length > 1
           ? getAtPath(exportData, exportPath.slice(0, exportPath.length - 1))
@@ -314,38 +314,42 @@ function populateResultWithExportData(
       if (Array.isArray(valBeforeLast)) {
         // if we're exporting fields in an array, set for each item of the array
         for (let i = 0; i < valBeforeLast.length; i++) {
-          let val = getAtPath(valBeforeLast[i], [lastKey!]);
+          let val = getAtPath(valBeforeLast[i], [lastPathPart!]);
           if (exp.kind === 'enum' && !exp.values.includes(val)) {
             // some enum values can be inaccessible and should therefore be nullified
             val = null;
           }
 
-          const [lastProp, overwriteCount] = lastKey!.split(
-            OVERWRITE_FIELD_NAME_PART,
-          );
-          if (overwriteCount && val != null) {
-            setAtPath(
-              resultRef.data,
-              [
-                ...pathInData,
-                ...exportPath.slice(0, exportPath.length - 1)!,
-                i,
-                lastProp!,
-              ],
-              val,
-            );
-          } else {
-            setAtPath(
-              resultRef.data,
-              [
-                ...pathInData,
-                ...exportPath.slice(0, exportPath.length - 1)!,
-                i,
-                lastKey!,
-              ],
-              val,
-            );
+          const path = [
+            ...pathInData,
+            ...exportPath.slice(0, exportPath.length - 1)!,
+            i,
+            lastPathPart,
+          ];
+
+          // we check for overwrites only after getting the value from the export data.
+          // this is because the overwrite field is aliased with a different name compared
+          // to the overwriting field
+          const [lastKey, overwriteCount] = path
+            .pop()! // take last key
+            .toString() // make sure its a string
+            .split(OVERWRITE_FIELD_NAME_PART); // check if overwrite field
+          path.push(lastKey!);
+          if (overwriteCount && val == null) {
+            // it's an overwrite field but the value is nullish, skip setting it
+            continue;
           }
+
+          setAtPath(
+            resultRef.data,
+            [
+              ...pathInData,
+              ...exportPath.slice(0, exportPath.length - 1)!,
+              i,
+              lastKey!,
+            ],
+            val,
+          );
         }
       } else {
         // otherwise, just set in object
@@ -355,22 +359,21 @@ function populateResultWithExportData(
           val = null;
         }
 
-        const [lastProp, overwriteCount] = exportPath[
-          exportPath.length - 1
-        ]!.split(OVERWRITE_FIELD_NAME_PART);
-        if (overwriteCount && val != null) {
-          setAtPath(
-            resultRef.data,
-            [
-              ...pathInData,
-              ...exportPath.slice(0, exportPath.length - 1),
-              lastProp!,
-            ],
-            val,
-          );
-        } else {
-          setAtPath(resultRef.data, [...pathInData, ...exportPath], val);
+        // we check for overwrites only after getting the value from the export data.
+        // this is because the overwrite field is aliased with a different name compared
+        // to the overwriting field
+        const path = [...pathInData, ...exportPath];
+        const [lastKey, overwriteCount] = path
+          .pop()! // take last key
+          .toString() // make sure its a string
+          .split(OVERWRITE_FIELD_NAME_PART); // check if overwrite field
+        path.push(lastKey!);
+        if (overwriteCount && val == null) {
+          // it's an overwrite field but the value is nullish, skip setting it
+          continue;
         }
+
+        setAtPath(resultRef.data, path, val);
       }
     }
   }

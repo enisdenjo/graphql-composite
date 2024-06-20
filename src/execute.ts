@@ -156,6 +156,8 @@ async function executeResolver(
   if (Array.isArray(exportData)) {
     for (let i = 0; i < exportData.length; i++) {
       const exportDataItem = exportData[i];
+      console.log('populate', i + 1, '/', exportData.length);
+      console.log('start', [...pathInData, i].join('.'));
       populateResultWithExportData(
         resolver,
         exportDataItem,
@@ -164,8 +166,11 @@ async function executeResolver(
       );
     }
   } else {
+    console.log('populate');
     populateResultWithExportData(resolver, exportData, pathInData, resultRef);
   }
+
+  console.log(' < populated');
 
   return resolver.kind === 'primitive'
     ? {
@@ -274,6 +279,53 @@ function populateResultWithExportData(
    */
   resultRef: ExecutionResult,
 ) {
+  /*
+
+  similarAccounts.id_0 -> similarAccounts.id
+    0 -> nothing
+    1 -> "a1" (accounts.0.similarAccounts.1.id)
+
+  similarAccounts.id_1 -> similarAccounts.id
+    0 -> nothing
+    1 -> nothing
+
+  
+
+
+  {
+    accounts {
+      ... on User {
+        id                  # accounts.id
+        name                # accounts.name   
+        similarAccounts {   # accounts.similarAccounts
+          ... on User {     # accounts.similarAccounts
+            id              # accounts.similarAccounts.id
+            name            # accounts.similarAccounts.name
+          }
+          ... on Admin {
+            id_0: id        # accounts.similarAccounts.id
+            name            # accounts.similarAccounts.name
+          }
+        }
+      }
+      ... on Admin {
+        id_0: id            # accounts.id
+        name                # accounts.name
+        similarAccounts {   # accounts.similarAccounts
+          ... on User {
+            id              # accounts.similarAccounts.id
+            name            # accounts.similarAccounts.name
+          }
+          ... on Admin {
+            id_1: id        # accounts.similarAccounts.id
+            name            # accounts.similarAccounts.name
+          }
+        }
+      }
+    }
+  }
+  
+  */
   if (!resultRef.data) {
     // at this point, we're sure that there are no errors
     // so we can initialise the result data (if not already)
@@ -282,6 +334,7 @@ function populateResultWithExportData(
 
   if (resolver.kind === 'primitive') {
     // scalar fields are exported directly at the path in the result
+    console.log('Setting (1)', pathInData.join('.'), 'to', exportData);
     setAtPath(resultRef.data, pathInData, exportData);
     return;
   }
@@ -290,9 +343,9 @@ function populateResultWithExportData(
   // Each item has a path and a publicExportPath.
   const rewrites: Array<{
     // path in the export data
-    path: string[][];
+    from: string[];
     // path in the result data
-    publicExportPath: string[][];
+    to: string[];
   }> = [];
   const publicExportPaths = resolver.exports.flatMap((p) =>
     getPublicPathsOfExport(p, rewrites),
@@ -306,6 +359,8 @@ function populateResultWithExportData(
       // to make the pathInData an object (because it's a composite resolver)
       // see [NOTE 1] in gather.ts for more info on why we perform no-export operations
       setAtPath(resultRef.data, [...pathInData, ...deepestObjectPath], {});
+      // TODO: is there a case when we should include aliased fields here?
+      //       Can they be the deepest field?
     }
     return;
   }
@@ -339,51 +394,90 @@ function populateResultWithExportData(
     );
   }
 
-  for (const rewrite of rewrites) {
-    assert(
-      rewrite.publicExportPath.length === rewrite.path.length,
-      'Rewrite public export path and path should have the same length',
-    );
+  // for (const rewrite of rewrites) {
+  //   assert(
+  //     rewrite.to.length === rewrite.from.length,
+  //     'Rewrite public export path and path should have the same length',
+  //   );
 
-    for (let i = 0; i < rewrite.publicExportPath.length; i++) {
-      const exportPath = rewrite.publicExportPath[i]!;
-      const importPath = rewrite.path[i]!;
+  //   const importPath = rewrite.from;
+  //   const exportPath = rewrite.to;
 
-      const lastKey = importPath[importPath.length - 1];
-      const valBeforeLast =
-        importPath.length > 1
-          ? getAtPath(exportData, importPath.slice(0, importPath.length - 1))
-          : null;
+  //   console.log('From ', importPath);
+  //   console.log('To   ', exportPath);
 
-      if (Array.isArray(valBeforeLast)) {
-        // if we're exporting fields in an array, set for each item of the array
-        for (let i = 0; i < valBeforeLast.length; i++) {
-          const value = getAtPath(valBeforeLast[i], [lastKey!]);
+  //   const lastFromKey = importPath[importPath.length - 1];
+  //   const lastToKey = exportPath[exportPath.length - 1];
+  //   const valBeforeLast =
+  //     importPath.length > 1
+  //       ? getAtPath(exportData, importPath.slice(0, importPath.length - 1))
+  //       : null;
 
-          if (value !== undefined) {
-            setAtPath(
-              resultRef.data,
-              [
-                ...pathInData,
-                ...exportPath.slice(0, exportPath.length - 1)!,
-                i,
-                lastKey!,
-              ],
-              value,
-            );
-          }
-        }
-      } else {
-        // otherwise, just set in object
-        const value = getAtPath(exportData, importPath);
+  //   // console.log('before last p', importPath.slice(0, importPath.length - 1));
+  //   // console.log('valBeforeLast', valBeforeLast);
 
-        // if the value is undefined, we don't want to set it
-        if (value !== undefined) {
-          setAtPath(resultRef.data, [...pathInData, ...exportPath], value);
-        }
-      }
-    }
-  }
+  //   if (Array.isArray(valBeforeLast)) {
+  //     // if we're exporting fields in an array, set for each item of the array
+  //     for (let i = 0; i < valBeforeLast.length; i++) {
+  //       // console.log(' ', i);
+  //       // console.log('   value before last', valBeforeLast[i]);
+  //       // console.log('   last key         ', lastFromKey);
+  //       const value = getAtPath(valBeforeLast[i], [lastFromKey!]);
+
+  //       if (value !== undefined) {
+  //         console.log(
+  //           ' Rewriting (3)',
+  //           [
+  //             ...pathInData,
+  //             ...exportPath.slice(0, exportPath.length - 1)!,
+  //             i,
+  //             lastToKey!,
+  //           ].join('.'),
+  //           'to',
+  //           value,
+  //         );
+  //         setAtPath(
+  //           resultRef.data,
+  //           [
+  //             ...pathInData,
+  //             ...exportPath.slice(0, exportPath.length - 1)!,
+  //             i,
+  //             lastToKey!,
+  //           ],
+  //           value,
+  //         );
+  //       } else {
+  //         console.log(
+  //           ' no value (3)',
+  //           [
+  //             ...pathInData,
+  //             ...exportPath.slice(0, exportPath.length - 1)!,
+  //             i,
+  //             lastToKey!,
+  //           ].join('.'),
+  //         );
+  //       }
+  //     }
+  //   } else {
+  //     // otherwise, just set in object
+  //     const value = getAtPath(exportData, importPath);
+  //     console.log(JSON.stringify(exportData, null, 2));
+  //     console.log('>  ', importPath);
+
+  //     // if the value is undefined, we don't want to set it
+  //     if (value !== undefined) {
+  //       console.log(
+  //         ' Rewriting (4)',
+  //         [...pathInData, ...exportPath].join('.'),
+  //         'to',
+  //         value,
+  //       );
+  //       // setAtPath(resultRef.data, [...pathInData, ...exportPath], value);
+  //     } else {
+  //       console.log(' no value (4)');
+  //     }
+  //   }
+  // }
 }
 
 /**
@@ -435,20 +529,32 @@ function populateResultWithExportData(
 export function getPublicPathsOfExport(
   exp: OperationExport,
   rewrites: Array<{
-    path: string[][];
-    publicExportPath: string[][];
+    from: string[];
+    to: string[];
   }>,
+  current: {
+    from: string[];
+    to: string[];
+  } = {
+    from: [],
+    to: [],
+  },
 ): string[][] {
   if (exp.private) {
     // we care about public exports only
     return [];
   }
 
+  assert(
+    current.from.length === current.to.length,
+    `Current paths should have the same length, received ${JSON.stringify(current, null, 2)} for ${JSON.stringify(exp)}`,
+  );
+
   if (exp.kind === 'scalar' || exp.kind === 'enum') {
     if (exp.originalProp) {
       rewrites.push({
-        path: [[exp.prop]],
-        publicExportPath: [[exp.originalProp]],
+        from: current.from.concat(exp.prop),
+        to: current.to.concat(exp.originalProp),
       });
       return [];
     }
@@ -458,14 +564,19 @@ export function getPublicPathsOfExport(
 
   const paths: string[][] = [];
   for (const sel of exp.selections || []) {
-    const selPaths = getPublicPathsOfExport(sel, rewrites);
+    const selPaths = getPublicPathsOfExport(sel, rewrites, {
+      from: current.from.concat(exp.kind !== 'fragment' ? exp.prop : []),
+      to: current.to.concat(
+        exp.kind !== 'fragment' ? exp.originalProp ?? exp.prop : [],
+      ),
+    });
 
     for (const path of selPaths) {
       if ('name' in exp) {
         if (exp.originalProp) {
           rewrites.push({
-            path: [[exp.prop, ...path]],
-            publicExportPath: [[exp.originalProp, ...path]],
+            from: current.from.concat([exp.prop, ...path]),
+            to: current.to.concat([exp.originalProp, ...path]),
           });
           return [];
         }

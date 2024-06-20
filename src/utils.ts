@@ -13,7 +13,7 @@ export function isRecord(val: unknown): val is Record<string, unknown> {
   return val != null && typeof val === 'object' && !Array.isArray(val);
 }
 
-export function assert(condition: any, msg: string): asserts condition {
+export function assert(condition: unknown, msg: string): asserts condition {
   if (!condition) {
     throw new Error(msg);
   }

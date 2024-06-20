@@ -300,27 +300,27 @@ function populateResultWithExportData(
     return;
   }
 
-  for (const exportPath of publicExportPaths) {
-    let dataRef = pathInData.length
-      ? getAtPath(resultRef.data, pathInData)
-      : resultRef.data;
+  let dataRef = pathInData.length
+    ? getAtPath(resultRef.data, pathInData)
+    : resultRef.data;
 
-    if (dataRef === undefined) {
-      dataRef = resultRef.data;
-      for (let i = 0; i < pathInData.length; i++) {
-        const key = pathInData[i];
-        const nextKey = pathInData[i + 1];
+  if (dataRef === undefined) {
+    dataRef = resultRef.data;
+    for (let i = 0; i < pathInData.length; i++) {
+      const key = pathInData[i];
+      const nextKey = pathInData[i + 1];
 
-        assert(key !== undefined, 'Expected key to be defined');
+      assert(key !== undefined, 'Expected key to be defined');
 
-        if (dataRef[key] === undefined) {
-          dataRef[key] = typeof nextKey === 'number' ? [] : {};
-        }
-
-        dataRef = dataRef[key];
+      if (dataRef[key] === undefined) {
+        dataRef[key] = typeof nextKey === 'number' ? [] : {};
       }
-    }
 
+      dataRef = dataRef[key];
+    }
+  }
+
+  for (const exportPath of publicExportPaths) {
     populateResultChunkWithExportData(
       getExportAtPath(resolver.exports, exportPath),
       exportPath,

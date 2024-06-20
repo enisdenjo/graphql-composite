@@ -1,5 +1,338 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
+exports[`fixture 'federation/child-type-mismatch' > query 'DeeplyNested' > should execute and explain 1`] = `
+[
+  {
+    "data": {
+      "accounts": [
+        {
+          "name": "u1-name",
+          "similarAccounts": [
+            {
+              "name": "u1-name",
+              "similarAccounts": [
+                {
+                  "name": "u1-name",
+                },
+                {
+                  "name": "a1-name",
+                },
+              ],
+            },
+            {
+              "name": "a1-name",
+              "similarAccounts": [
+                {
+                  "name": "u1-name",
+                },
+                {
+                  "name": "a1-name",
+                },
+              ],
+            },
+          ],
+        },
+        {
+          "name": "a1-name",
+          "similarAccounts": [
+            {
+              "name": "u1-name",
+              "similarAccounts": [
+                {
+                  "name": "u1-name",
+                },
+                {
+                  "name": "a1-name",
+                },
+              ],
+            },
+            {
+              "name": "a1-name",
+              "similarAccounts": [
+                {
+                  "name": "u1-name",
+                },
+                {
+                  "name": "a1-name",
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    },
+    "exports": [
+      {
+        "kind": "fragment",
+        "selections": [
+          {
+            "kind": "scalar",
+            "name": "name",
+            "prop": "name",
+          },
+          {
+            "kind": "object",
+            "name": "similarAccounts",
+            "prop": "similarAccounts",
+            "selections": [
+              {
+                "kind": "fragment",
+                "selections": [
+                  {
+                    "kind": "scalar",
+                    "name": "name",
+                    "prop": "name",
+                  },
+                  {
+                    "kind": "object",
+                    "name": "similarAccounts",
+                    "prop": "similarAccounts",
+                    "selections": [
+                      {
+                        "kind": "fragment",
+                        "selections": [
+                          {
+                            "kind": "scalar",
+                            "name": "name",
+                            "prop": "name",
+                          },
+                        ],
+                        "typeCondition": "User",
+                      },
+                      {
+                        "kind": "fragment",
+                        "selections": [
+                          {
+                            "kind": "scalar",
+                            "name": "name",
+                            "prop": "name",
+                          },
+                        ],
+                        "typeCondition": "Admin",
+                      },
+                    ],
+                  },
+                ],
+                "typeCondition": "User",
+              },
+              {
+                "kind": "fragment",
+                "selections": [
+                  {
+                    "kind": "scalar",
+                    "name": "name",
+                    "prop": "name",
+                  },
+                  {
+                    "kind": "object",
+                    "name": "similarAccounts",
+                    "prop": "similarAccounts",
+                    "selections": [
+                      {
+                        "kind": "fragment",
+                        "selections": [
+                          {
+                            "kind": "scalar",
+                            "name": "name",
+                            "prop": "name",
+                          },
+                        ],
+                        "typeCondition": "User",
+                      },
+                      {
+                        "kind": "fragment",
+                        "selections": [
+                          {
+                            "kind": "scalar",
+                            "name": "name",
+                            "prop": "name",
+                          },
+                        ],
+                        "typeCondition": "Admin",
+                      },
+                    ],
+                  },
+                ],
+                "typeCondition": "Admin",
+              },
+            ],
+          },
+        ],
+        "typeCondition": "User",
+      },
+      {
+        "kind": "fragment",
+        "selections": [
+          {
+            "kind": "scalar",
+            "name": "name",
+            "prop": "name",
+          },
+          {
+            "kind": "object",
+            "name": "similarAccounts",
+            "prop": "similarAccounts",
+            "selections": [
+              {
+                "kind": "fragment",
+                "selections": [
+                  {
+                    "kind": "scalar",
+                    "name": "name",
+                    "prop": "name",
+                  },
+                  {
+                    "kind": "object",
+                    "name": "similarAccounts",
+                    "prop": "similarAccounts",
+                    "selections": [
+                      {
+                        "kind": "fragment",
+                        "selections": [
+                          {
+                            "kind": "scalar",
+                            "name": "name",
+                            "prop": "name",
+                          },
+                        ],
+                        "typeCondition": "User",
+                      },
+                      {
+                        "kind": "fragment",
+                        "selections": [
+                          {
+                            "kind": "scalar",
+                            "name": "name",
+                            "prop": "name",
+                          },
+                        ],
+                        "typeCondition": "Admin",
+                      },
+                    ],
+                  },
+                ],
+                "typeCondition": "User",
+              },
+              {
+                "kind": "fragment",
+                "selections": [
+                  {
+                    "kind": "scalar",
+                    "name": "name",
+                    "prop": "name",
+                  },
+                  {
+                    "kind": "object",
+                    "name": "similarAccounts",
+                    "prop": "similarAccounts",
+                    "selections": [
+                      {
+                        "kind": "fragment",
+                        "selections": [
+                          {
+                            "kind": "scalar",
+                            "name": "name",
+                            "prop": "name",
+                          },
+                        ],
+                        "typeCondition": "User",
+                      },
+                      {
+                        "kind": "fragment",
+                        "selections": [
+                          {
+                            "kind": "scalar",
+                            "name": "name",
+                            "prop": "name",
+                          },
+                        ],
+                        "typeCondition": "Admin",
+                      },
+                    ],
+                  },
+                ],
+                "typeCondition": "Admin",
+              },
+            ],
+          },
+        ],
+        "typeCondition": "Admin",
+      },
+    ],
+    "includes": [],
+    "kind": "object",
+    "ofType": "Account",
+    "operation": "{
+  accounts {
+    ... on User {
+      name
+      similarAccounts {
+        ... on User {
+          name
+          similarAccounts {
+            ... on User {
+              name
+            }
+            ... on Admin {
+              name
+            }
+          }
+        }
+        ... on Admin {
+          name
+          similarAccounts {
+            ... on User {
+              name
+            }
+            ... on Admin {
+              name
+            }
+          }
+        }
+      }
+    }
+    ... on Admin {
+      name
+      similarAccounts {
+        ... on User {
+          name
+          similarAccounts {
+            ... on User {
+              name
+            }
+            ... on Admin {
+              name
+            }
+          }
+        }
+        ... on Admin {
+          name
+          similarAccounts {
+            ... on User {
+              name
+            }
+            ... on Admin {
+              name
+            }
+          }
+        }
+      }
+    }
+  }
+}",
+    "pathInData": [
+      "accounts",
+    ],
+    "pathToExportData": [
+      "accounts",
+    ],
+    "subgraph": "b",
+    "type": "[Account!]",
+    "variables": {},
+  },
+]
+`;
+
 exports[`fixture 'federation/child-type-mismatch' > query 'DeeplyNested' > should plan gather 1`] = `
 {
   "operation": {

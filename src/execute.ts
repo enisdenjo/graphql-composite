@@ -3,6 +3,7 @@ import getAtPath from 'lodash.get';
 import setAtPath from 'lodash.set';
 import { GatherPlan, GatherPlanResolver, OperationExport } from './gather.js';
 import { Transport } from './transport.js';
+import { assert, isRecord } from './utils.js';
 
 export type SourceTransports = {
   [subgraph: string]: Transport;
@@ -297,49 +298,13 @@ function populateResultWithExportData(
       setAtPath(resultRef.data, [...pathInData, ...deepestObjectPath], {});
     }
   } else {
-    for (const exportPath of publicExportPaths) {
-      const exp = getExportAtPath(resolver.exports, exportPath);
-
-      const lastKey = exportPath[exportPath.length - 1];
-      // valBeforeLast is undefined for deeply nested paths.
-      // One example is the `child-type-mismatch` test,
-      // where the paths are missing an index number from the nested (second) array.
-      // We get:      accounts.0.similarAccounts.similarAccounts.name
-      // Should be:   accounts.0.similarAccounts.[0|1].similarAccounts.name
-      const valBeforeLast =
-        exportPath.length > 1
-          ? getAtPath(exportData, exportPath.slice(0, exportPath.length - 1))
-          : null;
-
-      if (Array.isArray(valBeforeLast)) {
-        // if we're exporting fields in an array, set for each item of the array
-        for (let i = 0; i < valBeforeLast.length; i++) {
-          let val = getAtPath(valBeforeLast[i], [lastKey!]);
-          if (exp.kind === 'enum' && !exp.values.includes(val)) {
-            // some enum values can be inaccessible and should therefore be nullified
-            val = null;
-          }
-          setAtPath(
-            resultRef.data,
-            [
-              ...pathInData,
-              ...exportPath.slice(0, exportPath.length - 1)!,
-              i,
-              lastKey!,
-            ],
-            val,
-          );
-        }
-      } else {
-        // otherwise, just set in object
-        let val = getAtPath(exportData, exportPath);
-        if (exp.kind === 'enum' && !exp.values.includes(val)) {
-          // some enum values can be inaccessible and should therefore be nullified
-          val = null;
-        }
-        setAtPath(resultRef.data, [...pathInData, ...exportPath], val);
-      }
-    }
+    populateResult(
+      resolver.exports,
+      publicExportPaths,
+      exportData,
+      pathInData,
+      resultRef,
+    );
   }
 }
 
@@ -389,7 +354,7 @@ function populateResultWithExportData(
  *  ]
  * ```
  */
-function getPublicPathsOfExport(exp: OperationExport): string[][] {
+export function getPublicPathsOfExport(exp: OperationExport): string[][] {
   if (exp.private) {
     // we care about public exports only
     return [];
@@ -456,7 +421,9 @@ function getPublicPathsOfExport(exp: OperationExport): string[][] {
  * ]
  * ```
  */
-function getDeepestObjectPublicPathsOfExport(exp: OperationExport): string[][] {
+export function getDeepestObjectPublicPathsOfExport(
+  exp: OperationExport,
+): string[][] {
   if (exp.private || exp.kind === 'scalar' || exp.kind === 'enum') {
     return [[]];
   }
@@ -480,7 +447,7 @@ function getDeepestObjectPublicPathsOfExport(exp: OperationExport): string[][] {
   return paths;
 }
 
-function getExportAtPath(
+export function getExportAtPath(
   exports: OperationExport[],
   path: string[],
 ): OperationExport {
@@ -522,4 +489,159 @@ function getExportAtPath(
   }
 
   return exp!; // will never be null because of conditional in loop
+}
+
+/**
+ * Sets each of the publicly exported fields of the composite resolver
+ * to the result object reference.
+ */
+export function populateResult(
+  resolverExports: OperationExport[],
+  exportPaths: string[][],
+  exportData: unknown,
+  /**
+   * The path in the {@link resultRef} data this gather is resolving.
+   */
+  pathInData: (string | number)[],
+  /**
+   * Reference whose object gets mutated to form the final
+   * result (the one that the caller gets).
+   */
+  resultRef: ExecutionResult,
+) {
+  if (!resultRef.data) {
+    // at this point, we're sure that there are no errors
+    // so we can initialise the result data (if not already)
+    resultRef.data = {};
+  }
+
+  for (const exportPath of exportPaths) {
+    let dataRef = pathInData.length
+      ? getAtPath(resultRef.data, pathInData)
+      : resultRef.data;
+
+    if (dataRef === undefined) {
+      dataRef = resultRef.data;
+      for (let i = 0; i < pathInData.length; i++) {
+        const key = pathInData[i];
+        const nextKey = pathInData[i + 1];
+
+        assert(key !== undefined, 'Expected key to be defined');
+
+        if (dataRef[key] === undefined) {
+          dataRef[key] = typeof nextKey === 'number' ? [] : {};
+        }
+
+        dataRef = dataRef[key];
+      }
+    }
+
+    populateExport(
+      getExportAtPath(resolverExports, exportPath),
+      exportPath,
+      exportData,
+      dataRef,
+    );
+  }
+}
+
+function populateExport(
+  exp: OperationExport,
+  exportPath: (string | number)[],
+  exportData: unknown,
+  parentDataRef: unknown,
+) {
+  const prop = exportPath[0]!;
+  const isLeaf = exportPath.length === 1;
+
+  if (exportData === undefined || exportData === null) {
+    return;
+  }
+
+  assert(
+    typeof exportData === 'object',
+    'Expected exportData to be an object or array',
+  );
+
+  let value = undefined;
+
+  if (typeof prop === 'number') {
+    assert(
+      Array.isArray(exportData),
+      'Expected exportData to be an array when prop is a number',
+    );
+
+    value = exportData[prop];
+  }
+
+  if (typeof prop === 'string') {
+    assert(
+      isRecord(exportData),
+      `Expected exportData to be an object when prop is a string, got: ${JSON.stringify(exportData)}`,
+    );
+
+    value = exportData[prop];
+  }
+
+  if (value === undefined) {
+    return;
+  }
+
+  if (Array.isArray(value)) {
+    assert(isRecord(parentDataRef), 'Expected parentDataRef to be an object');
+
+    if (!Array.isArray(parentDataRef[prop])) {
+      parentDataRef[prop] = [];
+    }
+
+    if (isLeaf) {
+      parentDataRef[prop] = value.map((val) =>
+        correctPrimitiveValue(exp!, val),
+      );
+    } else {
+      for (let j = 0; j < value.length; j++) {
+        const pathAfter = ([j] as (string | number)[]).concat(
+          exportPath.slice(1),
+        );
+
+        populateExport(exp, pathAfter, value, parentDataRef[prop]);
+      }
+    }
+  } else if (value === null) {
+    assert(isRecord(parentDataRef), 'Expected parentDataRef to be an object');
+    parentDataRef[prop] = null;
+  } else if (typeof value === 'object') {
+    if (typeof prop === 'number') {
+      assert(
+        Array.isArray(parentDataRef),
+        'Expected parentDataRef to be an array',
+      );
+
+      if (parentDataRef.length <= prop) {
+        parentDataRef.push({});
+      }
+
+      populateExport(exp, exportPath.slice(1), value, parentDataRef[prop]);
+    } else {
+      assert(isRecord(parentDataRef), 'Expected parentDataRef to be an object');
+      if (!parentDataRef[prop]) {
+        parentDataRef[prop] = isLeaf ? correctPrimitiveValue(exp!, value) : {};
+      }
+
+      if (!isLeaf) {
+        populateExport(exp, exportPath.slice(1), value, parentDataRef[prop]);
+      }
+    }
+  } else {
+    assert(isRecord(parentDataRef), 'Expected parentDataRef to be an object');
+    parentDataRef[prop] = correctPrimitiveValue(exp, value);
+  }
+}
+
+function correctPrimitiveValue(exp: OperationExport, val: unknown): unknown {
+  if (exp.kind === 'enum' && !exp.values.includes(val)) {
+    return null;
+  }
+
+  return val;
 }

@@ -13,6 +13,12 @@ export function isRecord(val: unknown): val is Record<string, unknown> {
   return val != null && typeof val === 'object' && !Array.isArray(val);
 }
 
+export function assert(condition: any, msg: string): asserts condition {
+  if (!condition) {
+    throw new Error(msg);
+  }
+}
+
 /**
  * Flattens fragment definitions to inline fragments of the query.
  * Making sure the gather planning can just use the `Field` visitor and

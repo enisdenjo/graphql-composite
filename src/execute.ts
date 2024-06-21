@@ -156,90 +156,73 @@ async function executeResolver(
     throw err;
   }
 
+  // at this point, we're sure that there are no errors
+  // so we can safely initialise the result data (if not already)
+  resultRef.data ??= {};
+
   const exportData = getAtPath(result.data, resolver.pathToExportData);
-  if (Array.isArray(exportData)) {
-    for (let i = 0; i < exportData.length; i++) {
-      const exportDataItem = exportData[i];
-      populateResultWithExportData(
-        resolver,
-        exportDataItem,
-        [...pathInData, i],
-        resultRef,
-      );
-    }
-  } else {
-    populateResultWithExportData(resolver, exportData, pathInData, resultRef);
+
+  if (resolver.kind === 'primitive') {
+    // primitive resolver data is exported directly at the path in the result
+    setAtPath(resultRef.data, pathInData, exportData);
+    return {
+      ...resolver,
+      ...result,
+      pathInData,
+      variables,
+      // primitive resolvers dont have includes
+    };
   }
 
-  return resolver.kind === 'primitive'
-    ? {
-        ...resolver,
-        ...result,
-        pathInData,
-        variables,
-        // scalar fields cannot have includes
-      }
-    : {
-        ...resolver,
-        ...result,
-        pathInData,
-        variables,
-        // TODO: batch resolvers going to the same subgraph
-        includes: await Promise.all(
-          Object.entries(resolver.includes).flatMap(([field, resolver]) =>
-            (Array.isArray(resolver) ? resolver : [resolver]).flatMap(
-              (resolver) => {
-                // if there's no field specified, we're resolving additional fields for the current one
-                const resolvingAdditionalFields = field === '';
+  let dest = getAtPath(resultRef.data, pathInData);
+  if (Array.isArray(exportData)) {
+    if (dest === undefined) {
+      dest = []; // array
+      setAtPath(resultRef.data, pathInData, dest);
+    }
+    for (let i = 0; i < exportData.length; i++) {
+      const destItem = (dest[i] = {}); // array item
+      const exportDataItem = exportData[i];
+      populateUsingPublicExports(resolver.exports, exportDataItem, destItem);
+    }
+  } else {
+    if (dest === undefined) {
+      dest = {}; // object
+      setAtPath(resultRef.data, pathInData, dest);
+    }
+    populateUsingPublicExports(resolver.exports, exportData, dest);
+  }
 
-                if (Array.isArray(exportData)) {
-                  // if the export data is an array, we need to gather resolve each item
-                  return exportData.flatMap((exportData, i) => {
-                    const fieldData = resolvingAdditionalFields
-                      ? exportData
-                      : getAtPath(exportData, field);
-                    if (Array.isArray(fieldData)) {
-                      // if the include points to an array, we need to gather resolve each item
-                      return fieldData.map((fieldDataItem, j) =>
-                        executeResolver(
-                          transports,
-                          operationVariables,
-                          resolver,
-                          fieldDataItem,
-                          resolvingAdditionalFields
-                            ? [...pathInData, i, j]
-                            : [...pathInData, i, field, j],
-                          resultRef,
-                        ),
-                      );
-                    }
-                    return executeResolver(
-                      transports,
-                      operationVariables,
-                      resolver,
-                      fieldData,
-                      resolvingAdditionalFields
-                        ? [...pathInData, i]
-                        : [...pathInData, i, field],
-                      resultRef,
-                    );
-                  });
-                }
+  return {
+    ...resolver,
+    ...result,
+    pathInData,
+    variables,
+    // TODO: batch resolvers going to the same subgraph
+    includes: await Promise.all(
+      Object.entries(resolver.includes).flatMap(([field, resolver]) =>
+        (Array.isArray(resolver) ? resolver : [resolver]).flatMap(
+          (resolver) => {
+            // if there's no field specified, we're resolving additional fields for the current one
+            const resolvingAdditionalFields = field === '';
 
+            if (Array.isArray(exportData)) {
+              // if the export data is an array, we need to gather resolve each item
+              return exportData.flatMap((exportData, i) => {
                 const fieldData = resolvingAdditionalFields
                   ? exportData
                   : getAtPath(exportData, field);
                 if (Array.isArray(fieldData)) {
                   // if the include points to an array, we need to gather resolve each item
-                  return fieldData.map((fieldDataItem, i) =>
+                  return fieldData.map((fieldDataItem, j) =>
                     executeResolver(
                       transports,
                       operationVariables,
                       resolver,
                       fieldDataItem,
                       resolvingAdditionalFields
-                        ? [...pathInData, i]
-                        : [...pathInData, field, i],
+                        ? [...pathInData, i, j]
+                        : [...pathInData, i, field, j],
                       resultRef,
                     ),
                   );
@@ -250,312 +233,101 @@ async function executeResolver(
                   resolver,
                   fieldData,
                   resolvingAdditionalFields
-                    ? pathInData
-                    : [...pathInData, field],
+                    ? [...pathInData, i]
+                    : [...pathInData, i, field],
                   resultRef,
                 );
-              },
-            ),
-          ),
+              });
+            }
+
+            const fieldData = resolvingAdditionalFields
+              ? exportData
+              : getAtPath(exportData, field);
+            if (Array.isArray(fieldData)) {
+              // if the include points to an array, we need to gather resolve each item
+              return fieldData.map((fieldDataItem, i) =>
+                executeResolver(
+                  transports,
+                  operationVariables,
+                  resolver,
+                  fieldDataItem,
+                  resolvingAdditionalFields
+                    ? [...pathInData, i]
+                    : [...pathInData, field, i],
+                  resultRef,
+                ),
+              );
+            }
+            return executeResolver(
+              transports,
+              operationVariables,
+              resolver,
+              fieldData,
+              resolvingAdditionalFields ? pathInData : [...pathInData, field],
+              resultRef,
+            );
+          },
         ),
-      };
+      ),
+    ),
+  };
 }
 
-/**
- * Sets each of the publicly exported fields of the composite resolver
- * to the result object reference.
- */
-function populateResultWithExportData(
-  resolver: GatherPlanResolver,
+export function populateUsingPublicExports(
+  exports: OperationExport[],
   exportData: unknown,
   /**
-   * The path in the {@link resultRef} data this gather is resolving.
+   * Object that gets mutated populating it's contents
+   * with the {@link exportData} using the defined {@link exports}.
    */
-  pathInData: (string | number)[],
-  /**
-   * Reference whose object gets mutated to form the final
-   * result (the one that the caller gets).
-   */
-  resultRef: ExecutionResult,
+  dest: Record<string, unknown>,
 ) {
-  if (!resultRef.data) {
-    // at this point, we're sure that there are no errors
-    // so we can initialise the result data (if not already)
-    resultRef.data = {};
-  }
-
-  if (resolver.kind === 'primitive') {
-    // scalar fields are exported directly at the path in the result
-    setAtPath(resultRef.data, pathInData, exportData);
-    return;
-  }
-
-  const publicExportPaths = resolver.exports.flatMap(getPublicPathsOfExport);
-
-  if (!publicExportPaths.length) {
-    for (const deepestObjectPath of resolver.exports.flatMap(
-      getDeepestObjectPublicPathsOfExport,
-    )) {
-      // if there are no public export paths defined, we just want
-      // to make the pathInData an object (because it's a composite resolver)
-      // see [NOTE 1] in gather.ts for more info on why we perform no-export operations
-      setAtPath(resultRef.data, [...pathInData, ...deepestObjectPath], {});
+  for (const exp of exports) {
+    if (exp.private) {
+      continue;
     }
-  } else {
-    for (const exportPath of publicExportPaths) {
-      const exp = getExportAtPath(resolver.exports, exportPath);
 
-      const lastPathPart = exportPath[exportPath.length - 1];
-      const valBeforeLast =
-        exportPath.length > 1
-          ? getAtPath(exportData, exportPath.slice(0, exportPath.length - 1))
-          : null;
+    if (exp.kind === 'fragment') {
+      populateUsingPublicExports(exp.selections, exportData, dest);
+      continue;
+    }
 
-      if (Array.isArray(valBeforeLast)) {
-        // if we're exporting fields in an array, set for each item of the array
-        for (let i = 0; i < valBeforeLast.length; i++) {
-          let val = getAtPath(valBeforeLast[i], [lastPathPart!]);
-          if (exp.kind === 'enum' && !exp.values.includes(val)) {
-            // some enum values can be inaccessible and should therefore be nullified
-            val = null;
-          }
+    let val = getAtPath(exportData, exp.prop);
+    const [prop, overwriteCount] = exp.prop.split(OVERWRITE_FIELD_NAME_PART);
+    if (!prop) {
+      // will never happen. a split always has item at 0
+      // we assert only because of typescript
+      throw new Error('Missing property name');
+    }
 
-          const path = [
-            ...pathInData,
-            ...exportPath.slice(0, exportPath.length - 1)!,
-            i,
-            lastPathPart,
-          ];
+    if (overwriteCount && val == null) {
+      // it's an overwrite field but the value is nullish, skip setting it
+      continue;
+    }
 
-          // we check for overwrites only after getting the value from the export data.
-          // this is because the overwrite field is aliased with a different name compared
-          // to the overwriting field
-          const [lastKey, overwriteCount] = path
-            .pop()! // take last key
-            .toString() // make sure its a string
-            .split(OVERWRITE_FIELD_NAME_PART); // check if overwrite field
-          path.push(lastKey!);
-          if (overwriteCount && val == null) {
-            // it's an overwrite field but the value is nullish, skip setting it
-            continue;
-          }
-
-          setAtPath(
-            resultRef.data,
-            [
-              ...pathInData,
-              ...exportPath.slice(0, exportPath.length - 1)!,
-              i,
-              lastKey!,
-            ],
-            val,
-          );
-        }
-      } else {
-        // otherwise, just set in object
-        let val = getAtPath(exportData, exportPath);
-        if (exp.kind === 'enum' && !exp.values.includes(val)) {
-          // some enum values can be inaccessible and should therefore be nullified
-          val = null;
-        }
-
-        // we check for overwrites only after getting the value from the export data.
-        // this is because the overwrite field is aliased with a different name compared
-        // to the overwriting field
-        const path = [...pathInData, ...exportPath];
-        const [lastKey, overwriteCount] = path
-          .pop()! // take last key
-          .toString() // make sure its a string
-          .split(OVERWRITE_FIELD_NAME_PART); // check if overwrite field
-        path.push(lastKey!);
-        if (overwriteCount && val == null) {
-          // it's an overwrite field but the value is nullish, skip setting it
-          continue;
-        }
-
-        setAtPath(resultRef.data, path, val);
+    if (exp.kind === 'scalar' || exp.kind === 'enum') {
+      // TODO: check if val is a primitive value
+      // TODO: what if the val is undefined? (different from null)
+      if (exp.kind === 'enum' && !exp.values.includes(val)) {
+        // some enum values can be inaccessible and should therefore be nullified
+        val = null;
       }
+      setAtPath(dest, prop, val);
+      continue;
     }
-  }
-}
 
-/**
- * TODO: write tests
- *
- * Creates a list of paths to all public exports considering nested selections.
- *
- * For example, if {@link exp} is:
- * ```json
- * {
- *   "kind": "public",
- *   "name": "products",
- *   "prop": "products"
- *   "selections": [
- *     {
- *       "kind": "public",
- *       "name": "upc",
- *       "prop": "p"
- *     },
- *     {
- *       "kind": "public",
- *       "name": "manufacturer",
- *       "prop": "manufacturer"
- *       "selections": [
- *         {
- *           "kind": "public",
- *           "name": "name",
- *           "prop": "name"
- *         }
- *       ]
- *     },
- *     {
- *       "kind": "public",
- *       "name": "price",
- *       "prop": "price"
- *     }
- *   ]
- * }
- * ```
- * the result will be:
- * ```json
- *  [
- *    ["products", "p"],
- *    ["products", "manufacturer", "name"],
- *    ["products", "price"]
- *  ]
- * ```
- */
-function getPublicPathsOfExport(exp: OperationExport): string[][] {
-  if (exp.private) {
-    // we care about public exports only
-    return [];
-  }
-
-  if (exp.kind === 'scalar' || exp.kind === 'enum') {
-    return [[exp.prop]];
-  }
-
-  const paths: string[][] = [];
-  for (const sel of exp.selections || []) {
-    const selPaths = getPublicPathsOfExport(sel);
-
-    for (const path of selPaths) {
-      if ('name' in exp) {
-        paths.push([exp.prop, ...path]);
-      } else {
-        paths.push(path);
+    // exp.kind === 'object'
+    if (Array.isArray(val)) {
+      const arr: Record<string, unknown>[] = [];
+      for (const item of val) {
+        const part = {};
+        populateUsingPublicExports(exp.selections, item, part);
+        arr.push(part);
       }
+      dest[prop] = arr;
+      continue;
     }
+
+    populateUsingPublicExports(exp.selections, val, (dest[prop] = {}));
   }
-  return paths;
-}
-
-/**
- * TODO: write tests
- *
- * Creates a list of paths to all deepest public exports objects without the object properties.
- * The resulting paths are sorted by array length, making sure no path overrides a previous one.
- *
- * For example, if {@link exp} is:
- * ```json
- * {
- *   "kind": "public",
- *   "name": "products",
- *   "selections": [
- *     {
- *       "kind": "public",
- *       "name": "upc"
- *     },
- *     {
- *       "kind": "public",
- *       "name": "manufacturer",
- *       "selections": [
- *         {
- *           "kind": "public",
- *           "name": "name"
- *         }
- *       ]
- *     },
- *     {
- *       "kind": "public",
- *       "name": "price"
- *     }
- *   ]
- * }
- * ```
- * the result will be:
- * ```json
- * [
- *   ["products"],
- *   ["products"],
- *   ["products", "manufacturer"]
- * ]
- * ```
- */
-function getDeepestObjectPublicPathsOfExport(exp: OperationExport): string[][] {
-  if (exp.private || exp.kind === 'scalar' || exp.kind === 'enum') {
-    return [[]];
-  }
-
-  const paths: string[][] = [];
-  for (const sel of exp.selections || []) {
-    const selPaths = getDeepestObjectPublicPathsOfExport(sel);
-    for (const path of selPaths) {
-      path.pop();
-      if ('name' in exp) {
-        paths.push([exp.prop, ...path]);
-      } else {
-        paths.push(path);
-      }
-    }
-  }
-
-  // sort the paths by array length in ascending order making sure no nested object path is overriden
-  paths.sort();
-
-  return paths;
-}
-
-function getExportAtPath(
-  exports: OperationExport[],
-  path: string[],
-): OperationExport {
-  if (!path.length) {
-    throw new Error('Cannot get values for export with an empty path');
-  }
-
-  let exp: OperationExport | undefined = {
-    kind: 'object',
-    name: '',
-    prop: '',
-    // since path is not empty, no other field is really relevant - the loop
-    // will immediately go into the exp.selections
-    selections: exports,
-  };
-  for (let i = 0; i < path.length; i++) {
-    const part = path[i]!;
-    if (!('selections' in exp)) {
-      throw new Error(
-        `Cannot go deeper in "${part}" after ${JSON.stringify(path.slice(0, i))} for ${JSON.stringify(
-          path,
-        )}`,
-      );
-    }
-    for (const sel of exp.selections) {
-      if (sel.kind === 'fragment') {
-        return getExportAtPath(sel.selections, path.slice(i));
-      }
-      if (sel.prop === part) {
-        exp = sel;
-        break;
-      }
-    }
-    if (!exp) {
-      throw new Error(
-        `Export at path ${JSON.stringify(path)} in ${JSON.stringify(exports)} not found`,
-      );
-    }
-  }
-
-  return exp!; // will never be null because of conditional in loop
 }

@@ -403,7 +403,7 @@ function augmentConcflictingFields(
   } = {};
   let overwriteCount = 0;
   for (const frag of exports.filter(
-    // we only worry about fragments because same field names in an object are enforced during validation
+    // we only worry about fragments because same field names in an object mean same field
     (e): e is OperationFragmentExport => e.kind === 'fragment',
   )) {
     const type = blueprint.types[frag.typeCondition]!;

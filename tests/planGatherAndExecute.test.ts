@@ -1,6 +1,6 @@
 import { buildSchema, validate } from 'graphql';
 import { describe, expect, it } from 'vitest';
-import { execute } from '../src/execute.js';
+import { execute, populateUsingPublicExports } from '../src/execute.js';
 import {
   buildResolverOperation,
   OperationExport,
@@ -399,5 +399,224 @@ it.each([
   'should build proper operation and find export path for $name resolver',
   ({ operation, exports }) => {
     expect(buildResolverOperation(operation, exports)).toMatchSnapshot();
+  },
+);
+
+it.each([
+  {
+    exports: [
+      {
+        kind: 'scalar',
+        name: 'num',
+        prop: 'num',
+      },
+      {
+        kind: 'scalar',
+        name: 'str',
+        prop: 'str',
+      },
+    ],
+    exportData: {
+      num: 1,
+      str: '2',
+    },
+    dest: {
+      num: 1,
+      str: '2',
+    },
+  },
+  {
+    exports: [
+      {
+        kind: 'object',
+        name: 'person',
+        prop: 'person',
+        selections: [
+          {
+            kind: 'scalar',
+            name: 'num',
+            prop: 'num',
+          },
+        ],
+      },
+      {
+        kind: 'scalar',
+        name: 'str',
+        prop: 'str',
+      },
+    ],
+    exportData: {
+      person: {
+        num: 1,
+      },
+      str: '2',
+    },
+    dest: {
+      person: {
+        num: 1,
+      },
+      str: '2',
+    },
+  },
+  {
+    exports: [
+      {
+        kind: 'object',
+        name: 'cats',
+        prop: 'cats',
+        selections: [
+          {
+            kind: 'scalar',
+            name: 'name',
+            prop: 'name',
+          },
+        ],
+      },
+    ],
+    exportData: {
+      cats: [
+        {
+          name: 'cathew',
+        },
+        {
+          name: 'cathrine',
+        },
+      ],
+    },
+    dest: {
+      cats: [
+        {
+          name: 'cathew',
+        },
+        {
+          name: 'cathrine',
+        },
+      ],
+    },
+  },
+  {
+    exports: [
+      {
+        kind: 'object',
+        name: 'users',
+        prop: 'users',
+        selections: [
+          {
+            kind: 'scalar',
+            name: 'id',
+            prop: 'id',
+          },
+          {
+            kind: 'scalar',
+            name: 'name',
+            prop: 'name',
+          },
+          {
+            kind: 'object',
+            name: 'friends',
+            prop: 'friends',
+            selections: [
+              {
+                kind: 'scalar',
+                name: 'id',
+                prop: 'id',
+              },
+              {
+                kind: 'scalar',
+                name: 'name',
+                prop: 'name',
+              },
+            ],
+          },
+        ],
+      },
+    ],
+    exportData: {
+      users: [
+        {
+          id: '1',
+          name: 'john',
+          friends: [
+            {
+              id: '2',
+              name: 'jane',
+            },
+          ],
+        },
+        {
+          id: '2',
+          name: 'jenny',
+          friends: [
+            {
+              id: '3',
+              name: 'jane',
+            },
+          ],
+        },
+        {
+          id: '3',
+          name: 'jane',
+          friends: [
+            {
+              id: '1',
+              name: 'john',
+            },
+            {
+              id: '2',
+              name: 'jenny',
+            },
+          ],
+        },
+      ],
+    },
+    dest: {
+      users: [
+        {
+          id: '1',
+          name: 'john',
+          friends: [
+            {
+              id: '2',
+              name: 'jane',
+            },
+          ],
+        },
+        {
+          id: '2',
+          name: 'jenny',
+          friends: [
+            {
+              id: '3',
+              name: 'jane',
+            },
+          ],
+        },
+        {
+          id: '3',
+          name: 'jane',
+          friends: [
+            {
+              id: '1',
+              name: 'john',
+            },
+            {
+              id: '2',
+              name: 'jenny',
+            },
+          ],
+        },
+      ],
+    },
+  },
+] satisfies {
+  exports: OperationExport[];
+  exportData: unknown;
+  dest: Record<string, unknown>;
+}[])(
+  'should populate dest with export data using defined exports to create $dest',
+  ({ exports, exportData, dest }) => {
+    const actualDest: Record<string, unknown> = {};
+    populateUsingPublicExports(exports, exportData, actualDest);
+    expect(actualDest).toEqual(dest);
   },
 );

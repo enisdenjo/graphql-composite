@@ -106,8 +106,7 @@ export interface OperationExportAvailability {
   private?: true;
 }
 
-export interface OperationScalarExport extends OperationExportAvailability {
-  kind: 'scalar';
+export interface OperationExportWithName {
   /** Name of the scalar field. */
   name: string;
   /**
@@ -129,16 +128,16 @@ export interface OperationScalarExport extends OperationExportAvailability {
   overwrite?: true;
 }
 
-export interface OperationEnumExport extends OperationExportAvailability {
+export interface OperationScalarExport
+  extends OperationExportAvailability,
+    OperationExportWithName {
+  kind: 'scalar';
+}
+
+export interface OperationEnumExport
+  extends OperationExportAvailability,
+    OperationExportWithName {
   kind: 'enum';
-  /** Name of the scalar field. */
-  name: string;
-  /**
-   * The property name to pluck from the operation result.
-   * It's the same as {@link name} unless an alias is used
-   * in user's query.
-   */
-  prop: string;
   /**
    * Whitelisted enum value list to be returned by the field. If a field
    * yields a value that is not in the list, it'll be nullified.
@@ -146,46 +145,18 @@ export interface OperationEnumExport extends OperationExportAvailability {
    * Values are compared using strict equality.
    */
   values: unknown[];
-  /**
-   * Conflicting fields that have the same name but different nullability
-   * need to be augmented so that the conflicting fields are aliased and
-   * if they yield a non-nullish value, are used for the origin field.
-   *
-   * When set, the {@link prop} will contain the {@link OVERWRITE_FIELD_NAME_PART}
-   * that is used to deduplicate the field name collision.
-   *
-   * See https://github.com/enisdenjo/graphql-composite/issues/31 for more info.
-   */
-  overwrite?: true;
 }
 
 export type OperationPrimitiveExport =
   | OperationScalarExport
   | OperationEnumExport;
 
-export interface OperationObjectExport extends OperationExportAvailability {
+export interface OperationObjectExport
+  extends OperationExportAvailability,
+    OperationExportWithName {
   kind: 'object';
-  /** Name of the composite field. */
-  name: string;
-  /**
-   * The property name to pluck from the operation result.
-   * It's the same as {@link name} unless an alias is used
-   * in user's query.
-   */
-  prop: string;
   /** Nested selections of the field. */
   selections: OperationExport[];
-  /**
-   * Conflicting fields that have the same name but different nullability
-   * need to be augmented so that the conflicting fields are aliased and
-   * if they yield a non-nullish value, are used for the origin field.
-   *
-   * When set, the {@link prop} will contain the {@link OVERWRITE_FIELD_NAME_PART}
-   * that is used to deduplicate the field name collision.
-   *
-   * See https://github.com/enisdenjo/graphql-composite/issues/31 for more info.
-   */
-  overwrite?: true;
 }
 
 export interface OperationFragmentExport extends OperationExportAvailability {

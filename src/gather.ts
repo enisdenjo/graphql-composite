@@ -107,7 +107,7 @@ export interface OperationExportAvailability {
 }
 
 export interface OperationExportField {
-  /** Name of the scalar field. */
+  /** Name of the field. */
   name: string;
   /**
    * The property name to pluck from the operation result.

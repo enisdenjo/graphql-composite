@@ -106,7 +106,7 @@ export interface OperationExportAvailability {
   private?: true;
 }
 
-export interface OperationExportWithName {
+export interface OperationExportField {
   /** Name of the scalar field. */
   name: string;
   /**
@@ -130,13 +130,13 @@ export interface OperationExportWithName {
 
 export interface OperationScalarExport
   extends OperationExportAvailability,
-    OperationExportWithName {
+    OperationExportField {
   kind: 'scalar';
 }
 
 export interface OperationEnumExport
   extends OperationExportAvailability,
-    OperationExportWithName {
+    OperationExportField {
   kind: 'enum';
   /**
    * Whitelisted enum value list to be returned by the field. If a field
@@ -153,7 +153,7 @@ export type OperationPrimitiveExport =
 
 export interface OperationObjectExport
   extends OperationExportAvailability,
-    OperationExportWithName {
+    OperationExportField {
   kind: 'object';
   /** Nested selections of the field. */
   selections: OperationExport[];

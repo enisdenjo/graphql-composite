@@ -780,6 +780,7 @@ exports[`fixture 'federation/child-type-mismatch' > query 'InternalAlias' > shou
           {
             "kind": "scalar",
             "name": "id",
+            "overwrite": true,
             "prop": "id__OVERWRITE_EXISTING_FIELD_IF_THIS_ONE_NOT_NULL__0",
           },
           {
@@ -848,6 +849,7 @@ exports[`fixture 'federation/child-type-mismatch' > query 'InternalAlias' > shou
               {
                 "kind": "scalar",
                 "name": "id",
+                "overwrite": true,
                 "prop": "id__OVERWRITE_EXISTING_FIELD_IF_THIS_ONE_NOT_NULL__0",
               },
               {
@@ -1110,6 +1112,7 @@ exports[`fixture 'federation/child-type-mismatch' > query 'NestedInternalAlias' 
                   {
                     "kind": "scalar",
                     "name": "id",
+                    "overwrite": true,
                     "prop": "id__OVERWRITE_EXISTING_FIELD_IF_THIS_ONE_NOT_NULL__0",
                   },
                   {
@@ -1131,6 +1134,7 @@ exports[`fixture 'federation/child-type-mismatch' > query 'NestedInternalAlias' 
           {
             "kind": "scalar",
             "name": "id",
+            "overwrite": true,
             "prop": "id__OVERWRITE_EXISTING_FIELD_IF_THIS_ONE_NOT_NULL__0",
           },
           {
@@ -1165,6 +1169,7 @@ exports[`fixture 'federation/child-type-mismatch' > query 'NestedInternalAlias' 
                   {
                     "kind": "scalar",
                     "name": "id",
+                    "overwrite": true,
                     "prop": "id__OVERWRITE_EXISTING_FIELD_IF_THIS_ONE_NOT_NULL__0",
                   },
                   {
@@ -1276,6 +1281,7 @@ exports[`fixture 'federation/child-type-mismatch' > query 'NestedInternalAlias' 
                       {
                         "kind": "scalar",
                         "name": "id",
+                        "overwrite": true,
                         "prop": "id__OVERWRITE_EXISTING_FIELD_IF_THIS_ONE_NOT_NULL__0",
                       },
                       {
@@ -1297,6 +1303,7 @@ exports[`fixture 'federation/child-type-mismatch' > query 'NestedInternalAlias' 
               {
                 "kind": "scalar",
                 "name": "id",
+                "overwrite": true,
                 "prop": "id__OVERWRITE_EXISTING_FIELD_IF_THIS_ONE_NOT_NULL__0",
               },
               {
@@ -1331,6 +1338,7 @@ exports[`fixture 'federation/child-type-mismatch' > query 'NestedInternalAlias' 
                       {
                         "kind": "scalar",
                         "name": "id",
+                        "overwrite": true,
                         "prop": "id__OVERWRITE_EXISTING_FIELD_IF_THIS_ONE_NOT_NULL__0",
                       },
                       {

@@ -293,16 +293,13 @@ export function populateUsingPublicExports(
     }
 
     let val = getAtPath(exportData, exp.prop);
-    const [prop, overwriteCount] = exp.prop.split(OVERWRITE_FIELD_NAME_PART);
-    if (!prop) {
-      // will never happen. a split always has item at 0
-      // we assert only because of typescript
-      throw new Error('Missing property name');
-    }
-
-    if (overwriteCount && val == null) {
-      // it's an overwrite field but the value is nullish, skip setting it
-      continue;
+    let prop = exp.prop;
+    if (exp.overwrite) {
+      prop = exp.prop.split(OVERWRITE_FIELD_NAME_PART)[0]!; // a split always has item at 0
+      if (val == null) {
+        // it's an overwrite field but the value is nullish, skip setting it
+        continue;
+      }
     }
 
     if (exp.kind === 'scalar' || exp.kind === 'enum') {

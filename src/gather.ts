@@ -116,6 +116,17 @@ export interface OperationScalarExport extends OperationExportAvailability {
    * in user's query.
    */
   prop: string;
+  /**
+   * Conflicting fields that have the same name but different nullability
+   * need to be augmented so that the conflicting fields are aliased and
+   * if they yield a non-nullish value, are used for the origin field.
+   *
+   * When set, the {@link prop} will contain the {@link OVERWRITE_FIELD_NAME_PART}
+   * that is used to deduplicate the field name collision.
+   *
+   * See https://github.com/enisdenjo/graphql-composite/issues/31 for more info.
+   */
+  overwrite?: true;
 }
 
 export interface OperationEnumExport extends OperationExportAvailability {
@@ -431,6 +442,12 @@ function augmentConcflictingFields(
       }
 
       // different type from a previously appearing, same named, field
+      sel.overwrite = true;
+      if (sel.prop.includes(OVERWRITE_FIELD_NAME_PART)) {
+        throw new Error(
+          `An overwriting field cannot contain "${OVERWRITE_FIELD_NAME_PART}" in the name`,
+        );
+      }
       sel.prop = `${fieldName}${OVERWRITE_FIELD_NAME_PART}${overwriteCount}`;
       overwriteCount++;
     }

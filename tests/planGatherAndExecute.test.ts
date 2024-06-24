@@ -60,22 +60,18 @@ it.each([
       {
         kind: 'scalar',
         name: 'id',
-        prop: 'id',
       },
       {
         kind: 'scalar',
         name: 'name',
-        prop: 'name',
       },
       {
         kind: 'object',
         name: 'products',
-        prop: 'products',
         selections: [
           {
             kind: 'scalar',
             name: 'upc',
-            prop: 'upc',
           },
         ],
       },
@@ -94,34 +90,28 @@ it.each([
       {
         kind: 'scalar',
         name: 'name',
-        prop: 'name',
       },
       {
         kind: 'object',
         name: 'manufacturer',
-        prop: 'manufacturer',
         selections: [
           {
             kind: 'object',
             name: 'products',
-            prop: 'products',
             selections: [
               {
                 kind: 'scalar',
                 name: 'upc',
-                prop: 'upc',
               },
               {
                 kind: 'scalar',
                 name: 'name',
-                prop: 'name',
               },
             ],
           },
           {
             kind: 'scalar',
             name: 'id',
-            prop: 'id',
           },
         ],
       },
@@ -140,12 +130,10 @@ it.each([
       {
         kind: 'scalar',
         name: 'id',
-        prop: 'id',
       },
       {
         kind: 'scalar',
         name: 'name',
-        prop: 'name',
       },
     ],
   },
@@ -166,34 +154,28 @@ it.each([
       {
         kind: 'scalar',
         name: 'id',
-        prop: 'id',
       },
       {
         kind: 'scalar',
         name: 'name',
-        prop: 'name',
       },
       {
         kind: 'object',
         name: 'products',
-        prop: 'products',
         selections: [
           {
             kind: 'object',
             name: 'manufacturer',
-            prop: 'manufacturer',
             selections: [
               {
                 kind: 'scalar',
                 name: 'location',
-                prop: 'location',
               },
             ],
           },
           {
             kind: 'scalar',
             name: 'name',
-            prop: 'name',
           },
         ],
       },
@@ -229,34 +211,28 @@ it.each([
           {
             kind: 'scalar',
             name: 'name',
-            prop: 'name',
           },
           {
             kind: 'object',
             name: 'manufacturer',
-            prop: 'manufacturer',
             selections: [
               {
                 kind: 'object',
                 name: 'products',
-                prop: 'products',
                 selections: [
                   {
                     kind: 'scalar',
                     name: 'upc',
-                    prop: 'upc',
                   },
                   {
                     kind: 'scalar',
                     name: 'name',
-                    prop: 'name',
                   },
                 ],
               },
               {
                 kind: 'scalar',
                 name: 'id',
-                prop: 'id',
               },
             ],
           },
@@ -269,34 +245,28 @@ it.each([
           {
             kind: 'scalar',
             name: 'id',
-            prop: 'id',
           },
           {
             kind: 'scalar',
             name: 'name',
-            prop: 'name',
           },
           {
             kind: 'object',
             name: 'products',
-            prop: 'products',
             selections: [
               {
                 kind: 'object',
                 name: 'manufacturer',
-                prop: 'manufacturer',
                 selections: [
                   {
                     kind: 'scalar',
                     name: 'location',
-                    prop: 'location',
                   },
                 ],
               },
               {
                 kind: 'scalar',
                 name: 'name',
-                prop: 'name',
               },
             ],
           },
@@ -321,27 +291,22 @@ it.each([
           {
             kind: 'scalar',
             name: 'name',
-            prop: 'name',
           },
           {
             kind: 'object',
             name: 'manufacturer',
-            prop: 'manufacturer',
             selections: [
               {
                 kind: 'object',
                 name: 'products',
-                prop: 'products',
                 selections: [
                   {
                     kind: 'scalar',
                     name: 'upc',
-                    prop: 'upc',
                   },
                   {
                     kind: 'scalar',
                     name: 'name',
-                    prop: 'name',
                   },
                 ],
               },
@@ -352,34 +317,28 @@ it.each([
                   {
                     kind: 'scalar',
                     name: 'id',
-                    prop: 'id',
                   },
                   {
                     kind: 'scalar',
                     name: 'name',
-                    prop: 'name',
                   },
                   {
                     kind: 'object',
                     name: 'products',
-                    prop: 'products',
                     selections: [
                       {
                         kind: 'object',
                         name: 'manufacturer',
-                        prop: 'manufacturer',
                         selections: [
                           {
                             kind: 'scalar',
                             name: 'location',
-                            prop: 'location',
                           },
                         ],
                       },
                       {
                         kind: 'scalar',
                         name: 'name',
-                        prop: 'name',
                       },
                     ],
                   },
@@ -408,12 +367,10 @@ it.each([
       {
         kind: 'scalar',
         name: 'num',
-        prop: 'num',
       },
       {
         kind: 'scalar',
         name: 'str',
-        prop: 'str',
       },
     ],
     exportData: {
@@ -430,19 +387,16 @@ it.each([
       {
         kind: 'object',
         name: 'person',
-        prop: 'person',
         selections: [
           {
             kind: 'scalar',
             name: 'num',
-            prop: 'num',
           },
         ],
       },
       {
         kind: 'scalar',
         name: 'str',
-        prop: 'str',
       },
     ],
     exportData: {
@@ -463,12 +417,10 @@ it.each([
       {
         kind: 'object',
         name: 'cats',
-        prop: 'cats',
         selections: [
           {
             kind: 'scalar',
             name: 'name',
-            prop: 'name',
           },
         ],
       },
@@ -499,32 +451,26 @@ it.each([
       {
         kind: 'object',
         name: 'users',
-        prop: 'users',
         selections: [
           {
             kind: 'scalar',
             name: 'id',
-            prop: 'id',
           },
           {
             kind: 'scalar',
             name: 'name',
-            prop: 'name',
           },
           {
             kind: 'object',
             name: 'friends',
-            prop: 'friends',
             selections: [
               {
                 kind: 'scalar',
                 name: 'id',
-                prop: 'id',
               },
               {
                 kind: 'scalar',
                 name: 'name',
-                prop: 'name',
               },
             ],
           },

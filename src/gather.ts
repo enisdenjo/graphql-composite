@@ -110,11 +110,10 @@ export interface OperationExportField {
   /** Name of the field. */
   name: string;
   /**
-   * The property name to pluck from the operation result.
-   * It's the same as {@link name} unless an alias is used
-   * in user's query.
+   * Alias of the {@link name} field. If provided, should be
+   * used for extracting export properties.
    */
-  prop: string;
+  alias?: string;
   /**
    * Conflicting fields that have the same name but different nullability
    * need to be augmented so that the conflicting fields are aliased and
@@ -273,7 +272,7 @@ export function planGather(
               kind: 'object',
               path: entries.join('.'),
               name: node.name.value,
-              prop: node.alias?.value ?? node.name.value,
+              ...(node.alias?.value ? { alias: node.alias.value } : {}),
               type: String(type),
               ofType: ofType.name,
               inlineVariables,
@@ -283,7 +282,7 @@ export function planGather(
             const sel = {
               path: entries.join('.'),
               name: node.name.value,
-              prop: node.alias?.value ?? node.name.value,
+              ...(node.alias?.value ? { alias: node.alias.value } : {}),
               type: String(type),
               ofType: ofType.name,
               inlineVariables,
@@ -382,7 +381,7 @@ export function planGather(
       augmentConcflictingFields(blueprint, resolver.subgraph, resolver.exports);
     }
 
-    gatherPlan.operation.resolvers[field.prop] = resolver;
+    gatherPlan.operation.resolvers[field.alias || field.name] = resolver;
   }
 
   // we build resolvers operations only after gather.
@@ -422,7 +421,7 @@ function augmentConcflictingFields(
         // no "continue" because the object selection may be of a different type too
       }
 
-      const fieldName = sel.prop;
+      const fieldName = sel.alias || sel.name;
       const fieldTypeName = type.fields[fieldName]!.types[subgraph]!;
 
       const appearingTypeName = appearing[fieldName];
@@ -436,12 +435,12 @@ function augmentConcflictingFields(
 
       // different type from a previously appearing, same named, field
       sel.overwrite = true;
-      if (sel.prop.includes(OVERWRITE_FIELD_NAME_PART)) {
+      if (sel.alias && sel.alias.includes(OVERWRITE_FIELD_NAME_PART)) {
         throw new Error(
-          `An overwriting field cannot contain "${OVERWRITE_FIELD_NAME_PART}" in the name`,
+          `An overwriting field alias cannot contain "${OVERWRITE_FIELD_NAME_PART}" in the name`,
         );
       }
-      sel.prop = `${fieldName}${OVERWRITE_FIELD_NAME_PART}${overwriteCount}`;
+      sel.alias = `${fieldName}${OVERWRITE_FIELD_NAME_PART}${overwriteCount}`;
       overwriteCount++;
     }
   }
@@ -735,7 +734,6 @@ function insertResolversForSelection(
           getSelectionsAtDepth(currentResolver.exports, depth).push({
             kind: 'scalar',
             name: '__typename',
-            prop: '__typename',
             private: true,
           });
         }
@@ -913,20 +911,20 @@ function insertResolversForSelection(
       ? {
           kind: 'scalar',
           name: sel.name,
-          prop: sel.prop,
+          ...(sel.alias ? { alias: sel.alias } : {}),
         }
       : sel.kind === 'enum'
         ? {
             kind: 'enum',
             name: sel.name,
-            prop: sel.prop,
             values: sel.values,
+            ...(sel.alias ? { alias: sel.alias } : {}),
           }
         : {
             kind: 'object',
             name: sel.name,
-            prop: sel.prop,
             selections: [],
+            ...(sel.alias ? { alias: sel.alias } : {}),
           };
 
   const dest =
@@ -934,7 +932,7 @@ function insertResolversForSelection(
       ? getSelectionsAtDepth(currentResolver.exports, depth)
       : resolver.exports;
 
-  if (!exportsIncludeField(dest, exp.prop, true)) {
+  if (!exportsIncludeField(dest, exp.alias || exp.name, true)) {
     dest.push(exp);
   }
 
@@ -985,7 +983,6 @@ function prepareCompositeResolverForSelection(
         private: true,
         kind: 'scalar', // TODO: do variables always select scalars, what happens with enums?
         name: variable.select,
-        prop: variable.select,
       });
     }
   }
@@ -1020,7 +1017,7 @@ function exportsIncludeField(
     if (exp.kind === 'fragment') {
       return exportsIncludeField(exp.selections, prop, convertToPublic);
     }
-    if (exp.prop === prop) {
+    if ((exp.alias || exp.name) === prop) {
       if (convertToPublic && exp.private) {
         delete exp.private;
       }
@@ -1231,11 +1228,11 @@ function createSelectionsForExports(
           kind: Kind.NAME,
           value: exp.name,
         },
-        ...(exp.prop !== exp.name
+        ...(exp.alias
           ? {
               alias: {
                 kind: Kind.NAME,
-                value: exp.prop,
+                value: exp.alias,
               },
             }
           : {}),
@@ -1251,11 +1248,11 @@ function createSelectionsForExports(
           kind: Kind.NAME,
           value: exp.name,
         },
-        ...(exp.prop !== exp.name
+        ...(exp.alias
           ? {
               alias: {
                 kind: Kind.NAME,
-                value: exp.prop,
+                value: exp.alias,
               },
             }
           : {}),

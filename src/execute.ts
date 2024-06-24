@@ -292,10 +292,13 @@ export function populateUsingPublicExports(
       continue;
     }
 
-    let val = getAtPath(exportData, exp.prop);
-    let prop = exp.prop;
+    let field = exp.alias || exp.name;
+    let val = getAtPath(exportData, field);
     if (exp.overwrite) {
-      prop = exp.prop.split(OVERWRITE_FIELD_NAME_PART)[0]!; // a split always has item at 0
+      if (!exp.alias) {
+        throw new Error('An overwrite export must have an alias');
+      }
+      field = exp.alias.split(OVERWRITE_FIELD_NAME_PART)[0]!; // a split always has item at 0
       if (val == null) {
         // it's an overwrite field but the value is nullish, skip setting it
         continue;
@@ -309,7 +312,7 @@ export function populateUsingPublicExports(
         // some enum values can be inaccessible and should therefore be nullified
         val = null;
       }
-      setAtPath(dest, prop, val);
+      setAtPath(dest, field, val);
       continue;
     }
 
@@ -321,10 +324,10 @@ export function populateUsingPublicExports(
         populateUsingPublicExports(exp.selections, item, part);
         arr.push(part);
       }
-      dest[prop] = arr;
+      dest[field] = arr;
       continue;
     }
 
-    populateUsingPublicExports(exp.selections, val, (dest[prop] = {}));
+    populateUsingPublicExports(exp.selections, val, (dest[field] = {}));
   }
 }

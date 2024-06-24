@@ -28,6 +28,9 @@ import {
 } from './blueprint.js';
 import { flattenFragments, isListType as parseIsListType } from './utils.js';
 
+export const OVERWRITE_FIELD_NAME_PART =
+  '__OVERWRITE_EXISTING_FIELD_IF_THIS_ONE_NOT_NULL__';
+
 export interface GatherPlan {
   query: string;
   /**
@@ -103,9 +106,8 @@ export interface OperationExportAvailability {
   private?: true;
 }
 
-export interface OperationScalarExport extends OperationExportAvailability {
-  kind: 'scalar';
-  /** Name of the scalar field. */
+export interface OperationExportField {
+  /** Name of the field. */
   name: string;
   /**
    * The property name to pluck from the operation result.
@@ -113,18 +115,29 @@ export interface OperationScalarExport extends OperationExportAvailability {
    * in user's query.
    */
   prop: string;
+  /**
+   * Conflicting fields that have the same name but different nullability
+   * need to be augmented so that the conflicting fields are aliased and
+   * if they yield a non-nullish value, are used for the origin field.
+   *
+   * When set, the {@link prop} will contain the {@link OVERWRITE_FIELD_NAME_PART}
+   * that is used to deduplicate the field name collision.
+   *
+   * See https://github.com/enisdenjo/graphql-composite/issues/31 for more info.
+   */
+  overwrite?: true;
 }
 
-export interface OperationEnumExport extends OperationExportAvailability {
+export interface OperationScalarExport
+  extends OperationExportAvailability,
+    OperationExportField {
+  kind: 'scalar';
+}
+
+export interface OperationEnumExport
+  extends OperationExportAvailability,
+    OperationExportField {
   kind: 'enum';
-  /** Name of the scalar field. */
-  name: string;
-  /**
-   * The property name to pluck from the operation result.
-   * It's the same as {@link name} unless an alias is used
-   * in user's query.
-   */
-  prop: string;
   /**
    * Whitelisted enum value list to be returned by the field. If a field
    * yields a value that is not in the list, it'll be nullified.
@@ -138,16 +151,10 @@ export type OperationPrimitiveExport =
   | OperationScalarExport
   | OperationEnumExport;
 
-export interface OperationObjectExport extends OperationExportAvailability {
+export interface OperationObjectExport
+  extends OperationExportAvailability,
+    OperationExportField {
   kind: 'object';
-  /** Name of the composite field. */
-  name: string;
-  /**
-   * The property name to pluck from the operation result.
-   * It's the same as {@link name} unless an alias is used
-   * in user's query.
-   */
-  prop: string;
   /** Nested selections of the field. */
   selections: OperationExport[];
 }
@@ -372,6 +379,7 @@ export function planGather(
           true,
         );
       }
+      augmentConcflictingFields(blueprint, resolver.subgraph, resolver.exports);
     }
 
     gatherPlan.operation.resolvers[field.prop] = resolver;
@@ -385,6 +393,58 @@ export function planGather(
   );
 
   return gatherPlan;
+}
+
+function augmentConcflictingFields(
+  blueprint: Blueprint,
+  subgraph: string,
+  exports: OperationExport[],
+) {
+  // TODO: drop null assertions
+
+  const appearing: {
+    [fieldName: string]: /* typeName: */ string;
+  } = {};
+  let overwriteCount = 0;
+  for (const frag of exports.filter(
+    // we only worry about fragments because same field names in an object mean same field
+    (e): e is OperationFragmentExport => e.kind === 'fragment',
+  )) {
+    const type = blueprint.types[frag.typeCondition]!;
+    for (const sel of frag.selections) {
+      if (sel.kind === 'fragment') {
+        augmentConcflictingFields(blueprint, subgraph, sel.selections);
+        continue;
+      }
+
+      if (sel.kind === 'object') {
+        augmentConcflictingFields(blueprint, subgraph, sel.selections);
+        // no "continue" because the object selection may be of a different type too
+      }
+
+      const fieldName = sel.prop;
+      const fieldTypeName = type.fields[fieldName]!.types[subgraph]!;
+
+      const appearingTypeName = appearing[fieldName];
+      if (!appearingTypeName) {
+        appearing[fieldName] = fieldTypeName;
+        continue;
+      }
+      if (appearingTypeName === fieldTypeName) {
+        continue;
+      }
+
+      // different type from a previously appearing, same named, field
+      sel.overwrite = true;
+      if (sel.prop.includes(OVERWRITE_FIELD_NAME_PART)) {
+        throw new Error(
+          `An overwriting field cannot contain "${OVERWRITE_FIELD_NAME_PART}" in the name`,
+        );
+      }
+      sel.prop = `${fieldName}${OVERWRITE_FIELD_NAME_PART}${overwriteCount}`;
+      overwriteCount++;
+    }
+  }
 }
 
 type OperationPrimitiveField = OperationPrimitiveExport & {

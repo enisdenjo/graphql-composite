@@ -50,6 +50,9 @@ export const blueprint: Blueprint = {
         users: {
           name: 'users',
           subgraphs: ['a'],
+          types: {
+            a: '[NodeWithName!]!',
+          },
           resolvers: {
             a: {
               subgraph: 'a',
@@ -70,6 +73,9 @@ export const blueprint: Blueprint = {
         anotherUsers: {
           name: 'anotherUsers',
           subgraphs: ['b'],
+          types: {
+            b: '[NodeWithName!]!',
+          },
           resolvers: {
             b: {
               subgraph: 'b',
@@ -90,6 +96,9 @@ export const blueprint: Blueprint = {
         accounts: {
           name: 'accounts',
           subgraphs: ['b'],
+          types: {
+            b: '[Account]',
+          },
           resolvers: {
             b: {
               subgraph: 'b',
@@ -117,16 +126,27 @@ export const blueprint: Blueprint = {
         id: {
           name: 'id',
           subgraphs: ['a', 'b', 'c'],
+          types: {
+            a: 'ID!',
+            b: 'ID!',
+            c: 'ID!',
+          },
           resolvers: {},
         },
         name: {
           name: 'name',
           subgraphs: ['a'],
+          types: {
+            a: 'String',
+          },
           resolvers: {},
         },
         username: {
           name: 'username',
           subgraphs: ['b'],
+          types: {
+            b: 'String',
+          },
           resolvers: {},
         },
       },
@@ -198,16 +218,25 @@ export const blueprint: Blueprint = {
         id: {
           name: 'id',
           subgraphs: ['a'],
+          types: {
+            a: 'ID!',
+          },
           resolvers: {},
         },
         name: {
           name: 'name',
           subgraphs: ['a'],
+          types: {
+            a: 'String',
+          },
           resolvers: {},
         },
         age: {
           name: 'age',
           subgraphs: ['a'],
+          types: {
+            a: 'Int',
+          },
           resolvers: {},
         },
         // there is no username field on "b", but the NodeWithName implements it
@@ -250,21 +279,35 @@ export const blueprint: Blueprint = {
         __typename: {
           name: '__typename',
           subgraphs: ['a'],
+          types: {
+            a: 'String!',
+          },
           resolvers: {},
         },
         id: {
           name: 'id',
           subgraphs: ['a', 'b', 'c'],
+          types: {
+            a: 'ID!',
+            b: 'ID!',
+            c: 'ID!',
+          },
           resolvers: {},
         },
         name: {
           name: 'name',
           subgraphs: ['b'],
+          types: {
+            b: 'String!',
+          },
           resolvers: {},
         },
         isActive: {
           name: 'isActive',
           subgraphs: ['c'],
+          types: {
+            c: 'Boolean!',
+          },
           resolvers: {},
         },
       },
@@ -362,16 +405,25 @@ export const blueprint: Blueprint = {
         id: {
           name: 'id',
           subgraphs: ['a'],
+          types: {
+            a: 'ID!',
+          },
           resolvers: {},
         },
         isMain: {
           name: 'isMain',
           subgraphs: ['a'],
+          types: {
+            a: 'Boolean!',
+          },
           resolvers: {},
         },
         isActive: {
           name: 'isActive',
           subgraphs: ['a'],
+          types: {
+            a: 'Boolean!',
+          },
           resolvers: {},
         },
       },

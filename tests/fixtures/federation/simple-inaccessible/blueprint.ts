@@ -28,6 +28,9 @@ export const blueprint: Blueprint = {
         usersInAge: {
           name: 'usersInAge',
           subgraphs: ['age'],
+          types: {
+            age: '[User!]!',
+          },
           resolvers: {
             age: {
               subgraph: 'age',
@@ -48,6 +51,9 @@ export const blueprint: Blueprint = {
         usersInFriends: {
           name: 'usersInFriends',
           subgraphs: ['friends'],
+          types: {
+            friends: '[User!]!',
+          },
           resolvers: {
             friends: {
               subgraph: 'friends',
@@ -76,21 +82,34 @@ export const blueprint: Blueprint = {
         id: {
           name: 'id',
           subgraphs: ['age', 'friends'],
+          types: {
+            age: 'ID',
+            friends: 'ID',
+          },
           resolvers: {},
         },
         age: {
           name: 'age',
           subgraphs: ['age'],
+          types: {
+            age: 'Int',
+          },
           resolvers: {},
         },
         friends: {
           name: 'friends',
           subgraphs: ['friends'],
+          types: {
+            friends: '[User!]!',
+          },
           resolvers: {},
         },
         type: {
           name: 'type',
           subgraphs: ['friends'],
+          types: {
+            friends: 'FriendType',
+          },
           resolvers: {},
         },
       },

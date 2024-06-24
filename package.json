@@ -8,7 +8,7 @@
   },
   "author": "Denis Badurina <badurinadenis@gmail.com>",
   "license": "MIT",
-  "packageManager": "yarn@4.1.1",
+  "packageManager": "yarn@4.3.1",
   "engines": {
     "node": ">=21"
   },
@@ -19,28 +19,28 @@
     "test": "vitest"
   },
   "peerDependencies": {
-    "graphql": "^16"
+    "graphql": "^16.9.0"
   },
   "dependencies": {
     "lodash.get": "^4.4.2",
     "lodash.set": "^4.3.2"
   },
   "devDependencies": {
-    "@apollo/subgraph": "^2.7.7",
-    "@graphql-tools/schema": "^10.0.3",
+    "@apollo/subgraph": "^2.8.1",
+    "@graphql-tools/schema": "^10.0.4",
     "@ianvs/prettier-plugin-sort-imports": "^4.2.1",
     "@tsconfig/node21": "^21.0.3",
     "@tsconfig/strictest": "^2.0.5",
     "@types/lodash.get": "^4.4.9",
     "@types/lodash.set": "^4.3.9",
-    "@types/node": "^20.12.11",
-    "graphql": "^16.8.1",
-    "graphql-yoga": "^5.3.1",
-    "prettier": "^3.2.5",
+    "@types/node": "^20.14.8",
+    "graphql": "^16.9.0",
+    "graphql-yoga": "^5.4.0",
+    "prettier": "^3.3.2",
     "prettier-plugin-pkg": "^0.18.1",
     "prettier-plugin-sh": "^0.14.0",
-    "tsx": "^4.10.5",
-    "typescript": "^5.4.5",
+    "tsx": "^4.15.7",
+    "typescript": "^5.5.2",
     "vitest": "^1.6.0"
   }
 }

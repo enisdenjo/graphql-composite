@@ -378,7 +378,7 @@ export function planGather(
           true,
         );
       }
-      augmentConcflictingFields(blueprint, resolver.subgraph, resolver.exports);
+      augmentConflictingFields(blueprint, resolver.subgraph, resolver.exports);
     }
 
     gatherPlan.operation.resolvers[field.alias || field.name] = resolver;
@@ -394,7 +394,7 @@ export function planGather(
   return gatherPlan;
 }
 
-function augmentConcflictingFields(
+function augmentConflictingFields(
   blueprint: Blueprint,
   subgraph: string,
   exports: OperationExport[],
@@ -412,12 +412,12 @@ function augmentConcflictingFields(
     const type = blueprint.types[frag.typeCondition]!;
     for (const sel of frag.selections) {
       if (sel.kind === 'fragment') {
-        augmentConcflictingFields(blueprint, subgraph, sel.selections);
+        augmentConflictingFields(blueprint, subgraph, sel.selections);
         continue;
       }
 
       if (sel.kind === 'object') {
-        augmentConcflictingFields(blueprint, subgraph, sel.selections);
+        augmentConflictingFields(blueprint, subgraph, sel.selections);
         // no "continue" because the object selection may be of a different type too
       }
 

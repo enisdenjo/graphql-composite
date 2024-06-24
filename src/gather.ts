@@ -119,7 +119,7 @@ export interface OperationExportField {
    * need to be augmented so that the conflicting fields are aliased and
    * if they yield a non-nullish value, are used for the origin field.
    *
-   * When set, the {@link prop} will contain the {@link OVERWRITE_FIELD_NAME_PART}
+   * When set, the {@link alias} will contain the {@link OVERWRITE_FIELD_NAME_PART}
    * that is used to deduplicate the field name collision.
    *
    * See https://github.com/enisdenjo/graphql-composite/issues/31 for more info.

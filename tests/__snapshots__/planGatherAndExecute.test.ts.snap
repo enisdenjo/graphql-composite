@@ -1421,6 +1421,170 @@ exports[`fixture 'federation/child-type-mismatch' > query 'NestedInternalAlias' 
 }
 `;
 
+exports[`fixture 'federation/interface-object-with-requ…' > query 'RequiresAnotherUsers' > should plan gather 1`] = `
+{
+  "operation": {
+    "name": "RequiresAnotherUsers",
+    "resolvers": {
+      "anotherUsers": {
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "id",
+          },
+          {
+            "kind": "scalar",
+            "name": "username",
+          },
+        ],
+        "includes": {
+          "": [
+            {
+              "exports": [
+                {
+                  "kind": "scalar",
+                  "name": "name",
+                },
+              ],
+              "includes": {},
+              "kind": "interface",
+              "ofType": "NodeWithName",
+              "operation": "query ($id: ID!) {
+  _entities(representations: [{__typename: "NodeWithName", id: $id}]) {
+    ... on NodeWithName {
+      name
+    }
+  }
+}",
+              "pathToExportData": [
+                "_entities",
+                0,
+              ],
+              "subgraph": "a",
+              "type": "[NodeWithName]!",
+              "variables": {
+                "id": {
+                  "kind": "select",
+                  "name": "id",
+                  "select": "id",
+                },
+              },
+            },
+          ],
+        },
+        "kind": "interface",
+        "ofType": "NodeWithName",
+        "operation": "{
+  anotherUsers {
+    id
+    username
+  }
+}",
+        "pathToExportData": [
+          "anotherUsers",
+        ],
+        "subgraph": "b",
+        "type": "[NodeWithName]",
+        "variables": {},
+      },
+    },
+    "type": "Query",
+  },
+  "query": "query RequiresAnotherUsers {
+  anotherUsers {
+    id
+    name
+    username
+  }
+}",
+}
+`;
+
+exports[`fixture 'federation/interface-object-with-requ…' > query 'RequiresAnotherUsersJustUsername' > should plan gather 1`] = `
+{
+  "operation": {
+    "name": "RequiresAnotherUsersJustUsername",
+    "resolvers": {
+      "anotherUsers": {
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "id",
+            "private": true,
+          },
+          {
+            "kind": "scalar",
+            "name": "name",
+            "private": true,
+          },
+        ],
+        "includes": {
+          "": [
+            {
+              "exports": [
+                {
+                  "kind": "scalar",
+                  "name": "username",
+                },
+              ],
+              "includes": {},
+              "kind": "primitive",
+              "ofType": "String",
+              "operation": "query ($id: ID!) {
+  _entities(representations: [{__typename: "NodeWithName", id: $id, name: $name}]) {
+    ... on NodeWithName {
+      username
+    }
+  }
+}",
+              "pathToExportData": [
+                "_entities",
+                "username",
+                0,
+              ],
+              "subgraph": "b",
+              "type": "[NodeWithName]!",
+              "variables": {
+                "id": {
+                  "kind": "select",
+                  "name": "id",
+                  "select": "id",
+                },
+                "name": {
+                  "kind": "select",
+                  "name": "name",
+                  "select": "name",
+                },
+              },
+            },
+          ],
+        },
+        "kind": "interface",
+        "ofType": "NodeWithName",
+        "operation": "{
+  anotherUsers {
+    id
+    name
+  }
+}",
+        "pathToExportData": [
+          "anotherUsers",
+        ],
+        "subgraph": "b",
+        "type": "[NodeWithName]",
+        "variables": {},
+      },
+    },
+    "type": "Query",
+  },
+  "query": "query RequiresAnotherUsersJustUsername {
+  anotherUsers {
+    username
+  }
+}",
+}
+`;
+
 exports[`fixture 'federation/override-type-interface' > query 'AnotherFeed' > should execute and explain 1`] = `
 [
   {

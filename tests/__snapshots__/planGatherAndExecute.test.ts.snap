@@ -10202,6 +10202,45 @@ exports[`fixture 'store' > query 'ScalarOperationFieldNested' > should plan gath
 }
 `;
 
+exports[`fixture 'variable-selects-from-different-resol…' > query 'VariableFromDifferentSubgraph' > should plan gather 1`] = `
+{
+  "operation": {
+    "name": "VariableFromDifferentSubgraph",
+    "resolvers": {
+      "products": {
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "id",
+            "private": true,
+          },
+        ],
+        "includes": {},
+        "kind": "object",
+        "ofType": "Product",
+        "operation": "{
+  products {
+    id
+  }
+}",
+        "pathToExportData": [
+          "products",
+        ],
+        "subgraph": "store",
+        "type": "[Product!]!",
+        "variables": {},
+      },
+    },
+    "type": "Query",
+  },
+  "query": "query VariableFromDifferentSubgraph {
+  products {
+    price
+  }
+}",
+}
+`;
+
 exports[`should build proper operation and find export path for 'FindDeepestPath' resolver 1`] = `
 {
   "operation": "query FindDeepestPath {

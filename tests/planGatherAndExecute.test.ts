@@ -28,6 +28,8 @@ describe.each(await getFixtures())(
           expect({ errors }).toEqual(result);
           return;
         }
+        const p = planGather(blueprint, document);
+        console.dir(p, { depth: 3000 });
         const { extensions, ...actualResult } = await execute(
           Object.entries(subgraphs).reduce(
             (agg, [name, subgraph]) => ({
@@ -36,7 +38,7 @@ describe.each(await getFixtures())(
             }),
             {},
           ),
-          planGather(blueprint, document),
+          p,
           variables,
         );
         expect(actualResult).toEqual(result);

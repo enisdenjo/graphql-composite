@@ -5202,6 +5202,397 @@ exports[`fixture 'federation/simple-interface-object' > query 'UsersWithUsername
 }
 `;
 
+exports[`fixture 'federation/typename' > query 'Interface' > should execute and explain 1`] = `
+[
+  {
+    "data": {
+      "interface": {
+        "__typename": "Toaster",
+        "id": "2",
+        "t": "Toaster",
+        "typename": "Toaster",
+      },
+    },
+    "exports": [
+      {
+        "kind": "scalar",
+        "name": "id",
+      },
+      {
+        "kind": "scalar",
+        "name": "__typename",
+      },
+      {
+        "alias": "typename",
+        "kind": "scalar",
+        "name": "__typename",
+      },
+      {
+        "alias": "t",
+        "kind": "scalar",
+        "name": "__typename",
+      },
+    ],
+    "includes": [],
+    "kind": "interface",
+    "ofType": "Node",
+    "operation": "{
+  interface {
+    id
+    __typename
+    typename: __typename
+    t: __typename
+  }
+}",
+    "pathInData": [
+      "interface",
+    ],
+    "pathToExportData": [
+      "interface",
+    ],
+    "subgraph": "a",
+    "type": "Node",
+    "variables": {},
+  },
+]
+`;
+
+exports[`fixture 'federation/typename' > query 'Interface' > should plan gather 1`] = `
+{
+  "operation": {
+    "name": "Interface",
+    "resolvers": {
+      "interface": {
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "id",
+          },
+          {
+            "kind": "scalar",
+            "name": "__typename",
+          },
+          {
+            "alias": "typename",
+            "kind": "scalar",
+            "name": "__typename",
+          },
+          {
+            "alias": "t",
+            "kind": "scalar",
+            "name": "__typename",
+          },
+        ],
+        "includes": {},
+        "kind": "interface",
+        "ofType": "Node",
+        "operation": "{
+  interface {
+    id
+    __typename
+    typename: __typename
+    t: __typename
+  }
+}",
+        "pathToExportData": [
+          "interface",
+        ],
+        "subgraph": "a",
+        "type": "Node",
+        "variables": {},
+      },
+    },
+    "type": "Query",
+  },
+  "query": "query Interface {
+  interface {
+    id
+    __typename
+    typename: __typename
+    t: __typename
+  }
+}",
+}
+`;
+
+exports[`fixture 'federation/typename' > query 'InterfaceObjectTypename' > should execute and explain 1`] = `
+[
+  {
+    "data": {
+      "users": [
+        {
+          "id": "u1",
+        },
+        {
+          "id": "u2",
+        },
+      ],
+    },
+    "exports": [
+      {
+        "kind": "scalar",
+        "name": "id",
+        "private": true,
+      },
+    ],
+    "includes": [
+      {
+        "data": {
+          "_entities": [
+            {
+              "__typename": "Admin",
+            },
+          ],
+        },
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "__typename",
+          },
+        ],
+        "includes": [],
+        "kind": "interface",
+        "ofType": "User",
+        "operation": "query ($id: ID!) {
+  _entities(representations: [{__typename: "User", id: $id}]) {
+    ... on User {
+      __typename
+    }
+  }
+}",
+        "pathInData": [
+          "users",
+          0,
+        ],
+        "pathToExportData": [
+          "_entities",
+          0,
+        ],
+        "subgraph": "a",
+        "type": "[User]!",
+        "variables": {
+          "id": "u1",
+        },
+      },
+      {
+        "data": {
+          "_entities": [
+            {
+              "__typename": "Admin",
+            },
+          ],
+        },
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "__typename",
+          },
+        ],
+        "includes": [],
+        "kind": "interface",
+        "ofType": "User",
+        "operation": "query ($id: ID!) {
+  _entities(representations: [{__typename: "User", id: $id}]) {
+    ... on User {
+      __typename
+    }
+  }
+}",
+        "pathInData": [
+          "users",
+          1,
+        ],
+        "pathToExportData": [
+          "_entities",
+          0,
+        ],
+        "subgraph": "a",
+        "type": "[User]!",
+        "variables": {
+          "id": "u2",
+        },
+      },
+    ],
+    "kind": "interface",
+    "ofType": "User",
+    "operation": "{
+  users {
+    id
+  }
+}",
+    "pathInData": [
+      "users",
+    ],
+    "pathToExportData": [
+      "users",
+    ],
+    "subgraph": "b",
+    "type": "[User]",
+    "variables": {},
+  },
+]
+`;
+
+exports[`fixture 'federation/typename' > query 'InterfaceObjectTypename' > should plan gather 1`] = `
+{
+  "operation": {
+    "name": "InterfaceObjectTypename",
+    "resolvers": {
+      "users": {
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "id",
+            "private": true,
+          },
+        ],
+        "includes": {
+          "": [
+            {
+              "exports": [
+                {
+                  "kind": "scalar",
+                  "name": "__typename",
+                },
+              ],
+              "includes": {},
+              "kind": "interface",
+              "ofType": "User",
+              "operation": "query ($id: ID!) {
+  _entities(representations: [{__typename: "User", id: $id}]) {
+    ... on User {
+      __typename
+    }
+  }
+}",
+              "pathToExportData": [
+                "_entities",
+                0,
+              ],
+              "subgraph": "a",
+              "type": "[User]!",
+              "variables": {
+                "id": {
+                  "kind": "select",
+                  "name": "id",
+                  "select": "id",
+                },
+              },
+            },
+          ],
+        },
+        "kind": "interface",
+        "ofType": "User",
+        "operation": "{
+  users {
+    id
+  }
+}",
+        "pathToExportData": [
+          "users",
+        ],
+        "subgraph": "b",
+        "type": "[User]",
+        "variables": {},
+      },
+    },
+    "type": "Query",
+  },
+  "query": "query InterfaceObjectTypename {
+  users {
+    __typename
+  }
+}",
+}
+`;
+
+exports[`fixture 'federation/typename' > query 'Union' > should execute and explain 1`] = `
+[
+  {
+    "data": {
+      "union": {
+        "__typename": "Oven",
+        "typename": "Oven",
+      },
+    },
+    "exports": [
+      {
+        "kind": "scalar",
+        "name": "__typename",
+      },
+      {
+        "alias": "typename",
+        "kind": "scalar",
+        "name": "__typename",
+      },
+    ],
+    "includes": [],
+    "kind": "interface",
+    "ofType": "Product",
+    "operation": "{
+  union {
+    __typename
+    typename: __typename
+  }
+}",
+    "pathInData": [
+      "union",
+    ],
+    "pathToExportData": [
+      "union",
+    ],
+    "subgraph": "a",
+    "type": "Product",
+    "variables": {},
+  },
+]
+`;
+
+exports[`fixture 'federation/typename' > query 'Union' > should plan gather 1`] = `
+{
+  "operation": {
+    "name": "Union",
+    "resolvers": {
+      "union": {
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "__typename",
+          },
+          {
+            "alias": "typename",
+            "kind": "scalar",
+            "name": "__typename",
+          },
+        ],
+        "includes": {},
+        "kind": "interface",
+        "ofType": "Product",
+        "operation": "{
+  union {
+    __typename
+    typename: __typename
+  }
+}",
+        "pathToExportData": [
+          "union",
+        ],
+        "subgraph": "a",
+        "type": "Product",
+        "variables": {},
+      },
+    },
+    "type": "Query",
+  },
+  "query": "query Union {
+  union {
+    __typename
+    typename: __typename
+  }
+}",
+}
+`;
+
 exports[`fixture 'federation/union-interface-distributed' > query 'NodesDiffFields' > should execute and explain 1`] = `
 [
   {

@@ -43,7 +43,10 @@ export async function execute(
   };
 }
 
-export type ExecutionExplain = Omit<GatherPlanResolver, 'includes'> & {
+export type ExecutionExplain = Omit<
+  GatherPlanResolver,
+  'variables' | 'includes'
+> & {
   pathInData: (string | number)[];
   operation: string;
   variables: Record<string, unknown>;
@@ -83,27 +86,9 @@ async function executeResolver(
     throw new Error(`Transport for subgraph "${resolver.subgraph}" not found`);
   }
 
-  const variables = Object.values(resolver.variables).reduce(
-    (agg, variable) => ({
-      ...agg,
-      [variable.name]:
-        variable.kind === 'select'
-          ? getAtPath(parentExportData, variable.select)
-          : variable.kind === 'constant'
-            ? variable.value
-            : // variable.kind === 'user'
-              operationVariables[variable.name],
-    }),
-    {},
-  );
+  const [variables, parentExportDataDoesntProvideAllSelectVariables] =
+    getAndCheckVariables(operationVariables, resolver, parentExportData);
 
-  const parentExportDataDoesntProvideAllSelectVariables = Object.values(
-    resolver.variables,
-  ).some(
-    (variable) =>
-      variable.kind === 'select' &&
-      Object(variables)[variable.name] === undefined,
-  );
   if (parentExportDataDoesntProvideAllSelectVariables) {
     // if parent's export data dont have all select variables
     // that means we're resolving a field of a non-existing
@@ -191,6 +176,38 @@ async function executeResolver(
       setAtPath(resultRef.data, pathInData, dest);
     }
     populateUsingPublicExports(resolver.exports, exportData, dest);
+  }
+
+  for (const [field, resolverOrResolvers] of Object.entries(
+    resolver.includes,
+  )) {
+    // if there's no field specified, we're resolving additional fields for the current one
+    const resolvingAdditionalFields = field === '';
+
+    const fieldData = resolvingAdditionalFields
+      ? exportData
+      : getAtPath(exportData, field);
+
+    if (resolvingAdditionalFields) {
+      if (!Array.isArray(resolverOrResolvers)) {
+        throw new Error('Additional field resolvers must be an array');
+      }
+      const resolvers = resolverOrResolvers;
+
+      for (const resolver of resolvers) {
+        const [, exportDataDoesntProvideAllSelectVariables] =
+          getAndCheckVariables(operationVariables, resolver, fieldData);
+        console.log({
+          resolver,
+          fieldData,
+          exportDataDoesntProvideAllSelectVariables,
+        });
+      }
+
+      // console.log(resolvers);
+    }
+
+    // console.log({ field });
   }
 
   return {
@@ -330,4 +347,37 @@ export function populateUsingPublicExports(
 
     populateUsingPublicExports(exp.selections, val, (dest[field] = {}));
   }
+}
+
+function getAndCheckVariables(
+  operationVariables: Record<string, unknown>,
+  resolver: GatherPlanResolver,
+  parentExportData: Record<string, unknown> | null,
+): [
+  variables: Record<string, unknown>,
+  parentExportDataDoesntProvideAllSelectVariables: boolean,
+] {
+  const variables = Object.values(resolver.variables).reduce(
+    (agg, variable) => ({
+      ...agg,
+      [variable.name]:
+        variable.kind === 'select'
+          ? getAtPath(parentExportData, variable.select)
+          : variable.kind === 'constant'
+            ? variable.value
+            : // variable.kind === 'user'
+              operationVariables[variable.name],
+    }),
+    {},
+  );
+
+  const parentExportDataDoesntProvideAllSelectVariables = Object.values(
+    resolver.variables,
+  ).some(
+    (variable) =>
+      variable.kind === 'select' &&
+      Object(variables)[variable.name] === undefined,
+  );
+
+  return [variables, parentExportDataDoesntProvideAllSelectVariables];
 }

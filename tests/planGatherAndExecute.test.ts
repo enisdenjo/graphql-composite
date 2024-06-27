@@ -29,7 +29,7 @@ describe.each(await getFixtures())(
           return;
         }
         const p = planGather(blueprint, document);
-        console.dir(p, { depth: 3000 });
+        // console.dir(p, { depth: 3000 });
         const { extensions, ...actualResult } = await execute(
           Object.entries(subgraphs).reduce(
             (agg, [name, subgraph]) => ({

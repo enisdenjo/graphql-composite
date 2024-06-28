@@ -1,6 +1,7 @@
 import { ExecutionResult, GraphQLError } from 'graphql';
-import getAtPath from 'lodash.get';
-import setAtPath from 'lodash.set';
+import mergeObject from 'lodash/fp/merge.js';
+import getAtPath from 'lodash/get.js';
+import setAtPath from 'lodash/set.js';
 import {
   GatherPlan,
   GatherPlanResolver,
@@ -70,7 +71,7 @@ async function executeResolver(
   /**
    * Data of the export in the parent resolver.
    */
-  parentExportData: Record<string, unknown> | null,
+  parentExportData: unknown,
   /**
    * The path in the {@link resultRef} data this gather is resolving.
    */
@@ -178,36 +179,94 @@ async function executeResolver(
     populateUsingPublicExports(resolver.exports, exportData, dest);
   }
 
+  const includes: ExecutionExplain[] = [];
   for (const [field, resolverOrResolvers] of Object.entries(
     resolver.includes,
   )) {
     // if there's no field specified, we're resolving additional fields for the current one
     const resolvingAdditionalFields = field === '';
 
-    const fieldData = resolvingAdditionalFields
-      ? exportData
-      : getAtPath(exportData, field);
-
-    if (resolvingAdditionalFields) {
-      if (!Array.isArray(resolverOrResolvers)) {
-        throw new Error('Additional field resolvers must be an array');
+    if (Array.isArray(exportData)) {
+      // if the export data is an array, we need to gather resolve each item
+      for (let i = 0; i < exportData.length; i++) {
+        const exportDataItem = exportData[i];
+        const fieldData = resolvingAdditionalFields
+          ? exportDataItem
+          : getAtPath(exportDataItem, field);
+        if (Array.isArray(fieldData)) {
+          // if the include points to an array, we need to gather resolve each item
+          for (let j = 0; j < fieldData.length; j++) {
+            const fieldDataItem = fieldData[j];
+            includes.push(
+              ...(await resolveIncludes(
+                transports,
+                operationVariables,
+                Array.isArray(resolverOrResolvers)
+                  ? resolverOrResolvers
+                  : [resolverOrResolvers],
+                fieldDataItem,
+                resolvingAdditionalFields
+                  ? [...pathInData, i, j]
+                  : [...pathInData, i, field, j],
+                resultRef,
+              )),
+            );
+          }
+        } else {
+          includes.push(
+            ...(await resolveIncludes(
+              transports,
+              operationVariables,
+              Array.isArray(resolverOrResolvers)
+                ? resolverOrResolvers
+                : [resolverOrResolvers],
+              fieldData,
+              resolvingAdditionalFields
+                ? [...pathInData, i]
+                : [...pathInData, i, field],
+              resultRef,
+            )),
+          );
+        }
       }
-      const resolvers = resolverOrResolvers;
-
-      for (const resolver of resolvers) {
-        const [, exportDataDoesntProvideAllSelectVariables] =
-          getAndCheckVariables(operationVariables, resolver, fieldData);
-        console.log({
-          resolver,
-          fieldData,
-          exportDataDoesntProvideAllSelectVariables,
-        });
+    } else {
+      const fieldData = resolvingAdditionalFields
+        ? exportData
+        : getAtPath(exportData, field);
+      if (Array.isArray(fieldData)) {
+        // if the include points to an array, we need to gather resolve each item
+        for (let i = 0; i < fieldData.length; i++) {
+          const fieldDataItem = fieldData[i];
+          includes.push(
+            ...(await resolveIncludes(
+              transports,
+              operationVariables,
+              Array.isArray(resolverOrResolvers)
+                ? resolverOrResolvers
+                : [resolverOrResolvers],
+              fieldDataItem,
+              resolvingAdditionalFields
+                ? [...pathInData, i]
+                : [...pathInData, field, i],
+              resultRef,
+            )),
+          );
+        }
+      } else {
+        includes.push(
+          ...(await resolveIncludes(
+            transports,
+            operationVariables,
+            Array.isArray(resolverOrResolvers)
+              ? resolverOrResolvers
+              : [resolverOrResolvers],
+            fieldData,
+            resolvingAdditionalFields ? pathInData : [...pathInData, field],
+            resultRef,
+          )),
+        );
       }
-
-      // console.log(resolvers);
     }
-
-    // console.log({ field });
   }
 
   return {
@@ -215,79 +274,128 @@ async function executeResolver(
     ...result,
     pathInData,
     variables,
-    // TODO: batch resolvers going to the same subgraph
-    includes: await Promise.all(
-      Object.entries(resolver.includes).flatMap(([field, resolver]) =>
-        (Array.isArray(resolver) ? resolver : [resolver]).flatMap(
-          (resolver) => {
-            // if there's no field specified, we're resolving additional fields for the current one
-            const resolvingAdditionalFields = field === '';
+    includes,
+  };
+}
 
-            if (Array.isArray(exportData)) {
-              // if the export data is an array, we need to gather resolve each item
-              return exportData.flatMap((exportData, i) => {
-                const fieldData = resolvingAdditionalFields
-                  ? exportData
-                  : getAtPath(exportData, field);
-                if (Array.isArray(fieldData)) {
-                  // if the include points to an array, we need to gather resolve each item
-                  return fieldData.map((fieldDataItem, j) =>
-                    executeResolver(
-                      transports,
-                      operationVariables,
-                      resolver,
-                      fieldDataItem,
-                      resolvingAdditionalFields
-                        ? [...pathInData, i, j]
-                        : [...pathInData, i, field, j],
-                      resultRef,
-                    ),
-                  );
-                }
-                return executeResolver(
-                  transports,
-                  operationVariables,
-                  resolver,
-                  fieldData,
-                  resolvingAdditionalFields
-                    ? [...pathInData, i]
-                    : [...pathInData, i, field],
-                  resultRef,
-                );
-              });
-            }
+/**
+ * TODO: batch resolvers going to the same subgraph
+ */
+async function resolveIncludes(
+  transports: SourceTransports,
+  /**
+   * The variables for the execution. Those that the user provides.
+   * These should be used only on the operation (root) resolver.
+   */
+  operationVariables: Record<string, unknown>,
+  /**
+   * Included resolvers to execute.
+   */
+  resolvers: GatherPlanResolver[],
+  /**
+   * Available export data to be used in the {@link resolvers}.
+   */
+  exportData: unknown,
+  /**
+   * The path in the {@link resultRef} data this include is resolving.
+   */
+  pathInData: (string | number)[],
+  /**
+   * Reference whose object gets mutated to form the final
+   * result (the one that the caller gets).
+   */
+  resultRef: ExecutionResult,
+): Promise<ExecutionExplain[]> {
+  if (Array.isArray(exportData)) {
+    // items should be mapped by the caller
+    throw new Error(
+      'Export data while executing includes must not be an array',
+    );
+  }
 
-            const fieldData = resolvingAdditionalFields
-              ? exportData
-              : getAtPath(exportData, field);
-            if (Array.isArray(fieldData)) {
-              // if the include points to an array, we need to gather resolve each item
-              return fieldData.map((fieldDataItem, i) =>
-                executeResolver(
-                  transports,
-                  operationVariables,
-                  resolver,
-                  fieldDataItem,
-                  resolvingAdditionalFields
-                    ? [...pathInData, i]
-                    : [...pathInData, field, i],
-                  resultRef,
-                ),
-              );
-            }
-            return executeResolver(
-              transports,
-              operationVariables,
-              resolver,
-              fieldData,
-              resolvingAdditionalFields ? pathInData : [...pathInData, field],
-              resultRef,
-            );
-          },
+  const hasSelectVariables: GatherPlanResolver[] = [];
+  const doesntHaveSelectVariables: GatherPlanResolver[] = [];
+  for (const resolver of resolvers) {
+    const [, doesntHaveAllSelectVariables] = getAndCheckVariables(
+      operationVariables,
+      resolver,
+      exportData,
+    );
+    if (doesntHaveAllSelectVariables) {
+      doesntHaveSelectVariables.push(resolver);
+    } else {
+      hasSelectVariables.push(resolver);
+    }
+  }
+
+  if (!doesntHaveSelectVariables.length) {
+    // all resolvers have all select variables
+    return await Promise.all(
+      hasSelectVariables.map((r) =>
+        executeResolver(
+          transports,
+          operationVariables,
+          r,
+          exportData,
+          pathInData,
+          resultRef,
         ),
       ),
+    );
+  }
+
+  if (!hasSelectVariables.length) {
+    // no resolver has select variables
+    return await Promise.all(
+      doesntHaveSelectVariables.map((r) =>
+        executeResolver(
+          transports,
+          operationVariables,
+          r,
+          exportData,
+          pathInData,
+          resultRef,
+        ),
+      ),
+    );
+  }
+
+  // TODO: be smarter about this, check if resolvers with select variables export necessary variables for the leftovers
+
+  // some resolvers have select variables, some dont
+  let mergedExportData = exportData;
+  const results = await Promise.all(
+    hasSelectVariables.map((r) =>
+      executeResolver(
+        transports,
+        operationVariables,
+        r,
+        exportData,
+        pathInData,
+        resultRef,
+      ).then((result) => {
+        if (result.data) {
+          mergedExportData = mergeObject(
+            mergedExportData,
+            getAtPath(result.data, result.pathToExportData),
+          );
+        }
+        return result;
+      }),
     ),
-  };
+  );
+
+  return [
+    ...results,
+    ...(await resolveIncludes(
+      transports,
+      operationVariables,
+      doesntHaveSelectVariables,
+      mergedExportData,
+      pathInData,
+      resultRef,
+    )),
+  ];
 }
 
 export function populateUsingPublicExports(
@@ -352,7 +460,7 @@ export function populateUsingPublicExports(
 function getAndCheckVariables(
   operationVariables: Record<string, unknown>,
   resolver: GatherPlanResolver,
-  parentExportData: Record<string, unknown> | null,
+  parentExportData: unknown,
 ): [
   variables: Record<string, unknown>,
   parentExportDataDoesntProvideAllSelectVariables: boolean,

@@ -822,28 +822,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/lodash.get@npm:^4.4.9":
-  version: 4.4.9
-  resolution: "@types/lodash.get@npm:4.4.9"
-  dependencies:
-    "@types/lodash": "npm:*"
-  checksum: 10c0/934ae4f02831afdb9216cb5fcb702f8f4e0b45e13f2d10ed9c7ce7e891800e5dea726b513c98b8370d6292d42ad7745c622ae75733676746b711bea95b6259d5
-  languageName: node
-  linkType: hard
-
-"@types/lodash.set@npm:^4.3.9":
-  version: 4.3.9
-  resolution: "@types/lodash.set@npm:4.3.9"
-  dependencies:
-    "@types/lodash": "npm:*"
-  checksum: 10c0/d7f3c3da593582e48b351fec2361b1aa551e6a7e6a387bdcc3a0c9a00eb2d8336f1dd911f619685d6c5875a404f97dc4fa0b1b5a7a25bc9145eaca1940071627
-  languageName: node
-  linkType: hard
-
-"@types/lodash@npm:*":
-  version: 4.17.5
-  resolution: "@types/lodash@npm:4.17.5"
-  checksum: 10c0/55924803ed853e72261512bd3eaf2c5b16558c3817feb0a3125ef757afe46e54b86f33d1960e40b7606c0ddab91a96f47966bf5e6006b7abfd8994c13b04b19b
+"@types/lodash@npm:^4":
+  version: 4.17.6
+  resolution: "@types/lodash@npm:4.17.6"
+  checksum: 10c0/3b197ac47af9443fee8c4719c5ffde527d7febc018b827d44a6bc2523c728c7adfdd25196fdcfe3eed827993e0c41a917d0da6e78938b18b2be94164789f1117
   languageName: node
   linkType: hard
 
@@ -1597,13 +1579,11 @@ __metadata:
     "@ianvs/prettier-plugin-sort-imports": "npm:^4.2.1"
     "@tsconfig/node21": "npm:^21.0.3"
     "@tsconfig/strictest": "npm:^2.0.5"
-    "@types/lodash.get": "npm:^4.4.9"
-    "@types/lodash.set": "npm:^4.3.9"
+    "@types/lodash": "npm:^4"
     "@types/node": "npm:^20.14.8"
     graphql: "npm:^16.9.0"
     graphql-yoga: "npm:^5.4.0"
-    lodash.get: "npm:^4.4.2"
-    lodash.set: "npm:^4.3.2"
+    lodash: "npm:^4.17.21"
     prettier: "npm:^3.3.2"
     prettier-plugin-pkg: "npm:^0.18.1"
     prettier-plugin-sh: "npm:^0.14.0"
@@ -1828,17 +1808,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash.get@npm:^4.4.2":
-  version: 4.4.2
-  resolution: "lodash.get@npm:4.4.2"
-  checksum: 10c0/48f40d471a1654397ed41685495acb31498d5ed696185ac8973daef424a749ca0c7871bf7b665d5c14f5cc479394479e0307e781f61d5573831769593411be6e
-  languageName: node
-  linkType: hard
-
-"lodash.set@npm:^4.3.2":
-  version: 4.3.2
-  resolution: "lodash.set@npm:4.3.2"
-  checksum: 10c0/c641d31905e51df43170dce8a1d11a1cff11356e2e2e75fe2615995408e9687d58c3e1d64c3c284c2df2bc519f79a98af737d2944d382ff82ffd244ff6075c29
+"lodash@npm:^4.17.21":
+  version: 4.17.21
+  resolution: "lodash@npm:4.17.21"
+  checksum: 10c0/d8cbea072bb08655bb4c989da418994b073a608dffa608b09ac04b43a791b12aeae7cd7ad919aa4c925f33b48490b5cfe6c1f71d827956071dae2e7bb3a6b74c
   languageName: node
   linkType: hard
 

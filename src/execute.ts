@@ -87,32 +87,11 @@ async function executeResolver(
     throw new Error(`Transport for subgraph "${resolver.subgraph}" not found`);
   }
 
-  const [variables, parentExportDataDoesntProvideAllSelectVariables] =
-    getAndCheckVariables(operationVariables, resolver, parentExportData);
-
-  if (parentExportDataDoesntProvideAllSelectVariables) {
-    // if parent's export data dont have all select variables
-    // that means we're resolving a field of a non-existing
-    // parent. this can happen with interfaces (see AccountsSpreadAdmin test in federation/simple-interface-object)
-    // we therefore just set an empty object at the path, if there's
-    // nothing set already
-    if (resultRef.data && getAtPath(resultRef.data, pathInData) === undefined) {
-      // TODO: should throw if resultRef's data is not available?
-      setAtPath(resultRef.data, pathInData, {});
-    }
-    return resolver.kind === 'primitive'
-      ? {
-          ...resolver,
-          pathInData,
-          variables,
-        }
-      : {
-          ...resolver,
-          pathInData,
-          variables,
-          includes: [],
-        };
-  }
+  const variables = getVariables(
+    operationVariables,
+    resolver,
+    parentExportData,
+  );
 
   const result = await transport.get({ query: resolver.operation, variables });
 
@@ -316,12 +295,11 @@ async function resolveIncludes(
   const hasSelectVariables: GatherPlanResolver[] = [];
   const doesntHaveSelectVariables: GatherPlanResolver[] = [];
   for (const resolver of resolvers) {
-    const [, doesntHaveAllSelectVariables] = getAndCheckVariables(
-      operationVariables,
+    const { exportDataDoesntProvideAllSelectVariables } = checkVariables(
       resolver,
       exportData,
     );
-    if (doesntHaveAllSelectVariables) {
+    if (exportDataDoesntProvideAllSelectVariables) {
       doesntHaveSelectVariables.push(resolver);
     } else {
       hasSelectVariables.push(resolver);
@@ -346,17 +324,28 @@ async function resolveIncludes(
 
   if (!hasSelectVariables.length) {
     // no resolver has select variables
-    return await Promise.all(
-      doesntHaveSelectVariables.map((r) =>
-        executeResolver(
-          transports,
-          operationVariables,
-          r,
-          exportData,
-          pathInData,
-          resultRef,
-        ),
-      ),
+    // if parent's export data dont have all select variables
+    // that means we're resolving a field of a non-existing
+    // parent. this can happen with interfaces (see AccountsSpreadAdmin test in federation/simple-interface-object)
+    // we therefore just set an empty object at the path, if there's
+    // nothing set already
+    if (resultRef.data && getAtPath(resultRef.data, pathInData) === undefined) {
+      // TODO: should throw if resultRef's data is not available?
+      setAtPath(resultRef.data, pathInData, {});
+    }
+    return doesntHaveSelectVariables.map((r) =>
+      r.kind === 'primitive'
+        ? {
+            ...r,
+            pathInData,
+            variables: getVariables(operationVariables, r, exportData),
+          }
+        : {
+            ...r,
+            pathInData,
+            variables: getVariables(operationVariables, r, exportData),
+            includes: [],
+          },
     );
   }
 
@@ -457,20 +446,32 @@ export function populateUsingPublicExports(
   }
 }
 
-function getAndCheckVariables(
+function checkVariables(
+  resolver: GatherPlanResolver,
+  exportData: unknown,
+): { exportDataDoesntProvideAllSelectVariables: boolean } {
+  return {
+    exportDataDoesntProvideAllSelectVariables: Object.values(
+      resolver.variables,
+    ).some(
+      (variable) =>
+        variable.kind === 'select' &&
+        getAtPath(exportData, variable.select) === undefined,
+    ),
+  };
+}
+
+function getVariables(
   operationVariables: Record<string, unknown>,
   resolver: GatherPlanResolver,
-  parentExportData: unknown,
-): [
-  variables: Record<string, unknown>,
-  parentExportDataDoesntProvideAllSelectVariables: boolean,
-] {
-  const variables = Object.values(resolver.variables).reduce(
+  exportData: unknown,
+) {
+  return Object.values(resolver.variables).reduce(
     (agg, variable) => ({
       ...agg,
       [variable.name]:
         variable.kind === 'select'
-          ? getAtPath(parentExportData, variable.select)
+          ? getAtPath(exportData, variable.select)
           : variable.kind === 'constant'
             ? variable.value
             : // variable.kind === 'user'
@@ -478,14 +479,4 @@ function getAndCheckVariables(
     }),
     {},
   );
-
-  const parentExportDataDoesntProvideAllSelectVariables = Object.values(
-    resolver.variables,
-  ).some(
-    (variable) =>
-      variable.kind === 'select' &&
-      Object(variables)[variable.name] === undefined,
-  );
-
-  return [variables, parentExportDataDoesntProvideAllSelectVariables];
 }

@@ -1726,6 +1726,216 @@ exports[`fixture 'federation/interface-object-with-requ…' > query 'RequiresAno
 }
 `;
 
+exports[`fixture 'federation/interface-object-with-requ…' > query 'RequiresUsers' > should execute and explain 1`] = `
+[
+  {
+    "data": {
+      "users": [
+        {
+          "id": "u1",
+          "name": "u1-name",
+        },
+        {
+          "id": "u2",
+          "name": "u2-name",
+        },
+      ],
+    },
+    "exports": [
+      {
+        "kind": "scalar",
+        "name": "id",
+      },
+      {
+        "kind": "scalar",
+        "name": "name",
+      },
+    ],
+    "includes": [
+      {
+        "data": {
+          "_entities": [
+            {
+              "username": "u1-username",
+            },
+          ],
+        },
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "username",
+          },
+        ],
+        "includes": [],
+        "kind": "interface",
+        "ofType": "NodeWithName",
+        "operation": "query ($id: ID!, $name: String!) {
+  _entities(representations: [{__typename: "NodeWithName", id: $id, name: $name}]) {
+    ... on NodeWithName {
+      username
+    }
+  }
+}",
+        "pathInData": [
+          "users",
+          0,
+        ],
+        "pathToExportData": [
+          "_entities",
+          0,
+        ],
+        "subgraph": "b",
+        "type": "[NodeWithName]!",
+        "variables": {
+          "id": "u1",
+          "name": "u1-name",
+        },
+      },
+      {
+        "data": {
+          "_entities": [
+            {
+              "username": "u2-username",
+            },
+          ],
+        },
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "username",
+          },
+        ],
+        "includes": [],
+        "kind": "interface",
+        "ofType": "NodeWithName",
+        "operation": "query ($id: ID!, $name: String!) {
+  _entities(representations: [{__typename: "NodeWithName", id: $id, name: $name}]) {
+    ... on NodeWithName {
+      username
+    }
+  }
+}",
+        "pathInData": [
+          "users",
+          1,
+        ],
+        "pathToExportData": [
+          "_entities",
+          0,
+        ],
+        "subgraph": "b",
+        "type": "[NodeWithName]!",
+        "variables": {
+          "id": "u2",
+          "name": "u2-name",
+        },
+      },
+    ],
+    "kind": "interface",
+    "ofType": "NodeWithName",
+    "operation": "{
+  users {
+    id
+    name
+  }
+}",
+    "pathInData": [
+      "users",
+    ],
+    "pathToExportData": [
+      "users",
+    ],
+    "subgraph": "a",
+    "type": "[NodeWithName!]!",
+    "variables": {},
+  },
+]
+`;
+
+exports[`fixture 'federation/interface-object-with-requ…' > query 'RequiresUsers' > should plan gather 1`] = `
+{
+  "operation": {
+    "name": "RequiresUsers",
+    "resolvers": {
+      "users": {
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "id",
+          },
+          {
+            "kind": "scalar",
+            "name": "name",
+          },
+        ],
+        "includes": {
+          "": [
+            {
+              "exports": [
+                {
+                  "kind": "scalar",
+                  "name": "username",
+                },
+              ],
+              "includes": {},
+              "kind": "interface",
+              "ofType": "NodeWithName",
+              "operation": "query ($id: ID!, $name: String!) {
+  _entities(representations: [{__typename: "NodeWithName", id: $id, name: $name}]) {
+    ... on NodeWithName {
+      username
+    }
+  }
+}",
+              "pathToExportData": [
+                "_entities",
+                0,
+              ],
+              "subgraph": "b",
+              "type": "[NodeWithName]!",
+              "variables": {
+                "id": {
+                  "kind": "select",
+                  "name": "id",
+                  "select": "id",
+                },
+                "name": {
+                  "kind": "select",
+                  "name": "name",
+                  "select": "name",
+                },
+              },
+            },
+          ],
+        },
+        "kind": "interface",
+        "ofType": "NodeWithName",
+        "operation": "{
+  users {
+    id
+    name
+  }
+}",
+        "pathToExportData": [
+          "users",
+        ],
+        "subgraph": "a",
+        "type": "[NodeWithName!]!",
+        "variables": {},
+      },
+    },
+    "type": "Query",
+  },
+  "query": "query RequiresUsers {
+  users {
+    id
+    name
+    username
+  }
+}",
+}
+`;
+
 exports[`fixture 'federation/override-type-interface' > query 'AnotherFeed' > should execute and explain 1`] = `
 [
   {

@@ -34,7 +34,7 @@ export const blueprint: Blueprint = {
           },
           resolvers: {
             a: {
-              subgraph: 'b',
+              subgraph: 'a',
               kind: 'interface',
               type: '[NodeWithName!]!',
               ofType: 'NodeWithName',

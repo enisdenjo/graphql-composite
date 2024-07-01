@@ -756,9 +756,13 @@ function insertResolversForSelection(
         }
 
         const resolver = prepareCompositeResolverForSelection(
+          blueprint,
           resolverPlan,
+          parentSelInType,
+          parentSel,
           sel,
-          getSelectionsAtDepth(currentResolver.exports, depth),
+          currentResolver,
+          depth,
         );
 
         currentResolver.includes[''] ??= [];
@@ -854,7 +858,7 @@ function insertResolversForSelection(
 
     let resolverPlan = Object.values<
       // TODO: have typescript infer the types
-      BlueprintInterfaceResolver[] | BlueprintObjectResolver[]
+      BlueprintCompositeResolver[]
     >(selType.resolvers)
       .flat()
       .find(
@@ -902,81 +906,15 @@ function insertResolversForSelection(
       );
     }
 
-    resolver = {
-      ...resolverPlan,
-      variables: inlineToResolverConstantVariables(resolverPlan, sel),
-      pathToExportData: parseIsListType(resolverPlan.type)
-        ? // resolver returns a list, use the first item in the export data
-          [0]
-        : // otherwise use the export data
-          [],
-      exports: [],
-      includes: {},
-    };
-
-    for (const variable of Object.values(resolverPlan.variables).filter(
-      isBlueprintResolverSelectVariable,
-    )) {
-      // make sure parent resolver exports fields that are needed
-      // as variables to perform the resolution. if the parent doesnt
-      // export the necessary variable, add it as private to parents
-      // exports for resolution during execution but not available to the user
-      if (
-        // TODO: support selects of nested paths, like `manufacturer.id`
-        !exportsIncludeField(
-          getSelectionsAtDepth(currentResolver.exports, depth),
-          variable.select,
-          false,
-        )
-      ) {
-        const variableField = selType.fields[variable.select]!;
-        if (!variableField.subgraphs.includes(currentResolver.subgraph)) {
-          // we DO NOT nest under the new resolver for the variable because
-          // there may be more than one variable that needs to be fetched
-          // from different subgraphs. if we were to nest, then this resolver
-          // would be duplicated for each additional resolver
-          //
-          // instead, we should resolve "additional field resolvers" in series
-          //
-          // TODO: make sure future batching implementation is aware
-
-          const type = variableField.types[resolver.subgraph]!;
-          let ofType = parseType(type);
-          while (ofType.kind !== Kind.NAMED_TYPE) {
-            if (ofType.kind === Kind.LIST_TYPE) {
-              ofType = ofType.type;
-            } else if (ofType.kind === Kind.NON_NULL_TYPE) {
-              ofType = ofType.type;
-            }
-          }
-
-          insertResolversForSelection(
-            blueprint,
-            parentSelInType,
-            parentSel,
-            {
-              kind: 'scalar', // TODO: what if the variable is not a scalar?
-              path: `${parentSel.path}.${variable.select}`,
-              name: variable.select,
-              type,
-              ofType: ofType.name.value,
-              inlineVariables: {},
-              private: true,
-            },
-            currentResolver,
-            depth,
-            true,
-          );
-          continue;
-        }
-
-        getSelectionsAtDepth(currentResolver.exports, depth).push({
-          private: true,
-          kind: 'scalar', // TODO: do variables always select scalars, what happens with enums?
-          name: variable.select,
-        });
-      }
-    }
+    resolver = prepareCompositeResolverForSelection(
+      blueprint,
+      resolverPlan,
+      parentSelInType,
+      parentSel,
+      sel,
+      currentResolver,
+      depth,
+    );
 
     if (resolvingAdditionalFields) {
       currentResolver.includes[''] ??= [];
@@ -1045,34 +983,30 @@ function insertResolversForSelection(
 }
 
 function prepareCompositeResolverForSelection(
-  /** The composite resolver plan to prepare. */
+  blueprint: Blueprint,
   resolverPlan: BlueprintCompositeResolver,
-  /** The selection in question. */
+  /** Type in which the {@link parentSel parent selection} is located. */
+  parentSelInType: BlueprintType,
+  /** Parent selection of the {@link sel selection}. */
+  parentSel: OperationCompositeSelection,
+  /** Selection for which we're preparing the resolver. */
   sel: OperationSelection,
-  /** Available exports of the parent resolver. */
-  exps: OperationExport[],
+  /**
+   * The current resolver.
+   * Exports will be added to it unless they cant be resolved,
+   * in which case a new nested `includes` resolver will be made.
+   */
+  currentResolver: GatherPlanCompositeResolver,
+  /**
+   * When resolving nested selections, we want to append further
+   * selections under a specific depth in parent's exports.
+   *
+   * See {@link getSelectionsAtDepth} to understand how
+   * selections at a given depth are found.
+   */
+  depth: number,
 ): GatherPlanCompositeResolver {
-  for (const variable of Object.values(resolverPlan.variables).filter(
-    isBlueprintResolverSelectVariable,
-  )) {
-    // make sure parent resolver exports fields that are needed
-    // as variables to perform the resolution. if the parent doesnt
-    // export the necessary variable, add it as private to parents
-    // exports for resolution during execution but not available to the user
-    if (
-      // TODO: support selects of nested paths, like `manufacturer.id`
-      !exportsIncludeField(exps, variable.select, false)
-    ) {
-      // TODO: what if the resolver plan cannot resolve the variable selection?
-      exps.push({
-        private: true,
-        kind: 'scalar', // TODO: do variables always select scalars, what happens with enums?
-        name: variable.select,
-      });
-    }
-  }
-
-  return {
+  const resolver = {
     ...resolverPlan,
     variables:
       sel.kind === 'fragment'
@@ -1086,6 +1020,80 @@ function prepareCompositeResolverForSelection(
     exports: [],
     includes: {},
   };
+
+  const selType =
+    blueprint.types[
+      parentSel.kind === 'object' ? parentSel.ofType : parentSel.typeCondition
+    ];
+  if (!selType) {
+    throw new Error(`Blueprint doesn't have a "${selType}" type`);
+  }
+
+  for (const variable of Object.values(resolverPlan.variables).filter(
+    isBlueprintResolverSelectVariable,
+  )) {
+    // make sure parent resolver exports fields that are needed
+    // as variables to perform the resolution. if the parent doesnt
+    // export the necessary variable, add it as private to parents
+    // exports for resolution during execution but not available to the user
+    if (
+      // TODO: support selects of nested paths, like `manufacturer.id`
+      !exportsIncludeField(
+        getSelectionsAtDepth(currentResolver.exports, depth),
+        variable.select,
+        false,
+      )
+    ) {
+      const variableField = selType.fields[variable.select]!;
+      if (!variableField.subgraphs.includes(currentResolver.subgraph)) {
+        // we DO NOT nest under the new resolver for the variable because
+        // there may be more than one variable that needs to be fetched
+        // from different subgraphs. if we were to nest, then this resolver
+        // would be duplicated for each additional resolver
+        //
+        // instead, we should resolve "additional field resolvers" in series
+        //
+        // TODO: make sure future batching implementation is aware
+
+        const type = variableField.types[resolver.subgraph]!;
+        let ofType = parseType(type);
+        while (ofType.kind !== Kind.NAMED_TYPE) {
+          if (ofType.kind === Kind.LIST_TYPE) {
+            ofType = ofType.type;
+          } else if (ofType.kind === Kind.NON_NULL_TYPE) {
+            ofType = ofType.type;
+          }
+        }
+
+        insertResolversForSelection(
+          blueprint,
+          parentSelInType,
+          parentSel,
+          {
+            kind: 'scalar', // TODO: what if the variable is not a scalar?
+            path: `${parentSel.path}.${variable.select}`,
+            name: variable.select,
+            type,
+            ofType: ofType.name.value,
+            inlineVariables: {},
+            private: true,
+          },
+          currentResolver,
+          depth,
+          true,
+        );
+        continue;
+      }
+
+      getSelectionsAtDepth(currentResolver.exports, depth).push({
+        private: true,
+        kind: 'scalar', // TODO: do variables always select scalars, what happens with enums?
+        name: variable.select,
+      });
+    }
+  }
+
+  return resolver;
 }
 
 /**

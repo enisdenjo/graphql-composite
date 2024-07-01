@@ -3,10 +3,12 @@ import { FixtureQueries } from '../../../utils.js';
 
 export const queries: FixtureQueries = [
   {
-    name: 'RequiresAnotherUsersJustUsername',
+    name: 'RequiresAnotherUsers',
     document: parse(/* GraphQL */ `
-      query RequiresAnotherUsersJustUsername {
+      query RequiresAnotherUsers {
         anotherUsers {
+          id
+          name
           username
         }
       }
@@ -16,9 +18,13 @@ export const queries: FixtureQueries = [
       data: {
         anotherUsers: [
           {
+            id: 'u1',
+            name: 'u1-name',
             username: 'u1-username',
           },
           {
+            id: 'u2',
+            name: 'u2-name',
             username: 'u2-username',
           },
         ],

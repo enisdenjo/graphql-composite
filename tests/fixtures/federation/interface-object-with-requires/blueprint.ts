@@ -101,18 +101,18 @@ export const blueprint: Blueprint = {
           resolvers: {
             b: {
               subgraph: 'b',
-              kind: 'primitive',
+              kind: 'interface',
               type: '[NodeWithName]!',
-              ofType: 'String',
+              ofType: 'NodeWithName',
               operation: /* GraphQL */ `
-                query ($id: ID!) {
+                query ($id: ID!, $name: String!) {
                   _entities(
                     representations: [
                       { __typename: "NodeWithName", id: $id, name: $name }
                     ]
                   ) {
                     ... on NodeWithName {
-                      username
+                      ...__export
                     }
                   }
                 }

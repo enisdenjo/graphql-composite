@@ -816,13 +816,42 @@ function insertResolversForSelection(
   if (selField) {
     selType = parentTypePlan;
 
-    // use the parent resolver if the field is available in its subgraph;
-    // if not, try finding a resolver in parents includes
-    resolver = selField.subgraphs.includes(currentResolver.subgraph)
-      ? currentResolver
-      : Object.values(currentResolver.includes)
-          .flat()
-          .find((r) => selField!.subgraphs.includes(r.subgraph));
+    // if the field itself has a resolver, it means that there are special requirements
+    // for resolving the field - use that resolver over every other
+    // TODO: actually choose the best resolver, not the first one
+    const selFieldResolverPlan = Object.values(selField.resolvers)[0];
+    if (selFieldResolverPlan) {
+      if (selFieldResolverPlan.kind === 'primitive') {
+        throw new Error('TODO');
+      }
+
+      resolver = prepareCompositeResolverForSelection(
+        blueprint,
+        selFieldResolverPlan,
+        parentSelInType,
+        parentSel,
+        sel,
+        currentResolver,
+        depth,
+      );
+
+      if (resolvingAdditionalFields) {
+        currentResolver.includes[''] ??= [];
+        currentResolver.includes[''].push(resolver);
+      } else {
+        currentResolver.includes[
+          parentSel.kind === 'fragment' ? parentSel.fieldName : parentSel.name
+        ] = resolver;
+      }
+    } else {
+      // use the parent resolver if the field is available in its subgraph;
+      // if not, try finding a resolver in parents includes
+      resolver = selField.subgraphs.includes(currentResolver.subgraph)
+        ? currentResolver
+        : Object.values(currentResolver.includes)
+            .flat()
+            .find((r) => selField!.subgraphs.includes(r.subgraph));
+    }
   } else {
     // the parent type may not implement the specific field, but its interface may.
     // in that case, we have to resolve the field from the interface instead
@@ -1053,7 +1082,8 @@ function prepareCompositeResolverForSelection(
         //
         // TODO: make sure future batching implementation is aware
 
-        const type = variableField.types[resolver.subgraph]!;
+        // TODO: get proper type
+        const type = Object.values(variableField.types)[0]!;
         let ofType = parseType(type);
         while (ofType.kind !== Kind.NAMED_TYPE) {
           if (ofType.kind === Kind.LIST_TYPE) {

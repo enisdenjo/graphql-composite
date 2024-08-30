@@ -25,20 +25,20 @@
     "lodash": "^4.17.21"
   },
   "devDependencies": {
-    "@apollo/subgraph": "^2.8.1",
-    "@graphql-tools/schema": "^10.0.4",
-    "@ianvs/prettier-plugin-sort-imports": "^4.2.1",
+    "@apollo/subgraph": "^2.9.0",
+    "@graphql-tools/schema": "^10.0.6",
+    "@ianvs/prettier-plugin-sort-imports": "^4.3.1",
     "@tsconfig/node21": "^21.0.3",
     "@tsconfig/strictest": "^2.0.5",
-    "@types/lodash": "^4",
-    "@types/node": "^20.14.8",
+    "@types/lodash": "^4.17.7",
+    "@types/node": "^22.5.1",
     "graphql": "^16.9.0",
-    "graphql-yoga": "^5.4.0",
-    "prettier": "^3.3.2",
+    "graphql-yoga": "^5.7.0",
+    "prettier": "^3.3.3",
     "prettier-plugin-pkg": "^0.18.1",
     "prettier-plugin-sh": "^0.14.0",
-    "tsx": "^4.15.7",
-    "typescript": "^5.5.2",
-    "vitest": "^1.6.0"
+    "tsx": "^4.19.0",
+    "typescript": "^5.5.4",
+    "vitest": "^2.0.5"
   }
 }

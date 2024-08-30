@@ -5315,6 +5315,144 @@ exports[`fixture 'federation/typename' > query 'Interface' > should plan gather 
 }
 `;
 
+exports[`fixture 'federation/typename' > query 'InterfaceMembersTypename' > should execute and explain 1`] = `
+[
+  {
+    "data": {
+      "interface": {
+        "__typename": "Toaster",
+        "typename__OVERWRITE_EXISTING_FIELD_IF_THIS_ONE_NOT_NULL__0": "Toaster",
+      },
+    },
+    "exports": [
+      {
+        "kind": "scalar",
+        "name": "__typename",
+      },
+      {
+        "kind": "fragment",
+        "selections": [
+          {
+            "alias": "typename",
+            "kind": "scalar",
+            "name": "__typename",
+          },
+        ],
+        "typeCondition": "Oven",
+      },
+      {
+        "kind": "fragment",
+        "selections": [
+          {
+            "alias": "typename__OVERWRITE_EXISTING_FIELD_IF_THIS_ONE_NOT_NULL__0",
+            "kind": "scalar",
+            "name": "__typename",
+            "overwrite": true,
+          },
+        ],
+        "typeCondition": "Toaster",
+      },
+    ],
+    "includes": [],
+    "kind": "interface",
+    "ofType": "Node",
+    "operation": "{
+  interface {
+    __typename
+    ... on Oven {
+      typename: __typename
+    }
+    ... on Toaster {
+      typename__OVERWRITE_EXISTING_FIELD_IF_THIS_ONE_NOT_NULL__0: __typename
+    }
+  }
+}",
+    "pathInData": [
+      "interface",
+    ],
+    "pathToExportData": [
+      "interface",
+    ],
+    "subgraph": "a",
+    "type": "Node",
+    "variables": {},
+  },
+]
+`;
+
+exports[`fixture 'federation/typename' > query 'InterfaceMembersTypename' > should plan gather 1`] = `
+{
+  "operation": {
+    "name": "InterfaceMembersTypename",
+    "resolvers": {
+      "interface": {
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "__typename",
+          },
+          {
+            "kind": "fragment",
+            "selections": [
+              {
+                "alias": "typename",
+                "kind": "scalar",
+                "name": "__typename",
+              },
+            ],
+            "typeCondition": "Oven",
+          },
+          {
+            "kind": "fragment",
+            "selections": [
+              {
+                "alias": "typename__OVERWRITE_EXISTING_FIELD_IF_THIS_ONE_NOT_NULL__0",
+                "kind": "scalar",
+                "name": "__typename",
+                "overwrite": true,
+              },
+            ],
+            "typeCondition": "Toaster",
+          },
+        ],
+        "includes": {},
+        "kind": "interface",
+        "ofType": "Node",
+        "operation": "{
+  interface {
+    __typename
+    ... on Oven {
+      typename: __typename
+    }
+    ... on Toaster {
+      typename__OVERWRITE_EXISTING_FIELD_IF_THIS_ONE_NOT_NULL__0: __typename
+    }
+  }
+}",
+        "pathToExportData": [
+          "interface",
+        ],
+        "subgraph": "a",
+        "type": "Node",
+        "variables": {},
+      },
+    },
+    "type": "Query",
+  },
+  "query": "query InterfaceMembersTypename {
+  interface {
+    __typename
+    ... on Oven {
+      typename: __typename
+    }
+    ... on Toaster {
+      typename: __typename
+    }
+  }
+}",
+}
+`;
+
 exports[`fixture 'federation/typename' > query 'InterfaceObjectTypename' > should execute and explain 1`] = `
 [
   {
@@ -5588,6 +5726,144 @@ exports[`fixture 'federation/typename' > query 'Union' > should plan gather 1`] 
   union {
     __typename
     typename: __typename
+  }
+}",
+}
+`;
+
+exports[`fixture 'federation/typename' > query 'UnionMembersTypename' > should execute and explain 1`] = `
+[
+  {
+    "data": {
+      "union": {
+        "__typename": "Oven",
+        "typename": "Oven",
+      },
+    },
+    "exports": [
+      {
+        "kind": "scalar",
+        "name": "__typename",
+      },
+      {
+        "kind": "fragment",
+        "selections": [
+          {
+            "alias": "typename",
+            "kind": "scalar",
+            "name": "__typename",
+          },
+        ],
+        "typeCondition": "Oven",
+      },
+      {
+        "kind": "fragment",
+        "selections": [
+          {
+            "alias": "typename__OVERWRITE_EXISTING_FIELD_IF_THIS_ONE_NOT_NULL__0",
+            "kind": "scalar",
+            "name": "__typename",
+            "overwrite": true,
+          },
+        ],
+        "typeCondition": "Toaster",
+      },
+    ],
+    "includes": [],
+    "kind": "interface",
+    "ofType": "Product",
+    "operation": "{
+  union {
+    __typename
+    ... on Oven {
+      typename: __typename
+    }
+    ... on Toaster {
+      typename__OVERWRITE_EXISTING_FIELD_IF_THIS_ONE_NOT_NULL__0: __typename
+    }
+  }
+}",
+    "pathInData": [
+      "union",
+    ],
+    "pathToExportData": [
+      "union",
+    ],
+    "subgraph": "a",
+    "type": "Product",
+    "variables": {},
+  },
+]
+`;
+
+exports[`fixture 'federation/typename' > query 'UnionMembersTypename' > should plan gather 1`] = `
+{
+  "operation": {
+    "name": "UnionMembersTypename",
+    "resolvers": {
+      "union": {
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "__typename",
+          },
+          {
+            "kind": "fragment",
+            "selections": [
+              {
+                "alias": "typename",
+                "kind": "scalar",
+                "name": "__typename",
+              },
+            ],
+            "typeCondition": "Oven",
+          },
+          {
+            "kind": "fragment",
+            "selections": [
+              {
+                "alias": "typename__OVERWRITE_EXISTING_FIELD_IF_THIS_ONE_NOT_NULL__0",
+                "kind": "scalar",
+                "name": "__typename",
+                "overwrite": true,
+              },
+            ],
+            "typeCondition": "Toaster",
+          },
+        ],
+        "includes": {},
+        "kind": "interface",
+        "ofType": "Product",
+        "operation": "{
+  union {
+    __typename
+    ... on Oven {
+      typename: __typename
+    }
+    ... on Toaster {
+      typename__OVERWRITE_EXISTING_FIELD_IF_THIS_ONE_NOT_NULL__0: __typename
+    }
+  }
+}",
+        "pathToExportData": [
+          "union",
+        ],
+        "subgraph": "a",
+        "type": "Product",
+        "variables": {},
+      },
+    },
+    "type": "Query",
+  },
+  "query": "query UnionMembersTypename {
+  union {
+    __typename
+    ... on Oven {
+      typename: __typename
+    }
+    ... on Toaster {
+      typename: __typename
+    }
   }
 }",
 }

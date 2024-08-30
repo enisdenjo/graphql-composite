@@ -121,7 +121,10 @@ export interface OperationExportField {
    * if they yield a non-nullish value, are used for the origin field.
    *
    * When set, the {@link alias} will contain the {@link OVERWRITE_FIELD_NAME_PART}
-   * that is used to deduplicate the field name collision.
+   * that is used to deduplicate the field name collision. The format of {@link alias} is then:
+   * ```js
+   * `${conflictingFieldAliasOrName}${OVERWRITE_FIELD_NAME_PART}${overwriteCount}`
+   * ```
    *
    * See https://github.com/enisdenjo/graphql-composite/issues/31 for more info.
    */
@@ -423,7 +426,7 @@ function augmentConflictingFields(
       }
 
       const fieldName = sel.alias || sel.name;
-      const fieldTypeName = type.fields[fieldName]!.types[subgraph]!;
+      const fieldTypeName = type.fields[sel.name]!.types[subgraph]!;
 
       const appearingTypeName = appearing[fieldName];
       if (!appearingTypeName) {

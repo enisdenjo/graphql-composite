@@ -10202,6 +10202,580 @@ exports[`fixture 'store' > query 'ScalarOperationFieldNested' > should plan gath
 }
 `;
 
+exports[`fixture 'variable-selects-from-different-resol…' > query 'VariableFromDifferentSubgraph' > should execute and explain 1`] = `
+[
+  {
+    "data": {
+      "products": [
+        {
+          "id": "1",
+        },
+        {
+          "id": "2",
+        },
+      ],
+    },
+    "exports": [
+      {
+        "kind": "scalar",
+        "name": "id",
+        "private": true,
+      },
+    ],
+    "includes": [
+      {
+        "data": {
+          "product": {
+            "upc": "h1",
+          },
+        },
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "upc",
+            "private": true,
+          },
+        ],
+        "includes": [],
+        "kind": "object",
+        "ofType": "Product",
+        "operation": "query ($id: ID!) {
+  product(id: $id) {
+    upc
+  }
+}",
+        "pathInData": [
+          "products",
+          0,
+        ],
+        "pathToExportData": [
+          "product",
+        ],
+        "subgraph": "warehouse",
+        "type": "Product!",
+        "variables": {
+          "id": "1",
+        },
+      },
+      {
+        "data": {
+          "product": {
+            "price": 10,
+          },
+        },
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "price",
+          },
+        ],
+        "includes": [],
+        "kind": "object",
+        "ofType": "Product",
+        "operation": "query ($id: ID!, $upc: String!) {
+  product(id: $id, upc: $upc) {
+    price
+  }
+}",
+        "pathInData": [
+          "products",
+          0,
+        ],
+        "pathToExportData": [
+          "product",
+        ],
+        "subgraph": "finance",
+        "type": "Product!",
+        "variables": {
+          "id": "1",
+          "upc": "h1",
+        },
+      },
+      {
+        "data": {
+          "product": {
+            "upc": "s2",
+          },
+        },
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "upc",
+            "private": true,
+          },
+        ],
+        "includes": [],
+        "kind": "object",
+        "ofType": "Product",
+        "operation": "query ($id: ID!) {
+  product(id: $id) {
+    upc
+  }
+}",
+        "pathInData": [
+          "products",
+          1,
+        ],
+        "pathToExportData": [
+          "product",
+        ],
+        "subgraph": "warehouse",
+        "type": "Product!",
+        "variables": {
+          "id": "2",
+        },
+      },
+      {
+        "data": {
+          "product": {
+            "price": 14,
+          },
+        },
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "price",
+          },
+        ],
+        "includes": [],
+        "kind": "object",
+        "ofType": "Product",
+        "operation": "query ($id: ID!, $upc: String!) {
+  product(id: $id, upc: $upc) {
+    price
+  }
+}",
+        "pathInData": [
+          "products",
+          1,
+        ],
+        "pathToExportData": [
+          "product",
+        ],
+        "subgraph": "finance",
+        "type": "Product!",
+        "variables": {
+          "id": "2",
+          "upc": "s2",
+        },
+      },
+    ],
+    "kind": "object",
+    "ofType": "Product",
+    "operation": "{
+  products {
+    id
+  }
+}",
+    "pathInData": [
+      "products",
+    ],
+    "pathToExportData": [
+      "products",
+    ],
+    "subgraph": "store",
+    "type": "[Product!]!",
+    "variables": {},
+  },
+]
+`;
+
+exports[`fixture 'variable-selects-from-different-resol…' > query 'VariableFromDifferentSubgraph' > should plan gather 1`] = `
+{
+  "operation": {
+    "name": "VariableFromDifferentSubgraph",
+    "resolvers": {
+      "products": {
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "id",
+            "private": true,
+          },
+        ],
+        "includes": {
+          "": [
+            {
+              "exports": [
+                {
+                  "kind": "scalar",
+                  "name": "upc",
+                  "private": true,
+                },
+              ],
+              "includes": {},
+              "kind": "object",
+              "ofType": "Product",
+              "operation": "query ($id: ID!) {
+  product(id: $id) {
+    upc
+  }
+}",
+              "pathToExportData": [
+                "product",
+              ],
+              "subgraph": "warehouse",
+              "type": "Product!",
+              "variables": {
+                "id": {
+                  "kind": "select",
+                  "name": "id",
+                  "select": "id",
+                },
+              },
+            },
+            {
+              "exports": [
+                {
+                  "kind": "scalar",
+                  "name": "price",
+                },
+              ],
+              "includes": {},
+              "kind": "object",
+              "ofType": "Product",
+              "operation": "query ($id: ID!, $upc: String!) {
+  product(id: $id, upc: $upc) {
+    price
+  }
+}",
+              "pathToExportData": [
+                "product",
+              ],
+              "subgraph": "finance",
+              "type": "Product!",
+              "variables": {
+                "id": {
+                  "kind": "select",
+                  "name": "id",
+                  "select": "id",
+                },
+                "upc": {
+                  "kind": "select",
+                  "name": "upc",
+                  "select": "upc",
+                },
+              },
+            },
+          ],
+        },
+        "kind": "object",
+        "ofType": "Product",
+        "operation": "{
+  products {
+    id
+  }
+}",
+        "pathToExportData": [
+          "products",
+        ],
+        "subgraph": "store",
+        "type": "[Product!]!",
+        "variables": {},
+      },
+    },
+    "type": "Query",
+  },
+  "query": "query VariableFromDifferentSubgraph {
+  products {
+    price
+  }
+}",
+}
+`;
+
+exports[`fixture 'variable-selects-from-different-resol…' > query 'VariableFromDifferentSubgraphAndAll' > should execute and explain 1`] = `
+[
+  {
+    "data": {
+      "products": [
+        {
+          "id": "1",
+          "name": "Hazelnut",
+        },
+        {
+          "id": "2",
+          "name": "Sunflower Seeds",
+        },
+      ],
+    },
+    "exports": [
+      {
+        "kind": "scalar",
+        "name": "id",
+      },
+      {
+        "kind": "scalar",
+        "name": "name",
+      },
+    ],
+    "includes": [
+      {
+        "data": {
+          "product": {
+            "upc": "h1",
+          },
+        },
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "upc",
+          },
+        ],
+        "includes": [],
+        "kind": "object",
+        "ofType": "Product",
+        "operation": "query ($id: ID!) {
+  product(id: $id) {
+    upc
+  }
+}",
+        "pathInData": [
+          "products",
+          0,
+        ],
+        "pathToExportData": [
+          "product",
+        ],
+        "subgraph": "warehouse",
+        "type": "Product!",
+        "variables": {
+          "id": "1",
+        },
+      },
+      {
+        "data": {
+          "product": {
+            "price": 10,
+          },
+        },
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "price",
+          },
+        ],
+        "includes": [],
+        "kind": "object",
+        "ofType": "Product",
+        "operation": "query ($id: ID!, $upc: String!) {
+  product(id: $id, upc: $upc) {
+    price
+  }
+}",
+        "pathInData": [
+          "products",
+          0,
+        ],
+        "pathToExportData": [
+          "product",
+        ],
+        "subgraph": "finance",
+        "type": "Product!",
+        "variables": {
+          "id": "1",
+          "upc": "h1",
+        },
+      },
+      {
+        "data": {
+          "product": {
+            "upc": "s2",
+          },
+        },
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "upc",
+          },
+        ],
+        "includes": [],
+        "kind": "object",
+        "ofType": "Product",
+        "operation": "query ($id: ID!) {
+  product(id: $id) {
+    upc
+  }
+}",
+        "pathInData": [
+          "products",
+          1,
+        ],
+        "pathToExportData": [
+          "product",
+        ],
+        "subgraph": "warehouse",
+        "type": "Product!",
+        "variables": {
+          "id": "2",
+        },
+      },
+      {
+        "data": {
+          "product": {
+            "price": 14,
+          },
+        },
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "price",
+          },
+        ],
+        "includes": [],
+        "kind": "object",
+        "ofType": "Product",
+        "operation": "query ($id: ID!, $upc: String!) {
+  product(id: $id, upc: $upc) {
+    price
+  }
+}",
+        "pathInData": [
+          "products",
+          1,
+        ],
+        "pathToExportData": [
+          "product",
+        ],
+        "subgraph": "finance",
+        "type": "Product!",
+        "variables": {
+          "id": "2",
+          "upc": "s2",
+        },
+      },
+    ],
+    "kind": "object",
+    "ofType": "Product",
+    "operation": "{
+  products {
+    id
+    name
+  }
+}",
+    "pathInData": [
+      "products",
+    ],
+    "pathToExportData": [
+      "products",
+    ],
+    "subgraph": "store",
+    "type": "[Product!]!",
+    "variables": {},
+  },
+]
+`;
+
+exports[`fixture 'variable-selects-from-different-resol…' > query 'VariableFromDifferentSubgraphAndAll' > should plan gather 1`] = `
+{
+  "operation": {
+    "name": "VariableFromDifferentSubgraphAndAll",
+    "resolvers": {
+      "products": {
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "id",
+          },
+          {
+            "kind": "scalar",
+            "name": "name",
+          },
+        ],
+        "includes": {
+          "": [
+            {
+              "exports": [
+                {
+                  "kind": "scalar",
+                  "name": "upc",
+                },
+              ],
+              "includes": {},
+              "kind": "object",
+              "ofType": "Product",
+              "operation": "query ($id: ID!) {
+  product(id: $id) {
+    upc
+  }
+}",
+              "pathToExportData": [
+                "product",
+              ],
+              "subgraph": "warehouse",
+              "type": "Product!",
+              "variables": {
+                "id": {
+                  "kind": "select",
+                  "name": "id",
+                  "select": "id",
+                },
+              },
+            },
+            {
+              "exports": [
+                {
+                  "kind": "scalar",
+                  "name": "price",
+                },
+              ],
+              "includes": {},
+              "kind": "object",
+              "ofType": "Product",
+              "operation": "query ($id: ID!, $upc: String!) {
+  product(id: $id, upc: $upc) {
+    price
+  }
+}",
+              "pathToExportData": [
+                "product",
+              ],
+              "subgraph": "finance",
+              "type": "Product!",
+              "variables": {
+                "id": {
+                  "kind": "select",
+                  "name": "id",
+                  "select": "id",
+                },
+                "upc": {
+                  "kind": "select",
+                  "name": "upc",
+                  "select": "upc",
+                },
+              },
+            },
+          ],
+        },
+        "kind": "object",
+        "ofType": "Product",
+        "operation": "{
+  products {
+    id
+    name
+  }
+}",
+        "pathToExportData": [
+          "products",
+        ],
+        "subgraph": "store",
+        "type": "[Product!]!",
+        "variables": {},
+      },
+    },
+    "type": "Query",
+  },
+  "query": "query VariableFromDifferentSubgraphAndAll {
+  products {
+    id
+    upc
+    name
+    price
+  }
+}",
+}
+`;
+
 exports[`should build proper operation and find export path for 'FindDeepestPath' resolver 1`] = `
 {
   "operation": "query FindDeepestPath {

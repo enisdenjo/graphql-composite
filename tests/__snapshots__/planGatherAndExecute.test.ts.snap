@@ -1421,6 +1421,124 @@ exports[`fixture 'federation/child-type-mismatch' > query 'NestedInternalAlias' 
 }
 `;
 
+exports[`fixture 'federation/interface-object-with-requ…' > query 'AnotherUsersUserSpreadAge' > should execute and explain 1`] = `
+[
+  {
+    "data": {
+      "anotherUsers": [
+        {
+          "id": "u1",
+        },
+        {
+          "id": "u2",
+        },
+      ],
+    },
+    "exports": [
+      {
+        "kind": "scalar",
+        "name": "id",
+        "private": true,
+      },
+    ],
+    "includes": [
+      {
+        "data": {
+          "_entities": [
+            {
+              "age": 11,
+            },
+          ],
+        },
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "age",
+          },
+        ],
+        "includes": [],
+        "kind": "object",
+        "ofType": "User",
+        "operation": "query ($id: ID!) {
+  _entities(representations: [{__typename: "User", id: $id}]) {
+    ... on User {
+      age
+    }
+  }
+}",
+        "pathInData": [
+          "anotherUsers",
+          0,
+        ],
+        "pathToExportData": [
+          "_entities",
+          0,
+        ],
+        "subgraph": "a",
+        "type": "[User]!",
+        "variables": {
+          "id": "u1",
+        },
+      },
+      {
+        "data": {
+          "_entities": [
+            {
+              "age": 22,
+            },
+          ],
+        },
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "age",
+          },
+        ],
+        "includes": [],
+        "kind": "object",
+        "ofType": "User",
+        "operation": "query ($id: ID!) {
+  _entities(representations: [{__typename: "User", id: $id}]) {
+    ... on User {
+      age
+    }
+  }
+}",
+        "pathInData": [
+          "anotherUsers",
+          1,
+        ],
+        "pathToExportData": [
+          "_entities",
+          0,
+        ],
+        "subgraph": "a",
+        "type": "[User]!",
+        "variables": {
+          "id": "u2",
+        },
+      },
+    ],
+    "kind": "interface",
+    "ofType": "NodeWithName",
+    "operation": "{
+  anotherUsers {
+    id
+  }
+}",
+    "pathInData": [
+      "anotherUsers",
+    ],
+    "pathToExportData": [
+      "anotherUsers",
+    ],
+    "subgraph": "b",
+    "type": "[NodeWithName]",
+    "variables": {},
+  },
+]
+`;
+
 exports[`fixture 'federation/interface-object-with-requ…' > query 'AnotherUsersUserSpreadAge' > should plan gather 1`] = `
 {
   "operation": {

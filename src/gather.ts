@@ -1085,7 +1085,9 @@ function prepareCompositeResolverForSelection(
         //
         // TODO: make sure future batching implementation is aware
 
-        const type = variableField.types[resolver.subgraph]!;
+        const type =
+          variableField.types[resolver.subgraph] ||
+          Object.values(variableField.types)[0]!; // TODO: make sure there's always at least one type
         let ofType = parseType(type);
         while (ofType.kind !== Kind.NAMED_TYPE) {
           if (ofType.kind === Kind.LIST_TYPE) {

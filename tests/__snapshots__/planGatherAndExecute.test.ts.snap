@@ -1548,16 +1548,50 @@ exports[`fixture 'federation/interface-object-with-requ…' > query 'AnotherUser
         "exports": [
           {
             "kind": "scalar",
-            "name": "__typename",
+            "name": "id",
             "private": true,
           },
         ],
-        "includes": {},
+        "includes": {
+          "": [
+            {
+              "exports": [
+                {
+                  "kind": "scalar",
+                  "name": "age",
+                },
+              ],
+              "includes": {},
+              "kind": "object",
+              "ofType": "User",
+              "operation": "query ($id: ID!) {
+  _entities(representations: [{__typename: "User", id: $id}]) {
+    ... on User {
+      age
+    }
+  }
+}",
+              "pathToExportData": [
+                "_entities",
+                0,
+              ],
+              "subgraph": "a",
+              "type": "[User]!",
+              "variables": {
+                "id": {
+                  "kind": "select",
+                  "name": "id",
+                  "select": "id",
+                },
+              },
+            },
+          ],
+        },
         "kind": "interface",
         "ofType": "NodeWithName",
         "operation": "{
   anotherUsers {
-    __typename
+    id
   }
 }",
         "pathToExportData": [

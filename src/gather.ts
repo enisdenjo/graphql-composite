@@ -715,16 +715,20 @@ function insertResolversForSelection(
       const fragmentTypeSubgraphs = allSubgraphsForType(fragmentType);
 
       if (
-        !fragmentTypeImplementsParentTypeInCurrentSubgraph ||
+        // fragment type does not implement the parent type in the current subgraph
+        // and the parent type does not have other resolvers - meaning, the parent
+        // cannot be resolved after resolving the fragment from another subgraph
+        (!fragmentTypeImplementsParentTypeInCurrentSubgraph &&
+          !Object.keys(parentType.resolvers).length) ||
+        // or the fragment type doesnt have resolvers and its available subgraphs
+        // dont intersect with the parent field's subgraphs
         (!Object.keys(fragmentType.resolvers).length &&
           !parentSelInType.fields[parentSel.name]!.subgraphs.every((s) =>
             fragmentTypeSubgraphs.includes(s),
           ))
       ) {
-        // the selection's object doesnt have any other resolvers and its available subgraphs
-        // dont intersect with the parent field's subgraphs. this means that the field is
-        // available in more subgraphs than the selection's object.
-        // we therefore skip the fragment spread altogether
+        // this means that the field is available in more subgraphs than the selection's
+        // object. we therefore skip the fragment spread altogether
 
         if (!getSelectionsAtDepth(currentResolver.exports, depth).length) {
           // [NOTE 1]

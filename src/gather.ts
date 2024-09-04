@@ -881,6 +881,35 @@ function insertResolversForSelection(
       );
     }
 
+    // if the field itself has a resolver, it means that there are special requirements
+    // for resolving the field - use that resolver over every other
+    // TODO: actually choose the best resolver, not the first one
+    const selFieldResolverPlan = Object.values(selField.resolvers)[0];
+    if (selFieldResolverPlan) {
+      if (selFieldResolverPlan.kind === 'primitive') {
+        throw new Error('TODO');
+      }
+
+      resolver = prepareCompositeResolverForSelection(
+        blueprint,
+        selFieldResolverPlan,
+        parentSelInType,
+        parentSel,
+        sel,
+        currentResolver,
+        depth,
+      );
+
+      if (resolvingAdditionalFields) {
+        currentResolver.includes[''] ??= [];
+        currentResolver.includes[''].push(resolver);
+      } else {
+        currentResolver.includes[
+          parentSel.kind === 'fragment' ? parentSel.fieldName : parentSel.name
+        ] = resolver;
+      }
+    }
+
     // we change the selection's type plan to the interface which will
     // have the resolver creation below use the interface instead of the type
     selType = interfaceType;

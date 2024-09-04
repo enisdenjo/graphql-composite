@@ -2129,6 +2129,102 @@ exports[`fixture 'federation/interface-object-with-requ…' > query 'RequiresUse
 }
 `;
 
+exports[`fixture 'federation/interface-object-with-requ…' > query 'UsersUserSpreadAge' > should execute and explain 1`] = `
+[
+  {
+    "data": {
+      "users": [
+        {
+          "age": 11,
+        },
+        {
+          "age": 22,
+        },
+      ],
+    },
+    "exports": [
+      {
+        "kind": "fragment",
+        "selections": [
+          {
+            "kind": "scalar",
+            "name": "age",
+          },
+        ],
+        "typeCondition": "User",
+      },
+    ],
+    "includes": [],
+    "kind": "interface",
+    "ofType": "NodeWithName",
+    "operation": "{
+  users {
+    ... on User {
+      age
+    }
+  }
+}",
+    "pathInData": [
+      "users",
+    ],
+    "pathToExportData": [
+      "users",
+    ],
+    "subgraph": "a",
+    "type": "[NodeWithName!]!",
+    "variables": {},
+  },
+]
+`;
+
+exports[`fixture 'federation/interface-object-with-requ…' > query 'UsersUserSpreadAge' > should plan gather 1`] = `
+{
+  "operation": {
+    "name": "UsersUserSpreadAge",
+    "resolvers": {
+      "users": {
+        "exports": [
+          {
+            "kind": "fragment",
+            "selections": [
+              {
+                "kind": "scalar",
+                "name": "age",
+              },
+            ],
+            "typeCondition": "User",
+          },
+        ],
+        "includes": {},
+        "kind": "interface",
+        "ofType": "NodeWithName",
+        "operation": "{
+  users {
+    ... on User {
+      age
+    }
+  }
+}",
+        "pathToExportData": [
+          "users",
+        ],
+        "subgraph": "a",
+        "type": "[NodeWithName!]!",
+        "variables": {},
+      },
+    },
+    "type": "Query",
+  },
+  "query": "query UsersUserSpreadAge {
+  users {
+    ... on User {
+      age
+    }
+  }
+}",
+}
+`;
+
 exports[`fixture 'federation/override-type-interface' > query 'AnotherFeed' > should execute and explain 1`] = `
 [
   {

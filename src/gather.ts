@@ -715,16 +715,20 @@ function insertResolversForSelection(
       const fragmentTypeSubgraphs = allSubgraphsForType(fragmentType);
 
       if (
-        !fragmentTypeImplementsParentTypeInCurrentSubgraph ||
+        // fragment type does not implement the parent type in the current subgraph
+        // and the parent type does not have other resolvers - meaning, the parent
+        // cannot be resolved after resolving the fragment from another subgraph
+        (!fragmentTypeImplementsParentTypeInCurrentSubgraph &&
+          !Object.keys(parentType.resolvers).length) ||
+        // or the fragment type doesnt have resolvers and its available subgraphs
+        // dont intersect with the parent field's subgraphs
         (!Object.keys(fragmentType.resolvers).length &&
           !parentSelInType.fields[parentSel.name]!.subgraphs.every((s) =>
             fragmentTypeSubgraphs.includes(s),
           ))
       ) {
-        // the selection's object doesnt have any other resolvers and its available subgraphs
-        // dont intersect with the parent field's subgraphs. this means that the field is
-        // available in more subgraphs than the selection's object.
-        // we therefore skip the fragment spread altogether
+        // this means that the field is available in more subgraphs than the selection's
+        // object. we therefore skip the fragment spread altogether
 
         if (!getSelectionsAtDepth(currentResolver.exports, depth).length) {
           // [NOTE 1]
@@ -819,13 +823,42 @@ function insertResolversForSelection(
   if (selField) {
     selType = parentTypePlan;
 
-    // use the parent resolver if the field is available in its subgraph;
-    // if not, try finding a resolver in parents includes
-    resolver = selField.subgraphs.includes(currentResolver.subgraph)
-      ? currentResolver
-      : Object.values(currentResolver.includes)
-          .flat()
-          .find((r) => selField!.subgraphs.includes(r.subgraph));
+    // if the field itself has a resolver, it means that there are special requirements
+    // for resolving the field - use that resolver over every other
+    // TODO: actually choose the best resolver, not the first one
+    const selFieldResolverPlan = Object.values(selField.resolvers)[0];
+    if (selFieldResolverPlan) {
+      if (selFieldResolverPlan.kind === 'primitive') {
+        throw new Error('TODO');
+      }
+
+      resolver = prepareCompositeResolverForSelection(
+        blueprint,
+        selFieldResolverPlan,
+        parentSelInType,
+        parentSel,
+        sel,
+        currentResolver,
+        depth,
+      );
+
+      if (resolvingAdditionalFields) {
+        currentResolver.includes[''] ??= [];
+        currentResolver.includes[''].push(resolver);
+      } else {
+        currentResolver.includes[
+          parentSel.kind === 'fragment' ? parentSel.fieldName : parentSel.name
+        ] = resolver;
+      }
+    } else {
+      // use the parent resolver if the field is available in its subgraph;
+      // if not, try finding a resolver in parents includes
+      resolver = selField.subgraphs.includes(currentResolver.subgraph)
+        ? currentResolver
+        : Object.values(currentResolver.includes)
+            .flat()
+            .find((r) => selField!.subgraphs.includes(r.subgraph));
+    }
   } else {
     // the parent type may not implement the specific field, but its interface may.
     // in that case, we have to resolve the field from the interface instead
@@ -846,6 +879,35 @@ function insertResolversForSelection(
       throw new Error(
         `Blueprint interface "${interfaceType.name}" that type "${parentTypePlan.name}" implements doesn't have a "${sel.name}" field`,
       );
+    }
+
+    // if the field itself has a resolver, it means that there are special requirements
+    // for resolving the field - use that resolver over every other
+    // TODO: actually choose the best resolver, not the first one
+    const selFieldResolverPlan = Object.values(selField.resolvers)[0];
+    if (selFieldResolverPlan) {
+      if (selFieldResolverPlan.kind === 'primitive') {
+        throw new Error('TODO');
+      }
+
+      resolver = prepareCompositeResolverForSelection(
+        blueprint,
+        selFieldResolverPlan,
+        parentSelInType,
+        parentSel,
+        sel,
+        currentResolver,
+        depth,
+      );
+
+      if (resolvingAdditionalFields) {
+        currentResolver.includes[''] ??= [];
+        currentResolver.includes[''].push(resolver);
+      } else {
+        currentResolver.includes[
+          parentSel.kind === 'fragment' ? parentSel.fieldName : parentSel.name
+        ] = resolver;
+      }
     }
 
     // we change the selection's type plan to the interface which will
@@ -1056,7 +1118,9 @@ function prepareCompositeResolverForSelection(
         //
         // TODO: make sure future batching implementation is aware
 
-        const type = variableField.types[resolver.subgraph]!;
+        const type =
+          variableField.types[resolver.subgraph] ||
+          Object.values(variableField.types)[0]!; // TODO: make sure there's always at least one type
         let ofType = parseType(type);
         while (ofType.kind !== Kind.NAMED_TYPE) {
           if (ofType.kind === Kind.LIST_TYPE) {

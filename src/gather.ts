@@ -51,8 +51,15 @@ export interface GatherPlanOperation {
 }
 
 export type GatherPlanResolver =
+  | GatherPlanConstantResolver
   | GatherPlanCompositeResolver
   | GatherPlanPrimitiveResolver;
+
+/** A resolver that returns a constant result. */
+export interface GatherPlanConstantResolver {
+  kind: 'constant';
+  value: unknown;
+}
 
 export type GatherPlanCompositeResolver = BlueprintCompositeResolver & {
   /** The path to the `__export` fragment in the execution result. */
@@ -179,7 +186,8 @@ export function planGather(
   const fields: OperationField[] = [];
   const entries: string[] = [];
   let depth = 0;
-  const typeInfo = new TypeInfo(buildSchema(blueprint.schema));
+  const schema = buildSchema(blueprint.schema);
+  const typeInfo = new TypeInfo(schema);
 
   visit(
     // we want to flatten fragments in the document
@@ -1187,6 +1195,9 @@ function exportsIncludeField(
 
 function buildAndInsertOperationsInResolvers(resolvers: GatherPlanResolver[]) {
   for (const resolver of resolvers) {
+    if (resolver.kind === 'constant') {
+      throw new Error('Constant gather plan resolver does not have operations');
+    }
     const { operation, pathToExportData } = buildResolverOperation(
       resolver.operation,
       resolver.kind === 'primitive' ? [] : resolver.exports,

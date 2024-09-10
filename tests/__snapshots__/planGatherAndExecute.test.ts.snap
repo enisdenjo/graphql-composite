@@ -9471,6 +9471,450 @@ exports[`fixture 'federation/union-intersection' > query 'ViewerMediaMovie' > sh
 }
 `;
 
+exports[`fixture 'graphql-conf-2024-example' > query 'StoreProductsManufacturerAndItsProduc…' > should execute and explain 1`] = `
+[
+  {
+    "data": {
+      "store": {
+        "name": "Apple Store",
+        "products": [
+          {
+            "id": "iphone",
+          },
+          {
+            "id": "ipad",
+          },
+        ],
+      },
+    },
+    "exports": [
+      {
+        "kind": "scalar",
+        "name": "name",
+      },
+      {
+        "kind": "object",
+        "name": "products",
+        "selections": [
+          {
+            "kind": "scalar",
+            "name": "id",
+          },
+        ],
+      },
+    ],
+    "includes": [
+      {
+        "data": {
+          "product": {
+            "manufacturer": {
+              "id": "apple",
+              "products": [
+                {
+                  "name": "Apple iPhone",
+                },
+                {
+                  "name": "iPad",
+                },
+              ],
+            },
+            "name": "Apple iPhone",
+            "price": 20,
+          },
+        },
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "name",
+          },
+          {
+            "kind": "scalar",
+            "name": "price",
+          },
+          {
+            "kind": "object",
+            "name": "manufacturer",
+            "selections": [
+              {
+                "kind": "scalar",
+                "name": "id",
+                "private": true,
+              },
+              {
+                "kind": "object",
+                "name": "products",
+                "selections": [
+                  {
+                    "kind": "scalar",
+                    "name": "name",
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+        "includes": [
+          {
+            "data": {
+              "manufacturer": {
+                "name": "Apple",
+              },
+            },
+            "exports": [
+              {
+                "kind": "scalar",
+                "name": "name",
+              },
+            ],
+            "includes": [],
+            "kind": "object",
+            "ofType": "Manufacturer",
+            "operation": "query ($Manufacturer_id: ID!) {
+  manufacturer(id: $Manufacturer_id) {
+    name
+  }
+}",
+            "pathInData": [
+              "store",
+              "products",
+              0,
+              "manufacturer",
+            ],
+            "pathToExportData": [
+              "manufacturer",
+            ],
+            "subgraph": "manufacturers",
+            "type": "Manufacturer",
+            "variables": {
+              "Manufacturer_id": "apple",
+            },
+          },
+        ],
+        "kind": "object",
+        "ofType": "Product",
+        "operation": "query ($Product_id: ID!) {
+  product(id: $Product_id) {
+    name
+    price
+    manufacturer {
+      id
+      products {
+        name
+      }
+    }
+  }
+}",
+        "pathInData": [
+          "store",
+          "products",
+          0,
+        ],
+        "pathToExportData": [
+          "product",
+        ],
+        "subgraph": "products",
+        "type": "Product",
+        "variables": {
+          "Product_id": "iphone",
+        },
+      },
+      {
+        "data": {
+          "product": {
+            "manufacturer": {
+              "id": "apple",
+              "products": [
+                {
+                  "name": "Apple iPhone",
+                },
+                {
+                  "name": "iPad",
+                },
+              ],
+            },
+            "name": "iPad",
+            "price": 25,
+          },
+        },
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "name",
+          },
+          {
+            "kind": "scalar",
+            "name": "price",
+          },
+          {
+            "kind": "object",
+            "name": "manufacturer",
+            "selections": [
+              {
+                "kind": "scalar",
+                "name": "id",
+                "private": true,
+              },
+              {
+                "kind": "object",
+                "name": "products",
+                "selections": [
+                  {
+                    "kind": "scalar",
+                    "name": "name",
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+        "includes": [
+          {
+            "data": {
+              "manufacturer": {
+                "name": "Apple",
+              },
+            },
+            "exports": [
+              {
+                "kind": "scalar",
+                "name": "name",
+              },
+            ],
+            "includes": [],
+            "kind": "object",
+            "ofType": "Manufacturer",
+            "operation": "query ($Manufacturer_id: ID!) {
+  manufacturer(id: $Manufacturer_id) {
+    name
+  }
+}",
+            "pathInData": [
+              "store",
+              "products",
+              1,
+              "manufacturer",
+            ],
+            "pathToExportData": [
+              "manufacturer",
+            ],
+            "subgraph": "manufacturers",
+            "type": "Manufacturer",
+            "variables": {
+              "Manufacturer_id": "apple",
+            },
+          },
+        ],
+        "kind": "object",
+        "ofType": "Product",
+        "operation": "query ($Product_id: ID!) {
+  product(id: $Product_id) {
+    name
+    price
+    manufacturer {
+      id
+      products {
+        name
+      }
+    }
+  }
+}",
+        "pathInData": [
+          "store",
+          "products",
+          1,
+        ],
+        "pathToExportData": [
+          "product",
+        ],
+        "subgraph": "products",
+        "type": "Product",
+        "variables": {
+          "Product_id": "ipad",
+        },
+      },
+    ],
+    "kind": "object",
+    "ofType": "Store",
+    "operation": "query ($id: ID!) {
+  store(id: $id) {
+    name
+    products {
+      id
+    }
+  }
+}",
+    "pathInData": [
+      "store",
+    ],
+    "pathToExportData": [
+      "store",
+    ],
+    "subgraph": "stores",
+    "type": "Store",
+    "variables": {
+      "id": "apple-store",
+    },
+  },
+]
+`;
+
+exports[`fixture 'graphql-conf-2024-example' > query 'StoreProductsManufacturerAndItsProduc…' > should plan gather 1`] = `
+{
+  "operation": {
+    "name": "StoreProductsManufacturerAndItsProducts",
+    "resolvers": {
+      "store": {
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "name",
+          },
+          {
+            "kind": "object",
+            "name": "products",
+            "selections": [
+              {
+                "kind": "scalar",
+                "name": "id",
+              },
+            ],
+          },
+        ],
+        "includes": {
+          "products": {
+            "exports": [
+              {
+                "kind": "scalar",
+                "name": "name",
+              },
+              {
+                "kind": "scalar",
+                "name": "price",
+              },
+              {
+                "kind": "object",
+                "name": "manufacturer",
+                "selections": [
+                  {
+                    "kind": "scalar",
+                    "name": "id",
+                    "private": true,
+                  },
+                  {
+                    "kind": "object",
+                    "name": "products",
+                    "selections": [
+                      {
+                        "kind": "scalar",
+                        "name": "name",
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+            "includes": {
+              "manufacturer": {
+                "exports": [
+                  {
+                    "kind": "scalar",
+                    "name": "name",
+                  },
+                ],
+                "includes": {},
+                "kind": "object",
+                "ofType": "Manufacturer",
+                "operation": "query ($Manufacturer_id: ID!) {
+  manufacturer(id: $Manufacturer_id) {
+    name
+  }
+}",
+                "pathToExportData": [
+                  "manufacturer",
+                ],
+                "subgraph": "manufacturers",
+                "type": "Manufacturer",
+                "variables": {
+                  "Manufacturer_id": {
+                    "kind": "select",
+                    "name": "Manufacturer_id",
+                    "select": "id",
+                  },
+                },
+              },
+            },
+            "kind": "object",
+            "ofType": "Product",
+            "operation": "query ($Product_id: ID!) {
+  product(id: $Product_id) {
+    name
+    price
+    manufacturer {
+      id
+      products {
+        name
+      }
+    }
+  }
+}",
+            "pathToExportData": [
+              "product",
+            ],
+            "subgraph": "products",
+            "type": "Product",
+            "variables": {
+              "Product_id": {
+                "kind": "select",
+                "name": "Product_id",
+                "select": "id",
+              },
+            },
+          },
+        },
+        "kind": "object",
+        "ofType": "Store",
+        "operation": "query ($id: ID!) {
+  store(id: $id) {
+    name
+    products {
+      id
+    }
+  }
+}",
+        "pathToExportData": [
+          "store",
+        ],
+        "subgraph": "stores",
+        "type": "Store",
+        "variables": {
+          "id": {
+            "kind": "user",
+            "name": "id",
+          },
+        },
+      },
+    },
+    "type": "Query",
+  },
+  "query": "query StoreProductsManufacturerAndItsProducts($id: ID!) {
+  store(id: $id) {
+    name
+    products {
+      id
+      name
+      price
+      manufacturer {
+        name
+        products {
+          name
+        }
+      }
+    }
+  }
+}",
+}
+`;
+
 exports[`fixture 'interfaces' > query 'BasicCat' > should execute and explain 1`] = `
 [
   {

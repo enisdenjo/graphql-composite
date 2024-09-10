@@ -125,7 +125,7 @@ export const subgraphs: FixtureSubgraphs = {
         id: ID!
         name: String!
         price: Float!
-        manufacturer: Manufacturer
+        manufacturer: Manufacturer!
       }
       type Manufacturer {
         id: ID!

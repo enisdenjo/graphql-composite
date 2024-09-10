@@ -9779,6 +9779,144 @@ exports[`fixture 'interfaces' > query 'BasicNestedAnimal' > should plan gather 1
 }
 `;
 
+exports[`fixture 'nested-includes' > query 'AllProductsReviews' > should plan gather 1`] = `
+{
+  "operation": {
+    "name": "AllProductsReviews",
+    "resolvers": {
+      "allProducts": {
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "name",
+          },
+          {
+            "kind": "scalar",
+            "name": "price",
+          },
+          {
+            "kind": "scalar",
+            "name": "id",
+            "private": true,
+          },
+        ],
+        "includes": {
+          "": [
+            {
+              "exports": [
+                {
+                  "kind": "object",
+                  "name": "reviews",
+                  "selections": [
+                    {
+                      "kind": "scalar",
+                      "name": "rating",
+                    },
+                    {
+                      "kind": "object",
+                      "name": "user",
+                      "selections": [
+                        {
+                          "kind": "scalar",
+                          "name": "id",
+                          "private": true,
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+              "includes": {
+                "user": {
+                  "exports": [
+                    {
+                      "kind": "scalar",
+                      "name": "name",
+                    },
+                  ],
+                  "includes": {},
+                  "kind": "object",
+                  "ofType": "User",
+                  "operation": "query UserByID($User_id: ID!) {
+  user(id: $User_id) {
+    name
+  }
+}",
+                  "pathToExportData": [
+                    "user",
+                  ],
+                  "subgraph": "users",
+                  "type": "User",
+                  "variables": {
+                    "User_id": {
+                      "kind": "select",
+                      "name": "User_id",
+                      "select": "id",
+                    },
+                  },
+                },
+              },
+              "kind": "object",
+              "ofType": "Product",
+              "operation": "query ProductByID($Product_id: ID!) {
+  product(id: $Product_id) {
+    reviews {
+      rating
+      user {
+        id
+      }
+    }
+  }
+}",
+              "pathToExportData": [
+                "product",
+              ],
+              "subgraph": "reviews",
+              "type": "Product",
+              "variables": {
+                "Product_id": {
+                  "kind": "select",
+                  "name": "Product_id",
+                  "select": "id",
+                },
+              },
+            },
+          ],
+        },
+        "kind": "object",
+        "ofType": "Product",
+        "operation": "query allProducts {
+  allProducts {
+    name
+    price
+    id
+  }
+}",
+        "pathToExportData": [
+          "allProducts",
+        ],
+        "subgraph": "products",
+        "type": "[Product!]!",
+        "variables": {},
+      },
+    },
+    "type": "Query",
+  },
+  "query": "query AllProductsReviews {
+  allProducts {
+    name
+    price
+    reviews {
+      rating
+      user {
+        name
+      }
+    }
+  }
+}",
+}
+`;
+
 exports[`fixture 'shared-root' > query 'SharedRootMultiple' > should execute and explain 1`] = `
 [
   {

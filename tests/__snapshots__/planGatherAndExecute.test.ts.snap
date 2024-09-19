@@ -10395,6 +10395,179 @@ exports[`fixture 'nested-includes' > query 'AllProductsReviews' > should plan ga
 }
 `;
 
+exports[`fixture 'nested-includes' > query 'AllProductsReviewsProducts' > should plan gather 1`] = `
+{
+  "operation": {
+    "name": "AllProductsReviewsProducts",
+    "resolvers": {
+      "allProducts": {
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "name",
+          },
+          {
+            "kind": "scalar",
+            "name": "price",
+          },
+          {
+            "kind": "scalar",
+            "name": "id",
+            "private": true,
+          },
+        ],
+        "includes": {
+          "": [
+            {
+              "exports": [
+                {
+                  "kind": "object",
+                  "name": "reviews",
+                  "selections": [
+                    {
+                      "kind": "scalar",
+                      "name": "rating",
+                    },
+                    {
+                      "kind": "object",
+                      "name": "user",
+                      "selections": [
+                        {
+                          "kind": "scalar",
+                          "name": "id",
+                          "private": true,
+                        },
+                      ],
+                    },
+                    {
+                      "kind": "object",
+                      "name": "product",
+                      "selections": [
+                        {
+                          "kind": "object",
+                          "name": "reviews",
+                          "selections": [
+                            {
+                              "kind": "scalar",
+                              "name": "rating",
+                            },
+                            {
+                              "kind": "object",
+                              "name": "user",
+                              "selections": [],
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+              "includes": {
+                "reviews.user": {
+                  "exports": [
+                    {
+                      "kind": "scalar",
+                      "name": "name",
+                    },
+                  ],
+                  "includes": {},
+                  "kind": "object",
+                  "ofType": "User",
+                  "operation": "query UserByID($User_id: ID!) {
+  user(id: $User_id) {
+    name
+  }
+}",
+                  "pathToExportData": [
+                    "user",
+                  ],
+                  "subgraph": "users",
+                  "type": "User",
+                  "variables": {
+                    "User_id": {
+                      "kind": "select",
+                      "name": "User_id",
+                      "select": "id",
+                    },
+                  },
+                },
+              },
+              "kind": "object",
+              "ofType": "Product",
+              "operation": "query ProductByID($Product_id: ID!) {
+  product(id: $Product_id) {
+    reviews {
+      rating
+      user {
+        id
+      }
+      product {
+        reviews {
+          rating
+          user
+        }
+      }
+    }
+  }
+}",
+              "pathToExportData": [
+                "product",
+              ],
+              "subgraph": "reviews",
+              "type": "Product",
+              "variables": {
+                "Product_id": {
+                  "kind": "select",
+                  "name": "Product_id",
+                  "select": "id",
+                },
+              },
+            },
+          ],
+        },
+        "kind": "object",
+        "ofType": "Product",
+        "operation": "query allProducts {
+  allProducts {
+    name
+    price
+    id
+  }
+}",
+        "pathToExportData": [
+          "allProducts",
+        ],
+        "subgraph": "products",
+        "type": "[Product!]!",
+        "variables": {},
+      },
+    },
+    "type": "Query",
+  },
+  "query": "query AllProductsReviewsProducts {
+  allProducts {
+    name
+    price
+    reviews {
+      rating
+      user {
+        name
+      }
+      product {
+        reviews {
+          rating
+          user {
+            name
+          }
+        }
+      }
+    }
+  }
+}",
+}
+`;
+
 exports[`fixture 'shared-root' > query 'SharedRootMultiple' > should execute and explain 1`] = `
 [
   {

@@ -43,4 +43,102 @@ export const queries: FixtureQueries = [
       },
     },
   },
+  {
+    name: 'AllProductsReviewsProducts',
+    document: parse(/* GraphQL */ `
+      query AllProductsReviewsProducts {
+        allProducts {
+          name
+          price
+          reviews {
+            rating
+            user {
+              name
+            }
+            product {
+              reviews {
+                rating
+                user {
+                  name
+                }
+              }
+            }
+          }
+        }
+      }
+    `),
+    variables: {},
+    result: {
+      data: {
+        allProducts: [
+          {
+            name: 'Samsung TV',
+            price: 5,
+            reviews: [
+              {
+                rating: 10,
+                user: { name: 'John' },
+                product: {
+                  reviews: [
+                    {
+                      rating: 10,
+                      user: {
+                        name: 'John',
+                      },
+                    },
+                  ],
+                },
+              },
+            ],
+          },
+          { name: 'Samsung Fold', price: 10, reviews: [] },
+          { name: 'Samsung Galaxy', price: 15, reviews: [] },
+          {
+            name: 'Apple iPhone',
+            price: 20,
+            reviews: [
+              {
+                rating: 8,
+                user: {
+                  name: 'Jane',
+                  product: {
+                    reviews: [
+                      {
+                        rating: 8,
+                        user: {
+                          name: 'Jane',
+                        },
+                      },
+                    ],
+                  },
+                },
+              },
+            ],
+          },
+          {
+            name: 'Apple iPad',
+            price: 30,
+            reviews: [
+              {
+                rating: 4,
+                user: {
+                  name: 'Jane',
+                  product: {
+                    reviews: [
+                      {
+                        rating: 4,
+                        user: {
+                          name: 'Jane',
+                        },
+                      },
+                    ],
+                  },
+                },
+              },
+            ],
+          },
+        ],
+      },
+    },
+  },
 ];

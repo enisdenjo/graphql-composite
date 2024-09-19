@@ -4,6 +4,7 @@ import getAtPath from 'lodash/get.js';
 import setAtPath from 'lodash/set.js';
 import {
   GatherPlan,
+  GatherPlanCompositeResolver,
   GatherPlanResolver,
   OperationExport,
   OVERWRITE_FIELD_NAME_PART,
@@ -159,16 +160,57 @@ async function executeResolver(
   }
 
   const includes: ExecutionExplain[] = [];
-  for (const [field, resolverOrResolvers] of Object.entries(
-    resolver.includes,
-  )) {
+  async function executeInclude(
+    resolvers: GatherPlanCompositeResolver[],
+    exportDataAtPath: any,
+    /** Full path in the {@link exportData} that the {@link resolvers} are resolving. */
+    path: (string | number)[],
+    /** The depth (index) in the current {@link path}. */
+    depth: number,
+  ) {
+    const pathBeforeField = path.slice(0, depth);
+    const field = path[depth]!;
+    const isLast = depth === path.length - 1;
+    if (!isLast) {
+      // this is not the last field in the field path, continue expanding the
+      // path before reaching the last field that will then get resolved
+
+      const pathAfterField = path.slice(depth + 1);
+      const fieldData = getAtPath(exportDataAtPath, field);
+
+      if (Array.isArray(fieldData)) {
+        // TODO: any parallelism issues with mutating the result ref?
+        await Promise.all(
+          fieldData.map((fieldDataItem, i) =>
+            executeInclude(
+              resolvers,
+              fieldDataItem,
+              [...pathBeforeField, field, i, ...pathAfterField],
+              depth +
+                1 + // into field
+                1, // into field item
+            ),
+          ),
+        );
+      } else {
+        await executeInclude(
+          resolvers,
+          fieldData,
+          [...pathBeforeField, field, ...pathAfterField],
+          depth + 1, // into field
+        );
+      }
+
+      return;
+    }
+
     // if there's no field specified, we're resolving additional fields for the current one
     const resolvingAdditionalFields = field === '';
 
-    if (Array.isArray(exportData)) {
+    if (Array.isArray(exportDataAtPath)) {
       // if the export data is an array, we need to gather resolve each item
-      for (let i = 0; i < exportData.length; i++) {
-        const exportDataItem = exportData[i];
+      for (let i = 0; i < exportDataAtPath.length; i++) {
+        const exportDataItem = exportDataAtPath[i];
         const fieldData = resolvingAdditionalFields
           ? exportDataItem
           : getAtPath(exportDataItem, field);
@@ -180,13 +222,11 @@ async function executeResolver(
               ...(await resolveIncludes(
                 transports,
                 operationVariables,
-                Array.isArray(resolverOrResolvers)
-                  ? resolverOrResolvers
-                  : [resolverOrResolvers],
+                resolvers,
                 fieldDataItem,
                 resolvingAdditionalFields
                   ? [...pathInData, i, j]
-                  : [...pathInData, i, field, j],
+                  : [...pathInData, i, ...pathBeforeField, field, j],
                 resultRef,
               )),
             );
@@ -196,13 +236,11 @@ async function executeResolver(
             ...(await resolveIncludes(
               transports,
               operationVariables,
-              Array.isArray(resolverOrResolvers)
-                ? resolverOrResolvers
-                : [resolverOrResolvers],
+              resolvers,
               fieldData,
               resolvingAdditionalFields
                 ? [...pathInData, i]
-                : [...pathInData, i, field],
+                : [...pathInData, i, ...pathBeforeField, field],
               resultRef,
             )),
           );
@@ -210,8 +248,8 @@ async function executeResolver(
       }
     } else {
       const fieldData = resolvingAdditionalFields
-        ? exportData
-        : getAtPath(exportData, field);
+        ? exportDataAtPath
+        : getAtPath(exportDataAtPath, field);
       if (Array.isArray(fieldData)) {
         // if the include points to an array, we need to gather resolve each item
         for (let i = 0; i < fieldData.length; i++) {
@@ -220,13 +258,11 @@ async function executeResolver(
             ...(await resolveIncludes(
               transports,
               operationVariables,
-              Array.isArray(resolverOrResolvers)
-                ? resolverOrResolvers
-                : [resolverOrResolvers],
+              resolvers,
               fieldDataItem,
               resolvingAdditionalFields
                 ? [...pathInData, i]
-                : [...pathInData, field, i],
+                : [...pathInData, ...pathBeforeField, field, i],
               resultRef,
             )),
           );
@@ -236,17 +272,31 @@ async function executeResolver(
           ...(await resolveIncludes(
             transports,
             operationVariables,
-            Array.isArray(resolverOrResolvers)
-              ? resolverOrResolvers
-              : [resolverOrResolvers],
+            resolvers,
             fieldData,
-            resolvingAdditionalFields ? pathInData : [...pathInData, field],
+            resolvingAdditionalFields
+              ? pathInData
+              : [...pathInData, ...pathBeforeField, field],
             resultRef,
           )),
         );
       }
     }
   }
+
+  // TODO: any parallelism issues with mutating the result ref?
+  await Promise.all(
+    Object.entries(resolver.includes).map(([dotPath, resolverOrResolvers]) =>
+      executeInclude(
+        Array.isArray(resolverOrResolvers)
+          ? resolverOrResolvers
+          : [resolverOrResolvers],
+        exportData,
+        dotPath.split('.'),
+        0,
+      ),
+    ),
+  );
 
   return {
     ...resolver,

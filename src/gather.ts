@@ -77,7 +77,7 @@ export type GatherPlanCompositeResolver = BlueprintCompositeResolver & {
   includes: {
     ''?: GatherPlanCompositeResolver[];
   } & {
-    [field: string]: GatherPlanCompositeResolver;
+    [path: string]: GatherPlanCompositeResolver;
   };
 };
 
@@ -511,6 +511,29 @@ type OperationField = OperationObjectField | OperationPrimitiveField;
 
 type OperationCompositeSelection = OperationObjectField | OperationFragment;
 
+/** Gets the path to the export at depth without the last export (parent export). */
+function getPathToParentOfExportAtDepth(
+  selections: OperationExport[],
+  depth: number,
+): string[] {
+  const pathToParentSel: string[] = [];
+  for (let i = 0; i < depth - 1; i++) {
+    // TODO: optimize to not use `getSelectionsAtDepth`
+    const sels = getSelectionsAtDepth(selections, i);
+    const lastSel = sels[sels.length - 1]!;
+    if (lastSel.kind === 'fragment') {
+      // TODO: go one deeper but dont append to path
+      throw new Error('TODO');
+    }
+    if (lastSel.kind === 'object') {
+      pathToParentSel.push(lastSel.alias || lastSel.name);
+      continue;
+    }
+    throw new Error(`Cannot go deeper in "${lastSel.kind}" kind`);
+  }
+  return pathToParentSel;
+}
+
 function getSelectionsAtDepth(
   selections: OperationSelection[],
   depth: number,
@@ -847,7 +870,13 @@ function insertResolversForSelection(
         currentResolver.includes[''].push(resolver);
       } else {
         currentResolver.includes[
-          parentSel.kind === 'fragment' ? parentSel.fieldName : parentSel.name
+          getPathToParentOfExportAtDepth(currentResolver.exports, depth)
+            .concat(
+              parentSel.kind === 'fragment'
+                ? parentSel.fieldName
+                : parentSel.name,
+            )
+            .join('.')
         ] = resolver;
       }
     } else {
@@ -905,7 +934,13 @@ function insertResolversForSelection(
         currentResolver.includes[''].push(resolver);
       } else {
         currentResolver.includes[
-          parentSel.kind === 'fragment' ? parentSel.fieldName : parentSel.name
+          getPathToParentOfExportAtDepth(currentResolver.exports, depth)
+            .concat(
+              parentSel.kind === 'fragment'
+                ? parentSel.fieldName
+                : parentSel.name,
+            )
+            .join('.')
         ] = resolver;
       }
     }
@@ -984,7 +1019,13 @@ function insertResolversForSelection(
       currentResolver.includes[''].push(resolver);
     } else {
       currentResolver.includes[
-        parentSel.kind === 'fragment' ? parentSel.fieldName : parentSel.name
+        getPathToParentOfExportAtDepth(currentResolver.exports, depth)
+          .concat(
+            parentSel.kind === 'fragment'
+              ? parentSel.fieldName
+              : parentSel.name,
+          )
+          .join('.')
       ] = resolver;
     }
   }

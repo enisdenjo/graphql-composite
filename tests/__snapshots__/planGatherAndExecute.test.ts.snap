@@ -9827,7 +9827,7 @@ exports[`fixture 'nested-includes' > query 'AllProductsReviews' > should plan ga
                 },
               ],
               "includes": {
-                "user": {
+                "reviews.user": {
                   "exports": [
                     {
                       "kind": "scalar",

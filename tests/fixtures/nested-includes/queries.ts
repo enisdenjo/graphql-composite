@@ -101,16 +101,16 @@ export const queries: FixtureQueries = [
                 rating: 8,
                 user: {
                   name: 'Jane',
-                  product: {
-                    reviews: [
-                      {
-                        rating: 8,
-                        user: {
-                          name: 'Jane',
-                        },
+                },
+                product: {
+                  reviews: [
+                    {
+                      rating: 8,
+                      user: {
+                        name: 'Jane',
                       },
-                    ],
-                  },
+                    },
+                  ],
                 },
               },
             ],
@@ -123,16 +123,16 @@ export const queries: FixtureQueries = [
                 rating: 4,
                 user: {
                   name: 'Jane',
-                  product: {
-                    reviews: [
-                      {
-                        rating: 4,
-                        user: {
-                          name: 'Jane',
-                        },
+                },
+                product: {
+                  reviews: [
+                    {
+                      rating: 4,
+                      user: {
+                        name: 'Jane',
                       },
-                    ],
-                  },
+                    },
+                  ],
                 },
               },
             ],

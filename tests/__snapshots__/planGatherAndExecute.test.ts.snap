@@ -9779,6 +9779,1631 @@ exports[`fixture 'interfaces' > query 'BasicNestedAnimal' > should plan gather 1
 }
 `;
 
+exports[`fixture 'nested-includes' > query 'AllProductsReviews' > should execute and explain 1`] = `
+[
+  {
+    "data": {
+      "allProducts": [
+        {
+          "id": "stv",
+          "name": "Samsung TV",
+          "price": 5,
+        },
+        {
+          "id": "sfold",
+          "name": "Samsung Fold",
+          "price": 10,
+        },
+        {
+          "id": "sgalaxy",
+          "name": "Samsung Galaxy",
+          "price": 15,
+        },
+        {
+          "id": "iphone",
+          "name": "Apple iPhone",
+          "price": 20,
+        },
+        {
+          "id": "ipad",
+          "name": "Apple iPad",
+          "price": 30,
+        },
+      ],
+    },
+    "exports": [
+      {
+        "kind": "scalar",
+        "name": "name",
+      },
+      {
+        "kind": "scalar",
+        "name": "price",
+      },
+      {
+        "kind": "scalar",
+        "name": "id",
+        "private": true,
+      },
+    ],
+    "includes": [
+      {
+        "data": {
+          "product": {
+            "reviews": [
+              {
+                "rating": 10,
+                "user": {
+                  "id": "john",
+                },
+              },
+            ],
+          },
+        },
+        "exports": [
+          {
+            "kind": "object",
+            "name": "reviews",
+            "selections": [
+              {
+                "kind": "scalar",
+                "name": "rating",
+              },
+              {
+                "kind": "object",
+                "name": "user",
+                "selections": [
+                  {
+                    "kind": "scalar",
+                    "name": "id",
+                    "private": true,
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+        "includes": [
+          {
+            "data": {
+              "user": {
+                "name": "John",
+              },
+            },
+            "exports": [
+              {
+                "kind": "scalar",
+                "name": "name",
+              },
+            ],
+            "includes": [],
+            "kind": "object",
+            "ofType": "User",
+            "operation": "query UserByID($User_id: ID!) {
+  user(id: $User_id) {
+    name
+  }
+}",
+            "pathInData": [
+              "allProducts",
+              0,
+              "reviews",
+              0,
+              "user",
+            ],
+            "pathToExportData": [
+              "user",
+            ],
+            "subgraph": "users",
+            "type": "User",
+            "variables": {
+              "User_id": "john",
+            },
+          },
+        ],
+        "kind": "object",
+        "ofType": "Product",
+        "operation": "query ProductByID($Product_id: ID!) {
+  product(id: $Product_id) {
+    reviews {
+      rating
+      user {
+        id
+      }
+    }
+  }
+}",
+        "pathInData": [
+          "allProducts",
+          0,
+        ],
+        "pathToExportData": [
+          "product",
+        ],
+        "subgraph": "reviews",
+        "type": "Product",
+        "variables": {
+          "Product_id": "stv",
+        },
+      },
+      {
+        "data": {
+          "product": {
+            "reviews": [],
+          },
+        },
+        "exports": [
+          {
+            "kind": "object",
+            "name": "reviews",
+            "selections": [
+              {
+                "kind": "scalar",
+                "name": "rating",
+              },
+              {
+                "kind": "object",
+                "name": "user",
+                "selections": [
+                  {
+                    "kind": "scalar",
+                    "name": "id",
+                    "private": true,
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+        "includes": [],
+        "kind": "object",
+        "ofType": "Product",
+        "operation": "query ProductByID($Product_id: ID!) {
+  product(id: $Product_id) {
+    reviews {
+      rating
+      user {
+        id
+      }
+    }
+  }
+}",
+        "pathInData": [
+          "allProducts",
+          1,
+        ],
+        "pathToExportData": [
+          "product",
+        ],
+        "subgraph": "reviews",
+        "type": "Product",
+        "variables": {
+          "Product_id": "sfold",
+        },
+      },
+      {
+        "data": {
+          "product": {
+            "reviews": [],
+          },
+        },
+        "exports": [
+          {
+            "kind": "object",
+            "name": "reviews",
+            "selections": [
+              {
+                "kind": "scalar",
+                "name": "rating",
+              },
+              {
+                "kind": "object",
+                "name": "user",
+                "selections": [
+                  {
+                    "kind": "scalar",
+                    "name": "id",
+                    "private": true,
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+        "includes": [],
+        "kind": "object",
+        "ofType": "Product",
+        "operation": "query ProductByID($Product_id: ID!) {
+  product(id: $Product_id) {
+    reviews {
+      rating
+      user {
+        id
+      }
+    }
+  }
+}",
+        "pathInData": [
+          "allProducts",
+          2,
+        ],
+        "pathToExportData": [
+          "product",
+        ],
+        "subgraph": "reviews",
+        "type": "Product",
+        "variables": {
+          "Product_id": "sgalaxy",
+        },
+      },
+      {
+        "data": {
+          "product": {
+            "reviews": [
+              {
+                "rating": 8,
+                "user": {
+                  "id": "jane",
+                },
+              },
+            ],
+          },
+        },
+        "exports": [
+          {
+            "kind": "object",
+            "name": "reviews",
+            "selections": [
+              {
+                "kind": "scalar",
+                "name": "rating",
+              },
+              {
+                "kind": "object",
+                "name": "user",
+                "selections": [
+                  {
+                    "kind": "scalar",
+                    "name": "id",
+                    "private": true,
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+        "includes": [
+          {
+            "data": {
+              "user": {
+                "name": "Jane",
+              },
+            },
+            "exports": [
+              {
+                "kind": "scalar",
+                "name": "name",
+              },
+            ],
+            "includes": [],
+            "kind": "object",
+            "ofType": "User",
+            "operation": "query UserByID($User_id: ID!) {
+  user(id: $User_id) {
+    name
+  }
+}",
+            "pathInData": [
+              "allProducts",
+              3,
+              "reviews",
+              0,
+              "user",
+            ],
+            "pathToExportData": [
+              "user",
+            ],
+            "subgraph": "users",
+            "type": "User",
+            "variables": {
+              "User_id": "jane",
+            },
+          },
+        ],
+        "kind": "object",
+        "ofType": "Product",
+        "operation": "query ProductByID($Product_id: ID!) {
+  product(id: $Product_id) {
+    reviews {
+      rating
+      user {
+        id
+      }
+    }
+  }
+}",
+        "pathInData": [
+          "allProducts",
+          3,
+        ],
+        "pathToExportData": [
+          "product",
+        ],
+        "subgraph": "reviews",
+        "type": "Product",
+        "variables": {
+          "Product_id": "iphone",
+        },
+      },
+      {
+        "data": {
+          "product": {
+            "reviews": [
+              {
+                "rating": 4,
+                "user": {
+                  "id": "jane",
+                },
+              },
+            ],
+          },
+        },
+        "exports": [
+          {
+            "kind": "object",
+            "name": "reviews",
+            "selections": [
+              {
+                "kind": "scalar",
+                "name": "rating",
+              },
+              {
+                "kind": "object",
+                "name": "user",
+                "selections": [
+                  {
+                    "kind": "scalar",
+                    "name": "id",
+                    "private": true,
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+        "includes": [
+          {
+            "data": {
+              "user": {
+                "name": "Jane",
+              },
+            },
+            "exports": [
+              {
+                "kind": "scalar",
+                "name": "name",
+              },
+            ],
+            "includes": [],
+            "kind": "object",
+            "ofType": "User",
+            "operation": "query UserByID($User_id: ID!) {
+  user(id: $User_id) {
+    name
+  }
+}",
+            "pathInData": [
+              "allProducts",
+              4,
+              "reviews",
+              0,
+              "user",
+            ],
+            "pathToExportData": [
+              "user",
+            ],
+            "subgraph": "users",
+            "type": "User",
+            "variables": {
+              "User_id": "jane",
+            },
+          },
+        ],
+        "kind": "object",
+        "ofType": "Product",
+        "operation": "query ProductByID($Product_id: ID!) {
+  product(id: $Product_id) {
+    reviews {
+      rating
+      user {
+        id
+      }
+    }
+  }
+}",
+        "pathInData": [
+          "allProducts",
+          4,
+        ],
+        "pathToExportData": [
+          "product",
+        ],
+        "subgraph": "reviews",
+        "type": "Product",
+        "variables": {
+          "Product_id": "ipad",
+        },
+      },
+    ],
+    "kind": "object",
+    "ofType": "Product",
+    "operation": "query allProducts {
+  allProducts {
+    name
+    price
+    id
+  }
+}",
+    "pathInData": [
+      "allProducts",
+    ],
+    "pathToExportData": [
+      "allProducts",
+    ],
+    "subgraph": "products",
+    "type": "[Product!]!",
+    "variables": {},
+  },
+]
+`;
+
+exports[`fixture 'nested-includes' > query 'AllProductsReviews' > should plan gather 1`] = `
+{
+  "operation": {
+    "name": "AllProductsReviews",
+    "resolvers": {
+      "allProducts": {
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "name",
+          },
+          {
+            "kind": "scalar",
+            "name": "price",
+          },
+          {
+            "kind": "scalar",
+            "name": "id",
+            "private": true,
+          },
+        ],
+        "includes": {
+          "": [
+            {
+              "exports": [
+                {
+                  "kind": "object",
+                  "name": "reviews",
+                  "selections": [
+                    {
+                      "kind": "scalar",
+                      "name": "rating",
+                    },
+                    {
+                      "kind": "object",
+                      "name": "user",
+                      "selections": [
+                        {
+                          "kind": "scalar",
+                          "name": "id",
+                          "private": true,
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+              "includes": {
+                "reviews.user": {
+                  "exports": [
+                    {
+                      "kind": "scalar",
+                      "name": "name",
+                    },
+                  ],
+                  "includes": {},
+                  "kind": "object",
+                  "ofType": "User",
+                  "operation": "query UserByID($User_id: ID!) {
+  user(id: $User_id) {
+    name
+  }
+}",
+                  "pathToExportData": [
+                    "user",
+                  ],
+                  "subgraph": "users",
+                  "type": "User",
+                  "variables": {
+                    "User_id": {
+                      "kind": "select",
+                      "name": "User_id",
+                      "select": "id",
+                    },
+                  },
+                },
+              },
+              "kind": "object",
+              "ofType": "Product",
+              "operation": "query ProductByID($Product_id: ID!) {
+  product(id: $Product_id) {
+    reviews {
+      rating
+      user {
+        id
+      }
+    }
+  }
+}",
+              "pathToExportData": [
+                "product",
+              ],
+              "subgraph": "reviews",
+              "type": "Product",
+              "variables": {
+                "Product_id": {
+                  "kind": "select",
+                  "name": "Product_id",
+                  "select": "id",
+                },
+              },
+            },
+          ],
+        },
+        "kind": "object",
+        "ofType": "Product",
+        "operation": "query allProducts {
+  allProducts {
+    name
+    price
+    id
+  }
+}",
+        "pathToExportData": [
+          "allProducts",
+        ],
+        "subgraph": "products",
+        "type": "[Product!]!",
+        "variables": {},
+      },
+    },
+    "type": "Query",
+  },
+  "query": "query AllProductsReviews {
+  allProducts {
+    name
+    price
+    reviews {
+      rating
+      user {
+        name
+      }
+    }
+  }
+}",
+}
+`;
+
+exports[`fixture 'nested-includes' > query 'AllProductsReviewsProducts' > should execute and explain 1`] = `
+[
+  {
+    "data": {
+      "allProducts": [
+        {
+          "id": "stv",
+          "name": "Samsung TV",
+          "price": 5,
+        },
+        {
+          "id": "sfold",
+          "name": "Samsung Fold",
+          "price": 10,
+        },
+        {
+          "id": "sgalaxy",
+          "name": "Samsung Galaxy",
+          "price": 15,
+        },
+        {
+          "id": "iphone",
+          "name": "Apple iPhone",
+          "price": 20,
+        },
+        {
+          "id": "ipad",
+          "name": "Apple iPad",
+          "price": 30,
+        },
+      ],
+    },
+    "exports": [
+      {
+        "kind": "scalar",
+        "name": "name",
+      },
+      {
+        "kind": "scalar",
+        "name": "price",
+      },
+      {
+        "kind": "scalar",
+        "name": "id",
+        "private": true,
+      },
+    ],
+    "includes": [
+      {
+        "data": {
+          "product": {
+            "reviews": [
+              {
+                "product": {
+                  "reviews": [
+                    {
+                      "rating": 10,
+                      "user": {
+                        "id": "john",
+                      },
+                    },
+                  ],
+                },
+                "rating": 10,
+                "user": {
+                  "id": "john",
+                },
+              },
+            ],
+          },
+        },
+        "exports": [
+          {
+            "kind": "object",
+            "name": "reviews",
+            "selections": [
+              {
+                "kind": "scalar",
+                "name": "rating",
+              },
+              {
+                "kind": "object",
+                "name": "user",
+                "selections": [
+                  {
+                    "kind": "scalar",
+                    "name": "id",
+                    "private": true,
+                  },
+                ],
+              },
+              {
+                "kind": "object",
+                "name": "product",
+                "selections": [
+                  {
+                    "kind": "object",
+                    "name": "reviews",
+                    "selections": [
+                      {
+                        "kind": "scalar",
+                        "name": "rating",
+                      },
+                      {
+                        "kind": "object",
+                        "name": "user",
+                        "selections": [
+                          {
+                            "kind": "scalar",
+                            "name": "id",
+                            "private": true,
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+        "includes": [
+          {
+            "data": {
+              "user": {
+                "name": "John",
+              },
+            },
+            "exports": [
+              {
+                "kind": "scalar",
+                "name": "name",
+              },
+            ],
+            "includes": [],
+            "kind": "object",
+            "ofType": "User",
+            "operation": "query UserByID($User_id: ID!) {
+  user(id: $User_id) {
+    name
+  }
+}",
+            "pathInData": [
+              "allProducts",
+              0,
+              "reviews",
+              0,
+              "user",
+            ],
+            "pathToExportData": [
+              "user",
+            ],
+            "subgraph": "users",
+            "type": "User",
+            "variables": {
+              "User_id": "john",
+            },
+          },
+          {
+            "data": {
+              "user": {
+                "name": "John",
+              },
+            },
+            "exports": [
+              {
+                "kind": "scalar",
+                "name": "name",
+              },
+            ],
+            "includes": [],
+            "kind": "object",
+            "ofType": "User",
+            "operation": "query UserByID($User_id: ID!) {
+  user(id: $User_id) {
+    name
+  }
+}",
+            "pathInData": [
+              "allProducts",
+              0,
+              "reviews",
+              0,
+              "product",
+              "reviews",
+              0,
+              "user",
+            ],
+            "pathToExportData": [
+              "user",
+            ],
+            "subgraph": "users",
+            "type": "User",
+            "variables": {
+              "User_id": "john",
+            },
+          },
+        ],
+        "kind": "object",
+        "ofType": "Product",
+        "operation": "query ProductByID($Product_id: ID!) {
+  product(id: $Product_id) {
+    reviews {
+      rating
+      user {
+        id
+      }
+      product {
+        reviews {
+          rating
+          user {
+            id
+          }
+        }
+      }
+    }
+  }
+}",
+        "pathInData": [
+          "allProducts",
+          0,
+        ],
+        "pathToExportData": [
+          "product",
+        ],
+        "subgraph": "reviews",
+        "type": "Product",
+        "variables": {
+          "Product_id": "stv",
+        },
+      },
+      {
+        "data": {
+          "product": {
+            "reviews": [],
+          },
+        },
+        "exports": [
+          {
+            "kind": "object",
+            "name": "reviews",
+            "selections": [
+              {
+                "kind": "scalar",
+                "name": "rating",
+              },
+              {
+                "kind": "object",
+                "name": "user",
+                "selections": [
+                  {
+                    "kind": "scalar",
+                    "name": "id",
+                    "private": true,
+                  },
+                ],
+              },
+              {
+                "kind": "object",
+                "name": "product",
+                "selections": [
+                  {
+                    "kind": "object",
+                    "name": "reviews",
+                    "selections": [
+                      {
+                        "kind": "scalar",
+                        "name": "rating",
+                      },
+                      {
+                        "kind": "object",
+                        "name": "user",
+                        "selections": [
+                          {
+                            "kind": "scalar",
+                            "name": "id",
+                            "private": true,
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+        "includes": [],
+        "kind": "object",
+        "ofType": "Product",
+        "operation": "query ProductByID($Product_id: ID!) {
+  product(id: $Product_id) {
+    reviews {
+      rating
+      user {
+        id
+      }
+      product {
+        reviews {
+          rating
+          user {
+            id
+          }
+        }
+      }
+    }
+  }
+}",
+        "pathInData": [
+          "allProducts",
+          1,
+        ],
+        "pathToExportData": [
+          "product",
+        ],
+        "subgraph": "reviews",
+        "type": "Product",
+        "variables": {
+          "Product_id": "sfold",
+        },
+      },
+      {
+        "data": {
+          "product": {
+            "reviews": [],
+          },
+        },
+        "exports": [
+          {
+            "kind": "object",
+            "name": "reviews",
+            "selections": [
+              {
+                "kind": "scalar",
+                "name": "rating",
+              },
+              {
+                "kind": "object",
+                "name": "user",
+                "selections": [
+                  {
+                    "kind": "scalar",
+                    "name": "id",
+                    "private": true,
+                  },
+                ],
+              },
+              {
+                "kind": "object",
+                "name": "product",
+                "selections": [
+                  {
+                    "kind": "object",
+                    "name": "reviews",
+                    "selections": [
+                      {
+                        "kind": "scalar",
+                        "name": "rating",
+                      },
+                      {
+                        "kind": "object",
+                        "name": "user",
+                        "selections": [
+                          {
+                            "kind": "scalar",
+                            "name": "id",
+                            "private": true,
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+        "includes": [],
+        "kind": "object",
+        "ofType": "Product",
+        "operation": "query ProductByID($Product_id: ID!) {
+  product(id: $Product_id) {
+    reviews {
+      rating
+      user {
+        id
+      }
+      product {
+        reviews {
+          rating
+          user {
+            id
+          }
+        }
+      }
+    }
+  }
+}",
+        "pathInData": [
+          "allProducts",
+          2,
+        ],
+        "pathToExportData": [
+          "product",
+        ],
+        "subgraph": "reviews",
+        "type": "Product",
+        "variables": {
+          "Product_id": "sgalaxy",
+        },
+      },
+      {
+        "data": {
+          "product": {
+            "reviews": [
+              {
+                "product": {
+                  "reviews": [
+                    {
+                      "rating": 8,
+                      "user": {
+                        "id": "jane",
+                      },
+                    },
+                  ],
+                },
+                "rating": 8,
+                "user": {
+                  "id": "jane",
+                },
+              },
+            ],
+          },
+        },
+        "exports": [
+          {
+            "kind": "object",
+            "name": "reviews",
+            "selections": [
+              {
+                "kind": "scalar",
+                "name": "rating",
+              },
+              {
+                "kind": "object",
+                "name": "user",
+                "selections": [
+                  {
+                    "kind": "scalar",
+                    "name": "id",
+                    "private": true,
+                  },
+                ],
+              },
+              {
+                "kind": "object",
+                "name": "product",
+                "selections": [
+                  {
+                    "kind": "object",
+                    "name": "reviews",
+                    "selections": [
+                      {
+                        "kind": "scalar",
+                        "name": "rating",
+                      },
+                      {
+                        "kind": "object",
+                        "name": "user",
+                        "selections": [
+                          {
+                            "kind": "scalar",
+                            "name": "id",
+                            "private": true,
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+        "includes": [
+          {
+            "data": {
+              "user": {
+                "name": "Jane",
+              },
+            },
+            "exports": [
+              {
+                "kind": "scalar",
+                "name": "name",
+              },
+            ],
+            "includes": [],
+            "kind": "object",
+            "ofType": "User",
+            "operation": "query UserByID($User_id: ID!) {
+  user(id: $User_id) {
+    name
+  }
+}",
+            "pathInData": [
+              "allProducts",
+              3,
+              "reviews",
+              0,
+              "user",
+            ],
+            "pathToExportData": [
+              "user",
+            ],
+            "subgraph": "users",
+            "type": "User",
+            "variables": {
+              "User_id": "jane",
+            },
+          },
+          {
+            "data": {
+              "user": {
+                "name": "Jane",
+              },
+            },
+            "exports": [
+              {
+                "kind": "scalar",
+                "name": "name",
+              },
+            ],
+            "includes": [],
+            "kind": "object",
+            "ofType": "User",
+            "operation": "query UserByID($User_id: ID!) {
+  user(id: $User_id) {
+    name
+  }
+}",
+            "pathInData": [
+              "allProducts",
+              3,
+              "reviews",
+              0,
+              "product",
+              "reviews",
+              0,
+              "user",
+            ],
+            "pathToExportData": [
+              "user",
+            ],
+            "subgraph": "users",
+            "type": "User",
+            "variables": {
+              "User_id": "jane",
+            },
+          },
+        ],
+        "kind": "object",
+        "ofType": "Product",
+        "operation": "query ProductByID($Product_id: ID!) {
+  product(id: $Product_id) {
+    reviews {
+      rating
+      user {
+        id
+      }
+      product {
+        reviews {
+          rating
+          user {
+            id
+          }
+        }
+      }
+    }
+  }
+}",
+        "pathInData": [
+          "allProducts",
+          3,
+        ],
+        "pathToExportData": [
+          "product",
+        ],
+        "subgraph": "reviews",
+        "type": "Product",
+        "variables": {
+          "Product_id": "iphone",
+        },
+      },
+      {
+        "data": {
+          "product": {
+            "reviews": [
+              {
+                "product": {
+                  "reviews": [
+                    {
+                      "rating": 4,
+                      "user": {
+                        "id": "jane",
+                      },
+                    },
+                  ],
+                },
+                "rating": 4,
+                "user": {
+                  "id": "jane",
+                },
+              },
+            ],
+          },
+        },
+        "exports": [
+          {
+            "kind": "object",
+            "name": "reviews",
+            "selections": [
+              {
+                "kind": "scalar",
+                "name": "rating",
+              },
+              {
+                "kind": "object",
+                "name": "user",
+                "selections": [
+                  {
+                    "kind": "scalar",
+                    "name": "id",
+                    "private": true,
+                  },
+                ],
+              },
+              {
+                "kind": "object",
+                "name": "product",
+                "selections": [
+                  {
+                    "kind": "object",
+                    "name": "reviews",
+                    "selections": [
+                      {
+                        "kind": "scalar",
+                        "name": "rating",
+                      },
+                      {
+                        "kind": "object",
+                        "name": "user",
+                        "selections": [
+                          {
+                            "kind": "scalar",
+                            "name": "id",
+                            "private": true,
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+        "includes": [
+          {
+            "data": {
+              "user": {
+                "name": "Jane",
+              },
+            },
+            "exports": [
+              {
+                "kind": "scalar",
+                "name": "name",
+              },
+            ],
+            "includes": [],
+            "kind": "object",
+            "ofType": "User",
+            "operation": "query UserByID($User_id: ID!) {
+  user(id: $User_id) {
+    name
+  }
+}",
+            "pathInData": [
+              "allProducts",
+              4,
+              "reviews",
+              0,
+              "user",
+            ],
+            "pathToExportData": [
+              "user",
+            ],
+            "subgraph": "users",
+            "type": "User",
+            "variables": {
+              "User_id": "jane",
+            },
+          },
+          {
+            "data": {
+              "user": {
+                "name": "Jane",
+              },
+            },
+            "exports": [
+              {
+                "kind": "scalar",
+                "name": "name",
+              },
+            ],
+            "includes": [],
+            "kind": "object",
+            "ofType": "User",
+            "operation": "query UserByID($User_id: ID!) {
+  user(id: $User_id) {
+    name
+  }
+}",
+            "pathInData": [
+              "allProducts",
+              4,
+              "reviews",
+              0,
+              "product",
+              "reviews",
+              0,
+              "user",
+            ],
+            "pathToExportData": [
+              "user",
+            ],
+            "subgraph": "users",
+            "type": "User",
+            "variables": {
+              "User_id": "jane",
+            },
+          },
+        ],
+        "kind": "object",
+        "ofType": "Product",
+        "operation": "query ProductByID($Product_id: ID!) {
+  product(id: $Product_id) {
+    reviews {
+      rating
+      user {
+        id
+      }
+      product {
+        reviews {
+          rating
+          user {
+            id
+          }
+        }
+      }
+    }
+  }
+}",
+        "pathInData": [
+          "allProducts",
+          4,
+        ],
+        "pathToExportData": [
+          "product",
+        ],
+        "subgraph": "reviews",
+        "type": "Product",
+        "variables": {
+          "Product_id": "ipad",
+        },
+      },
+    ],
+    "kind": "object",
+    "ofType": "Product",
+    "operation": "query allProducts {
+  allProducts {
+    name
+    price
+    id
+  }
+}",
+    "pathInData": [
+      "allProducts",
+    ],
+    "pathToExportData": [
+      "allProducts",
+    ],
+    "subgraph": "products",
+    "type": "[Product!]!",
+    "variables": {},
+  },
+]
+`;
+
+exports[`fixture 'nested-includes' > query 'AllProductsReviewsProducts' > should plan gather 1`] = `
+{
+  "operation": {
+    "name": "AllProductsReviewsProducts",
+    "resolvers": {
+      "allProducts": {
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "name",
+          },
+          {
+            "kind": "scalar",
+            "name": "price",
+          },
+          {
+            "kind": "scalar",
+            "name": "id",
+            "private": true,
+          },
+        ],
+        "includes": {
+          "": [
+            {
+              "exports": [
+                {
+                  "kind": "object",
+                  "name": "reviews",
+                  "selections": [
+                    {
+                      "kind": "scalar",
+                      "name": "rating",
+                    },
+                    {
+                      "kind": "object",
+                      "name": "user",
+                      "selections": [
+                        {
+                          "kind": "scalar",
+                          "name": "id",
+                          "private": true,
+                        },
+                      ],
+                    },
+                    {
+                      "kind": "object",
+                      "name": "product",
+                      "selections": [
+                        {
+                          "kind": "object",
+                          "name": "reviews",
+                          "selections": [
+                            {
+                              "kind": "scalar",
+                              "name": "rating",
+                            },
+                            {
+                              "kind": "object",
+                              "name": "user",
+                              "selections": [
+                                {
+                                  "kind": "scalar",
+                                  "name": "id",
+                                  "private": true,
+                                },
+                              ],
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+              "includes": {
+                "reviews.product.reviews.user": {
+                  "exports": [
+                    {
+                      "kind": "scalar",
+                      "name": "name",
+                    },
+                  ],
+                  "includes": {},
+                  "kind": "object",
+                  "ofType": "User",
+                  "operation": "query UserByID($User_id: ID!) {
+  user(id: $User_id) {
+    name
+  }
+}",
+                  "pathToExportData": [
+                    "user",
+                  ],
+                  "subgraph": "users",
+                  "type": "User",
+                  "variables": {
+                    "User_id": {
+                      "kind": "select",
+                      "name": "User_id",
+                      "select": "id",
+                    },
+                  },
+                },
+                "reviews.user": {
+                  "exports": [
+                    {
+                      "kind": "scalar",
+                      "name": "name",
+                    },
+                  ],
+                  "includes": {},
+                  "kind": "object",
+                  "ofType": "User",
+                  "operation": "query UserByID($User_id: ID!) {
+  user(id: $User_id) {
+    name
+  }
+}",
+                  "pathToExportData": [
+                    "user",
+                  ],
+                  "subgraph": "users",
+                  "type": "User",
+                  "variables": {
+                    "User_id": {
+                      "kind": "select",
+                      "name": "User_id",
+                      "select": "id",
+                    },
+                  },
+                },
+              },
+              "kind": "object",
+              "ofType": "Product",
+              "operation": "query ProductByID($Product_id: ID!) {
+  product(id: $Product_id) {
+    reviews {
+      rating
+      user {
+        id
+      }
+      product {
+        reviews {
+          rating
+          user {
+            id
+          }
+        }
+      }
+    }
+  }
+}",
+              "pathToExportData": [
+                "product",
+              ],
+              "subgraph": "reviews",
+              "type": "Product",
+              "variables": {
+                "Product_id": {
+                  "kind": "select",
+                  "name": "Product_id",
+                  "select": "id",
+                },
+              },
+            },
+          ],
+        },
+        "kind": "object",
+        "ofType": "Product",
+        "operation": "query allProducts {
+  allProducts {
+    name
+    price
+    id
+  }
+}",
+        "pathToExportData": [
+          "allProducts",
+        ],
+        "subgraph": "products",
+        "type": "[Product!]!",
+        "variables": {},
+      },
+    },
+    "type": "Query",
+  },
+  "query": "query AllProductsReviewsProducts {
+  allProducts {
+    name
+    price
+    reviews {
+      rating
+      user {
+        name
+      }
+      product {
+        reviews {
+          rating
+          user {
+            name
+          }
+        }
+      }
+    }
+  }
+}",
+}
+`;
+
 exports[`fixture 'shared-root' > query 'SharedRootMultiple' > should execute and explain 1`] = `
 [
   {

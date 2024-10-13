@@ -1,7 +1,7 @@
 # graphql-composite
 
 > [!CAUTION]
-> Very WIP.
+> Alpha stage.
 
 Spec agnostic GraphQL composite schema planner, executor and explainer.
 

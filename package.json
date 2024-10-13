@@ -44,6 +44,7 @@
   },
   "devDependencies": {
     "@apollo/subgraph": "^2.9.2",
+    "@changesets/cli": "^2.27.9",
     "@graphql-tools/schema": "^10.0.6",
     "@ianvs/prettier-plugin-sort-imports": "^4.3.1",
     "@tsconfig/node21": "^21.0.3",

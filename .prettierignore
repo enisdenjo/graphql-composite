@@ -1,1 +1,3 @@
 .yarn/
+.changeset/
+CHANGELOG.md

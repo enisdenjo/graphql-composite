@@ -30,6 +30,6 @@ export class TransportHTTP implements Transport {
       err.name = 'ResponseError';
       throw err;
     }
-    return await res.json();
+    return (await res.json()) as any;
   }
 }

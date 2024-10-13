@@ -5,6 +5,4 @@ node_modules/
 !.yarn/plugins
 !.yarn/patches
 tsconfig.tsbuildinfo
-.wrangler/
-build/
-out/
+dist/

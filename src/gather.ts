@@ -880,13 +880,33 @@ function insertResolversForSelection(
         ] = resolver;
       }
     } else {
-      // use the parent resolver if the field is available in its subgraph;
-      // if not, try finding a resolver in parents includes
-      resolver = selField.subgraphs.includes(currentResolver.subgraph)
-        ? currentResolver
-        : Object.values(currentResolver.includes)
-            .flat()
-            .find((r) => selField!.subgraphs.includes(r.subgraph));
+      let dest = '';
+      if (!resolvingAdditionalFields) {
+        dest = getPathToParentOfExportAtDepth(currentResolver.exports, depth)
+          .concat(
+            parentSel.kind === 'fragment'
+              ? parentSel.fieldName
+              : parentSel.name,
+          )
+          .join('.');
+      }
+
+      if (selField.subgraphs.includes(currentResolver.subgraph)) {
+        // use the parent resolver if the field is available in its subgraph;
+        resolver = currentResolver;
+      } else {
+        // if not, try finding a resolver in parents includes that matches the destination
+        for (const [path, res] of Object.entries(currentResolver.includes)) {
+          if (path === dest) {
+            resolver = (Array.isArray(res) ? res : [res]).find((res) =>
+              selField!.subgraphs.includes(res.subgraph),
+            );
+            if (resolver) {
+              break;
+            }
+          }
+        }
+      }
     }
   } else {
     // the parent type may not implement the specific field, but its interface may.

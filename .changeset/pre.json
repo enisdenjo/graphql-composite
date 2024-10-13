@@ -4,5 +4,7 @@
   "initialVersions": {
     "graphql-composite": "0.0.0"
   },
-  "changesets": []
+  "changesets": [
+    "stale-pillows-hide"
+  ]
 }

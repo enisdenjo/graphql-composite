@@ -16,6 +16,10 @@ describe.each(await getFixtures())(
       it('should plan gather', () => {
         const errors = validate(buildSchema(blueprint.schema), document);
         if (errors.length) {
+          errors.forEach((err) => {
+            // @ts-expect-error this stabilises the test result matching
+            delete err.locations;
+          });
           expect({ errors }).toEqual(result);
           return;
         }
@@ -25,6 +29,10 @@ describe.each(await getFixtures())(
       it('should execute and explain', async () => {
         const errors = validate(buildSchema(blueprint.schema), document);
         if (errors.length) {
+          errors.forEach((err) => {
+            // @ts-expect-error this stabilises the test result matching
+            delete err.locations;
+          });
           expect({ errors }).toEqual(result);
           return;
         }

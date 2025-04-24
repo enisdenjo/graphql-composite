@@ -13,6 +13,7 @@
     "node": ">=21"
   },
   "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "import": {
@@ -22,7 +23,6 @@
     },
     "./package.json": "./package.json"
   },
-  "types": "./dist/index.d.ts",
   "files": [
     "LICENSE.md",
     "dist",
@@ -43,22 +43,22 @@
     "lodash": "^4.17.21"
   },
   "devDependencies": {
-    "@apollo/subgraph": "^2.9.2",
-    "@changesets/cli": "^2.27.9",
-    "@graphql-tools/schema": "^10.0.6",
-    "@ianvs/prettier-plugin-sort-imports": "^4.3.1",
-    "@tsconfig/node21": "^21.0.3",
+    "@apollo/subgraph": "^2.10.2",
+    "@changesets/cli": "^2.29.2",
+    "@graphql-tools/schema": "^10.0.23",
+    "@ianvs/prettier-plugin-sort-imports": "^4.4.1",
+    "@tsconfig/node21": "^21.0.4",
     "@tsconfig/strictest": "^2.0.5",
-    "@types/lodash": "^4.17.10",
-    "@types/node": "^22.7.5",
-    "graphql": "^16.9.0",
-    "graphql-yoga": "^5.7.0",
-    "pkgroll": "^2.5.0",
-    "prettier": "^3.3.3",
-    "prettier-plugin-pkg": "^0.18.1",
-    "prettier-plugin-sh": "^0.14.0",
-    "tsx": "^4.19.1",
-    "typescript": "^5.6.3",
-    "vitest": "^2.1.2"
+    "@types/lodash": "^4.17.16",
+    "@types/node": "^22.14.1",
+    "graphql": "^16.10.0",
+    "graphql-yoga": "^5.13.4",
+    "pkgroll": "^2.12.1",
+    "prettier": "^3.5.3",
+    "prettier-plugin-pkg": "^0.19.0",
+    "prettier-plugin-sh": "^0.17.2",
+    "tsx": "^4.19.3",
+    "typescript": "^5.8.3",
+    "vitest": "^3.1.2"
   }
 }

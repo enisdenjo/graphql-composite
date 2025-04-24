@@ -14,10 +14,7 @@ const subgraphs = Object.entries(fixture.subgraphs);
 for (let i = 0; i < subgraphs.length; i++) {
   const [name, subgraph] = subgraphs[i]!;
   const port = 50000 + i;
-  createServer(
-    // @ts-expect-error yoga doenst fit the createServer argument signature
-    subgraph.yoga,
-  ).listen(port);
+  createServer(subgraph.yoga).listen(port);
   console.log(
     `Subgraph "${name}" listening on http://localhost:${port}/graphql`,
   );

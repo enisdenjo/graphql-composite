@@ -81,3 +81,28 @@ export function createSource(
     fetch: yoga.fetch,
   };
 }
+
+export function prettyPrint(val: unknown) {
+  let str = '';
+  for (const line of JSON.stringify(val, null, 2).split('\n')) {
+    let formattedLine = line;
+
+    // replace all escaped new lines with a new line and append the indentation of the line
+    let indentationSize = line.match(/^\s*/)?.[0]?.length || 0;
+    if (indentationSize) indentationSize++;
+    formattedLine = formattedLine.replaceAll(
+      /\\n/g,
+      '\n' + [...Array(indentationSize)].join(' '),
+    );
+
+    // replace all escaped double quotes with a double quote
+    formattedLine = formattedLine.replaceAll('\\"', '"');
+
+    str += formattedLine + '\n';
+  }
+
+  // remove last new line
+  str = str.slice(0, -1);
+
+  console.log(str);
+}

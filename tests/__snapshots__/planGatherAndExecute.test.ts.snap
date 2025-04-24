@@ -1421,6 +1421,121 @@ exports[`fixture 'federation/child-type-mismatch' > query 'NestedInternalAlias' 
 }
 `;
 
+exports[`fixture 'federation/circular-reference-interfa…' > query 'NestedSamePriceProduct' > should execute and explain 1`] = `
+[
+  {
+    "data": {
+      "product": {
+        "samePriceProduct": {
+          "samePriceProduct": {
+            "__typename": "Book",
+          },
+        },
+      },
+    },
+    "exports": [
+      {
+        "kind": "object",
+        "name": "samePriceProduct",
+        "selections": [
+          {
+            "kind": "object",
+            "name": "samePriceProduct",
+            "selections": [
+              {
+                "kind": "scalar",
+                "name": "__typename",
+              },
+            ],
+          },
+        ],
+      },
+    ],
+    "includes": [],
+    "kind": "interface",
+    "ofType": "Product",
+    "operation": "{
+  product {
+    samePriceProduct {
+      samePriceProduct {
+        __typename
+      }
+    }
+  }
+}",
+    "pathInData": [
+      "product",
+    ],
+    "pathToExportData": [
+      "product",
+    ],
+    "subgraph": "a",
+    "type": "Product",
+    "variables": {},
+  },
+]
+`;
+
+exports[`fixture 'federation/circular-reference-interfa…' > query 'NestedSamePriceProduct' > should plan gather 1`] = `
+{
+  "operation": {
+    "name": "NestedSamePriceProduct",
+    "resolvers": {
+      "product": {
+        "exports": [
+          {
+            "kind": "object",
+            "name": "samePriceProduct",
+            "selections": [
+              {
+                "kind": "object",
+                "name": "samePriceProduct",
+                "selections": [
+                  {
+                    "kind": "scalar",
+                    "name": "__typename",
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+        "includes": {},
+        "kind": "interface",
+        "ofType": "Product",
+        "operation": "{
+  product {
+    samePriceProduct {
+      samePriceProduct {
+        __typename
+      }
+    }
+  }
+}",
+        "pathToExportData": [
+          "product",
+        ],
+        "subgraph": "a",
+        "type": "Product",
+        "variables": {},
+      },
+    },
+    "type": "Query",
+  },
+  "query": "query NestedSamePriceProduct {
+  product {
+    samePriceProduct {
+      ... on Product {
+        samePriceProduct {
+          __typename
+        }
+      }
+    }
+  }
+}",
+}
+`;
+
 exports[`fixture 'federation/interface-object-with-requ…' > query 'AnotherUsersUserSpreadAge' > should execute and explain 1`] = `
 [
   {

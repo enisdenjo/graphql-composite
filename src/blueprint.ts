@@ -53,6 +53,13 @@ export interface BlueprintField {
     [subgraph in BlueprintResolver['subgraph']]: string;
   };
   /**
+   * Additional fields of {@link BlueprintType this field's type} the
+   * subgraph can provide when selected.
+   */
+  provides?: {
+    [subgraph in BlueprintResolver['subgraph']]: string[];
+  };
+  /**
    * The resolver for this specific field.
    * Required in `Query` and `Mutation` {@link BlueprintType types}.
    *

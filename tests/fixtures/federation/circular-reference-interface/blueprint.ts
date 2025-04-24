@@ -105,6 +105,9 @@ export const blueprint: Blueprint = {
           types: {
             a: 'Book',
           },
+          provides: {
+            a: ['price'],
+          },
           resolvers: {},
         },
         price: {

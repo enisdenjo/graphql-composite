@@ -30,4 +30,30 @@ export const queries: FixtureQueries = [
       },
     },
   },
+  {
+    name: 'SamePriceProductPrice',
+    document: parse(/* GraphQL */ `
+      query SamePriceProductPrice {
+        product {
+          ... on Book {
+            samePriceProduct {
+              id
+              price
+            }
+          }
+        }
+      }
+    `),
+    variables: {},
+    result: {
+      data: {
+        product: {
+          samePriceProduct: {
+            id: '3',
+            price: 10.99,
+          },
+        },
+      },
+    },
+  },
 ];

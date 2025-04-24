@@ -890,8 +890,16 @@ function insertResolversForSelection(
           .join('.');
       }
 
-      if (selField.subgraphs.includes(currentResolver.subgraph)) {
-        // use the parent resolver if the field is available in its subgraph;
+      const parentFieldProvidesInCurrentResolverSubgraph =
+        parentSelInType.fields[
+          parentSel.kind === 'fragment' ? parentSel.fieldName : parentSel.name
+        ]?.provides?.[currentResolver.subgraph] || [];
+      if (
+        selField.subgraphs.includes(currentResolver.subgraph) ||
+        parentFieldProvidesInCurrentResolverSubgraph.includes(selField.name)
+      ) {
+        // use the parent resolver if the field is available in its subgraph
+        // or if the parent field provides this field when resolving from the current resolver
         resolver = currentResolver;
       } else {
         // if not, try finding a resolver in parents includes that matches the destination

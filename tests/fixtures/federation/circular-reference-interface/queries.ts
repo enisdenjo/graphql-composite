@@ -56,4 +56,54 @@ export const queries: FixtureQueries = [
       },
     },
   },
+  {
+    name: 'NestedSamePriceProductPriceMore',
+    document: parse(/* GraphQL */ `
+      query NestedSamePriceProductPriceMore {
+        product {
+          __typename
+          samePriceProduct {
+            __typename
+            ... on Book {
+              id
+            }
+            samePriceProduct {
+              __typename
+              ... on Book {
+                id
+              }
+            }
+          }
+          ... on Book {
+            __typename
+            id
+            price
+            samePriceProduct {
+              id
+              price
+            }
+          }
+        }
+      }
+    `),
+    variables: {},
+    result: {
+      data: {
+        product: {
+          __typename: 'Book',
+          samePriceProduct: {
+            __typename: 'Book',
+            id: '3',
+            samePriceProduct: {
+              __typename: 'Book',
+              id: '1',
+            },
+            price: 10.99,
+          },
+          id: '1',
+          price: 10.99,
+        },
+      },
+    },
+  },
 ];

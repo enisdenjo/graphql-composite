@@ -7,7 +7,7 @@ import {
   planGather,
 } from '../src/gather.js';
 import { TransportHTTP } from '../src/transport.js';
-import { getFixtures } from './utils.js';
+import { getFixtures, prettyPrint } from './utils.js';
 
 describe.each(await getFixtures())(
   'fixture $name',
@@ -23,7 +23,9 @@ describe.each(await getFixtures())(
           expect({ errors }).toEqual(result);
           return;
         }
-        expect(planGather(blueprint, document)).toMatchSnapshot();
+        const gather = planGather(blueprint, document);
+        process.env['DEBUG'] && prettyPrint(gather);
+        expect(gather).toMatchSnapshot();
       });
 
       it('should execute and explain', async () => {
@@ -47,6 +49,7 @@ describe.each(await getFixtures())(
           planGather(blueprint, document),
           variables,
         );
+        process.env['DEBUG'] && prettyPrint(extensions?.explain);
         expect(actualResult).toEqual(result);
         expect(extensions?.explain).toMatchSnapshot();
       });

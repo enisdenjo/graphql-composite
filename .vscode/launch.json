@@ -9,7 +9,7 @@
       "program": "${workspaceRoot}/node_modules/vitest/vitest.mjs",
       "args": ["--test-timeout", "0", "run", "-t", "${input:pattern}"],
       "smartStep": true,
-      "console": "integratedTerminal"
+      "console": "internalConsole"
     }
   ],
   "inputs": [

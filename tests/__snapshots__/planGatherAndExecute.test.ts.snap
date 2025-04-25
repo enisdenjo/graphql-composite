@@ -1421,6 +1421,596 @@ exports[`fixture 'federation/child-type-mismatch' > query 'NestedInternalAlias' 
 }
 `;
 
+exports[`fixture 'federation/circular-reference-interfa…' > query 'NestedSamePriceProduct' > should execute and explain 1`] = `
+[
+  {
+    "data": {
+      "product": {
+        "samePriceProduct": {
+          "samePriceProduct": {
+            "__typename": "Book",
+          },
+        },
+      },
+    },
+    "exports": [
+      {
+        "kind": "object",
+        "name": "samePriceProduct",
+        "selections": [
+          {
+            "kind": "object",
+            "name": "samePriceProduct",
+            "selections": [
+              {
+                "kind": "scalar",
+                "name": "__typename",
+              },
+            ],
+          },
+        ],
+      },
+    ],
+    "includes": [],
+    "kind": "interface",
+    "ofType": "Product",
+    "operation": "{
+  product {
+    samePriceProduct {
+      samePriceProduct {
+        __typename
+      }
+    }
+  }
+}",
+    "pathInData": [
+      "product",
+    ],
+    "pathToExportData": [
+      "product",
+    ],
+    "subgraph": "a",
+    "type": "Product",
+    "variables": {},
+  },
+]
+`;
+
+exports[`fixture 'federation/circular-reference-interfa…' > query 'NestedSamePriceProduct' > should plan gather 1`] = `
+{
+  "operation": {
+    "name": "NestedSamePriceProduct",
+    "resolvers": {
+      "product": {
+        "exports": [
+          {
+            "kind": "object",
+            "name": "samePriceProduct",
+            "selections": [
+              {
+                "kind": "object",
+                "name": "samePriceProduct",
+                "selections": [
+                  {
+                    "kind": "scalar",
+                    "name": "__typename",
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+        "includes": {},
+        "kind": "interface",
+        "ofType": "Product",
+        "operation": "{
+  product {
+    samePriceProduct {
+      samePriceProduct {
+        __typename
+      }
+    }
+  }
+}",
+        "pathToExportData": [
+          "product",
+        ],
+        "subgraph": "a",
+        "type": "Product",
+        "variables": {},
+      },
+    },
+    "type": "Query",
+  },
+  "query": "query NestedSamePriceProduct {
+  product {
+    samePriceProduct {
+      ... on Product {
+        samePriceProduct {
+          __typename
+        }
+      }
+    }
+  }
+}",
+}
+`;
+
+exports[`fixture 'federation/circular-reference-interfa…' > query 'NestedSamePriceProductPriceMore' > should execute and explain 1`] = `
+[
+  {
+    "data": {
+      "product": {
+        "__typename": "Book",
+        "id": "1",
+        "samePriceProduct": {
+          "__typename": "Book",
+          "id": "3",
+          "price": 10.99,
+          "samePriceProduct": {
+            "__typename": "Book",
+            "id": "1",
+          },
+        },
+      },
+    },
+    "exports": [
+      {
+        "kind": "scalar",
+        "name": "__typename",
+      },
+      {
+        "kind": "object",
+        "name": "samePriceProduct",
+        "selections": [
+          {
+            "kind": "scalar",
+            "name": "__typename",
+          },
+          {
+            "kind": "fragment",
+            "selections": [
+              {
+                "kind": "scalar",
+                "name": "id",
+              },
+            ],
+            "typeCondition": "Book",
+          },
+          {
+            "kind": "object",
+            "name": "samePriceProduct",
+            "selections": [
+              {
+                "kind": "scalar",
+                "name": "__typename",
+              },
+              {
+                "kind": "fragment",
+                "selections": [
+                  {
+                    "kind": "scalar",
+                    "name": "id",
+                  },
+                ],
+                "typeCondition": "Book",
+              },
+            ],
+          },
+        ],
+      },
+      {
+        "kind": "fragment",
+        "selections": [
+          {
+            "kind": "scalar",
+            "name": "__typename",
+          },
+          {
+            "kind": "scalar",
+            "name": "id",
+          },
+          {
+            "kind": "object",
+            "name": "samePriceProduct",
+            "selections": [
+              {
+                "kind": "scalar",
+                "name": "id",
+              },
+              {
+                "kind": "scalar",
+                "name": "price",
+              },
+            ],
+          },
+        ],
+        "typeCondition": "Book",
+      },
+    ],
+    "includes": [
+      {
+        "data": {
+          "_entities": [
+            {
+              "price": 10.99,
+            },
+          ],
+        },
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "price",
+          },
+        ],
+        "includes": [],
+        "kind": "object",
+        "ofType": "Book",
+        "operation": "query ($id: ID!) {
+  _entities(representations: [{__typename: "Book", id: $id}]) {
+    ... on Book {
+      price
+    }
+  }
+}",
+        "pathInData": [
+          "product",
+        ],
+        "pathToExportData": [
+          "_entities",
+          0,
+        ],
+        "subgraph": "b",
+        "type": "[Book]!",
+        "variables": {
+          "id": "1",
+        },
+      },
+    ],
+    "kind": "interface",
+    "ofType": "Product",
+    "operation": "{
+  product {
+    __typename
+    samePriceProduct {
+      __typename
+      ... on Book {
+        id
+      }
+      samePriceProduct {
+        __typename
+        ... on Book {
+          id
+        }
+      }
+    }
+    ... on Book {
+      __typename
+      id
+      samePriceProduct {
+        id
+        price
+      }
+    }
+  }
+}",
+    "pathInData": [
+      "product",
+    ],
+    "pathToExportData": [
+      "product",
+    ],
+    "subgraph": "a",
+    "type": "Product",
+    "variables": {},
+  },
+]
+`;
+
+exports[`fixture 'federation/circular-reference-interfa…' > query 'NestedSamePriceProductPriceMore' > should plan gather 1`] = `
+{
+  "operation": {
+    "name": "NestedSamePriceProductPriceMore",
+    "resolvers": {
+      "product": {
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "__typename",
+          },
+          {
+            "kind": "object",
+            "name": "samePriceProduct",
+            "selections": [
+              {
+                "kind": "scalar",
+                "name": "__typename",
+              },
+              {
+                "kind": "fragment",
+                "selections": [
+                  {
+                    "kind": "scalar",
+                    "name": "id",
+                  },
+                ],
+                "typeCondition": "Book",
+              },
+              {
+                "kind": "object",
+                "name": "samePriceProduct",
+                "selections": [
+                  {
+                    "kind": "scalar",
+                    "name": "__typename",
+                  },
+                  {
+                    "kind": "fragment",
+                    "selections": [
+                      {
+                        "kind": "scalar",
+                        "name": "id",
+                      },
+                    ],
+                    "typeCondition": "Book",
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            "kind": "fragment",
+            "selections": [
+              {
+                "kind": "scalar",
+                "name": "__typename",
+              },
+              {
+                "kind": "scalar",
+                "name": "id",
+              },
+              {
+                "kind": "object",
+                "name": "samePriceProduct",
+                "selections": [
+                  {
+                    "kind": "scalar",
+                    "name": "id",
+                  },
+                  {
+                    "kind": "scalar",
+                    "name": "price",
+                  },
+                ],
+              },
+            ],
+            "typeCondition": "Book",
+          },
+        ],
+        "includes": {
+          "": [
+            {
+              "exports": [
+                {
+                  "kind": "scalar",
+                  "name": "price",
+                },
+              ],
+              "includes": {},
+              "kind": "object",
+              "ofType": "Book",
+              "operation": "query ($id: ID!) {
+  _entities(representations: [{__typename: "Book", id: $id}]) {
+    ... on Book {
+      price
+    }
+  }
+}",
+              "pathToExportData": [
+                "_entities",
+                0,
+              ],
+              "subgraph": "b",
+              "type": "[Book]!",
+              "variables": {
+                "id": {
+                  "kind": "select",
+                  "name": "id",
+                  "select": "id",
+                },
+              },
+            },
+          ],
+        },
+        "kind": "interface",
+        "ofType": "Product",
+        "operation": "{
+  product {
+    __typename
+    samePriceProduct {
+      __typename
+      ... on Book {
+        id
+      }
+      samePriceProduct {
+        __typename
+        ... on Book {
+          id
+        }
+      }
+    }
+    ... on Book {
+      __typename
+      id
+      samePriceProduct {
+        id
+        price
+      }
+    }
+  }
+}",
+        "pathToExportData": [
+          "product",
+        ],
+        "subgraph": "a",
+        "type": "Product",
+        "variables": {},
+      },
+    },
+    "type": "Query",
+  },
+  "query": "query NestedSamePriceProductPriceMore {
+  product {
+    __typename
+    samePriceProduct {
+      __typename
+      ... on Book {
+        id
+      }
+      samePriceProduct {
+        __typename
+        ... on Book {
+          id
+        }
+      }
+    }
+    ... on Book {
+      __typename
+      id
+      price
+      samePriceProduct {
+        id
+        price
+      }
+    }
+  }
+}",
+}
+`;
+
+exports[`fixture 'federation/circular-reference-interfa…' > query 'SamePriceProductPrice' > should execute and explain 1`] = `
+[
+  {
+    "data": {
+      "product": {
+        "samePriceProduct": {
+          "id": "3",
+          "price": 10.99,
+        },
+      },
+    },
+    "exports": [
+      {
+        "kind": "fragment",
+        "selections": [
+          {
+            "kind": "object",
+            "name": "samePriceProduct",
+            "selections": [
+              {
+                "kind": "scalar",
+                "name": "id",
+              },
+              {
+                "kind": "scalar",
+                "name": "price",
+              },
+            ],
+          },
+        ],
+        "typeCondition": "Book",
+      },
+    ],
+    "includes": [],
+    "kind": "interface",
+    "ofType": "Product",
+    "operation": "{
+  product {
+    ... on Book {
+      samePriceProduct {
+        id
+        price
+      }
+    }
+  }
+}",
+    "pathInData": [
+      "product",
+    ],
+    "pathToExportData": [
+      "product",
+    ],
+    "subgraph": "a",
+    "type": "Product",
+    "variables": {},
+  },
+]
+`;
+
+exports[`fixture 'federation/circular-reference-interfa…' > query 'SamePriceProductPrice' > should plan gather 1`] = `
+{
+  "operation": {
+    "name": "SamePriceProductPrice",
+    "resolvers": {
+      "product": {
+        "exports": [
+          {
+            "kind": "fragment",
+            "selections": [
+              {
+                "kind": "object",
+                "name": "samePriceProduct",
+                "selections": [
+                  {
+                    "kind": "scalar",
+                    "name": "id",
+                  },
+                  {
+                    "kind": "scalar",
+                    "name": "price",
+                  },
+                ],
+              },
+            ],
+            "typeCondition": "Book",
+          },
+        ],
+        "includes": {},
+        "kind": "interface",
+        "ofType": "Product",
+        "operation": "{
+  product {
+    ... on Book {
+      samePriceProduct {
+        id
+        price
+      }
+    }
+  }
+}",
+        "pathToExportData": [
+          "product",
+        ],
+        "subgraph": "a",
+        "type": "Product",
+        "variables": {},
+      },
+    },
+    "type": "Query",
+  },
+  "query": "query SamePriceProductPrice {
+  product {
+    ... on Book {
+      samePriceProduct {
+        id
+        price
+      }
+    }
+  }
+}",
+}
+`;
+
 exports[`fixture 'federation/interface-object-with-requ…' > query 'AnotherUsersUserSpreadAge' > should execute and explain 1`] = `
 [
   {

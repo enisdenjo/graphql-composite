@@ -522,8 +522,7 @@ function getPathToParentOfExportAtDepth(
     const sels = getSelectionsAtDepth(selections, i);
     const lastSel = sels[sels.length - 1]!;
     if (lastSel.kind === 'fragment') {
-      // TODO: go one deeper but dont append to path
-      throw new Error('TODO');
+      continue;
     }
     if (lastSel.kind === 'object') {
       pathToParentSel.push(lastSel.alias || lastSel.name);
@@ -891,8 +890,16 @@ function insertResolversForSelection(
           .join('.');
       }
 
-      if (selField.subgraphs.includes(currentResolver.subgraph)) {
-        // use the parent resolver if the field is available in its subgraph;
+      const parentFieldProvidesInCurrentResolverSubgraph =
+        parentSelInType.fields[
+          parentSel.kind === 'fragment' ? parentSel.fieldName : parentSel.name
+        ]?.provides?.[currentResolver.subgraph] || [];
+      if (
+        selField.subgraphs.includes(currentResolver.subgraph) ||
+        parentFieldProvidesInCurrentResolverSubgraph.includes(selField.name)
+      ) {
+        // use the parent resolver if the field is available in its subgraph
+        // or if the parent field provides this field when resolving from the current resolver
         resolver = currentResolver;
       } else {
         // if not, try finding a resolver in parents includes that matches the destination

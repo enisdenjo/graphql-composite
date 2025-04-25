@@ -491,8 +491,12 @@ export function populateUsingPublicExports(
       dest[field] = arr;
       continue;
     }
-
-    populateUsingPublicExports(exp.selections, val, (dest[field] = {}));
+    populateUsingPublicExports(
+      exp.selections,
+      val,
+      // @ts-expect-error TODO: make sure that the dest[field] is not unknown
+      (dest[field] ??= {}),
+    );
   }
 }
 

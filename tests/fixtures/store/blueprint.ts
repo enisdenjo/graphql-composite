@@ -243,7 +243,6 @@ export const blueprint: Blueprint = {
     Manufacturer: {
       kind: 'object',
       name: 'Manufacturer',
-      implements: {},
       fields: {
         id: {
           name: 'id',
@@ -327,7 +326,6 @@ export const blueprint: Blueprint = {
     Product: {
       kind: 'object',
       name: 'Product',
-      implements: {},
       fields: {
         manufacturer: {
           name: 'manufacturer',
@@ -420,7 +418,6 @@ export const blueprint: Blueprint = {
     Storefront: {
       kind: 'object',
       name: 'Storefront',
-      implements: {},
       fields: {
         id: {
           name: 'id',

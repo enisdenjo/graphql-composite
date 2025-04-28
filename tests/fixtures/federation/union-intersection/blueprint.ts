@@ -35,7 +35,6 @@ export const blueprint: Blueprint = {
     Query: {
       kind: 'object',
       name: 'Query',
-      implements: {},
       fields: {
         media: {
           name: 'media',

@@ -1236,11 +1236,12 @@ function prepareCompositeResolverForSelection(
 /**
  * Checks whether the exports include the given field.
  * The check is also performed recursively on fragment spreads.
+ *
+ * @param convertToPublic Whether to convert private exports to public ones if the field is found.
  */
 function exportsIncludeField(
   exps: OperationExport[],
   prop: string,
-  /** Whether to convert private exports to public ones if the field is found. */
   convertToPublic: boolean,
 ) {
   for (const exp of exps) {

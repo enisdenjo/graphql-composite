@@ -13,11 +13,11 @@ export type BlueprintType = BlueprintInterface | BlueprintObject;
 export interface BlueprintInterface {
   kind: 'interface';
   name: string;
-  resolvers: {
-    [subgraph in BlueprintInterfaceResolver['subgraph']]: BlueprintInterfaceResolver[];
-  };
   fields: {
     [name in BlueprintField['name']]: BlueprintField;
+  };
+  resolvers?: {
+    [subgraph in BlueprintInterfaceResolver['subgraph']]: BlueprintInterfaceResolver[];
   };
 }
 
@@ -25,14 +25,14 @@ export interface BlueprintObject {
   kind: 'object';
   name: string;
   /** Map of {@link BlueprintInterface.name interface name}s this type implements, if any. */
-  implements: {
+  implements?: {
     [name in BlueprintInterface['name']]: BlueprintImplements;
-  };
-  resolvers: {
-    [subgraph in BlueprintObjectResolver['subgraph']]: BlueprintObjectResolver[];
   };
   fields: {
     [name in BlueprintField['name']]: BlueprintField;
+  };
+  resolvers?: {
+    [subgraph in BlueprintObjectResolver['subgraph']]: BlueprintObjectResolver[];
   };
 }
 
@@ -41,23 +41,25 @@ export interface BlueprintImplements {
   subgraphs: string[];
 }
 
-export interface BlueprintField {
-  /** Name of the field in a {@link BlueprintType}. */
-  name: string;
-  /** List of subgraphs at which the field is available. */
-  subgraphs: string[];
-  /**
-   * Types of the field in each subgraph.
-   */
-  types: {
-    [subgraph in BlueprintResolver['subgraph']]: string;
-  };
+/** The {@link BlueprintField field} information in a subgraph. */
+export interface BlueprintFieldSubgraph {
+  /** Unique identifier of a specific subgraph. */
+  subgraph: string;
+  /** The type of the field in the {@link subgraph}. */
+  type: string;
   /**
    * Additional fields of {@link BlueprintType this field's type} the
    * subgraph can provide when selected.
    */
-  provides?: {
-    [subgraph in BlueprintResolver['subgraph']]: string[];
+  provides?: string[];
+}
+
+export interface BlueprintField {
+  /** Name of the field in a {@link BlueprintType}. */
+  name: string;
+  /** Subgraphs at which the field is available. */
+  subgraphs: {
+    [subgraph in BlueprintFieldSubgraph['subgraph']]: BlueprintFieldSubgraph;
   };
   /**
    * The resolver for this specific field.
@@ -65,8 +67,8 @@ export interface BlueprintField {
    *
    * TODO: field always has one resolver per subgraph?
    */
-  resolvers: {
-    [subgraph in BlueprintResolver['subgraph']]: BlueprintTypeResolver;
+  resolvers?: {
+    [subgraph in BlueprintTypeResolver['subgraph']]: BlueprintTypeResolver;
   };
 }
 
@@ -191,7 +193,7 @@ export function isBlueprintResolverSelectVariable(
 export function allSubgraphsForType(type: BlueprintType): string[] {
   const availableIn: Record<string, null> = {}; // we use a map to avoid duplicates
   for (const f of Object.values(type.fields)) {
-    f.subgraphs.forEach((s) => (availableIn[s] = null));
+    Object.keys(f.subgraphs).forEach((s) => (availableIn[s] = null));
   }
   return Object.keys(availableIn);
 }

@@ -45,13 +45,14 @@ export const blueprint: Blueprint = {
     Query: {
       kind: 'object',
       name: 'Query',
-      implements: {},
       fields: {
         users: {
           name: 'users',
-          subgraphs: ['a'],
-          types: {
-            a: '[NodeWithName!]!',
+          subgraphs: {
+            a: {
+              subgraph: 'a',
+              type: '[NodeWithName!]!',
+            },
           },
           resolvers: {
             a: {
@@ -72,9 +73,11 @@ export const blueprint: Blueprint = {
         },
         anotherUsers: {
           name: 'anotherUsers',
-          subgraphs: ['b'],
-          types: {
-            b: '[NodeWithName!]!',
+          subgraphs: {
+            b: {
+              subgraph: 'b',
+              type: '[NodeWithName!]!',
+            },
           },
           resolvers: {
             b: {
@@ -95,9 +98,11 @@ export const blueprint: Blueprint = {
         },
         accounts: {
           name: 'accounts',
-          subgraphs: ['b'],
-          types: {
-            b: '[Account]',
+          subgraphs: {
+            b: {
+              subgraph: 'b',
+              type: '[Account]',
+            },
           },
           resolvers: {
             b: {
@@ -117,7 +122,6 @@ export const blueprint: Blueprint = {
           },
         },
       },
-      resolvers: {},
     },
     NodeWithName: {
       kind: 'interface',
@@ -125,29 +129,38 @@ export const blueprint: Blueprint = {
       fields: {
         id: {
           name: 'id',
-          subgraphs: ['a', 'b', 'c'],
-          types: {
-            a: 'ID!',
-            b: 'ID!',
-            c: 'ID!',
+          subgraphs: {
+            a: {
+              subgraph: 'a',
+              type: 'ID!',
+            },
+            b: {
+              subgraph: 'b',
+              type: 'ID!',
+            },
+            c: {
+              subgraph: 'c',
+              type: 'ID!',
+            },
           },
-          resolvers: {},
         },
         name: {
           name: 'name',
-          subgraphs: ['a'],
-          types: {
-            a: 'String',
+          subgraphs: {
+            a: {
+              subgraph: 'a',
+              type: 'String',
+            },
           },
-          resolvers: {},
         },
         username: {
           name: 'username',
-          subgraphs: ['b'],
-          types: {
-            b: 'String',
+          subgraphs: {
+            b: {
+              subgraph: 'b',
+              type: 'String',
+            },
           },
-          resolvers: {},
         },
       },
       resolvers: {
@@ -217,32 +230,35 @@ export const blueprint: Blueprint = {
       fields: {
         id: {
           name: 'id',
-          subgraphs: ['a'],
-          types: {
-            a: 'ID!',
+          subgraphs: {
+            a: {
+              subgraph: 'a',
+              type: 'ID!',
+            },
           },
-          resolvers: {},
         },
         name: {
           name: 'name',
-          subgraphs: ['a'],
-          types: {
-            a: 'String',
+          subgraphs: {
+            a: {
+              subgraph: 'a',
+              type: 'String',
+            },
           },
-          resolvers: {},
         },
         age: {
           name: 'age',
-          subgraphs: ['a'],
-          types: {
-            a: 'Int',
+          subgraphs: {
+            a: {
+              subgraph: 'a',
+              type: 'Int',
+            },
           },
-          resolvers: {},
         },
         // there is no username field on "b", but the NodeWithName implements it
         // username: {
         //   name: 'username',
-        //   subgraphs: ['b'],
+        //   subgraphs: { b: { subgraph: 'b', type: 'String' } },
         // },
       },
       resolvers: {
@@ -278,37 +294,47 @@ export const blueprint: Blueprint = {
       fields: {
         __typename: {
           name: '__typename',
-          subgraphs: ['a'],
-          types: {
-            a: 'String!',
+          subgraphs: {
+            a: {
+              subgraph: 'a',
+              type: 'String!',
+            },
           },
-          resolvers: {},
         },
         id: {
           name: 'id',
-          subgraphs: ['a', 'b', 'c'],
-          types: {
-            a: 'ID!',
-            b: 'ID!',
-            c: 'ID!',
+          subgraphs: {
+            a: {
+              subgraph: 'a',
+              type: 'ID!',
+            },
+            b: {
+              subgraph: 'b',
+              type: 'ID!',
+            },
+            c: {
+              subgraph: 'c',
+              type: 'ID!',
+            },
           },
-          resolvers: {},
         },
         name: {
           name: 'name',
-          subgraphs: ['b'],
-          types: {
-            b: 'String!',
+          subgraphs: {
+            b: {
+              subgraph: 'b',
+              type: 'String!',
+            },
           },
-          resolvers: {},
         },
         isActive: {
           name: 'isActive',
-          subgraphs: ['c'],
-          types: {
-            c: 'Boolean!',
+          subgraphs: {
+            c: {
+              subgraph: 'c',
+              type: 'Boolean!',
+            },
           },
-          resolvers: {},
         },
       },
       resolvers: {
@@ -404,27 +430,30 @@ export const blueprint: Blueprint = {
       fields: {
         id: {
           name: 'id',
-          subgraphs: ['a'],
-          types: {
-            a: 'ID!',
+          subgraphs: {
+            a: {
+              subgraph: 'a',
+              type: 'ID!',
+            },
           },
-          resolvers: {},
         },
         isMain: {
           name: 'isMain',
-          subgraphs: ['a'],
-          types: {
-            a: 'Boolean!',
+          subgraphs: {
+            a: {
+              subgraph: 'a',
+              type: 'Boolean!',
+            },
           },
-          resolvers: {},
         },
         isActive: {
           name: 'isActive',
-          subgraphs: ['a'],
-          types: {
-            a: 'Boolean!',
+          subgraphs: {
+            a: {
+              subgraph: 'a',
+              type: 'Boolean!',
+            },
           },
-          resolvers: {},
         },
       },
       resolvers: {

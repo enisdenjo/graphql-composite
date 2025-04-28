@@ -20,13 +20,14 @@ export const blueprint: Blueprint = {
     Query: {
       kind: 'object',
       name: 'Query',
-      implements: {},
       fields: {
         product: {
           name: 'product',
-          subgraphs: ['a'],
-          types: {
-            a: 'Product',
+          subgraphs: {
+            a: {
+              subgraph: 'a',
+              type: 'Product',
+            },
           },
           resolvers: {
             a: {
@@ -46,7 +47,6 @@ export const blueprint: Blueprint = {
           },
         },
       },
-      resolvers: {},
     },
     Product: {
       kind: 'interface',
@@ -54,22 +54,23 @@ export const blueprint: Blueprint = {
       fields: {
         __typename: {
           name: '__typename',
-          subgraphs: ['a'],
-          types: {
-            a: 'String!',
+          subgraphs: {
+            a: {
+              subgraph: 'a',
+              type: 'String!',
+            },
           },
-          resolvers: {},
         },
         samePriceProduct: {
           name: 'samePriceProduct',
-          subgraphs: ['a'],
-          types: {
-            a: 'Product',
+          subgraphs: {
+            a: {
+              subgraph: 'a',
+              type: 'Product',
+            },
           },
-          resolvers: {},
         },
       },
-      resolvers: {},
     },
     Book: {
       kind: 'object',
@@ -83,40 +84,48 @@ export const blueprint: Blueprint = {
       fields: {
         __typename: {
           name: '__typename',
-          subgraphs: ['a', 'b'],
-          types: {
-            a: 'String!',
-            b: 'String!',
+          subgraphs: {
+            a: {
+              subgraph: 'a',
+              type: 'String!',
+            },
+            b: {
+              subgraph: 'b',
+              type: 'String!',
+            },
           },
-          resolvers: {},
         },
         id: {
           name: 'id',
-          subgraphs: ['a', 'b'],
-          types: {
-            a: 'ID!',
-            b: 'ID!',
+          subgraphs: {
+            a: {
+              subgraph: 'a',
+              type: 'ID!',
+            },
+            b: {
+              subgraph: 'b',
+              type: 'ID!',
+            },
           },
-          resolvers: {},
         },
         samePriceProduct: {
           name: 'samePriceProduct',
-          subgraphs: ['a'],
-          types: {
-            a: 'Book',
+          subgraphs: {
+            a: {
+              subgraph: 'a',
+              type: 'Book',
+              provides: ['price'],
+            },
           },
-          provides: {
-            a: ['price'],
-          },
-          resolvers: {},
         },
         price: {
           name: 'price',
-          subgraphs: ['b'],
-          types: {
-            b: 'Float',
+          subgraphs: {
+            b: {
+              subgraph: 'b',
+              type: 'Float',
+            },
           },
-          resolvers: {},
         },
       },
       resolvers: {

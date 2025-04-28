@@ -32,13 +32,14 @@ export const blueprint: Blueprint = {
     Query: {
       name: 'Query',
       kind: 'object',
-      implements: {},
       fields: {
         feed: {
           name: 'feed',
-          subgraphs: ['a'],
-          types: {
-            a: '[Post]',
+          subgraphs: {
+            a: {
+              subgraph: 'a',
+              type: '[Post]',
+            },
           },
           resolvers: {
             a: {
@@ -59,9 +60,11 @@ export const blueprint: Blueprint = {
         },
         anotherFeed: {
           name: 'anotherFeed',
-          subgraphs: ['b'],
-          types: {
-            b: '[AnotherPost]',
+          subgraphs: {
+            b: {
+              subgraph: 'b',
+              type: '[AnotherPost]',
+            },
           },
           resolvers: {
             a: {
@@ -81,55 +84,57 @@ export const blueprint: Blueprint = {
           },
         },
       },
-      resolvers: {},
     },
     Post: {
       name: 'Post',
       kind: 'interface',
-      resolvers: {},
       fields: {
         id: {
           name: 'id',
-          subgraphs: ['a', 'b'],
-          types: {
-            a: 'ID!',
-            b: 'ID!',
+          subgraphs: {
+            a: {
+              subgraph: 'a',
+              type: 'ID!',
+            },
+            b: {
+              subgraph: 'b',
+              type: 'ID!',
+            },
           },
-          resolvers: {},
         },
         createdAt: {
           name: 'createdAt',
-          subgraphs: [
-            // 'a', field has an @override in subgraph "b"
-            'b',
-          ],
-          types: {
-            b: 'String!',
+          subgraphs: {
+            // a: { ... }, field has an @override in subgraph "b"
+            b: {
+              subgraph: 'b',
+              type: 'String!',
+            },
           },
-          resolvers: {},
         },
       },
     },
     AnotherPost: {
       name: 'AnotherPost',
       kind: 'interface',
-      resolvers: {},
       fields: {
         id: {
           name: 'id',
-          subgraphs: ['b'],
-          types: {
-            b: 'ID!',
+          subgraphs: {
+            b: {
+              subgraph: 'b',
+              type: 'ID!',
+            },
           },
-          resolvers: {},
         },
         createdAt: {
           name: 'createdAt',
-          subgraphs: ['b'],
-          types: {
-            b: 'String!',
+          subgraphs: {
+            b: {
+              subgraph: 'b',
+              type: 'String!',
+            },
           },
-          resolvers: {},
         },
       },
     },
@@ -149,20 +154,25 @@ export const blueprint: Blueprint = {
       fields: {
         id: {
           name: 'id',
-          subgraphs: ['a', 'b'],
-          types: {
-            a: 'ID!',
-            b: 'ID!',
+          subgraphs: {
+            a: {
+              subgraph: 'a',
+              type: 'ID!',
+            },
+            b: {
+              subgraph: 'b',
+              type: 'ID!',
+            },
           },
-          resolvers: {},
         },
         createdAt: {
           name: 'createdAt',
-          subgraphs: ['b'],
-          types: {
-            b: 'String!',
+          subgraphs: {
+            b: {
+              subgraph: 'b',
+              type: 'String!',
+            },
           },
-          resolvers: {},
         },
       },
       resolvers: {
@@ -206,27 +216,30 @@ export const blueprint: Blueprint = {
       fields: {
         id: {
           name: 'id',
-          subgraphs: ['b'],
-          types: {
-            b: 'ID!',
+          subgraphs: {
+            b: {
+              subgraph: 'b',
+              type: 'ID!',
+            },
           },
-          resolvers: {},
         },
         createdAt: {
           name: 'createdAt',
-          subgraphs: ['b'],
-          types: {
-            b: 'String!',
+          subgraphs: {
+            b: {
+              subgraph: 'b',
+              type: 'String!',
+            },
           },
-          resolvers: {},
         },
         body: {
           name: 'body',
-          subgraphs: ['b'],
-          types: {
-            b: 'String!',
+          subgraphs: {
+            b: {
+              subgraph: 'b',
+              type: 'String!',
+            },
           },
-          resolvers: {},
         },
       },
       resolvers: {

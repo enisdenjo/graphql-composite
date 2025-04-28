@@ -25,13 +25,14 @@ export const blueprint: Blueprint = {
     Query: {
       kind: 'object',
       name: 'Query',
-      implements: {},
       fields: {
         users: {
           name: 'users',
-          subgraphs: ['a'],
-          types: {
-            a: '[User!]',
+          subgraphs: {
+            a: {
+              subgraph: 'a',
+              type: '[User!]',
+            },
           },
           resolvers: {
             a: {
@@ -52,9 +53,11 @@ export const blueprint: Blueprint = {
         },
         accounts: {
           name: 'accounts',
-          subgraphs: ['b'],
-          types: {
-            b: '[Account!]',
+          subgraphs: {
+            b: {
+              subgraph: 'b',
+              type: '[Account!]',
+            },
           },
           resolvers: {
             b: {
@@ -74,7 +77,6 @@ export const blueprint: Blueprint = {
           },
         },
       },
-      resolvers: {},
     },
     User: {
       kind: 'object',
@@ -88,37 +90,47 @@ export const blueprint: Blueprint = {
       fields: {
         __typename: {
           name: '__typename',
-          subgraphs: ['a', 'b'],
-          types: {
-            a: 'String!',
-            b: 'String!',
+          subgraphs: {
+            a: {
+              subgraph: 'a',
+              type: 'String!',
+            },
+            b: {
+              subgraph: 'b',
+              type: 'String!',
+            },
           },
-          resolvers: {},
         },
         id: {
           name: 'id',
-          subgraphs: ['a', 'b'],
-          types: {
-            a: 'ID',
-            b: 'ID!',
+          subgraphs: {
+            a: {
+              subgraph: 'a',
+              type: 'ID',
+            },
+            b: {
+              subgraph: 'b',
+              type: 'ID!',
+            },
           },
-          resolvers: {},
         },
         name: {
           name: 'name',
-          subgraphs: ['b'],
-          types: {
-            b: 'String',
+          subgraphs: {
+            b: {
+              subgraph: 'b',
+              type: 'String',
+            },
           },
-          resolvers: {},
         },
         similarAccounts: {
           name: 'similarAccounts',
-          subgraphs: ['b'],
-          types: {
-            b: '[Account!]!',
+          subgraphs: {
+            b: {
+              subgraph: 'b',
+              type: '[Account!]!',
+            },
           },
-          resolvers: {},
         },
       },
       resolvers: {
@@ -160,38 +172,41 @@ export const blueprint: Blueprint = {
       fields: {
         __typename: {
           name: '__typename',
-          subgraphs: ['b'],
-          types: {
-            b: 'String!',
+          subgraphs: {
+            b: {
+              subgraph: 'b',
+              type: 'String!',
+            },
           },
-          resolvers: {},
         },
         id: {
           name: 'id',
-          subgraphs: ['b'],
-          types: {
-            b: 'ID',
+          subgraphs: {
+            b: {
+              subgraph: 'b',
+              type: 'ID',
+            },
           },
-          resolvers: {},
         },
         name: {
           name: 'name',
-          subgraphs: ['b'],
-          types: {
-            b: 'String',
+          subgraphs: {
+            b: {
+              subgraph: 'b',
+              type: 'String',
+            },
           },
-          resolvers: {},
         },
         similarAccounts: {
           name: 'similarAccounts',
-          subgraphs: ['b'],
-          types: {
-            b: '[Account!]!',
+          subgraphs: {
+            b: {
+              subgraph: 'b',
+              type: '[Account!]!',
+            },
           },
-          resolvers: {},
         },
       },
-      resolvers: {},
     },
     Account: {
       kind: 'interface',
@@ -199,14 +214,14 @@ export const blueprint: Blueprint = {
       fields: {
         __typename: {
           name: '__typename',
-          subgraphs: ['b'],
-          types: {
-            b: 'String!',
+          subgraphs: {
+            b: {
+              subgraph: 'b',
+              type: 'String!',
+            },
           },
-          resolvers: {},
         },
       },
-      resolvers: {},
     },
   },
 };

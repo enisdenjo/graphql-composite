@@ -18,15 +18,22 @@ export const blueprint: Blueprint = {
     Query: {
       kind: 'object',
       name: 'Query',
-      implements: {},
       fields: {
         product: {
           name: 'product',
-          subgraphs: ['category', 'name', 'price'],
-          types: {
-            category: 'Product',
-            name: 'Product',
-            price: 'Product',
+          subgraphs: {
+            category: {
+              subgraph: 'category',
+              type: 'Product',
+            },
+            name: {
+              subgraph: 'name',
+              type: 'Product',
+            },
+            price: {
+              subgraph: 'price',
+              type: 'Product',
+            },
           },
           resolvers: {
             category: {
@@ -75,11 +82,19 @@ export const blueprint: Blueprint = {
         },
         products: {
           name: 'products',
-          subgraphs: ['category', 'name', 'price'],
-          types: {
-            category: 'Product',
-            name: 'Product',
-            price: 'Product',
+          subgraphs: {
+            category: {
+              subgraph: 'category',
+              type: 'Product',
+            },
+            name: {
+              subgraph: 'category',
+              type: 'Product',
+            },
+            price: {
+              subgraph: 'category',
+              type: 'Product',
+            },
           },
           resolvers: {
             category: {
@@ -127,49 +142,56 @@ export const blueprint: Blueprint = {
           },
         },
       },
-      resolvers: {},
     },
     Product: {
       kind: 'object',
       name: 'Product',
-      implements: {},
       fields: {
         id: {
           name: 'id',
-          subgraphs: ['category', 'name', 'price'],
-          types: {
-            category: 'Product',
-            name: 'Product',
-            price: 'Product',
+          subgraphs: {
+            category: {
+              subgraph: 'category',
+              type: 'Product',
+            },
+            name: {
+              subgraph: 'name',
+              type: 'Product',
+            },
+            price: {
+              subgraph: 'price',
+              type: 'Product',
+            },
           },
-          resolvers: {},
         },
         category: {
           name: 'category',
-          subgraphs: ['category'],
-          types: {
-            category: 'Product',
+          subgraphs: {
+            category: {
+              subgraph: 'category',
+              type: 'Product',
+            },
           },
-          resolvers: {},
         },
         name: {
           name: 'name',
-          subgraphs: ['name'],
-          types: {
-            name: 'Product',
+          subgraphs: {
+            name: {
+              subgraph: 'name',
+              type: 'Product',
+            },
           },
-          resolvers: {},
         },
         price: {
           name: 'price',
-          subgraphs: ['price'],
-          types: {
-            price: 'Product',
+          subgraphs: {
+            price: {
+              subgraph: 'price',
+              type: 'Product',
+            },
           },
-          resolvers: {},
         },
       },
-      resolvers: {},
     },
   },
 };

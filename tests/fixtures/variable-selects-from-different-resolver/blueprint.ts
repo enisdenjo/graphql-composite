@@ -17,13 +17,14 @@ export const blueprint: Blueprint = {
     Query: {
       kind: 'object',
       name: 'Query',
-      implements: {},
       fields: {
         products: {
           name: 'products',
-          subgraphs: ['store'],
-          types: {
-            store: '[Product!]!',
+          subgraphs: {
+            store: {
+              subgraph: 'store',
+              type: '[Product!]!',
+            },
           },
           resolvers: {
             store: {
@@ -43,49 +44,66 @@ export const blueprint: Blueprint = {
           },
         },
       },
-      resolvers: {},
     },
     Product: {
       kind: 'object',
       name: 'Product',
-      implements: {},
       fields: {
         id: {
           name: 'id',
-          subgraphs: ['store', 'warehouse', 'finance'],
-          types: {
-            store: 'ID!',
-            warehouse: 'ID!',
-            finance: 'ID!',
+          subgraphs: {
+            store: {
+              subgraph: 'store',
+              type: 'ID!',
+            },
+            warehouse: {
+              subgraph: 'warehouse',
+              type: 'ID!',
+            },
+            finance: {
+              subgraph: 'finance',
+              type: 'ID!',
+            },
           },
-          resolvers: {},
         },
         upc: {
           name: 'upc',
-          subgraphs: ['warehouse', 'finance'],
-          types: {
-            warehouse: 'String!',
-            finance: 'String!',
+          subgraphs: {
+            warehouse: {
+              subgraph: 'warehouse',
+              type: 'String!',
+            },
+            finance: {
+              subgraph: 'finance',
+              type: 'String!',
+            },
           },
-          resolvers: {},
         },
         name: {
           name: 'name',
-          subgraphs: ['store', 'warehouse', 'finance'],
-          types: {
-            store: 'String',
-            warehouse: 'String',
-            finance: 'String',
+          subgraphs: {
+            store: {
+              subgraph: 'store',
+              type: 'String',
+            },
+            warehouse: {
+              subgraph: 'warehouse',
+              type: 'String',
+            },
+            finance: {
+              subgraph: 'finance',
+              type: 'String',
+            },
           },
-          resolvers: {},
         },
         price: {
           name: 'price',
-          subgraphs: ['finance'],
-          types: {
-            finance: 'Float',
+          subgraphs: {
+            finance: {
+              subgraph: 'finance',
+              type: 'Float',
+            },
           },
-          resolvers: {},
         },
       },
       resolvers: {

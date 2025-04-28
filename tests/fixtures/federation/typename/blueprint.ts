@@ -37,13 +37,14 @@ export const blueprint: Blueprint = {
     Query: {
       kind: 'object',
       name: 'Query',
-      implements: {},
       fields: {
         union: {
           name: 'union',
-          subgraphs: ['a'],
-          types: {
-            a: 'Product',
+          subgraphs: {
+            a: {
+              subgraph: 'a',
+              type: 'Product',
+            },
           },
           resolvers: {
             a: {
@@ -64,9 +65,11 @@ export const blueprint: Blueprint = {
         },
         interface: {
           name: 'interface',
-          subgraphs: ['a'],
-          types: {
-            a: 'Node',
+          subgraphs: {
+            a: {
+              subgraph: 'a',
+              type: 'Node',
+            },
           },
           resolvers: {
             a: {
@@ -87,9 +90,11 @@ export const blueprint: Blueprint = {
         },
         users: {
           name: 'users',
-          subgraphs: ['b'],
-          types: {
-            b: '[User]',
+          subgraphs: {
+            b: {
+              subgraph: 'b',
+              type: '[User]',
+            },
           },
           resolvers: {
             b: {
@@ -109,7 +114,6 @@ export const blueprint: Blueprint = {
           },
         },
       },
-      resolvers: {},
     },
     Oven: {
       kind: 'object',
@@ -124,23 +128,24 @@ export const blueprint: Blueprint = {
           subgraphs: ['a'],
         },
       },
-      resolvers: {},
       fields: {
         __typename: {
           name: '__typename',
-          subgraphs: ['a'],
-          types: {
-            a: 'String!',
+          subgraphs: {
+            a: {
+              subgraph: 'a',
+              type: 'String!',
+            },
           },
-          resolvers: {},
         },
         id: {
           name: 'id',
-          subgraphs: ['a'],
-          types: {
-            a: 'ID!',
+          subgraphs: {
+            a: {
+              subgraph: 'a',
+              type: 'ID!',
+            },
           },
-          resolvers: {},
         },
       },
     },
@@ -157,23 +162,24 @@ export const blueprint: Blueprint = {
           subgraphs: ['a'],
         },
       },
-      resolvers: {},
       fields: {
         __typename: {
           name: '__typename',
-          subgraphs: ['a'],
-          types: {
-            a: 'ID!',
+          subgraphs: {
+            a: {
+              subgraph: 'a',
+              type: 'ID!',
+            },
           },
-          resolvers: {},
         },
         id: {
           name: 'id',
-          subgraphs: ['a'],
-          types: {
-            a: 'ID!',
+          subgraphs: {
+            a: {
+              subgraph: 'a',
+              type: 'ID!',
+            },
           },
-          resolvers: {},
         },
       },
     },
@@ -218,27 +224,30 @@ export const blueprint: Blueprint = {
       fields: {
         __typename: {
           name: '__typename',
-          subgraphs: ['a'],
-          types: {
-            a: 'String!',
+          subgraphs: {
+            a: {
+              subgraph: 'a',
+              type: 'String!',
+            },
           },
-          resolvers: {},
         },
         id: {
           name: 'id',
-          subgraphs: ['a'],
-          types: {
-            a: 'ID!',
+          subgraphs: {
+            a: {
+              subgraph: 'a',
+              type: 'ID!',
+            },
           },
-          resolvers: {},
         },
         isMain: {
           name: 'isMain',
-          subgraphs: ['a'],
-          types: {
-            a: 'Boolean!',
+          subgraphs: {
+            a: {
+              subgraph: 'a',
+              type: 'Boolean!',
+            },
           },
-          resolvers: {},
         },
       },
     },
@@ -248,22 +257,23 @@ export const blueprint: Blueprint = {
       fields: {
         __typename: {
           name: '__typename',
-          subgraphs: ['a'],
-          types: {
-            a: 'String!',
+          subgraphs: {
+            a: {
+              subgraph: 'a',
+              type: 'String!',
+            },
           },
-          resolvers: {},
         },
         id: {
           name: 'id',
-          subgraphs: ['a'],
-          types: {
-            a: 'ID!',
+          subgraphs: {
+            a: {
+              subgraph: 'a',
+              type: 'ID!',
+            },
           },
-          resolvers: {},
         },
       },
-      resolvers: {},
     },
     User: {
       kind: 'interface',
@@ -271,28 +281,34 @@ export const blueprint: Blueprint = {
       fields: {
         __typename: {
           name: '__typename',
-          subgraphs: ['a'],
-          types: {
-            a: 'String!',
+          subgraphs: {
+            a: {
+              subgraph: 'a',
+              type: 'String!',
+            },
           },
-          resolvers: {},
         },
         id: {
           name: 'id',
-          subgraphs: ['a', 'b'],
-          types: {
-            a: 'ID!',
-            b: 'ID!',
+          subgraphs: {
+            a: {
+              subgraph: 'a',
+              type: 'ID!',
+            },
+            b: {
+              subgraph: 'b',
+              type: 'ID!',
+            },
           },
-          resolvers: {},
         },
         name: {
           name: 'name',
-          subgraphs: ['b'],
-          types: {
-            b: 'String!',
+          subgraphs: {
+            b: {
+              subgraph: 'b',
+              type: 'String!',
+            },
           },
-          resolvers: {},
         },
       },
       resolvers: {
@@ -349,15 +365,15 @@ export const blueprint: Blueprint = {
     Product: {
       kind: 'interface',
       name: 'Product',
-      resolvers: {},
       fields: {
         __typename: {
           name: '__typename',
-          subgraphs: ['a'],
-          types: {
-            a: 'String!',
+          subgraphs: {
+            a: {
+              subgraph: 'a',
+              type: 'String!',
+            },
           },
-          resolvers: {},
         },
       },
     },

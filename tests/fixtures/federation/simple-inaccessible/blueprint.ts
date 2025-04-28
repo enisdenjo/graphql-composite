@@ -23,13 +23,14 @@ export const blueprint: Blueprint = {
     Query: {
       name: 'Query',
       kind: 'object',
-      implements: {},
       fields: {
         usersInAge: {
           name: 'usersInAge',
-          subgraphs: ['age'],
-          types: {
-            age: '[User!]!',
+          subgraphs: {
+            age: {
+              subgraph: 'age',
+              type: '[User!]!',
+            },
           },
           resolvers: {
             age: {
@@ -50,9 +51,11 @@ export const blueprint: Blueprint = {
         },
         usersInFriends: {
           name: 'usersInFriends',
-          subgraphs: ['friends'],
-          types: {
-            friends: '[User!]!',
+          subgraphs: {
+            friends: {
+              subgraph: 'friends',
+              type: '[User!]!',
+            },
           },
           resolvers: {
             friends: {
@@ -72,45 +75,50 @@ export const blueprint: Blueprint = {
           },
         },
       },
-      resolvers: {},
     },
     User: {
       name: 'User',
       kind: 'object',
-      implements: {},
       fields: {
         id: {
           name: 'id',
-          subgraphs: ['age', 'friends'],
-          types: {
-            age: 'ID',
-            friends: 'ID',
+          subgraphs: {
+            age: {
+              subgraph: 'age',
+              type: 'ID',
+            },
+            friends: {
+              subgraph: 'friends',
+              type: 'ID',
+            },
           },
-          resolvers: {},
         },
         age: {
           name: 'age',
-          subgraphs: ['age'],
-          types: {
-            age: 'Int',
+          subgraphs: {
+            age: {
+              subgraph: 'age',
+              type: 'Int',
+            },
           },
-          resolvers: {},
         },
         friends: {
           name: 'friends',
-          subgraphs: ['friends'],
-          types: {
-            friends: '[User!]!',
+          subgraphs: {
+            friends: {
+              subgraph: 'friends',
+              type: '[User!]!',
+            },
           },
-          resolvers: {},
         },
         type: {
           name: 'type',
-          subgraphs: ['friends'],
-          types: {
-            friends: 'FriendType',
+          subgraphs: {
+            friends: {
+              subgraph: 'friends',
+              type: 'FriendType',
+            },
           },
-          resolvers: {},
         },
       },
       resolvers: {

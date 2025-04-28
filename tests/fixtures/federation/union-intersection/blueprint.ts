@@ -39,10 +39,15 @@ export const blueprint: Blueprint = {
       fields: {
         media: {
           name: 'media',
-          subgraphs: ['a', 'b'],
-          types: {
-            a: 'Media',
-            b: 'Media',
+          subgraphs: {
+            a: {
+              subgraph: 'a',
+              type: 'Media',
+            },
+            b: {
+              subgraph: 'b',
+              type: 'Media',
+            },
           },
           resolvers: {
             a: {
@@ -77,10 +82,15 @@ export const blueprint: Blueprint = {
         },
         book: {
           name: 'book',
-          subgraphs: ['a', 'b'],
-          types: {
-            a: 'Book',
-            b: 'Media',
+          subgraphs: {
+            a: {
+              subgraph: 'a',
+              type: 'Book',
+            },
+            b: {
+              subgraph: 'b',
+              type: 'Media',
+            },
           },
           resolvers: {
             a: {
@@ -115,9 +125,11 @@ export const blueprint: Blueprint = {
         },
         song: {
           name: 'song',
-          subgraphs: ['a'],
-          types: {
-            a: 'Media',
+          subgraphs: {
+            a: {
+              subgraph: 'a',
+              type: 'Media',
+            },
           },
           resolvers: {
             a: {
@@ -138,9 +150,11 @@ export const blueprint: Blueprint = {
         },
         viewer: {
           name: 'viewer',
-          subgraphs: ['a'],
-          types: {
-            a: 'Viewer',
+          subgraphs: {
+            a: {
+              subgraph: 'a',
+              type: 'Viewer',
+            },
           },
           resolvers: {
             a: {
@@ -160,7 +174,6 @@ export const blueprint: Blueprint = {
           },
         },
       },
-      resolvers: {},
     },
     Media: {
       kind: 'interface',
@@ -168,15 +181,18 @@ export const blueprint: Blueprint = {
       fields: {
         __typename: {
           name: '__typename',
-          subgraphs: ['a', 'b'],
-          types: {
-            a: 'String!',
-            b: 'String!',
+          subgraphs: {
+            a: {
+              subgraph: 'a',
+              type: 'String!',
+            },
+            b: {
+              subgraph: 'b',
+              type: 'String!',
+            },
           },
-          resolvers: {},
         },
       },
-      resolvers: {},
     },
     ViewerMedia: {
       kind: 'interface',
@@ -184,15 +200,18 @@ export const blueprint: Blueprint = {
       fields: {
         __typename: {
           name: '__typename',
-          subgraphs: ['a', 'b'],
-          types: {
-            a: 'String!',
-            b: 'String!',
+          subgraphs: {
+            a: {
+              subgraph: 'a',
+              type: 'String!',
+            },
+            b: {
+              subgraph: 'b',
+              type: 'String!',
+            },
           },
-          resolvers: {},
         },
       },
-      resolvers: {},
     },
     Book: {
       kind: 'object',
@@ -210,15 +229,18 @@ export const blueprint: Blueprint = {
       fields: {
         title: {
           name: 'title',
-          subgraphs: ['a', 'b'],
-          types: {
-            a: 'String!',
-            b: 'String!',
+          subgraphs: {
+            a: {
+              subgraph: 'a',
+              type: 'String!',
+            },
+            b: {
+              subgraph: 'b',
+              type: 'String!',
+            },
           },
-          resolvers: {},
         },
       },
-      resolvers: {},
     },
     Movie: {
       kind: 'object',
@@ -236,14 +258,14 @@ export const blueprint: Blueprint = {
       fields: {
         title: {
           name: 'title',
-          subgraphs: ['b'],
-          types: {
-            b: 'String!',
+          subgraphs: {
+            b: {
+              subgraph: 'b',
+              type: 'String!',
+            },
           },
-          resolvers: {},
         },
       },
-      resolvers: {},
     },
     Song: {
       kind: 'object',
@@ -261,49 +283,55 @@ export const blueprint: Blueprint = {
       fields: {
         title: {
           name: 'title',
-          subgraphs: ['a'],
-          types: {
-            a: 'String!',
+          subgraphs: {
+            a: {
+              subgraph: 'a',
+              type: 'String!',
+            },
           },
-          resolvers: {},
         },
       },
-      resolvers: {},
     },
     Viewer: {
       kind: 'object',
       name: 'Viewer',
-      implements: {},
       fields: {
         media: {
           name: 'media',
-          subgraphs: ['a', 'b'],
-          types: {
-            a: 'ViewerMedia',
-            b: 'ViewerMedia',
+          subgraphs: {
+            a: {
+              subgraph: 'a',
+              type: 'ViewerMedia',
+            },
+            b: {
+              subgraph: 'b',
+              type: 'ViewerMedia',
+            },
           },
-          resolvers: {},
         },
         book: {
           name: 'book',
-          // TODO: book field in "b" resolves to Book
-          subgraphs: ['a', 'b'],
-          types: {
-            a: 'ViewerMedia',
-            b: 'Book',
+          subgraphs: {
+            a: {
+              subgraph: 'a',
+              type: 'ViewerMedia',
+            },
+            b: {
+              subgraph: 'b',
+              type: 'Book',
+            },
           },
-          resolvers: {},
         },
         song: {
           name: 'song',
-          subgraphs: ['a'],
-          types: {
-            a: 'ViewerMedia',
+          subgraphs: {
+            a: {
+              subgraph: 'a',
+              type: 'ViewerMedia',
+            },
           },
-          resolvers: {},
         },
       },
-      resolvers: {},
     },
   },
 };

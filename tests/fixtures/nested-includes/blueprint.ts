@@ -42,13 +42,14 @@ export const blueprint: Blueprint = {
     Query: {
       kind: 'object',
       name: 'Query',
-      implements: {},
       fields: {
         allProducts: {
           name: 'allProducts',
-          subgraphs: ['products'],
-          types: {
-            products: '[Product!]!',
+          subgraphs: {
+            products: {
+              subgraph: 'products',
+              type: '[Product!]!',
+            },
           },
           resolvers: {
             products: {
@@ -68,46 +69,54 @@ export const blueprint: Blueprint = {
           },
         },
       },
-      resolvers: {},
     },
     Product: {
       kind: 'object',
       name: 'Product',
-      implements: {},
       fields: {
         id: {
           name: 'id',
-          subgraphs: ['products', 'users', 'reviews'],
-          types: {
-            products: 'ID!',
-            users: 'ID!',
-            reviews: 'ID!',
+          subgraphs: {
+            products: {
+              subgraph: 'products',
+              type: 'ID!',
+            },
+            users: {
+              subgraph: 'users',
+              type: 'ID!',
+            },
+            reviews: {
+              subgraph: 'reviews',
+              type: 'ID!',
+            },
           },
-          resolvers: {},
         },
         name: {
           name: 'name',
-          subgraphs: ['products'],
-          types: {
-            products: 'String!',
+          subgraphs: {
+            products: {
+              subgraph: 'products',
+              type: 'String!',
+            },
           },
-          resolvers: {},
         },
         price: {
           name: 'price',
-          subgraphs: ['products'],
-          types: {
-            products: 'Float!',
+          subgraphs: {
+            products: {
+              subgraph: 'products',
+              type: 'Float!',
+            },
           },
-          resolvers: {},
         },
         reviews: {
           name: 'reviews',
-          subgraphs: ['reviews'],
-          types: {
-            reviews: '[Review!]!',
+          subgraphs: {
+            reviews: {
+              subgraph: 'reviews',
+              type: '[Review!]!',
+            },
           },
-          resolvers: {},
         },
       },
       resolvers: {
@@ -160,24 +169,28 @@ export const blueprint: Blueprint = {
     User: {
       kind: 'object',
       name: 'User',
-      implements: {},
       fields: {
         id: {
           name: 'id',
-          subgraphs: ['users', 'reviews'],
-          types: {
-            users: 'ID!',
-            reviews: 'ID!',
+          subgraphs: {
+            users: {
+              subgraph: 'usersa',
+              type: 'ID!',
+            },
+            reviews: {
+              subgraph: 'reviews',
+              type: 'ID!',
+            },
           },
-          resolvers: {},
         },
         name: {
           name: 'name',
-          subgraphs: ['users'],
-          types: {
-            users: 'String!',
+          subgraphs: {
+            users: {
+              subgraph: 'users',
+              type: 'String!',
+            },
           },
-          resolvers: {},
         },
       },
       resolvers: {
@@ -208,42 +221,44 @@ export const blueprint: Blueprint = {
     Review: {
       kind: 'object',
       name: 'Review',
-      implements: {},
       fields: {
         id: {
           name: 'id',
-          subgraphs: ['reviews'],
-          types: {
-            reviews: 'ID!',
+          subgraphs: {
+            reviews: {
+              subgraph: 'reviews',
+              type: 'ID!',
+            },
           },
-          resolvers: {},
         },
         rating: {
           name: 'rating',
-          subgraphs: ['reviews'],
-          types: {
-            reviews: 'Int!',
+          subgraphs: {
+            reviews: {
+              subgraph: 'reviews',
+              type: 'Int!',
+            },
           },
-          resolvers: {},
         },
         user: {
           name: 'user',
-          subgraphs: ['reviews'],
-          types: {
-            reviews: 'User!',
+          subgraphs: {
+            reviews: {
+              subgraph: 'reviews',
+              type: 'User!',
+            },
           },
-          resolvers: {},
         },
         product: {
           name: 'product',
-          subgraphs: ['reviews'],
-          types: {
-            reviews: 'Product!',
+          subgraphs: {
+            reviews: {
+              subgraph: 'reviews',
+              type: 'Product!',
+            },
           },
-          resolvers: {},
         },
       },
-      resolvers: {},
     },
   },
 };

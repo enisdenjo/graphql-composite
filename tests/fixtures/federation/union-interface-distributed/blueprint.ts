@@ -29,13 +29,14 @@ export const blueprint: Blueprint = {
     Query: {
       kind: 'object',
       name: 'Query',
-      implements: {},
       fields: {
         products: {
           name: 'products',
-          subgraphs: ['a'],
-          types: {
-            a: '[Product]',
+          subgraphs: {
+            a: {
+              subgraph: 'a',
+              type: '[Product]',
+            },
           },
           resolvers: {
             a: {
@@ -56,9 +57,11 @@ export const blueprint: Blueprint = {
         },
         toasters: {
           name: 'toasters',
-          subgraphs: ['a'],
-          types: {
-            a: '[Toaster]',
+          subgraphs: {
+            a: {
+              subgraph: 'a',
+              type: '[Toaster]',
+            },
           },
           resolvers: {
             a: {
@@ -79,9 +82,11 @@ export const blueprint: Blueprint = {
         },
         nodes: {
           name: 'nodes',
-          subgraphs: ['a'],
-          types: {
-            a: '[Node]',
+          subgraphs: {
+            a: {
+              subgraph: 'a',
+              type: '[Node]',
+            },
           },
           resolvers: {
             a: {
@@ -102,9 +107,11 @@ export const blueprint: Blueprint = {
         },
         node: {
           name: 'node',
-          subgraphs: ['a'],
-          types: {
-            a: 'Node',
+          subgraphs: {
+            a: {
+              subgraph: 'a',
+              type: 'Node',
+            },
           },
           resolvers: {
             a: {
@@ -129,7 +136,6 @@ export const blueprint: Blueprint = {
           },
         },
       },
-      resolvers: {},
     },
     Node: {
       kind: 'interface',
@@ -137,23 +143,27 @@ export const blueprint: Blueprint = {
       fields: {
         __typename: {
           name: '__typename',
-          subgraphs: ['a'],
-          types: {
-            a: 'String!',
+          subgraphs: {
+            a: {
+              subgraph: 'a',
+              type: 'String!',
+            },
           },
-          resolvers: {},
         },
         id: {
           name: 'id',
-          subgraphs: ['a', 'b'],
-          types: {
-            a: 'ID!',
-            b: 'ID!',
+          subgraphs: {
+            a: {
+              subgraph: 'a',
+              type: 'ID!',
+            },
+            b: {
+              subgraph: 'b',
+              type: 'ID!',
+            },
           },
-          resolvers: {},
         },
       },
-      resolvers: {},
     },
     Product: {
       kind: 'interface',
@@ -161,14 +171,14 @@ export const blueprint: Blueprint = {
       fields: {
         __typename: {
           name: '__typename',
-          subgraphs: ['a'],
-          types: {
-            a: 'String!',
+          subgraphs: {
+            a: {
+              subgraph: 'a',
+              type: 'String!',
+            },
           },
-          resolvers: {},
         },
       },
-      resolvers: {},
     },
     Toaster: {
       kind: 'object',
@@ -186,27 +196,30 @@ export const blueprint: Blueprint = {
       fields: {
         __typename: {
           name: '__typename',
-          subgraphs: ['a'],
-          types: {
-            a: 'String!',
+          subgraphs: {
+            a: {
+              subgraph: 'a',
+              type: 'String!',
+            },
           },
-          resolvers: {},
         },
         id: {
           name: 'id',
-          subgraphs: ['a'],
-          types: {
-            a: 'ID!',
+          subgraphs: {
+            a: {
+              subgraph: 'a',
+              type: 'ID!',
+            },
           },
-          resolvers: {},
         },
         warranty: {
           name: 'warranty',
-          subgraphs: ['a'],
-          types: {
-            a: 'Int',
+          subgraphs: {
+            a: {
+              subgraph: 'a',
+              type: 'Int',
+            },
           },
-          resolvers: {},
         },
       },
       resolvers: {
@@ -254,29 +267,38 @@ export const blueprint: Blueprint = {
       fields: {
         __typename: {
           name: '__typename',
-          subgraphs: ['a', 'b'],
-          types: {
-            a: 'String!',
-            b: 'String!',
+          subgraphs: {
+            a: {
+              subgraph: 'a',
+              type: 'String!',
+            },
+            b: {
+              subgraph: 'b',
+              type: 'String!',
+            },
           },
-          resolvers: {},
         },
         id: {
           name: 'id',
-          subgraphs: ['a', 'b'],
-          types: {
-            a: 'ID!',
-            b: 'ID!',
+          subgraphs: {
+            a: {
+              subgraph: 'a',
+              type: 'ID!',
+            },
+            b: {
+              subgraph: 'b',
+              type: 'ID!',
+            },
           },
-          resolvers: {},
         },
         warranty: {
           name: 'warranty',
-          subgraphs: ['b'],
-          types: {
-            b: 'Int',
+          subgraphs: {
+            b: {
+              subgraph: 'b',
+              type: 'Int',
+            },
           },
-          resolvers: {},
         },
       },
       resolvers: {

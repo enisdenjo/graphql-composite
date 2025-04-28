@@ -330,14 +330,16 @@ export function planGather(
         `Blueprint operation type "${blueprintType.name}" doesn't have a "${field.name}" field`,
       );
     }
-    if (!Object.keys(blueprintField.resolvers).length) {
+    if (!Object.keys(blueprintField.resolvers || {}).length) {
       throw new Error(
         `Blueprint operation type "${blueprintType.name}" field "${field.name}" doesn't have resolvers`,
       );
     }
 
     // TODO: choose the right resolver when multiple
-    const operationFieldResolver = Object.values(blueprintField.resolvers)[0];
+    const operationFieldResolver = Object.values(
+      blueprintField.resolvers || {},
+    )[0];
     if (!operationFieldResolver) {
       throw new Error(
         `Blueprint field "${field.name}" on type "${blueprintType.name}" doesn't have resolvers`,
@@ -426,7 +428,7 @@ function augmentConflictingFields(
       }
 
       const fieldName = sel.alias || sel.name;
-      const fieldTypeName = type.fields[sel.name]!.types[subgraph]!;
+      const fieldTypeName = type.fields[sel.name]!.subgraphs[subgraph]!.type;
 
       const appearingTypeName = appearing[fieldName];
       if (!appearingTypeName) {
@@ -730,7 +732,7 @@ function insertResolversForSelection(
       }
 
       const fragmentTypeImplementsParentTypeInCurrentSubgraph =
-        fragmentType.implements[parentType.name]?.subgraphs.includes(
+        fragmentType.implements?.[parentType.name]?.subgraphs.includes(
           currentResolver.subgraph,
         );
 
@@ -741,12 +743,12 @@ function insertResolversForSelection(
         // and the parent type does not have other resolvers - meaning, the parent
         // cannot be resolved after resolving the fragment from another subgraph
         (!fragmentTypeImplementsParentTypeInCurrentSubgraph &&
-          !Object.keys(parentType.resolvers).length) ||
+          !Object.keys(parentType.resolvers || {}).length) ||
         // or the fragment type doesnt have resolvers and its available subgraphs
         // dont intersect with the parent field's subgraphs
-        (!Object.keys(fragmentType.resolvers).length &&
-          !parentSelInType.fields[parentSel.name]!.subgraphs.every((s) =>
-            fragmentTypeSubgraphs.includes(s),
+        (!Object.keys(fragmentType.resolvers || {}).length &&
+          !Object.keys(parentSelInType.fields[parentSel.name]!.subgraphs).every(
+            (s) => fragmentTypeSubgraphs.includes(s),
           ))
       ) {
         // this means that the field is available in more subgraphs than the selection's
@@ -775,7 +777,9 @@ function insertResolversForSelection(
         // subgraph, we have to resolve it from another subgraph
 
         // TODO: actually choose the best resolver, not the first one
-        const resolverPlan = Object.values(fragmentType.resolvers)[0]?.[0];
+        const resolverPlan = Object.values(
+          fragmentType.resolvers || {},
+        )[0]?.[0];
         if (!resolverPlan) {
           throw new Error(
             `Blueprint type "${fragmentType.name}" doesn't have any resolvers`,
@@ -848,7 +852,7 @@ function insertResolversForSelection(
     // if the field itself has a resolver, it means that there are special requirements
     // for resolving the field - use that resolver over every other
     // TODO: actually choose the best resolver, not the first one
-    const selFieldResolverPlan = Object.values(selField.resolvers)[0];
+    const selFieldResolverPlan = Object.values(selField.resolvers || {})[0];
     if (selFieldResolverPlan) {
       if (selFieldResolverPlan.kind === 'primitive') {
         throw new Error('TODO');
@@ -893,9 +897,9 @@ function insertResolversForSelection(
       const parentFieldProvidesInCurrentResolverSubgraph =
         parentSelInType.fields[
           parentSel.kind === 'fragment' ? parentSel.fieldName : parentSel.name
-        ]?.provides?.[currentResolver.subgraph] || [];
+        ]?.subgraphs[currentResolver.subgraph]?.provides || [];
       if (
-        selField.subgraphs.includes(currentResolver.subgraph) ||
+        selField.subgraphs[currentResolver.subgraph] ||
         parentFieldProvidesInCurrentResolverSubgraph.includes(selField.name)
       ) {
         // use the parent resolver if the field is available in its subgraph
@@ -905,8 +909,8 @@ function insertResolversForSelection(
         // if not, try finding a resolver in parents includes that matches the destination
         for (const [path, res] of Object.entries(currentResolver.includes)) {
           if (path === dest) {
-            resolver = (Array.isArray(res) ? res : [res]).find((res) =>
-              selField!.subgraphs.includes(res.subgraph),
+            resolver = (Array.isArray(res) ? res : [res]).find(
+              (res) => selField!.subgraphs[res.subgraph],
             );
             if (resolver) {
               break;
@@ -940,7 +944,7 @@ function insertResolversForSelection(
     // if the field itself has a resolver, it means that there are special requirements
     // for resolving the field - use that resolver over every other
     // TODO: actually choose the best resolver, not the first one
-    const selFieldResolverPlan = Object.values(selField.resolvers)[0];
+    const selFieldResolverPlan = Object.values(selField.resolvers || {})[0];
     if (selFieldResolverPlan) {
       if (selFieldResolverPlan.kind === 'primitive') {
         throw new Error('TODO');
@@ -984,12 +988,12 @@ function insertResolversForSelection(
     let resolverPlan = Object.values<
       // TODO: have typescript infer the types
       BlueprintCompositeResolver[]
-    >(selType.resolvers)
+    >(selType.resolvers || {})
       .flat()
       .find(
         (r) =>
           // resolver must be from a subgraph where the field is available
-          selField.subgraphs.includes(r.subgraph) &&
+          selField.subgraphs[r.subgraph] &&
           // resolver must not require this selection in the select variables
           !Object.values(r.variables).find(
             (v) => v.kind === 'select' && v.select === selField.name,
@@ -1010,7 +1014,7 @@ function insertResolversForSelection(
         ];
       resolverPlan = Object.values(fieldInQuery?.resolvers || {}).find(
         (r): r is BlueprintCompositeResolver =>
-          r.kind !== 'primitive' && selField.subgraphs.includes(r.subgraph),
+          r.kind !== 'primitive' && !!selField.subgraphs[r.subgraph],
       );
     }
     if (!resolverPlan && selType.kind === 'interface') {
@@ -1176,7 +1180,7 @@ function prepareCompositeResolverForSelection(
       )
     ) {
       const variableField = selType.fields[variable.select]!;
-      if (!variableField.subgraphs.includes(currentResolver.subgraph)) {
+      if (!variableField.subgraphs[currentResolver.subgraph]) {
         // we DO NOT nest under the new resolver for the variable because
         // there may be more than one variable that needs to be fetched
         // from different subgraphs. if we were to nest, then this resolver
@@ -1187,8 +1191,8 @@ function prepareCompositeResolverForSelection(
         // TODO: make sure future batching implementation is aware
 
         const type =
-          variableField.types[resolver.subgraph] ||
-          Object.values(variableField.types)[0]!; // TODO: make sure there's always at least one type
+          variableField.subgraphs[resolver.subgraph]?.type ||
+          Object.values(variableField.subgraphs)[0]!.type; // TODO: make sure there's always at least one type
         let ofType = parseType(type);
         while (ofType.kind !== Kind.NAMED_TYPE) {
           if (ofType.kind === Kind.LIST_TYPE) {
@@ -1492,5 +1496,5 @@ function implementsInterface(
   objectType: BlueprintObject,
   interfaceTypeName: string,
 ) {
-  return objectType.implements[interfaceTypeName]?.name === interfaceTypeName;
+  return objectType.implements?.[interfaceTypeName]?.name === interfaceTypeName;
 }

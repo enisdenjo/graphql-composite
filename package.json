@@ -43,6 +43,7 @@
     "lodash": "^4.17.21"
   },
   "devDependencies": {
+    "@apollo/gateway": "^2.10.2",
     "@apollo/subgraph": "^2.10.2",
     "@changesets/cli": "^2.29.2",
     "@graphql-tools/schema": "^10.0.23",

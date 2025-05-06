@@ -24,7 +24,7 @@ describe.each(await getFixtures())(
           return;
         }
         const gather = planGather(blueprint, document);
-        process.env['DEBUG'] && prettyPrint(gather);
+        process.env['PRINT_PLAN'] && prettyPrint(gather);
         expect(gather).toMatchSnapshot();
       });
 
@@ -38,6 +38,8 @@ describe.each(await getFixtures())(
           expect({ errors }).toEqual(result);
           return;
         }
+        const plan = planGather(blueprint, document);
+        process.env['PRINT_PLAN'] && prettyPrint(plan);
         const { extensions, ...actualResult } = await execute(
           Object.entries(subgraphs).reduce(
             (agg, [name, subgraph]) => ({
@@ -46,10 +48,10 @@ describe.each(await getFixtures())(
             }),
             {},
           ),
-          planGather(blueprint, document),
+          plan,
           variables,
         );
-        process.env['DEBUG'] && prettyPrint(extensions?.explain);
+        process.env['PRINT_EXPLAIN'] && prettyPrint(extensions?.explain);
         expect(actualResult).toEqual(result);
         expect(extensions?.explain).toMatchSnapshot();
       });

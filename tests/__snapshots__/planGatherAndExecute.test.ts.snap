@@ -3889,6 +3889,1635 @@ exports[`fixture 'federation/override-type-interface' > query 'Feed' > should pl
 }
 `;
 
+exports[`fixture 'federation/requires-requires' > query 'CanAfford' > should execute and explain 1`] = `
+[
+  {
+    "data": {
+      "product": {
+        "id": "p1",
+      },
+    },
+    "exports": [
+      {
+        "kind": "scalar",
+        "name": "id",
+        "private": true,
+      },
+    ],
+    "includes": [
+      {
+        "data": {
+          "_entities": [
+            {
+              "price": 699.99,
+            },
+          ],
+        },
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "price",
+            "private": true,
+          },
+        ],
+        "includes": [],
+        "kind": "object",
+        "ofType": "Product",
+        "operation": "query ($id: ID!) {
+  _entities(representations: [{__typename: "Product", id: $id}]) {
+    ... on Product {
+      price
+    }
+  }
+}",
+        "pathInData": [
+          "product",
+        ],
+        "pathToExportData": [
+          "_entities",
+          0,
+        ],
+        "subgraph": "a",
+        "type": "[Product]!",
+        "variables": {
+          "id": "p1",
+        },
+      },
+      {
+        "data": {
+          "_entities": [
+            {
+              "isExpensive": true,
+            },
+          ],
+        },
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "isExpensive",
+            "private": true,
+          },
+        ],
+        "includes": [],
+        "kind": "object",
+        "ofType": "Product",
+        "operation": "query ($id: ID!, $price: Float!) {
+  _entities(representations: [{__typename: "Product", id: $id, price: $price}]) {
+    ... on Product {
+      isExpensive
+    }
+  }
+}",
+        "pathInData": [
+          "product",
+        ],
+        "pathToExportData": [
+          "_entities",
+          0,
+        ],
+        "subgraph": "c",
+        "type": "[Product]!",
+        "variables": {
+          "id": "p1",
+          "price": 699.99,
+        },
+      },
+      {
+        "data": {
+          "_entities": [
+            {
+              "canAfford": false,
+            },
+          ],
+        },
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "canAfford",
+          },
+        ],
+        "includes": [],
+        "kind": "object",
+        "ofType": "Product",
+        "operation": "query ($id: ID!, $isExpensive: Boolean!) {
+  _entities(
+    representations: [{__typename: "Product", id: $id, isExpensive: $isExpensive}]
+  ) {
+    ... on Product {
+      canAfford
+    }
+  }
+}",
+        "pathInData": [
+          "product",
+        ],
+        "pathToExportData": [
+          "_entities",
+          0,
+        ],
+        "subgraph": "d",
+        "type": "[Product]!",
+        "variables": {
+          "id": "p1",
+          "isExpensive": true,
+        },
+      },
+    ],
+    "kind": "object",
+    "ofType": "Product",
+    "operation": "{
+  product {
+    id
+  }
+}",
+    "pathInData": [
+      "product",
+    ],
+    "pathToExportData": [
+      "product",
+    ],
+    "subgraph": "b",
+    "type": "Product",
+    "variables": {},
+  },
+]
+`;
+
+exports[`fixture 'federation/requires-requires' > query 'CanAfford' > should plan gather 1`] = `
+{
+  "operation": {
+    "name": "CanAfford",
+    "resolvers": {
+      "product": {
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "id",
+            "private": true,
+          },
+        ],
+        "includes": {
+          "": [
+            {
+              "exports": [
+                {
+                  "kind": "scalar",
+                  "name": "price",
+                  "private": true,
+                },
+              ],
+              "includes": {},
+              "kind": "object",
+              "ofType": "Product",
+              "operation": "query ($id: ID!) {
+  _entities(representations: [{__typename: "Product", id: $id}]) {
+    ... on Product {
+      price
+    }
+  }
+}",
+              "pathToExportData": [
+                "_entities",
+                0,
+              ],
+              "subgraph": "a",
+              "type": "[Product]!",
+              "variables": {
+                "id": {
+                  "kind": "select",
+                  "name": "id",
+                  "select": "id",
+                },
+              },
+            },
+            {
+              "exports": [
+                {
+                  "kind": "scalar",
+                  "name": "isExpensive",
+                  "private": true,
+                },
+              ],
+              "includes": {},
+              "kind": "object",
+              "ofType": "Product",
+              "operation": "query ($id: ID!, $price: Float!) {
+  _entities(representations: [{__typename: "Product", id: $id, price: $price}]) {
+    ... on Product {
+      isExpensive
+    }
+  }
+}",
+              "pathToExportData": [
+                "_entities",
+                0,
+              ],
+              "subgraph": "c",
+              "type": "[Product]!",
+              "variables": {
+                "id": {
+                  "kind": "select",
+                  "name": "id",
+                  "select": "id",
+                },
+                "price": {
+                  "kind": "select",
+                  "name": "price",
+                  "select": "price",
+                },
+              },
+            },
+            {
+              "exports": [
+                {
+                  "kind": "scalar",
+                  "name": "canAfford",
+                },
+              ],
+              "includes": {},
+              "kind": "object",
+              "ofType": "Product",
+              "operation": "query ($id: ID!, $isExpensive: Boolean!) {
+  _entities(
+    representations: [{__typename: "Product", id: $id, isExpensive: $isExpensive}]
+  ) {
+    ... on Product {
+      canAfford
+    }
+  }
+}",
+              "pathToExportData": [
+                "_entities",
+                0,
+              ],
+              "subgraph": "d",
+              "type": "[Product]!",
+              "variables": {
+                "id": {
+                  "kind": "select",
+                  "name": "id",
+                  "select": "id",
+                },
+                "isExpensive": {
+                  "kind": "select",
+                  "name": "isExpensive",
+                  "select": "isExpensive",
+                },
+              },
+            },
+          ],
+        },
+        "kind": "object",
+        "ofType": "Product",
+        "operation": "{
+  product {
+    id
+  }
+}",
+        "pathToExportData": [
+          "product",
+        ],
+        "subgraph": "b",
+        "type": "Product",
+        "variables": {},
+      },
+    },
+    "type": "Query",
+  },
+  "query": "query CanAfford {
+  product {
+    canAfford
+  }
+}",
+}
+`;
+
+exports[`fixture 'federation/requires-requires' > query 'CanAffordCanAffordWithDiscount' > should execute and explain 1`] = `
+[
+  {
+    "data": {
+      "product": {
+        "hasDiscount": true,
+        "id": "p1",
+      },
+    },
+    "exports": [
+      {
+        "kind": "scalar",
+        "name": "id",
+        "private": true,
+      },
+      {
+        "kind": "scalar",
+        "name": "hasDiscount",
+        "private": true,
+      },
+    ],
+    "includes": [
+      {
+        "data": {
+          "_entities": [
+            {
+              "price": 699.99,
+            },
+          ],
+        },
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "price",
+            "private": true,
+          },
+        ],
+        "includes": [],
+        "kind": "object",
+        "ofType": "Product",
+        "operation": "query ($id: ID!) {
+  _entities(representations: [{__typename: "Product", id: $id}]) {
+    ... on Product {
+      price
+    }
+  }
+}",
+        "pathInData": [
+          "product",
+        ],
+        "pathToExportData": [
+          "_entities",
+          0,
+        ],
+        "subgraph": "a",
+        "type": "[Product]!",
+        "variables": {
+          "id": "p1",
+        },
+      },
+      {
+        "data": {
+          "_entities": [
+            {
+              "isExpensiveWithDiscount": false,
+            },
+          ],
+        },
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "isExpensiveWithDiscount",
+            "private": true,
+          },
+        ],
+        "includes": [],
+        "kind": "object",
+        "ofType": "Product",
+        "operation": "query ($id: ID!, $hasDiscount: Boolean!) {
+  _entities(
+    representations: [{__typename: "Product", id: $id, hasDiscount: $hasDiscount}]
+  ) {
+    ... on Product {
+      isExpensiveWithDiscount
+    }
+  }
+}",
+        "pathInData": [
+          "product",
+        ],
+        "pathToExportData": [
+          "_entities",
+          0,
+        ],
+        "subgraph": "c",
+        "type": "[Product]!",
+        "variables": {
+          "hasDiscount": true,
+          "id": "p1",
+        },
+      },
+      {
+        "data": {
+          "_entities": [
+            {
+              "isExpensive": true,
+            },
+          ],
+        },
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "isExpensive",
+            "private": true,
+          },
+        ],
+        "includes": [],
+        "kind": "object",
+        "ofType": "Product",
+        "operation": "query ($id: ID!, $price: Float!) {
+  _entities(representations: [{__typename: "Product", id: $id, price: $price}]) {
+    ... on Product {
+      isExpensive
+    }
+  }
+}",
+        "pathInData": [
+          "product",
+        ],
+        "pathToExportData": [
+          "_entities",
+          0,
+        ],
+        "subgraph": "c",
+        "type": "[Product]!",
+        "variables": {
+          "id": "p1",
+          "price": 699.99,
+        },
+      },
+      {
+        "data": {
+          "_entities": [
+            {
+              "canAffordWithDiscount": true,
+            },
+          ],
+        },
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "canAffordWithDiscount",
+          },
+        ],
+        "includes": [],
+        "kind": "object",
+        "ofType": "Product",
+        "operation": "query ($id: ID!, $isExpensiveWithDiscount: Boolean!) {
+  _entities(
+    representations: [{__typename: "Product", id: $id, isExpensiveWithDiscount: $isExpensiveWithDiscount}]
+  ) {
+    ... on Product {
+      canAffordWithDiscount
+    }
+  }
+}",
+        "pathInData": [
+          "product",
+        ],
+        "pathToExportData": [
+          "_entities",
+          0,
+        ],
+        "subgraph": "d",
+        "type": "[Product]!",
+        "variables": {
+          "id": "p1",
+          "isExpensiveWithDiscount": false,
+        },
+      },
+      {
+        "data": {
+          "_entities": [
+            {
+              "canAfford": false,
+            },
+          ],
+        },
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "canAfford",
+          },
+        ],
+        "includes": [],
+        "kind": "object",
+        "ofType": "Product",
+        "operation": "query ($id: ID!, $isExpensive: Boolean!) {
+  _entities(
+    representations: [{__typename: "Product", id: $id, isExpensive: $isExpensive}]
+  ) {
+    ... on Product {
+      canAfford
+    }
+  }
+}",
+        "pathInData": [
+          "product",
+        ],
+        "pathToExportData": [
+          "_entities",
+          0,
+        ],
+        "subgraph": "d",
+        "type": "[Product]!",
+        "variables": {
+          "id": "p1",
+          "isExpensive": true,
+        },
+      },
+    ],
+    "kind": "object",
+    "ofType": "Product",
+    "operation": "{
+  product {
+    id
+    hasDiscount
+  }
+}",
+    "pathInData": [
+      "product",
+    ],
+    "pathToExportData": [
+      "product",
+    ],
+    "subgraph": "b",
+    "type": "Product",
+    "variables": {},
+  },
+]
+`;
+
+exports[`fixture 'federation/requires-requires' > query 'CanAffordCanAffordWithDiscount' > should plan gather 1`] = `
+{
+  "operation": {
+    "name": "CanAffordCanAffordWithDiscount",
+    "resolvers": {
+      "product": {
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "id",
+            "private": true,
+          },
+          {
+            "kind": "scalar",
+            "name": "hasDiscount",
+            "private": true,
+          },
+        ],
+        "includes": {
+          "": [
+            {
+              "exports": [
+                {
+                  "kind": "scalar",
+                  "name": "price",
+                  "private": true,
+                },
+              ],
+              "includes": {},
+              "kind": "object",
+              "ofType": "Product",
+              "operation": "query ($id: ID!) {
+  _entities(representations: [{__typename: "Product", id: $id}]) {
+    ... on Product {
+      price
+    }
+  }
+}",
+              "pathToExportData": [
+                "_entities",
+                0,
+              ],
+              "subgraph": "a",
+              "type": "[Product]!",
+              "variables": {
+                "id": {
+                  "kind": "select",
+                  "name": "id",
+                  "select": "id",
+                },
+              },
+            },
+            {
+              "exports": [
+                {
+                  "kind": "scalar",
+                  "name": "isExpensive",
+                  "private": true,
+                },
+              ],
+              "includes": {},
+              "kind": "object",
+              "ofType": "Product",
+              "operation": "query ($id: ID!, $price: Float!) {
+  _entities(representations: [{__typename: "Product", id: $id, price: $price}]) {
+    ... on Product {
+      isExpensive
+    }
+  }
+}",
+              "pathToExportData": [
+                "_entities",
+                0,
+              ],
+              "subgraph": "c",
+              "type": "[Product]!",
+              "variables": {
+                "id": {
+                  "kind": "select",
+                  "name": "id",
+                  "select": "id",
+                },
+                "price": {
+                  "kind": "select",
+                  "name": "price",
+                  "select": "price",
+                },
+              },
+            },
+            {
+              "exports": [
+                {
+                  "kind": "scalar",
+                  "name": "canAfford",
+                },
+              ],
+              "includes": {},
+              "kind": "object",
+              "ofType": "Product",
+              "operation": "query ($id: ID!, $isExpensive: Boolean!) {
+  _entities(
+    representations: [{__typename: "Product", id: $id, isExpensive: $isExpensive}]
+  ) {
+    ... on Product {
+      canAfford
+    }
+  }
+}",
+              "pathToExportData": [
+                "_entities",
+                0,
+              ],
+              "subgraph": "d",
+              "type": "[Product]!",
+              "variables": {
+                "id": {
+                  "kind": "select",
+                  "name": "id",
+                  "select": "id",
+                },
+                "isExpensive": {
+                  "kind": "select",
+                  "name": "isExpensive",
+                  "select": "isExpensive",
+                },
+              },
+            },
+            {
+              "exports": [
+                {
+                  "kind": "scalar",
+                  "name": "isExpensiveWithDiscount",
+                  "private": true,
+                },
+              ],
+              "includes": {},
+              "kind": "object",
+              "ofType": "Product",
+              "operation": "query ($id: ID!, $hasDiscount: Boolean!) {
+  _entities(
+    representations: [{__typename: "Product", id: $id, hasDiscount: $hasDiscount}]
+  ) {
+    ... on Product {
+      isExpensiveWithDiscount
+    }
+  }
+}",
+              "pathToExportData": [
+                "_entities",
+                0,
+              ],
+              "subgraph": "c",
+              "type": "[Product]!",
+              "variables": {
+                "hasDiscount": {
+                  "kind": "select",
+                  "name": "hasDiscount",
+                  "select": "hasDiscount",
+                },
+                "id": {
+                  "kind": "select",
+                  "name": "id",
+                  "select": "id",
+                },
+              },
+            },
+            {
+              "exports": [
+                {
+                  "kind": "scalar",
+                  "name": "canAffordWithDiscount",
+                },
+              ],
+              "includes": {},
+              "kind": "object",
+              "ofType": "Product",
+              "operation": "query ($id: ID!, $isExpensiveWithDiscount: Boolean!) {
+  _entities(
+    representations: [{__typename: "Product", id: $id, isExpensiveWithDiscount: $isExpensiveWithDiscount}]
+  ) {
+    ... on Product {
+      canAffordWithDiscount
+    }
+  }
+}",
+              "pathToExportData": [
+                "_entities",
+                0,
+              ],
+              "subgraph": "d",
+              "type": "[Product]!",
+              "variables": {
+                "id": {
+                  "kind": "select",
+                  "name": "id",
+                  "select": "id",
+                },
+                "isExpensiveWithDiscount": {
+                  "kind": "select",
+                  "name": "isExpensiveWithDiscount",
+                  "select": "isExpensiveWithDiscount",
+                },
+              },
+            },
+          ],
+        },
+        "kind": "object",
+        "ofType": "Product",
+        "operation": "{
+  product {
+    id
+    hasDiscount
+  }
+}",
+        "pathToExportData": [
+          "product",
+        ],
+        "subgraph": "b",
+        "type": "Product",
+        "variables": {},
+      },
+    },
+    "type": "Query",
+  },
+  "query": "query CanAffordCanAffordWithDiscount {
+  product {
+    canAfford
+    canAffordWithDiscount
+  }
+}",
+}
+`;
+
+exports[`fixture 'federation/requires-requires' > query 'CanAffordWithDiscount' > should execute and explain 1`] = `
+[
+  {
+    "data": {
+      "product": {
+        "hasDiscount": true,
+        "id": "p1",
+      },
+    },
+    "exports": [
+      {
+        "kind": "scalar",
+        "name": "id",
+        "private": true,
+      },
+      {
+        "kind": "scalar",
+        "name": "hasDiscount",
+        "private": true,
+      },
+    ],
+    "includes": [
+      {
+        "data": {
+          "_entities": [
+            {
+              "isExpensiveWithDiscount": false,
+            },
+          ],
+        },
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "isExpensiveWithDiscount",
+            "private": true,
+          },
+        ],
+        "includes": [],
+        "kind": "object",
+        "ofType": "Product",
+        "operation": "query ($id: ID!, $hasDiscount: Boolean!) {
+  _entities(
+    representations: [{__typename: "Product", id: $id, hasDiscount: $hasDiscount}]
+  ) {
+    ... on Product {
+      isExpensiveWithDiscount
+    }
+  }
+}",
+        "pathInData": [
+          "product",
+        ],
+        "pathToExportData": [
+          "_entities",
+          0,
+        ],
+        "subgraph": "c",
+        "type": "[Product]!",
+        "variables": {
+          "hasDiscount": true,
+          "id": "p1",
+        },
+      },
+      {
+        "data": {
+          "_entities": [
+            {
+              "canAffordWithDiscount": true,
+            },
+          ],
+        },
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "canAffordWithDiscount",
+          },
+        ],
+        "includes": [],
+        "kind": "object",
+        "ofType": "Product",
+        "operation": "query ($id: ID!, $isExpensiveWithDiscount: Boolean!) {
+  _entities(
+    representations: [{__typename: "Product", id: $id, isExpensiveWithDiscount: $isExpensiveWithDiscount}]
+  ) {
+    ... on Product {
+      canAffordWithDiscount
+    }
+  }
+}",
+        "pathInData": [
+          "product",
+        ],
+        "pathToExportData": [
+          "_entities",
+          0,
+        ],
+        "subgraph": "d",
+        "type": "[Product]!",
+        "variables": {
+          "id": "p1",
+          "isExpensiveWithDiscount": false,
+        },
+      },
+    ],
+    "kind": "object",
+    "ofType": "Product",
+    "operation": "{
+  product {
+    id
+    hasDiscount
+  }
+}",
+    "pathInData": [
+      "product",
+    ],
+    "pathToExportData": [
+      "product",
+    ],
+    "subgraph": "b",
+    "type": "Product",
+    "variables": {},
+  },
+]
+`;
+
+exports[`fixture 'federation/requires-requires' > query 'CanAffordWithDiscount' > should plan gather 1`] = `
+{
+  "operation": {
+    "name": "CanAffordWithDiscount",
+    "resolvers": {
+      "product": {
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "id",
+            "private": true,
+          },
+          {
+            "kind": "scalar",
+            "name": "hasDiscount",
+            "private": true,
+          },
+        ],
+        "includes": {
+          "": [
+            {
+              "exports": [
+                {
+                  "kind": "scalar",
+                  "name": "isExpensiveWithDiscount",
+                  "private": true,
+                },
+              ],
+              "includes": {},
+              "kind": "object",
+              "ofType": "Product",
+              "operation": "query ($id: ID!, $hasDiscount: Boolean!) {
+  _entities(
+    representations: [{__typename: "Product", id: $id, hasDiscount: $hasDiscount}]
+  ) {
+    ... on Product {
+      isExpensiveWithDiscount
+    }
+  }
+}",
+              "pathToExportData": [
+                "_entities",
+                0,
+              ],
+              "subgraph": "c",
+              "type": "[Product]!",
+              "variables": {
+                "hasDiscount": {
+                  "kind": "select",
+                  "name": "hasDiscount",
+                  "select": "hasDiscount",
+                },
+                "id": {
+                  "kind": "select",
+                  "name": "id",
+                  "select": "id",
+                },
+              },
+            },
+            {
+              "exports": [
+                {
+                  "kind": "scalar",
+                  "name": "canAffordWithDiscount",
+                },
+              ],
+              "includes": {},
+              "kind": "object",
+              "ofType": "Product",
+              "operation": "query ($id: ID!, $isExpensiveWithDiscount: Boolean!) {
+  _entities(
+    representations: [{__typename: "Product", id: $id, isExpensiveWithDiscount: $isExpensiveWithDiscount}]
+  ) {
+    ... on Product {
+      canAffordWithDiscount
+    }
+  }
+}",
+              "pathToExportData": [
+                "_entities",
+                0,
+              ],
+              "subgraph": "d",
+              "type": "[Product]!",
+              "variables": {
+                "id": {
+                  "kind": "select",
+                  "name": "id",
+                  "select": "id",
+                },
+                "isExpensiveWithDiscount": {
+                  "kind": "select",
+                  "name": "isExpensiveWithDiscount",
+                  "select": "isExpensiveWithDiscount",
+                },
+              },
+            },
+          ],
+        },
+        "kind": "object",
+        "ofType": "Product",
+        "operation": "{
+  product {
+    id
+    hasDiscount
+  }
+}",
+        "pathToExportData": [
+          "product",
+        ],
+        "subgraph": "b",
+        "type": "Product",
+        "variables": {},
+      },
+    },
+    "type": "Query",
+  },
+  "query": "query CanAffordWithDiscount {
+  product {
+    canAffordWithDiscount
+  }
+}",
+}
+`;
+
+exports[`fixture 'federation/requires-requires' > query 'IsExpensive' > should execute and explain 1`] = `
+[
+  {
+    "data": {
+      "product": {
+        "id": "p1",
+      },
+    },
+    "exports": [
+      {
+        "kind": "scalar",
+        "name": "id",
+        "private": true,
+      },
+    ],
+    "includes": [
+      {
+        "data": {
+          "_entities": [
+            {
+              "price": 699.99,
+            },
+          ],
+        },
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "price",
+            "private": true,
+          },
+        ],
+        "includes": [],
+        "kind": "object",
+        "ofType": "Product",
+        "operation": "query ($id: ID!) {
+  _entities(representations: [{__typename: "Product", id: $id}]) {
+    ... on Product {
+      price
+    }
+  }
+}",
+        "pathInData": [
+          "product",
+        ],
+        "pathToExportData": [
+          "_entities",
+          0,
+        ],
+        "subgraph": "a",
+        "type": "[Product]!",
+        "variables": {
+          "id": "p1",
+        },
+      },
+      {
+        "data": {
+          "_entities": [
+            {
+              "isExpensive": true,
+            },
+          ],
+        },
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "isExpensive",
+          },
+        ],
+        "includes": [],
+        "kind": "object",
+        "ofType": "Product",
+        "operation": "query ($id: ID!, $price: Float!) {
+  _entities(representations: [{__typename: "Product", id: $id, price: $price}]) {
+    ... on Product {
+      isExpensive
+    }
+  }
+}",
+        "pathInData": [
+          "product",
+        ],
+        "pathToExportData": [
+          "_entities",
+          0,
+        ],
+        "subgraph": "c",
+        "type": "[Product]!",
+        "variables": {
+          "id": "p1",
+          "price": 699.99,
+        },
+      },
+    ],
+    "kind": "object",
+    "ofType": "Product",
+    "operation": "{
+  product {
+    id
+  }
+}",
+    "pathInData": [
+      "product",
+    ],
+    "pathToExportData": [
+      "product",
+    ],
+    "subgraph": "b",
+    "type": "Product",
+    "variables": {},
+  },
+]
+`;
+
+exports[`fixture 'federation/requires-requires' > query 'IsExpensive' > should plan gather 1`] = `
+{
+  "operation": {
+    "name": "IsExpensive",
+    "resolvers": {
+      "product": {
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "id",
+            "private": true,
+          },
+        ],
+        "includes": {
+          "": [
+            {
+              "exports": [
+                {
+                  "kind": "scalar",
+                  "name": "price",
+                  "private": true,
+                },
+              ],
+              "includes": {},
+              "kind": "object",
+              "ofType": "Product",
+              "operation": "query ($id: ID!) {
+  _entities(representations: [{__typename: "Product", id: $id}]) {
+    ... on Product {
+      price
+    }
+  }
+}",
+              "pathToExportData": [
+                "_entities",
+                0,
+              ],
+              "subgraph": "a",
+              "type": "[Product]!",
+              "variables": {
+                "id": {
+                  "kind": "select",
+                  "name": "id",
+                  "select": "id",
+                },
+              },
+            },
+            {
+              "exports": [
+                {
+                  "kind": "scalar",
+                  "name": "isExpensive",
+                },
+              ],
+              "includes": {},
+              "kind": "object",
+              "ofType": "Product",
+              "operation": "query ($id: ID!, $price: Float!) {
+  _entities(representations: [{__typename: "Product", id: $id, price: $price}]) {
+    ... on Product {
+      isExpensive
+    }
+  }
+}",
+              "pathToExportData": [
+                "_entities",
+                0,
+              ],
+              "subgraph": "c",
+              "type": "[Product]!",
+              "variables": {
+                "id": {
+                  "kind": "select",
+                  "name": "id",
+                  "select": "id",
+                },
+                "price": {
+                  "kind": "select",
+                  "name": "price",
+                  "select": "price",
+                },
+              },
+            },
+          ],
+        },
+        "kind": "object",
+        "ofType": "Product",
+        "operation": "{
+  product {
+    id
+  }
+}",
+        "pathToExportData": [
+          "product",
+        ],
+        "subgraph": "b",
+        "type": "Product",
+        "variables": {},
+      },
+    },
+    "type": "Query",
+  },
+  "query": "query IsExpensive {
+  product {
+    isExpensive
+  }
+}",
+}
+`;
+
+exports[`fixture 'federation/requires-requires' > query 'IsExpensiveCanAfford' > should execute and explain 1`] = `
+[
+  {
+    "data": {
+      "product": {
+        "id": "p1",
+      },
+    },
+    "exports": [
+      {
+        "kind": "scalar",
+        "name": "id",
+        "private": true,
+      },
+    ],
+    "includes": [
+      {
+        "data": {
+          "_entities": [
+            {
+              "price": 699.99,
+            },
+          ],
+        },
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "price",
+            "private": true,
+          },
+        ],
+        "includes": [],
+        "kind": "object",
+        "ofType": "Product",
+        "operation": "query ($id: ID!) {
+  _entities(representations: [{__typename: "Product", id: $id}]) {
+    ... on Product {
+      price
+    }
+  }
+}",
+        "pathInData": [
+          "product",
+        ],
+        "pathToExportData": [
+          "_entities",
+          0,
+        ],
+        "subgraph": "a",
+        "type": "[Product]!",
+        "variables": {
+          "id": "p1",
+        },
+      },
+      {
+        "data": {
+          "_entities": [
+            {
+              "isExpensive": true,
+            },
+          ],
+        },
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "isExpensive",
+          },
+        ],
+        "includes": [],
+        "kind": "object",
+        "ofType": "Product",
+        "operation": "query ($id: ID!, $price: Float!) {
+  _entities(representations: [{__typename: "Product", id: $id, price: $price}]) {
+    ... on Product {
+      isExpensive
+    }
+  }
+}",
+        "pathInData": [
+          "product",
+        ],
+        "pathToExportData": [
+          "_entities",
+          0,
+        ],
+        "subgraph": "c",
+        "type": "[Product]!",
+        "variables": {
+          "id": "p1",
+          "price": 699.99,
+        },
+      },
+      {
+        "data": {
+          "_entities": [
+            {
+              "isExpensive": true,
+            },
+          ],
+        },
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "isExpensive",
+            "private": true,
+          },
+        ],
+        "includes": [],
+        "kind": "object",
+        "ofType": "Product",
+        "operation": "query ($id: ID!, $price: Float!) {
+  _entities(representations: [{__typename: "Product", id: $id, price: $price}]) {
+    ... on Product {
+      isExpensive
+    }
+  }
+}",
+        "pathInData": [
+          "product",
+        ],
+        "pathToExportData": [
+          "_entities",
+          0,
+        ],
+        "subgraph": "c",
+        "type": "[Product]!",
+        "variables": {
+          "id": "p1",
+          "price": 699.99,
+        },
+      },
+      {
+        "data": {
+          "_entities": [
+            {
+              "canAfford": false,
+            },
+          ],
+        },
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "canAfford",
+          },
+        ],
+        "includes": [],
+        "kind": "object",
+        "ofType": "Product",
+        "operation": "query ($id: ID!, $isExpensive: Boolean!) {
+  _entities(
+    representations: [{__typename: "Product", id: $id, isExpensive: $isExpensive}]
+  ) {
+    ... on Product {
+      canAfford
+    }
+  }
+}",
+        "pathInData": [
+          "product",
+        ],
+        "pathToExportData": [
+          "_entities",
+          0,
+        ],
+        "subgraph": "d",
+        "type": "[Product]!",
+        "variables": {
+          "id": "p1",
+          "isExpensive": true,
+        },
+      },
+    ],
+    "kind": "object",
+    "ofType": "Product",
+    "operation": "{
+  product {
+    id
+  }
+}",
+    "pathInData": [
+      "product",
+    ],
+    "pathToExportData": [
+      "product",
+    ],
+    "subgraph": "b",
+    "type": "Product",
+    "variables": {},
+  },
+]
+`;
+
+exports[`fixture 'federation/requires-requires' > query 'IsExpensiveCanAfford' > should plan gather 1`] = `
+{
+  "operation": {
+    "name": "IsExpensiveCanAfford",
+    "resolvers": {
+      "product": {
+        "exports": [
+          {
+            "kind": "scalar",
+            "name": "id",
+            "private": true,
+          },
+        ],
+        "includes": {
+          "": [
+            {
+              "exports": [
+                {
+                  "kind": "scalar",
+                  "name": "price",
+                  "private": true,
+                },
+              ],
+              "includes": {},
+              "kind": "object",
+              "ofType": "Product",
+              "operation": "query ($id: ID!) {
+  _entities(representations: [{__typename: "Product", id: $id}]) {
+    ... on Product {
+      price
+    }
+  }
+}",
+              "pathToExportData": [
+                "_entities",
+                0,
+              ],
+              "subgraph": "a",
+              "type": "[Product]!",
+              "variables": {
+                "id": {
+                  "kind": "select",
+                  "name": "id",
+                  "select": "id",
+                },
+              },
+            },
+            {
+              "exports": [
+                {
+                  "kind": "scalar",
+                  "name": "isExpensive",
+                },
+              ],
+              "includes": {},
+              "kind": "object",
+              "ofType": "Product",
+              "operation": "query ($id: ID!, $price: Float!) {
+  _entities(representations: [{__typename: "Product", id: $id, price: $price}]) {
+    ... on Product {
+      isExpensive
+    }
+  }
+}",
+              "pathToExportData": [
+                "_entities",
+                0,
+              ],
+              "subgraph": "c",
+              "type": "[Product]!",
+              "variables": {
+                "id": {
+                  "kind": "select",
+                  "name": "id",
+                  "select": "id",
+                },
+                "price": {
+                  "kind": "select",
+                  "name": "price",
+                  "select": "price",
+                },
+              },
+            },
+            {
+              "exports": [
+                {
+                  "kind": "scalar",
+                  "name": "isExpensive",
+                  "private": true,
+                },
+              ],
+              "includes": {},
+              "kind": "object",
+              "ofType": "Product",
+              "operation": "query ($id: ID!, $price: Float!) {
+  _entities(representations: [{__typename: "Product", id: $id, price: $price}]) {
+    ... on Product {
+      isExpensive
+    }
+  }
+}",
+              "pathToExportData": [
+                "_entities",
+                0,
+              ],
+              "subgraph": "c",
+              "type": "[Product]!",
+              "variables": {
+                "id": {
+                  "kind": "select",
+                  "name": "id",
+                  "select": "id",
+                },
+                "price": {
+                  "kind": "select",
+                  "name": "price",
+                  "select": "price",
+                },
+              },
+            },
+            {
+              "exports": [
+                {
+                  "kind": "scalar",
+                  "name": "canAfford",
+                },
+              ],
+              "includes": {},
+              "kind": "object",
+              "ofType": "Product",
+              "operation": "query ($id: ID!, $isExpensive: Boolean!) {
+  _entities(
+    representations: [{__typename: "Product", id: $id, isExpensive: $isExpensive}]
+  ) {
+    ... on Product {
+      canAfford
+    }
+  }
+}",
+              "pathToExportData": [
+                "_entities",
+                0,
+              ],
+              "subgraph": "d",
+              "type": "[Product]!",
+              "variables": {
+                "id": {
+                  "kind": "select",
+                  "name": "id",
+                  "select": "id",
+                },
+                "isExpensive": {
+                  "kind": "select",
+                  "name": "isExpensive",
+                  "select": "isExpensive",
+                },
+              },
+            },
+          ],
+        },
+        "kind": "object",
+        "ofType": "Product",
+        "operation": "{
+  product {
+    id
+  }
+}",
+        "pathToExportData": [
+          "product",
+        ],
+        "subgraph": "b",
+        "type": "Product",
+        "variables": {},
+      },
+    },
+    "type": "Query",
+  },
+  "query": "query IsExpensiveCanAfford {
+  product {
+    isExpensive
+    canAfford
+  }
+}",
+}
+`;
+
 exports[`fixture 'federation/simple-inaccessible' > query 'InaccessibleEnumInOutput' > should execute and explain 1`] = `
 [
   {

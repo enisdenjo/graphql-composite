@@ -852,6 +852,9 @@ function insertResolversForSelection(
     // if the field itself has a resolver, it means that there are special requirements
     // for resolving the field - use that resolver over every other
     // TODO: actually choose the best resolver, not the first one
+    // TODO: fields with custom resolvers often exist because they require additional variables
+    //       however, such to provide those variables, we sometimes might not need an additional resolver
+    //       we might already have that variable. see federation/requires-requires#IsExpensiveCanAfford
     const selFieldResolverPlan = Object.values(selField.resolvers || {})[0];
     if (selFieldResolverPlan) {
       if (selFieldResolverPlan.kind === 'primitive') {
@@ -1090,7 +1093,7 @@ function insertResolversForSelection(
       ? getSelectionsAtDepth(currentResolver.exports, depth)
       : resolver.exports;
 
-  if (!exportsIncludeField(dest, exp.alias || exp.name, true)) {
+  if (!exportsIncludeField(dest, exp.alias || exp.name, !exp.private)) {
     dest.push(exp);
   }
 

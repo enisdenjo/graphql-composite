@@ -5,6 +5,7 @@
     "graphql-composite": "0.0.0"
   },
   "changesets": [
+    "rotten-moles-sleep",
     "stale-pillows-hide"
   ]
 }

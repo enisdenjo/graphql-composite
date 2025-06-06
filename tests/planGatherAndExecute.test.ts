@@ -9,11 +9,11 @@ import {
 import { TransportHTTP } from '../src/transport.js';
 import { getFixtures, prettyPrint } from './utils.js';
 
-describe.each(await getFixtures())(
+describe.concurrent.each(await getFixtures())(
   'fixture $name',
   ({ blueprint, subgraphs, queries }) => {
     describe.each(queries)('query $name', ({ document, variables, result }) => {
-      it('should plan gather', () => {
+      it('should plan gather', ({ expect }) => {
         const errors = validate(buildSchema(blueprint.schema), document);
         if (errors.length) {
           errors.forEach((err) => {
@@ -28,7 +28,7 @@ describe.each(await getFixtures())(
         expect(gather).toMatchSnapshot();
       });
 
-      it('should execute and explain', async () => {
+      it('should execute and explain', async ({ expect }) => {
         const errors = validate(buildSchema(blueprint.schema), document);
         if (errors.length) {
           errors.forEach((err) => {

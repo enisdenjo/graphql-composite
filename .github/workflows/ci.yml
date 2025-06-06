@@ -15,7 +15,7 @@ jobs:
       matrix:
         check:
           - format
-          - type
+          - types
     name: Check ${{ matrix.check }}
     runs-on: ubuntu-latest
     steps:

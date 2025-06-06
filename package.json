@@ -31,7 +31,7 @@
   "scripts": {
     "build": "pkgroll --clean-dist",
     "check:format": "prettier -c .",
-    "check:type": "tsc --noEmit",
+    "check:types": "tsc --noEmit",
     "format": "yarn check:format -w",
     "prepack": "yarn build",
     "test": "vitest"
